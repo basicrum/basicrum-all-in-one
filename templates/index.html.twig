@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Basic RUM</title>
+        <meta name="description" content="Basic RUM - Backoffice">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="{{ asset('plugins/bootstrap.4.1.1/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('plugins/jquery-ui/jquery-ui.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/backoffice/init.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/backoffice/navigation.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/backoffice/misc.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/waterfall.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/diagram-filters.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/configure.css') }}" rel="stylesheet">
+    </head>
+    <body>
+    <!--Start Header-->
+    <header>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="logo" class="col-xs-2 col-sm-2">
+                    <a href="#" style="font-weight: bold;">Basic <span style="color: #159588">R</span><span style="color: #436E90">U</span><span style="color: #c141cd">M</span></a>
+                </div>
+                <div id="top-panel" class="col-xs-4 col-sm-4">
+                    <img src="img/project/hl_small.jpg" width="40" height="40" /> www.hundeland.de
+                </div>
+                <div id="top-panel" class="col-xs-6 col-sm-6">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 top-panel-right">
+                                <ul class="nav navbar-nav pull-right panel-menu">
+                                    <li>
+                                        <a href="#" class="dropdown-toggle account" data-toggle="dropdown">
+                                            <div class="avatar">
+                                                <img src="img/avatar.jpg" class="img-circle" alt="avatar" />
+                                            </div>
+                                            <div class="user-mini pull-right">
+                                                <span class="welcome">Welcome,</span>
+                                                <span>Perf. Developer</span>
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!--End Header-->
+    <!--Start Container-->
+    <div class="container-fluid" id="main">
+        <div class="row">
+            <div id="sidebar-left" class="col-xs-2 col-sm-2">
+                <ul class="nav flex-column main-menu" id="side-menu">
+                    <li class="nav-item">
+                        <a href="/ajax/dashboard" class="nav-link ajax-link">
+                            <i class="fa fa-dashboard"></i>
+                            <span class="hidden-xs">Dashboard</span>
+                        </a>
+                    </li>
+                    <!--                <a href="#menu2" class="list-group-item" data-toggle="collapse" data-parent="#sidebar">-->
+                    <!--                    <i class="fa fa-user"></i>-->
+                    <!--                    <span class="hidden-sm-down">Item 2 <i class="fa fa-caret-down"></i></span>-->
+                    <!--                </a>-->
+                    <!--                <div class="collapse" id="menu2">-->
+                    <!--                    <a href="#menu2sub1" class="list-group-item" data-toggle="collapse" aria-expanded="false">Sub 1 <i class="fa fa-caret-down"></i></a>-->
+                    <!--                    <div class="collapse" id="menu2sub1">-->
+                    <!--                        <a href="#" class="list-group-item" data-parent="#menu2sub1">Sub 1 a</a>-->
+                    <!--                        <a href="#" class="list-group-item" data-parent="#menu2sub1">Sub 1 b</a>-->
+                    <!--                        <a href="#" class="list-group-item" data-parent="#menu2sub1">Sub 1 c</a>-->
+                    <!--                    </div>-->
+                    <!--                    <a href="#" class="list-group-item" data-parent="#menu2">Sub 2</a>-->
+                    <!--                    <a href="#" class="list-group-item" data-parent="#menu2">Sub 3</a>-->
+                    <!--                </div>-->
+                    <li class="nav-item">
+                        <a href="ajax/admin/digram-builder" class="nav-link ajax-link">
+                            <i class="fa"></i>
+                            <span class="hidden-xs">Diagram Builder</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#diagrams" class="nav-link" data-toggle="collapse" role="button" aria-haspopup="false" aria-expanded="false">
+                            <i class="fa fa-bar-chart-o"></i>
+                            Histograms
+                                        <span class="fa fa-caret-down">
+                        </a>
+                        <ul id="diagrams" class="collapse">
+                            <!--                        <li><a class="ajax-link" href="/backoffice/ajax/histograms/bounce-rate-vs-ttfp-histogram">BR vs. TTFP</a></li>-->
+                            <!--                        <li><a class="ajax-link" href="/backoffice/ajax/histograms/bounce-rate-goo-vs-ttfp-histogram">CR vs. TTFP</a></li>-->
+                            <li><a class="ajax-link" href="/backoffice/ajax/histograms/sprint-comparison-histograms">Release Compare</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ajax-link" href="/backoffice/ajax/waterfalls">
+                            <i class="fa fa-align-left"></i>
+                            Waterfalls
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ajax-link" href="/page/type/config/list">
+                            <i class="fa fa-cog"></i>
+                            Configure
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link ajax-link" href="/page/type/config/list">
+                            <i class="fa fa-cog"></i>
+                            Agent Builder
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--Start Content-->
+            <div id="content" class="col-xs-10 col-sm-10">
+                <div class="preloader">
+                    <img src="img/devoops_getdata.gif" class="devoops-getdata" alt="preloader"/>
+                </div>
+                <div id="ajax-content"></div>
+            </div>
+            <!--End Content-->
+        </div>
+    </div>
+    <!--End Container-->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--<script src="http://code.jquery.com/jquery.js"></script>-->
+    <script src="{{ asset('plugins/jquery/jquery-1.12.4.js') }}"></script>
+    <script src="{{ asset('plugins/jquery-ui/jquery-ui.js') }}"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{{ asset('plugins/poper/popper.min.js') }}"></script>
+    <script src="{{ asset('plugins/bootstrap.4.1.1/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('plugins/plotly/plotly.1.31.2.min.js') }}"></script>
+    <!-- All functions for this theme + document.ready processing -->
+    <script src="{{ asset('js/devoops.js') }}"></script>
+    </body>
+</html>

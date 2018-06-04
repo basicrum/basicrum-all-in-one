@@ -1,0 +1,19 @@
+* {outline:none !important;}
+body {
+    color: #525252;
+    background: #f7f7f7;
+    font-family: Verdana, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #0d0d0d;
+}
+
+h1, .h1, h2, .h2, h3, .h3 {
+    margin:0;
+}
+
+label {
+    font-size: .7rem;
+}

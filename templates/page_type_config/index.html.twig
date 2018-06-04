@@ -1,0 +1,68 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Configure</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Page Types</li>
+    </ol>
+</nav>
+<div id="accordion">
+    {% for type in page_types %}
+    <div class="card">
+        <div class="card-header" id="heading-{{ type.id }}">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-{{ type.id }}" aria-expanded="false">
+                    {{ type.pageTypeName }}
+                </button>
+            </h5>
+        </div>
+        <div id="collapse-{{ type.id }}" class="collapse" aria-labelledby="heading-{{ type.id }}" data-parent="#accordion">
+            <div class="configure-form">
+                <form class="form-inline page-type-config-form" method="post" action="/backoffice/controllers/ajax/config.php">
+                    <input type="hidden" value="{{ type.id }}" name="page_type_id" />
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            <input value="{{ type.pageTypeName }}" name="page_type_name" type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Type e.g. Product">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group mb-2 mr-sm-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <select name="page_type_rule_condition" class="form-control form-control-sm" id="source">
+                                            <option value=""> --- Select Condition --- </option>
+                                            {% for label in condition_options %}
+                                            <option value="">{{ label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <input value="" name="page_type_rule_value" type="text" class="form-control" id="inlineFormInputGroupUsername2">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mb-2">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<script type="text/javascript">
+    $('.page-type-config-form').submit( function (e) {
+        e.preventDefault();
+
+        var action = $(this).attr('action');
+        var data = $(this).serialize();
+
+        console.log(data);
+        console.log(this);
+
+        $.ajax({
+            url: action,
+            context: this,
+            method: "POST",
+            data: data
+        }).done(function(html) {
+            alert(html);
+        });
+    });
+</script>

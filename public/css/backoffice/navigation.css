@@ -1,0 +1,33 @@
+.nav.main-menu > li a {
+    text-align: left;
+    color: #f0f0f0;
+    min-height: 30px;
+    line-height: 30px;
+    -webkit-transition: 0.05s;
+    -moz-transition: 0.05s;
+    -o-transition: 0.05s;
+    transition: 0.05s;
+    display: block;
+    padding: 0 15px;
+}
+
+.nav.main-menu .nav-link.active {
+    padding-left: 10px;
+    border-left: 5px #fff solid;
+}
+
+.nav.main-menu > li li a {
+    padding: 0 20px;
+    background: #666;
+}
+
+.nav.main-menu ul {
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+}
+
+.nav.main-menu > li {
+    display: block;
+}
+

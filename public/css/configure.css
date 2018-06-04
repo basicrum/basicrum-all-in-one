@@ -1,0 +1,11 @@
+.configure-form {
+    padding: .75rem 1.25rem;
+}
+
+.configure-form .form-row {
+    width: 100%;
+}
+
+.configure-form .input-group-prepend select.form-control-sm:not([size]):not([multiple]) {
+    height: 22px;
+}
