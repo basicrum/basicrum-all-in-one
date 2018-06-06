@@ -1,0 +1,127 @@
+<form class="form-horizontal" role="form">
+    <div class="diagram-filters">
+        <fieldset>
+            <legend>Diagram Settings</legend>
+            <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="page-type">Page Type:</label>
+                        <select class="form-control form-control-sm" id="page-type">
+                            <option selected="selected" value="all">All</option>
+                            <option value="product">Product</option>
+                            <option value="category">Category</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label for="source">Traffic Source:</label>
+                        <select class="form-control form-control-sm" id="source">
+                            <option selected="selected">All</option>
+                            <option >Organic</option>
+                            <option disabled>Email Campaign</option>
+                            <option disabled>AdSense</option>
+                            <option disabled>Direct</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group has-feedback">
+                        <label>Period:</label>
+                        <br />
+                        <div class="date-picker-wrapper float-left">
+                            <input class="form-control form-control-sm" type="text" id="from_date" name="from" value="04/24/2018">
+                            <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                        </div>
+                        -
+                        <div class="date-picker-wrapper float-right">
+                            <input class="form-control form-control-sm" type="text" id="to_date" name="to" value="05/17/2018">
+                            <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                        </div>
+                        <br />
+                        <label><input type="checkbox" checked /> Compare with previous period</label>
+                        <br />
+                        <div class="date-picker-wrapper float-left">
+                            <input class="form-control form-control-sm" type="text" id="to_date_prev" name="from" value="03/29/2018">
+                            <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                        </div>
+                        -
+                        <div class="date-picker-wrapper float-right">
+                            <input class="form-control form-control-sm" type="text" id="from_date_prev" name="to" value="04/23/2018">
+                            <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-3">
+                    <div class="form-group">
+                        <label>Business Metric:</label>
+                        <br />
+                        <label><input type="checkbox" name="bounce-rate" /> Bounce Rate</label>
+                        <br />
+                        <label><input type="checkbox" name="conversion-rate" /> Conversion Rate</label>
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-label-right float-right">
+                Run <span><i class="fa fa-play-circle-o"></i></span>
+            </button>
+        </fieldset>
+    </div>
+</form>
+<script type="text/javascript">
+    $("#from_date, #to_date, #to_date_prev, #from_date_prev").datepicker();
+</script>
+
+<div id="prevNextPercent"></div>
+<script>
+    (function(){
+        var x1 = [0,200,400,600,800,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200,3400,3600,3800,4000,4200,4400,4600,4800,5000,5200,5400,5600,5800,6000,6200,6400,6600,6800,7000,7200,7400,7600,7800,8000];
+        var y1 = ["0.00","0.37","0.69","1.40","1.77","2.78","3.41","3.84","4.40","4.99","5.24","5.75","6.11","5.92","5.98","5.43","5.19","4.47","4.00","3.59","3.15","2.88","2.34","2.12","1.95","1.74","1.49","1.28","1.03","1.05","0.85","0.83","0.67","0.62","0.65","0.58","0.45","0.37","0.33","0.30","0.00"];
+
+        var x2 = [0,200,400,600,800,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200,3400,3600,3800,4000,4200,4400,4600,4800,5000,5200,5400,5600,5800,6000,6200,6400,6600,6800,7000,7200,7400,7600,7800,8000];
+        var y2 = ["0.00","0.33","0.66","1.16","1.66","2.11","2.87","3.79","4.02","4.63","5.06","5.47","5.81","6.09","5.93","5.67","5.33","4.95","4.46","3.61","3.44","3.10","2.59","2.28","1.98","1.74","1.64","1.45","1.15","1.11","0.98","0.80","0.63","0.66","0.61","0.61","0.43","0.34","0.42","0.43","0.00"];
+
+        var prevPeriod = {
+            x: x1,
+            y: y1,
+            type: 'line',
+            name: 'HTTP 2',
+            marker : {
+                color: 'rgb(31, 119, 180)'
+            }
+        };
+
+        var nextPeriod = {
+            x: x2,
+            y: y2,
+            type: 'line',
+            name: 'HTTP 1',
+            marker: {
+                color: 'rgb(255, 127, 14)'
+            }
+        };
+
+        var layout = {
+            //barmode: "overlay",
+            title: "First Paint at User first visit",
+            xaxis: {
+                rangemode: 'tozero',
+                title: 'Time',
+                autotick: false,
+                ticks: 'outside',
+                tick0: 0,
+                dtick: 200,
+                ticklen: 5,
+                tickwidth: 2,
+                tickcolor: '#000'
+            },
+            yaxis: {
+                title: 'Users %'
+            }
+        };
+
+        var data = [prevPeriod, nextPeriod];
+        Plotly.newPlot('prevNextPercent', data, layout, {displayModeBar: false});
+    })();
+</script>
