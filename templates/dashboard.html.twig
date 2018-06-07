@@ -1,1 +1,97 @@
-<h1>Dashboard</h1>
+<div id="dashboard-header" class="row">
+    <div class="col-xs-4 col-sm-4 col-md-4">
+        <ol class="breadcrumb pull-left">
+            <li>Homepage</li>
+        </ol>
+        <div id="resourcesHomepage" style="margin-top: 20px;"></div>
+        <script type="text/javascript">
+            /**
+             * css - rgb(178, 234, 148)
+             * html - rgb(130, 181, 252)
+             * image - rgb(196, 154, 232)
+             * font - rgb(255, 82, 62)
+             * javascript - rgb(254, 197, 132)
+             * other - rgb(196, 196, 196)
+             */
+            var data = [{
+                    values: [4.1,6.5,40.4,2.5,45.5,0.5],
+                    labels: ['css', 'html', 'image', 'font', 'javascript', 'other'],
+                    type: 'pie',
+                    marker: {
+                    colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
+                }
+            }];
+
+            var layout = {
+                height: 400,
+                width: 400
+            };
+
+            Plotly.newPlot('resourcesHomepage', data, layout, {displayModeBar: false});
+        </script>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4">
+        <ol class="breadcrumb pull-left">
+            <li>Product Page</li>
+        </ol>
+        <div id="resourcesProductPage" style="margin-top: 20px;"></div>
+        <script type="text/javascript">
+            /**
+             * css - rgb(178, 234, 148)
+             * html - rgb(130, 181, 252)
+             * image - rgb(196, 154, 232)
+             * font - rgb(255, 82, 62)
+             * javascript - rgb(254, 197, 132)
+             * other - rgb(196, 196, 196)
+             */
+            var data = [{
+                values: [14.1, 11.5, 15.4, 12.5, 43.5, 2.5],
+                labels: ['css', 'html', 'image', 'font', 'javascript', 'other'],
+                type: 'pie',
+                marker: {
+                    colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
+                }
+            }];
+
+            var layout = {
+                height: 400,
+                width: 400
+            };
+
+            Plotly.newPlot('resourcesProductPage', data, layout, {displayModeBar: false});
+        </script>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4">
+        <ol class="breadcrumb pull-left">
+            <li>Category Page</li>
+        </ol>
+        <div id="resourcesCategoryPage" style="margin-top: 20px;"></div>
+        <script type="text/javascript">
+            /**
+             * css - rgb(178, 234, 148)
+             * html - rgb(130, 181, 252)
+             * image - rgb(196, 154, 232)
+             * font - rgb(255, 82, 62)
+             * javascript - rgb(254, 197, 132)
+             * other - rgb(196, 196, 196)
+             */
+            var data = [{
+                values: [24.1, 11.5, 35.4, 6.5, 33.5, 8.5],
+                labels: ['css', 'html', 'image', 'font', 'javascript', 'other'],
+                type: 'pie',
+                marker: {
+                    colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
+                }
+            }];
+
+            var layout = {
+                height: 400,
+                width: 400
+            };
+
+            Plotly.newPlot('resourcesCategoryPage', data, layout, {displayModeBar: false});
+        </script>
+    </div>
+    <div class="clearfix visible-xs"></div>
+    <div class="col-xs-12 col-sm-8 col-md-7 pull-right"></div>
+</div>
