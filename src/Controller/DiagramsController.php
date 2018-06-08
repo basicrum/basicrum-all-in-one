@@ -36,4 +36,12 @@ class DiagramsController extends Controller
         );
     }
 
+    /**
+     * @Route("/diagrams/waterfalls/list", name="diagrams_waterfalls_list")
+     */
+    public function waterfallsList()
+    {
+        return $this->render('diagrams/waterfalls_list.html.twig');
+    }
+
 }

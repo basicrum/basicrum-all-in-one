@@ -1,4 +1,6 @@
-.water-fall-chart {width:100%; overflow: visible; font-size: 12px; line-height: 1em;}
+#waterfall-view { margin-top: 35px;  }
+
+.water-fall-chart {width:100%; overflow: visible !important; font-size: 12px; line-height: 1em;}
 .water-fall-chart * {box-sizing: border-box;}
 .water-fall-chart button {cursor: pointer;}
 
