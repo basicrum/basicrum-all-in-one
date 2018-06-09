@@ -16,7 +16,7 @@
         </div>
         <div id="collapse-{{ type.id }}" class="collapse" aria-labelledby="heading-{{ type.id }}" data-parent="#accordion">
             <div class="configure-form">
-                <form class="form-inline page-type-config-form" method="post" action="/backoffice/controllers/ajax/config.php">
+                <form class="form-inline page-type-config-form" method="post" action="/page/type/save">
                     <input type="hidden" value="{{ type.id }}" name="page_type_id" />
                     <div class="form-row">
                         <div class="col-md-3">
@@ -28,13 +28,17 @@
                                     <div class="input-group-text">
                                         <select name="page_type_rule_condition" class="form-control form-control-sm" id="source">
                                             <option value=""> --- Select Condition --- </option>
-                                            {% for label in condition_options %}
-                                            <option value="">{{ label }}</option>
+                                            {% for key,label in condition_options %}
+                                                {% set selected = '' %}
+                                                {% if key == type.getConditionsSerialized().page_type_rule_condition %}
+                                                    {% set selected = 'selected' %}
+                                                {% endif %}
+                                                <option value="{{ key }}" {{ selected }}>{{ label }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
-                                <input value="" name="page_type_rule_value" type="text" class="form-control" id="inlineFormInputGroupUsername2">
+                                <input value="{{ type.getConditionsSerialized().page_type_rule_value }}" name="page_type_rule_value" type="text" class="form-control" />
                             </div>
                         </div>
 
@@ -52,9 +56,6 @@
 
         var action = $(this).attr('action');
         var data = $(this).serialize();
-
-        console.log(data);
-        console.log(this);
 
         $.ajax({
             url: action,

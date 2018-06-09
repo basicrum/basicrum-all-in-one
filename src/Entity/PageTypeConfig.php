@@ -43,14 +43,17 @@ class PageTypeConfig
         return $this;
     }
 
-    public function getConditionsSerialized(): ?string
+    public function getConditionsSerialized(): ?array
     {
-        return $this->conditions_serialized;
+        /** @todo: Check if we need to json_decode every time */
+        return empty($this->conditions_serialized) ?
+            ['page_type_rule_value' => '', 'page_type_rule_condition' => ''] :
+            json_decode($this->conditions_serialized, true);
     }
 
-    public function setConditionsSerialized(string $conditions_serialized): self
+    public function setConditionsSerialized(array $conditions_serialized): self
     {
-        $this->conditions_serialized = $conditions_serialized;
+        $this->conditions_serialized = json_encode($conditions_serialized);
 
         return $this;
     }
