@@ -4,32 +4,60 @@
         <li class="breadcrumb-item active" aria-current="page">Builder</li>
     </ol>
 </nav>
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-8">
+        {#<form>#}
+            {#<div class="form-group">#}
+                {#<label for="exampleInputEmail1">Email address</label>#}
+                {#<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">#}
+                {#<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
+            {#</div>#}
+            {#<div class="form-group">#}
+                {#<label for="exampleInputPassword1">Password</label>#}
+                {#<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">#}
+            {#</div>#}
+            {#<div class="form-check">#}
+                {#<input type="checkbox" class="form-check-input" id="exampleCheck1">#}
+                {#<label class="form-check-label" for="exampleCheck1">Check me out</label>#}
+            {#</div>#}
+            {#<button type="submit" class="btn btn-primary">Submit</button>#}
+        {#</form>#}
 
-<form>
-    <div class="form-group row">
-        <label for="beacon_catcher_address" class="col-sm-2 col-form-label">Beacon catcher address</label>
-        <div class="col-sm-6">
-            <input type="email" class="form-control" id="beacon_catcher_address" placeholder="e.g. https://my.beacon-catcher.com">
-        </div>
+
+            <form>
+                <div class="form-group">
+                    <label for="beacon_catcher_address">Beacon catcher address</label>
+                    <input type="email" class="form-control" id="beacon_catcher_address" placeholder="e.g. https://my.beacon-catcher.com">
+                </div>
+                <div class="form-group">
+                    <div>Boomerang Plugins</div>
+
+                    {% for name, label in boomerang_plugins %}
+                    <div class="form-check">
+                        <input name="{{ name }}" class="form-check-input" type="checkbox" id="{{ name }}_check">
+                        <label class="form-check-label" for="{{ name }}_check">
+                        {{ label }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-primary btn-label-right float-right">
+                            Build
+                            <span><i class="fa fa-gavel"></i></span></button>
+                    </div>
+                </div>
+            </form>
     </div>
-    <div class="form-group row">
-        <div class="col-sm-2">Boomerang Plugins</div>
-        <div class="col-sm-6">
-            {% for name, label in boomerang_plugins %}
-            <div class="form-check">
-                <input name="{{ name }}" class="form-check-input" type="checkbox" id="{{ name }}_check">
-                <label class="form-check-label" for="{{ name }}_check">
-                    {{ label }}
-                </label>
-            </div>
-            {% endfor %}
-        </div>
+    <div class="col-3">
+        <ul>
+            <li><a href="#"># build 5 / 19.05.2018</a></li>
+            <li><a href="#"># build 4 / 17.05.2018</a></li>
+            <li><a href="#"># build 3 / 13.05.2018</a></li>
+            <li><a href="#"># build 2 / 11.05.2018</a></li>
+            <li><a href="#"># build 1 / 9.05.2018</a></li>
+        </ul>
     </div>
-    <div class="form-group row">
-        <div class="col-sm-8">
-            <button type="submit" class="btn btn-primary btn-label-right float-right">
-                Build
-                <span><i class="fa fa-gavel"></i></span></button>
-        </div>
-    </div>
-</form>
+</div>
