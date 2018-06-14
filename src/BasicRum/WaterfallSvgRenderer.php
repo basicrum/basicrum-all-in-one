@@ -5,12 +5,9 @@ namespace App\BasicRum;
 class WaterfallSvgRenderer
 {
 
-    private $maxLength = 20000;
+    private $maxLength = 10000;
 
-    private $_rowEvenBackground = '#ccc';
-    private $_rowOddBackground = '#fff';
-
-    private $_lineHeight = 18;
+    private $_lineHeight = 20;
 
     /**
      * To HTML
@@ -53,7 +50,7 @@ class WaterfallSvgRenderer
                 $zebraClass = 'odd';
             }
 
-            $urlParts = explode('/', $resData['url']);
+            $urlParts = explode('/', $resData['name']);
             $url = $urlParts[count($urlParts) - 1];
 
             $output .= '<a class="row-item" tabindex="0" xlink:href="javascript:void(0)" transform="translate(0, 0)">';
@@ -64,8 +61,6 @@ class WaterfallSvgRenderer
             $output .= '<rect height="' . $this->_lineHeight . '" width="100%" x="0" y="' . $this->_lineHeight * $key .'" style="opacity: 0;"></rect>';
 
             $output .= '<svg width="' . $this->calculateEntryWidth($resData) . '" x="' . $this->calculateEntryStart($resData) . '">';
-
-            $rowBackground = $key % 2 == 0 ? $this->_rowEvenBackground : $this->_rowOddBackground;
 
             $output .= $this->renderResEntry($resData, $key);
 
@@ -82,7 +77,7 @@ class WaterfallSvgRenderer
 
             $output .= '<text x="36.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '" style="text-anchor: end;">' . ($key + 1)  . '</text>';
 
-            $output .= '<text x="40.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '">' . $resData['url'] . '<title text="' . $url . '"></title></text>';
+            $output .= '<text x="40.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '">' . $resData['name'] . '<title text="' . $url . '"></title></text>';
 
             $output .= '</g>';
 
@@ -100,12 +95,11 @@ class WaterfallSvgRenderer
      * Render css progress bar
      *
      * @param array $resData
-     * @param string $rowBackground
      * @param int $resourceNumber
      *
      * @return string
      */
-    protected function renderResEntry($resData, $resourceNumber)
+    protected function renderResEntry(array $resData, $resourceNumber)
     {
         $renderData = array();
 
@@ -226,7 +220,7 @@ class WaterfallSvgRenderer
      *
      * @return string
      */
-    private function renderTimeLines($height, $navigationTimings)
+    private function renderTimeLines($height, array $navigationTimings)
     {
         $firstPaint = $navigationTimings['nt_first_paint'] - $navigationTimings['nt_nav_st'];
         $firstByte  = $navigationTimings['nt_res_st'] - $navigationTimings['nt_nav_st'];

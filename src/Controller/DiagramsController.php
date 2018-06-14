@@ -48,10 +48,19 @@ class DiagramsController extends Controller
         $rederer = new WaterfallSvgRenderer();
         $resTimingDecompressor = new ResourceTimingDecompressor_v_0_3_4();
 
-        /** @todo: pass the nav and res timing data to renderer and show something */
         $res = $resTimingDecompressor->decompressResources(json_decode($beacon, true));
 
-        return $this->render('diagrams/waterfalls_list.html.twig');
+        $timings = [
+            'nt_nav_st'      => 0,
+            'nt_first_paint' => 2480,
+            'nt_res_st'      => 1800,
+            'restiming'      => $res,
+            'url'            => 'https://www.darvart.de/'
+        ];
+
+        return $this->render(
+            'diagrams/waterfalls_list.html.twig',
+            ['waterfallHtml' => $rederer->render($timings)]);
     }
 
 }
