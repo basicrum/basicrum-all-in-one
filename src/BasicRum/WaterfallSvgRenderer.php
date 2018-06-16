@@ -77,7 +77,7 @@ class WaterfallSvgRenderer
 
             $output .= '<text x="36.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '" style="text-anchor: end;">' . ($key + 1)  . '</text>';
 
-            $output .= '<text x="40.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '">' . $resData['name'] . '<title text="' . $url . '"></title></text>';
+            $output .= '<text x="40.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '">' . $this->squishUrl($resData['name']) . '<title text="' . $url . '"></title></text>';
 
             $output .= '</g>';
 
@@ -272,6 +272,18 @@ class WaterfallSvgRenderer
         $output = '<g><svg width="65%" x="35%"><g>' . $lines .'</g></svg></g>';
 
         return $output;
+    }
+
+    private function squishUrl($url)
+    {
+        if (strlen($url) > 35) {
+            $frontStr = substr($url, 0, 15);
+            $backStr = substr($url, -15);
+
+            return $frontStr . '...' . $backStr;
+        }
+
+        return $url;
     }
 
 }
