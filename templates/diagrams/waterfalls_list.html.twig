@@ -5,24 +5,57 @@
     </ol>
 </nav>
 
-<div id="waterfall-container">
-    <div id="legend-holder">
-        <ul class="resource-legend">
-            <li class="legend-blocked" title="Time spent in a queue waiting for a network connection.">Blocked</li>
-            <li class="legend-dns" title="DNS resolution time.">DNS</li>
-            <li class="legend-connect" title="Time required to create TCP connection.">Connect</li>
-            <li class="legend-ssl" title="Time required for SSL/TLS negotiation.">SSL (TLS)</li>
-            <li class="legend-send" title="Time required to send HTTP request to the server.">Send</li>
-            <li class="legend-wait" title="Waiting for a response from the server.">Wait</li>
-            <li class="legend-receive" title="Time required to read entire response from the server (or cache).">
-                Receive
-            </li>
-        </ul>
-    </div>
+<div class="row">
+    <div class="col-8">
+        <div id="waterfall-container">
+            <div id="legend-holder">
+                <ul class="resource-legend">
+                    <li class="legend-blocked" title="Time spent in a queue waiting for a network connection.">Blocked</li>
+                    <li class="legend-dns" title="DNS resolution time.">DNS</li>
+                    <li class="legend-connect" title="Time required to create TCP connection.">Connect</li>
+                    <li class="legend-ssl" title="Time required for SSL/TLS negotiation.">SSL (TLS)</li>
+                    <li class="legend-send" title="Time required to send HTTP request to the server.">Send</li>
+                    <li class="legend-wait" title="Waiting for a response from the server.">Wait</li>
+                    <li class="legend-receive" title="Time required to read entire response from the server (or cache).">
+                        Receive
+                    </li>
+                </ul>
+            </div>
 
-    <div id="waterfall-view">
-        {#HERE THE WATERFALL SVG STARTS#}
-        {{ waterfallHtml|raw }}
-        {#{% include 'diagrams/waterfalls/example.html.twig' %}#}
+            <div id="waterfall-view">
+
+                {#HERE THE WATERFALL SVG STARTS#}
+                {{ waterfallHtml|raw }}
+                {#{% include 'diagrams/waterfalls/example.html.twig' %}#}
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div id="resourcesCategoryPage" style="margin-top: 20px;"></div>
+        <script type="text/javascript">
+            /**
+             * css - rgb(178, 234, 148)
+             * html - rgb(130, 181, 252)
+             * image - rgb(196, 154, 232)
+             * font - rgb(255, 82, 62)
+             * javascript - rgb(254, 197, 132)
+             * other - rgb(196, 196, 196)
+             */
+            var data = [{
+                values: {{ resource_sizes_values|raw }},
+                labels: {{ resource_sizes_labels|raw }},
+                type: 'pie',
+                marker: {
+                    colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
+                }
+            }];
+
+            var layout = {
+                height: 400,
+                width: 400
+            };
+
+            Plotly.newPlot('resourcesCategoryPage', data, layout, {displayModeBar: false});
+        </script>
     </div>
 </div>
