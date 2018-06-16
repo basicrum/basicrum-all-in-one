@@ -7,7 +7,7 @@ class WaterfallSvgRenderer
 
     private $maxLength = 10000;
 
-    private $_lineHeight = 20;
+    private $_lineHeight = 18;
 
     /**
      * To HTML
@@ -75,9 +75,9 @@ class WaterfallSvgRenderer
 
             $output .= '<g class="row row-fixed">';
 
-            $output .= '<text x="36.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '" style="text-anchor: end;">' . ($key + 1)  . '</text>';
+            $output .= '<text x="36.343994140625" y="' . (13 + ($key * $this->_lineHeight)) . '" style="text-anchor: end;">' . ($key + 1)  . '</text>';
 
-            $output .= '<text x="40.343994140625" y="' . (17 + ($key * $this->_lineHeight)) . '">' . $this->squishUrl($resData['name']) . '<title text="' . $url . '"></title></text>';
+            $output .= '<text x="40.343994140625" y="' . (13 + ($key * $this->_lineHeight)) . '">' . $this->squishUrl($resData['name']) . '<title text="' . $url . '"></title></text>';
 
             $output .= '</g>';
 
@@ -276,9 +276,9 @@ class WaterfallSvgRenderer
 
     private function squishUrl($url)
     {
-        if (strlen($url) > 35) {
+        if (strlen($url) > 40) {
             $frontStr = substr($url, 0, 15);
-            $backStr = substr($url, -15);
+            $backStr = substr($url, -22);
 
             return $frontStr . '...' . $backStr;
         }
