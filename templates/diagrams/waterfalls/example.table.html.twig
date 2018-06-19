@@ -1,0 +1,22 @@
+<div class="container">
+    <table class="table table-sm table-scroll">
+        <thead>
+            <tr>
+                <th class="col-3" scope="col">Page Type</th>
+                <th class="col-3" scope="col">Date</th>
+                <th class="col-3" scope="col">First Byte</th>
+                <th class="col-3" scope="col">First Paint</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in 0..100 %}
+            <tr class="openPane" id="row_{{ i }}">
+                <td class="col-3">Product {{ i }}</td>
+                <td class="col-3">15/05/2018 04:32:13</td>
+                <td class="col-3">832 ms</td>
+                <td class="col-3">1234 ms</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

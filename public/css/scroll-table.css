@@ -1,0 +1,26 @@
+.table-scroll {
+    width: 100%;
+    font-size: 11px;
+    border: 1px solid #dee2e6;
+}
+
+.table-scroll tbody {
+    height: 180px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.table-scroll thead,
+.table-scroll tbody,
+.table-scroll tr,
+.table-scroll td,
+.table-scroll th {
+    display: block;
+}
+.table-scroll tbody td {
+    float: left;
+}
+.table-scroll thead tr th {
+    float: left;
+    background-color: #f7f7f7;
+}

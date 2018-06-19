@@ -5,6 +5,8 @@
     </ol>
 </nav>
 
+{% include 'diagrams/waterfalls/example.table.html.twig' %}
+
 <div class="row">
     <div class="col-8">
         <div id="waterfall-container">
@@ -31,7 +33,7 @@
         </div>
     </div>
     <div class="col-4">
-        <div id="resourcesCategoryPage" style="margin-top: 20px;"></div>
+        <div id="resourcesSize" style="margin-top: 20px;"></div>
         <script type="text/javascript">
             /**
              * css - rgb(178, 234, 148)
@@ -55,7 +57,7 @@
                 width: 400
             };
 
-            Plotly.newPlot('resourcesCategoryPage', data, layout, {displayModeBar: false});
+            Plotly.newPlot('resourcesSize', data, layout, {displayModeBar: false});
         </script>
     </div>
 </div>
