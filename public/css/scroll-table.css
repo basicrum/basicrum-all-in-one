@@ -1,6 +1,6 @@
 .table-scroll {
     width: 100%;
-    font-size: 11px;
+    font-size: 10px;
     border: 1px solid #dee2e6;
 }
 
@@ -23,4 +23,12 @@
 .table-scroll thead tr th {
     float: left;
     background-color: #f7f7f7;
+}
+
+.table-scroll .active  td {
+    background-color: #b0bec5;
+}
+
+.table-scroll tbody tr {
+    cursor: pointer;
 }
