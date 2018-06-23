@@ -13,6 +13,14 @@ class DiagramsController extends Controller
 {
 
     /**
+     * @Route("/diagrams/builder", name="diagrams_builder")
+     */
+    public function diagramsBuilder()
+    {
+        return $this->render('diagrams/diagram_builder.html.twig');
+    }
+
+    /**
      * @Route("/diagrams/release/compare", name="diagrams_release_compare")
      */
     public function releaseCompare()
