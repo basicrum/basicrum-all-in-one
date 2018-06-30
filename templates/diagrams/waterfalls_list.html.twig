@@ -5,7 +5,47 @@
     </ol>
 </nav>
 
-{% include 'diagrams/waterfalls/example.table.html.twig' %}
+<div class="row">
+    <div class="col-6">
+        {% include 'diagrams/waterfalls/example.table.html.twig' %}
+    </div>
+    <div class="col-6">
+        <div id="resourcesSize" style="margin-top: 20px;"></div>
+        <script type="text/javascript">
+            /**
+             * css - rgb(178, 234, 148)
+             * html - rgb(130, 181, 252)
+             * image - rgb(196, 154, 232)
+             * font - rgb(255, 82, 62)
+             * javascript - rgb(254, 197, 132)
+             * other - rgb(196, 196, 196)
+             */
+            var data = [{
+                values: {{ resource_sizes_values|raw }},
+                labels: {{ resource_sizes_labels|raw }},
+                type: 'pie',
+                marker: {
+                    colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
+                }
+            }];
+
+            var layout = {
+                height: 200,
+                width: 400,
+                margin: {
+                    l: 10,
+                    r: 10,
+                    b: 0,
+                    t: 28,
+                    pad: 4
+                },
+                title: 'Resources Size distribution (%)'
+            };
+
+            Plotly.newPlot('resourcesSize', data, layout, {displayModeBar: false});
+        </script>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-8">
@@ -31,33 +71,5 @@
                 {#{% include 'diagrams/waterfalls/example.html.twig' %}#}
             </div>
         </div>
-    </div>
-    <div class="col-4">
-        <div id="resourcesSize" style="margin-top: 20px;"></div>
-        <script type="text/javascript">
-            /**
-             * css - rgb(178, 234, 148)
-             * html - rgb(130, 181, 252)
-             * image - rgb(196, 154, 232)
-             * font - rgb(255, 82, 62)
-             * javascript - rgb(254, 197, 132)
-             * other - rgb(196, 196, 196)
-             */
-            var data = [{
-                values: {{ resource_sizes_values|raw }},
-                labels: {{ resource_sizes_labels|raw }},
-                type: 'pie',
-                marker: {
-                    colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
-                }
-            }];
-
-            var layout = {
-                height: 400,
-                width: 400
-            };
-
-            Plotly.newPlot('resourcesSize', data, layout, {displayModeBar: false});
-        </script>
     </div>
 </div>
