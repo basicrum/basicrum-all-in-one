@@ -4,13 +4,15 @@
         <li class="breadcrumb-item active" aria-current="page">Page Types</li>
     </ol>
 </nav>
-<div id="accordion">
+<div id="accordion" class="page-type-config">
     {% for type in page_types %}
     <div class="card">
         <div class="card-header" id="heading-{{ type.id }}">
             <h5 class="mb-0">
                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-{{ type.id }}" aria-expanded="false">
                     {{ type.pageTypeName }}
+                    <i class="more-less fa fa-plus"></i>
+                    <i class="more-less fa fa-minus"></i>
                 </button>
             </h5>
         </div>
