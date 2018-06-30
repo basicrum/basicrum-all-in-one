@@ -8,8 +8,9 @@
                         <label for="page-type">Page Type:</label>
                         <select class="form-control form-control-sm" id="page-type">
                             <option selected="selected" value="all">All</option>
-                            <option value="product">Product</option>
-                            <option value="category">Category</option>
+                            {% for type in page_types %}
+                            <option value="{{ type.id }}">{{ type.pageTypeName }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
