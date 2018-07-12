@@ -21,6 +21,13 @@
     <header>
         <div class="container-fluid">
             <div class="row">
+                <div class="col-12" style="text-align: center;">
+                    <span style="display: block; border: 2px dashed dimgray; background: #ffff00; padding: 5px;">
+                        Click Dummy / UI Proof of concept
+                    </span>
+                </div>
+            </div>
+            <div class="row">
                 <div id="logo" class="col-xs-2 col-sm-2">
                     <a href="#" style="font-weight: bold;">Basic <span style="color: #159588">R</span><span style="color: #436E90">U</span><span style="color: #c141cd">M</span></a>
                 </div>
@@ -58,7 +65,7 @@
             <div id="sidebar-left" class="col-xs-2 col-sm-2">
                 <ul class="nav flex-column main-menu" id="side-menu">
                     <li class="nav-item">
-                        <a href="/ajax/dashboard" class="nav-link ajax-link">
+                        <a href="/diagrams/waterfalls/list" class="nav-link ajax-link">
                             <i class="fa fa-dashboard"></i>
                             <span class="hidden-xs">Dashboard</span>
                         </a>
@@ -77,12 +84,12 @@
                     <!--                    <a href="#" class="list-group-item" data-parent="#menu2">Sub 2</a>-->
                     <!--                    <a href="#" class="list-group-item" data-parent="#menu2">Sub 3</a>-->
                     <!--                </div>-->
-                    <li class="nav-item">
-                        <a href="/diagrams/builder" class="nav-link ajax-link">
-                            <i class="fa"></i>
-                            <span class="hidden-xs">Diagram Builder</span>
-                        </a>
-                    </li>
+                    {#<li class="nav-item">#}
+                        {#<a href="/diagrams/builder" class="nav-link ajax-link">#}
+                            {#<i class="fa"></i>#}
+                            {#<span class="hidden-xs">Diagram Builder</span>#}
+                        {#</a>#}
+                    {#</li>#}
                     <li class="nav-item">
                         <a href="#diagrams" class="nav-link" data-toggle="collapse" role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="fa fa-bar-chart-o"></i>
@@ -95,17 +102,21 @@
                             <li><a class="ajax-link" href="/diagrams/release/compare">Release Compare</a></li>
                         </ul>
                     </li>
+                    {#<li class="nav-item">#}
+                        {#<a class="nav-link ajax-link" href="/diagrams/waterfalls/list">#}
+                            {#<i class="fa fa-align-left"></i>#}
+                            {#Page Analyzer#}
+                        {#</a>#}
+                    {#</li>#}
                     <li class="nav-item">
-                        <a class="nav-link ajax-link" href="/diagrams/waterfalls/list">
-                            <i class="fa fa-align-left"></i>
-                            Page Analyzer
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link ajax-link" href="/page/type/config/list">
+                        <a href="#configure" class="nav-link" data-toggle="collapse" role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="fa fa-cog"></i>
                             Configure
+                            <span class="fa fa-caret-down"></span>
                         </a>
+                        <ul id="configure" class="collapse">
+                            <li><a class="ajax-link" href="/page/type/config/list">Page Types</a></li>
+                        </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link ajax-link" href="/browser/agent/builder">
