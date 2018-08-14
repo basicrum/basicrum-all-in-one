@@ -5,40 +5,49 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\PageTypeConfigRepository")
+ * PageTypeConfig
+ *
+ * @ORM\Table(name="page_type_config")
+ * @ORM\Entity
  */
 class PageTypeConfig
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @var string
+     *
+     * @ORM\Column(name="page_type_name", type="string", length=255, nullable=false)
      */
-    private $page_type_name;
+    private $pageTypeName;
 
     /**
-     * @ORM\Column(type="text")
+     * @var string
+     *
+     * @ORM\Column(name="conditions_serialized", type="text", length=0, nullable=false)
      */
-    private $conditions_serialized;
+    private $conditionsSerialized;
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPageTypeName(): ?string
+public function getPageTypeName(): ?string
     {
-        return $this->page_type_name;
+        return $this->pageTypeName;
     }
 
-    public function setPageTypeName(string $page_type_name): self
+    public function setPageTypeName(string $pageTypeName): self
     {
-        $this->page_type_name = $page_type_name;
+        $this->pageTypeName = $pageTypeName;
 
         return $this;
     }
@@ -46,14 +55,14 @@ class PageTypeConfig
     public function getConditionsSerialized(): ?array
     {
         /** @todo: Check if we need to json_decode every time */
-        return empty($this->conditions_serialized) ?
+        return empty($this->conditionsSerialized) ?
             ['page_type_rule_value' => '', 'page_type_rule_condition' => ''] :
-            json_decode($this->conditions_serialized, true);
+            json_decode($this->conditionsSerialized, true);
     }
 
-    public function setConditionsSerialized(array $conditions_serialized): self
+    public function setConditionsSerialized(string $conditionsSerialized): self
     {
-        $this->conditions_serialized = json_encode($conditions_serialized);
+        $this->conditionsSerialized = json_encode($conditionsSerialized);;
 
         return $this;
     }

@@ -25,5 +25,21 @@
         $(beaconRows).removeClass('active');
         $(this).addClass('active');
 
+        var data = {
+            page_view_id : $(this).data('beacon-id')
+        };
+
+        //load from /diagrams/beacon/draw
+        $.ajax('/diagrams/beacon/draw',
+            {
+                method: 'post',
+                data: data,
+                success : function(response) {
+                    $('#waterfall-view').html(response)
+                }
+            }
+        );
     });
+
+    beaconRows.first().click();
 </script>

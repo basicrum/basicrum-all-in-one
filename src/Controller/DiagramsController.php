@@ -10,6 +10,9 @@ use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 use App\BasicRum\ResourceSize;
 
 use App\Entity\PageTypeConfig;
+use App\Entity\NavigationTimings;
+use App\Entity\ResourceTimings;
+
 
 class DiagramsController extends Controller
 {
@@ -60,6 +63,17 @@ class DiagramsController extends Controller
      */
     public function waterfallsList()
     {
+        /**
+         * Start getting last Page Views
+         */
+        /** @var array $navigationTiming */
+        $navigationTimings = $this->getDoctrine()
+            ->getRepository(NavigationTimings::class)
+            ->findBy([], ['pageViewId' => 'DESC'], 300, 1);
+        /**
+         * End getting last Page Views
+         */
+
         $beacon = '{"https://www.":{"darvart.de/":{"holzfliegen.html":"6,29s,14c,ia,i9,dt,5q,5q,6*1obr,gj,2kz0","skin/frontend/darvart/default/images/":{"darvart-navy-logo.png":"*01y,1y,1l,2t,2s,2s|129s,2h6,2h5,4*12h5,bs","icon_sprite@2x.png":"42a5,35t,346,2gr,2gr,2,2*18m7,bv","opc-ajax-loader.gif":"42at,358,357,2g5*15sj,bt"},"media/":{"js/387cfdcd3b7e1ac11df96a1adb39c25b.js":"32a1,4ap,2gw,1*12yh1,h2,8pfd*24","catalog/product/cache/1/small_image/280x/17f82f742ffe127f42dca9de82fb58b1/d/a/darvena-papi":{"jonka-dilov-01.jpg":"*09l,7q,86,2o,9o,7s|12b4,3nr,3mk,34v*18j0,bv","onka-":{"mini-rudolf.jpg":"*09l,7q,86,b7,9o,7s|12b5,3nq,3n6,34x*161j,bu","classic-rudolf_1.jpg":"*09l,7q,86,jq,9o,7s|12b5,3yb,3y8,3j2,3j0,2ye,2ft,2ft,2ft*16ky,bv","golyam-sechko.jpg":"*09l,7q,86,s9,9o,7s|12b5,3zo,3y9,3j2,3j1,34t,34t,34t,34t*19ef,bw"}}}},"google-analytics.com/":{"analytics.js":"36md,2b,22,5*1b3m,5g,g40*25","collect?v=1&_v=j68&aip=1&a=1185933321&t=pageview&_s=1&dl=https%3A%2F%2Fwww.darvart.de%2Fholzfliegen.html&ul=en-us&de=UTF-8&dt=Handgefertigte%20Holzfliegen%20f%C3%BCr%20M%C3%A4nner%20und%20Frauen%20%7C%20DarvArt.de&sd=24-bit&sr=1440x900&vp=1391x304&je=0&_u=QACAAEAB~&jid=&gjid=&cid=1241074160.1507998957&tid=UA-89019502-1&_gid=1486960115.1528871993&z=49870228":"16p8,1s"}}}';
 
         $renderer = new WaterfallSvgRenderer();
@@ -78,14 +92,110 @@ class DiagramsController extends Controller
 
         $resourceSizes = $resourceSizesCalculator->calculateSizes($res);
 
+        $navTimingsFiltered = [];
+
+        foreach ($navigationTimings as $navTiming) {
+            if ($navTiming->getPtFcp() > 0) {
+                $navTimingsFiltered[] = $navTiming;
+            }
+        }
+
         return $this->render(
             'diagrams/waterfalls_list.html.twig',
             [
-                'waterfallHtml'  => $renderer->render($timings),
+                'page_views'            => $navTimingsFiltered,
+                'waterfallHtml'         => $renderer->render($timings),
                 'resource_sizes_labels' => json_encode(array_keys($resourceSizes)),
                 'resource_sizes_values' => json_encode(array_values($resourceSizes))
             ]
         );
+    }
+
+    /**
+     * @Route("/diagrams/beacon/draw", name="diagrams_beacon_draw")
+     */
+    public function beaconDraw()
+    {
+        $pageViewId = $_POST['page_view_id'];
+
+        /**
+         * Start getting page view
+         */
+        /** @var NavigationTimings $navigationTiming */
+        $navigationTiming = $this->getDoctrine()
+            ->getRepository(NavigationTimings::class)
+            ->findBy(['pageViewId' => $pageViewId]);
+        /**
+         * End getting page view
+         */
+
+        /** @var array $resourceTimings */
+        $resourceTimings = $this->getDoctrine()
+            ->getRepository(ResourceTimings::class)
+            ->findBy(['pageViewId' => $pageViewId], ['starttime' => 'ASC']);
+
+
+        $resourceTimingsData = [];
+
+        /** @var ResourceTimings $res */
+        foreach ($resourceTimings as $res) {
+            $resourceTimingsData[] = [
+                'name'                  => $res->getUrl(),
+                'initiatorType'         => $res->getInitiatortype(),
+                'startTime'             => $res->getStarttime(),
+                'redirectStart'         => $res->getRedirectStart(),
+                'redirectEnd'           => $res->getRedirectEnd(),
+                'fetchStart'            => $res->getFetchStart(),
+                'domainLookupStart'     => $res->getDomainLookupEnd(),
+                'domainLookupEnd'       => $res->getDomainLookupEnd(),
+                'connectStart'          => $res->getConnectStart(),
+                'secureConnectionStart' => $res->getSecureConnectionStart(),
+                'connectEnd'            => $res->getConnectEnd(),
+                'requestStart'          => $res->getRequestStart(),
+                'responseStart'         => $res->getResponseStart(),
+                'responseEnd'           => $res->getResponseEnd(),
+                'duration'              => $res->getDuration(),
+                'encodedBodySize'       => $res->getEncodedBodySize(),
+                'transferSize'          => $res->getTransferSize(),
+                'decodedBodySize'       => $res->getDecodedBodySize()
+            ];
+        }
+
+
+        $sizeDistribution = [];
+
+        if (!empty($resourceTimingsData)) {
+            $resourceSizesCalculator = new ResourceSize();
+            $sizeDistribution = $resourceSizesCalculator->calculateSizes($resourceTimingsData);
+        }
+
+        $timings = [
+            'nt_nav_st'      => 0,
+            'nt_first_paint' => $navigationTiming[0]->getPtFcp(),
+            'nt_res_st'      => $navigationTiming[0]->getNtResSt() - $navigationTiming[0]->getNtNavSt(),
+            'restiming'      => $resourceTimingsData,
+            'url'            => 'https://www.darvart.de/'
+        ];
+
+        $renderer = new WaterfallSvgRenderer();
+
+        $response = new Response(
+            json_encode(
+                [
+                    'waterfall'             => $renderer->render($timings),
+                    'resource_distribution' =>
+                        [
+                            'labels' => array_keys($sizeDistribution),
+                            'values' => array_values($sizeDistribution)
+                        ],
+                    'user_agent'            => $navigationTiming[0]->getUserAgent()
+                ]
+            )
+        );
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
 }
