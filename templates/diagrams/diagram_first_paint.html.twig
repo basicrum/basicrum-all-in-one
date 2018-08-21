@@ -1,0 +1,145 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Google Shopping: First Paint vs. Bounce Rate</li>
+    </ol>
+</nav>
+<div>
+    <p>Sessions: {{ count }}</p>
+    <p>Bounce Rate: {{ bounceRate }}%</p>
+    <p>Period: July 24th 2018 - August 3rd 2018</p>
+    <div id="BounceRateChart"></div>
+    <script type="text/javascript">
+        var x1 = {{ x1Values }};
+        var y1 = {{ y1Values }};
+
+        var x2 = {{ x2Values }};
+        var y2 = {{ y2Values }};
+
+        var bounceAnnotations = {{ annotations|raw }};
+
+        var timeToFirstPaint = {
+            x: x1,
+            y: y1,
+            type: 'bar',
+            name: 'Time To First Paint'
+        };
+
+        var bounceRate = {
+            x: x2,
+            y: y2,
+            type: 'scatter',
+            name: 'Bounce Rate',
+            marker: {
+                color: 'rgb(255, 127, 14)'
+            },
+            xaxis: 'x2',
+            yaxis: 'y2'
+        };
+
+
+        var layout = {
+            barmode: "overlay",
+            title: "Time To First Paint",
+            xaxis: {
+                rangemode: 'tozero',
+                title: 'First Paint',
+                autotick: false,
+                ticks: 'outside',
+                tick0: 0,
+                dtick: 200,
+                ticklen: 5,
+                tickwidth: 2,
+                tickcolor: '#000',
+                range: [0, 8000]
+            },
+            yaxis: {
+                title: 'Website Visits',
+                domain: [0, 0.65]
+            },
+            xaxis2: {
+                anchor: 'y2',
+                rangemode: 'tozero',
+                //title: 'Bounce Rate',
+                //autotick: false,
+                //ticks: 'outside',
+                tick0: 0,
+                dtick: 200,
+                ticklen: 5,
+                tickwidth: 2,
+                tickcolor: '#000',
+                range: [0, 8000],
+//            autorange: true,
+                showgrid: false,
+                zeroline: false,
+                showline: false,
+                autotick: true,
+                ticks: '',
+                showticklabels: false
+            },
+            yaxis2: {
+                domain: [0.7, 1]
+            },
+            annotations: []
+        };
+
+        for(key in bounceAnnotations) {
+            layout.annotations.push({
+                xref: 'x2',
+                yref: 'y2',
+                x: key,
+                y: bounceAnnotations[key],
+                xanchor: 'center',
+                yanchor: 'bottom',
+                text: bounceAnnotations[key] + '%',
+                showarrow: false,
+                font: {
+                    family: 'Arial',
+                    size: 10,
+                    color: 'black'
+                }
+            });
+        }
+
+        var dataFirstPaintVsBounceRate = [timeToFirstPaint, bounceRate];
+
+        Plotly.newPlot('BounceRateChart', dataFirstPaintVsBounceRate, layout);
+    </script>
+    {#<script>#}
+        {#var x1 = {{ xValues }};#}
+        {#var y1 = {{ yValues }};#}
+
+        {#var bounceAnnotations = [];#}
+
+        {#var timeToFirstPaint = {#}
+            {#x: x1,#}
+            {#y: y1,#}
+            {#type: 'bar',#}
+            {#name: 'Time To First Paint'#}
+        {#};#}
+
+
+        {#var layout = {#}
+            {#barmode: "overlay",#}
+            {#title: "Time To First Paint",#}
+            {#xaxis: {#}
+                {#rangemode: 'tozero',#}
+                {#title: 'First Paint',#}
+                {#autotick: false,#}
+                {#ticks: 'outside',#}
+                {#tick0: 0,#}
+                {#dtick: 100,#}
+                {#ticklen: 5,#}
+                {#tickwidth: 2,#}
+                {#tickcolor: '#000',#}
+                {#range: [0, 8000]#}
+            {#},#}
+            {#yaxis: {#}
+                {#title: 'Website Visits'#}
+            {#}#}
+        {#};#}
+
+        {#var dataFirstPaintVsBounceRate = [timeToFirstPaint];#}
+
+        {#Plotly.newPlot('BounceRateChart', dataFirstPaintVsBounceRate, layout);#}
+    {#</script>#}
+</div>

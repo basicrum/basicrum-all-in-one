@@ -59,20 +59,191 @@ class DiagramsController extends Controller
     }
 
     /**
+     * @Route("/diagrams/first_paint/distribution", name="diagrams_first_paint_distribution")
+     */
+    public function firstPaintDistribution()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', -1);
+
+        $repository = $this->getDoctrine()
+            ->getRepository(NavigationTimings::class);
+
+        $conditionString = 'psm=GOO-0816-09';
+        $conditionString = 'psm=GOO-';
+
+        $dateCond = $dateConditionStart = '2018-08-24';
+
+        $query = $repository->createQueryBuilder('nt')
+            ->where("nt.url LIKE '%" . $conditionString . "%' AND nt.userAgent NOT LIKE '%1Googlebot%' AND ((nt.ptFp > 0 AND nt.ptFp < 10000) OR (nt.speculativeFp > 0 AND nt.speculativeFp < 10000)) AND nt.createdAt >= '" . $dateCond . "'")
+            ->orderBy('nt.createdAt', 'DESC')
+            ->getQuery();
+
+        $navigationTimings = $query->getResult();
+
+        $groupMultiplier = 200;
+        $upperLimit = 10000;
+        $firstPaintArr = [];
+        $bouncesGroup  = [];
+        $bouncesPercents = [];
+
+        $sessions = [];
+
+        $count = 0;
+        $bounces = 0;
+
+        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
+            $firstPaintArr[$i] = 0;
+            $bouncesGroup[$i] = 0;
+        }
+
+        foreach ($navigationTimings as $nav)
+        {
+            $guid = $nav->getGuid();
+
+            $val = $nav->getPtFp();
+            if ($val <= 0 && $nav->getSpeculativeFp() > 0) {
+                $val = $nav->getSpeculativeFp() + 250;
+            }
+
+            $paintGroup = $groupMultiplier * (int) ($val / $groupMultiplier);
+
+            if ($upperLimit >= $paintGroup && $paintGroup > 0) {
+//                $firstPaintArr[$paintGroup]++;
+                $sessions[$guid] = $paintGroup;
+            }
+        }
+
+        foreach ($sessions as $guid => $paintGroup) {
+            $repository = $this->getDoctrine()
+                ->getRepository(NavigationTimings::class);
+
+            $query = $repository->createQueryBuilder('nt')
+                ->where("nt.guid = :guid AND nt.createdAt >= '" . $dateCond . "'")
+                ->setParameter('guid', $guid)
+                ->orderBy('nt.createdAt', 'ASC')
+                ->getQuery();
+
+            $navigationTimings = $query->getResult();
+
+            // Test
+//            echo $guid;
+//            echo '<br />';
+
+            $timeStamps = [];
+
+
+//            foreach ($navigationTimings as $timing) {
+//                echo $timing->getUrl();
+//                echo '<br />';
+//                $timeStamps[] = $timing->getCreatedAt()->getTimestamp();
+//                echo '-----';
+//                echo '<br />';
+//            }
+//
+//            foreach ($timeStamps as $key => $timestamp) {
+//                if ($key > 0) {
+//                    $diffTime = $timestamp - $timeStamps[$key - 1];
+//                    echo $diffTime;
+//                    if ($diffTime > 800) {
+//                        echo ' Bounce Session';
+//                    }
+//                    echo '<br />';
+//                }
+//            }
+
+            // Start:
+            // ==============================================================================
+            // Filter just bounced sessions and sessions that just interacted with the website but
+            // Didn't abuse google shopping and came back over google again and again
+            //echo $navigationTimings[0]->getUrl();
+
+//            echo $guid;
+//            echo '<br />';
+//            echo count($navigationTimings);
+//            echo '<br />';
+//            echo '<br />';
+
+            if (strpos($navigationTimings[0]->getUrl(), $conditionString) === false) {
+                //bounce logic / do not count
+                continue;
+            }
+            // End:
+            // ==============================================================================
+
+
+            // Start: Check if the person has first view but also came back later from google
+            // ==============================================================================
+            $shouldSkip = true;
+            if (count($navigationTimings) >= 2 && ($navigationTimings[0]->getUrl() == $navigationTimings[1]->getUrl())) {
+                foreach ($navigationTimings as $key => $timing) {
+                    if ($key <= 2) {
+                        continue;
+                    }
+
+                    if ((strpos($timing->getUrl(), $conditionString) !== false)) {
+                        $shouldSkip = false;
+                        break;
+                    }
+                }
+            }
+            if ($shouldSkip === false) {
+                continue;
+            }
+            // End: Check if the person has first view but also came back later from google
+            // ==============================================================================
+
+            if (count($navigationTimings) <= 2) {
+//                echo 'Bounce!!!';
+//                echo '<br />';
+
+                $bouncesGroup[$paintGroup]++;
+                $bounces++;
+            }
+
+//            echo '========================================================================================';
+//            echo '<br />';
+
+            $count++;
+            $firstPaintArr[$paintGroup]++;
+        }
+
+        foreach($firstPaintArr as $paintGroup => $numberOfProbes) {
+            if ($numberOfProbes > 0) {
+                $bouncesPercents[$paintGroup] = (int) number_format(($bouncesGroup[$paintGroup] / $numberOfProbes) * 100);
+            }
+        }
+
+        return $this->render('diagrams/diagram_first_paint.html.twig',
+            [
+                'count'       => $count,
+                'bounceRate'  => (int) number_format(($bounces / $count) * 100),
+                'x1Values'    => json_encode(array_keys($firstPaintArr)),
+                'y1Values'    => json_encode(array_values($firstPaintArr)),
+                'x2Values'    => json_encode(array_keys($bouncesPercents)),
+                'y2Values'    => json_encode(array_values($bouncesPercents)),
+                'annotations' => json_encode($bouncesPercents)
+            ]
+        );
+    }
+
+    /**
      * @Route("/diagrams/waterfalls/list", name="diagrams_waterfalls_list")
      */
     public function waterfallsList()
     {
-        /**
-         * Start getting last Page Views
-         */
-        /** @var array $navigationTiming */
-        $navigationTimings = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class)
-            ->findBy([], ['pageViewId' => 'DESC'], 300, 1);
-        /**
-         * End getting last Page Views
-         */
+        $repository = $this->getDoctrine()
+            ->getRepository(NavigationTimings::class);
+        // createQueryBuilder() automatically selects FROM AppBundle:Product
+        // and aliases it to "p"
+        $query = $repository->createQueryBuilder('nt')
+            ->where("nt.url LIKE '%GOO%'")
+            //->setParameter('url', 'GOO')
+            ->orderBy('nt.pageViewId', 'DESC')
+            ->setMaxResults(400)
+            ->getQuery();
+
+        $navigationTimings = $query->getResult();
 
         $beacon = '{"https://www.":{"darvart.de/":{"holzfliegen.html":"6,29s,14c,ia,i9,dt,5q,5q,6*1obr,gj,2kz0","skin/frontend/darvart/default/images/":{"darvart-navy-logo.png":"*01y,1y,1l,2t,2s,2s|129s,2h6,2h5,4*12h5,bs","icon_sprite@2x.png":"42a5,35t,346,2gr,2gr,2,2*18m7,bv","opc-ajax-loader.gif":"42at,358,357,2g5*15sj,bt"},"media/":{"js/387cfdcd3b7e1ac11df96a1adb39c25b.js":"32a1,4ap,2gw,1*12yh1,h2,8pfd*24","catalog/product/cache/1/small_image/280x/17f82f742ffe127f42dca9de82fb58b1/d/a/darvena-papi":{"jonka-dilov-01.jpg":"*09l,7q,86,2o,9o,7s|12b4,3nr,3mk,34v*18j0,bv","onka-":{"mini-rudolf.jpg":"*09l,7q,86,b7,9o,7s|12b5,3nq,3n6,34x*161j,bu","classic-rudolf_1.jpg":"*09l,7q,86,jq,9o,7s|12b5,3yb,3y8,3j2,3j0,2ye,2ft,2ft,2ft*16ky,bv","golyam-sechko.jpg":"*09l,7q,86,s9,9o,7s|12b5,3zo,3y9,3j2,3j1,34t,34t,34t,34t*19ef,bw"}}}},"google-analytics.com/":{"analytics.js":"36md,2b,22,5*1b3m,5g,g40*25","collect?v=1&_v=j68&aip=1&a=1185933321&t=pageview&_s=1&dl=https%3A%2F%2Fwww.darvart.de%2Fholzfliegen.html&ul=en-us&de=UTF-8&dt=Handgefertigte%20Holzfliegen%20f%C3%BCr%20M%C3%A4nner%20und%20Frauen%20%7C%20DarvArt.de&sd=24-bit&sr=1440x900&vp=1391x304&je=0&_u=QACAAEAB~&jid=&gjid=&cid=1241074160.1507998957&tid=UA-89019502-1&_gid=1486960115.1528871993&z=49870228":"16p8,1s"}}}';
 
@@ -132,7 +303,7 @@ class DiagramsController extends Controller
         /** @var array $resourceTimings */
         $resourceTimings = $this->getDoctrine()
             ->getRepository(ResourceTimings::class)
-            ->findBy(['pageViewId' => $pageViewId], ['starttime' => 'ASC']);
+            ->findBy(['pageView' => $pageViewId], ['starttime' => 'ASC']);
 
 
         $resourceTimingsData = [];

@@ -4,14 +4,20 @@
         <li class="breadcrumb-item active" aria-current="page">Page Types</li>
     </ol>
 </nav>
+<div class="row">
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary float-right">Add Page Type <i class="fa fa-plus"></i></button>
+        <br />
+        <br />
+    </div>
+</div>
 <div id="accordion" class="page-type-config">
-    <button type="submit" class="btn btn-primary float-righ">Add Page Type <i class="fa fa-plus"></i></button>
     {% for type in page_types %}
     <div class="card">
         <div class="card-header" id="heading-{{ type.id }}">
             <h5 class="mb-0">
                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-{{ type.id }}" aria-expanded="false">
-                    {{ type.pageTypeName }}
+                    {{ type.name }}
                     <i class="more-less fa fa-plus"></i>
                     <i class="more-less fa fa-minus"></i>
                 </button>
@@ -23,7 +29,7 @@
                     <input type="hidden" value="{{ type.id }}" name="page_type_id" />
                     <div class="form-row">
                         <div class="col-md-3">
-                            <input value="{{ type.pageTypeName }}" name="page_type_name" type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Type e.g. Product">
+                            <input value="{{ type.name }}" name="page_type_name" type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Type e.g. Product">
                         </div>
                         <div class="col-md-8">
                             <div class="input-group mb-2 mr-sm-2">
@@ -33,7 +39,7 @@
                                             <option value=""> --- Select Condition --- </option>
                                             {% for key,label in condition_options %}
                                                 {% set selected = '' %}
-                                                {% if key == type.getConditionsSerialized().page_type_rule_condition %}
+                                                {% if key == type.condition.page_type_rule_condition %}
                                                     {% set selected = 'selected' %}
                                                 {% endif %}
                                                 <option value="{{ key }}" {{ selected }}>{{ label }}</option>
@@ -41,7 +47,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <input value="{{ type.getConditionsSerialized().page_type_rule_value }}" name="page_type_rule_value" type="text" class="form-control" />
+                                <input value="{{ type.condition.page_type_rule_value }}" name="page_type_rule_value" type="text" class="form-control" />
                             </div>
                         </div>
 

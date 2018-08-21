@@ -260,18 +260,25 @@ class NavigationTimings
     private $userAgent;
 
     /**
-     * @var string|null
+     * @var int|null
      *
-     * @ORM\Column(name="pt_fp", type="string", length=11, nullable=true)
+     * @ORM\Column(name="pt_fp", type="integer", nullable=true, options={"unsigned"=true})
      */
     private $ptFp;
 
     /**
-     * @var string|null
+     * @var int|null
      *
-     * @ORM\Column(name="pt_fcp", type="string", length=11, nullable=true)
+     * @ORM\Column(name="pt_fcp", type="integer", nullable=true, options={"unsigned"=true})
      */
     private $ptFcp;
+
+    /**
+     * @var int|null
+     *
+     * @ORM\Column(name="speculative_fp", type="integer", nullable=true, options={"unsigned"=true})
+     */
+    private $speculativeFp;
 
     public function getPageViewId(): ?int
     {
@@ -686,26 +693,38 @@ class NavigationTimings
         return $this;
     }
 
-    public function getPtFp(): ?string
+    public function getPtFp(): ?int
     {
         return $this->ptFp;
     }
 
-    public function setPtFp(?string $ptFp): self
+    public function setPtFp(?int $ptFp): self
     {
         $this->ptFp = $ptFp;
 
         return $this;
     }
 
-    public function getPtFcp(): ?string
+    public function getPtFcp(): ?int
     {
         return $this->ptFcp;
     }
 
-    public function setPtFcp(?string $ptFcp): self
+    public function setPtFcp(?int $ptFcp): self
     {
         $this->ptFcp = $ptFcp;
+
+        return $this;
+    }
+
+    public function getSpeculativeFp(): ?int
+    {
+        return $this->speculativeFp;
+    }
+
+    public function setSpeculativeFp(?int $speculativeFp): self
+    {
+        $this->speculativeFp = $speculativeFp;
 
         return $this;
     }

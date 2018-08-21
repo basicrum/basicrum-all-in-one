@@ -40,7 +40,7 @@ class PageTypeConfig
         return $this->id;
     }
 
-public function getPageTypeName(): ?string
+    public function getPageTypeName(): ?string
     {
         return $this->pageTypeName;
     }
@@ -52,18 +52,17 @@ public function getPageTypeName(): ?string
         return $this;
     }
 
-    public function getConditionsSerialized(): ?array
+    public function getConditionsSerialized(): ?string
     {
-        /** @todo: Check if we need to json_decode every time */
-        return empty($this->conditionsSerialized) ?
-            ['page_type_rule_value' => '', 'page_type_rule_condition' => ''] :
-            json_decode($this->conditionsSerialized, true);
+        return $this->conditionsSerialized;
     }
 
     public function setConditionsSerialized(string $conditionsSerialized): self
     {
-        $this->conditionsSerialized = json_encode($conditionsSerialized);;
+        $this->conditionsSerialized = $conditionsSerialized;
 
         return $this;
     }
+
+
 }

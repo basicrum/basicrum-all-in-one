@@ -26,9 +26,19 @@ class PageTypeConfigController extends Controller
             ->getRepository(PageTypeConfig::class)
             ->findAll();
 
+        $pageTypesArr = [];
+
+        foreach ($pageTypes as $pageType) {
+            $pageTypesArr[] = [
+                'id'        => $pageType->getId(),
+                'name'      => $pageType->getPageTypeName(),
+                'condition' => json_decode($pageType->getConditionsSerialized(), true)
+            ];
+        }
+
         return $this->render('page_type_config/index.html.twig',
             [
-                'page_types' => $pageTypes,
+                'page_types'        => $pageTypesArr,
                 'condition_options' => $conditionOptions
             ]
         );
@@ -71,11 +81,11 @@ class PageTypeConfigController extends Controller
 
             $pageTypeConfig->setPageTypeName($data['page_type_name']);
             $pageTypeConfig->setConditionsSerialized(
-                [
+                json_encode([
                     'page_type_rule_condition' => $data['page_type_rule_condition'],
                     'page_type_rule_value'     => $data['page_type_rule_value']
 
-                ]
+                ])
             );
 
             // tell Doctrine you want to (eventually) save the Product (no queries yet)

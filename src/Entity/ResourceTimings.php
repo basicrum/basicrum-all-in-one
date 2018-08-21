@@ -38,13 +38,6 @@ class ResourceTimings
     /**
      * @var int
      *
-     * @ORM\Column(name="page_view_id", type="integer", nullable=false)
-     */
-    private $pageViewId;
-
-    /**
-     * @var int
-     *
      * @ORM\Column(name="startTime", type="integer", nullable=false)
      */
     private $starttime;
@@ -196,6 +189,16 @@ class ResourceTimings
      */
     private $naturalwidth;
 
+    /**
+     * @var \NavigationTimings
+     *
+     * @ORM\ManyToOne(targetEntity="NavigationTimings")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="page_view_id", referencedColumnName="page_view_id")
+     * })
+     */
+    private $pageView;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -221,18 +224,6 @@ class ResourceTimings
     public function setInitiatortype(string $initiatortype): self
     {
         $this->initiatortype = $initiatortype;
-
-        return $this;
-    }
-
-    public function getPageViewId(): ?int
-    {
-        return $this->pageViewId;
-    }
-
-    public function setPageViewId(int $pageViewId): self
-    {
-        $this->pageViewId = $pageViewId;
 
         return $this;
     }
@@ -497,6 +488,18 @@ class ResourceTimings
     public function setNaturalwidth(?int $naturalwidth): self
     {
         $this->naturalwidth = $naturalwidth;
+
+        return $this;
+    }
+
+    public function getPageView(): ?NavigationTimings
+    {
+        return $this->pageView;
+    }
+
+    public function setPageView(?NavigationTimings $pageView): self
+    {
+        $this->pageView = $pageView;
 
         return $this;
     }
