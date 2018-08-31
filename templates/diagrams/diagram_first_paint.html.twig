@@ -4,9 +4,9 @@
     </ol>
 </nav>
 <div>
-    <p>Sessions: {{ count }}</p>
-    <p>Bounce Rate: {{ bounceRate }}%</p>
-    <p>Period: July 24th 2018 - August 3rd 2018</p>
+    <p style="font-size: 12px"><strong>Sessions:</strong> {{ count }}</p>
+    <p style="font-size: 12px"><strong>Bounce Rate:</strong> {{ bounceRate }}%</p>
+    <p style="font-size: 12px"><strong>Period:</strong> {{ startDate }} - {{ endDate }}</p>
     <div id="BounceRateChart"></div>
     <script type="text/javascript">
         var x1 = {{ x1Values }};
@@ -21,7 +21,7 @@
             x: x1,
             y: y1,
             type: 'bar',
-            name: 'Time To First Paint'
+            name: 'First Paint'
         };
 
         var bounceRate = {
@@ -39,7 +39,7 @@
 
         var layout = {
             barmode: "overlay",
-            title: "Time To First Paint",
+            title: "Time To First Paint vs Bounce Rate",
             xaxis: {
                 rangemode: 'tozero',
                 title: 'First Paint',
@@ -79,7 +79,21 @@
             yaxis2: {
                 domain: [0.7, 1]
             },
-            annotations: []
+            annotations: [],
+            legend: {
+                x: 0,
+                y: 1.2,
+                traceorder: 'normal',
+                font: {
+                    family: 'sans-serif',
+                    size: 12,
+                    color: '#000'
+                },
+                bgcolor: '#E2E2E2',
+                bordercolor: '#FFFFFF',
+                borderwidth: 2
+            }
+
         };
 
         for(key in bounceAnnotations) {

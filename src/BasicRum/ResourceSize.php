@@ -70,7 +70,7 @@ class ResourceSize
      */
     public function calculatePercentage($total, $part)
     {
-        return number_format($part / ($total) * 100, 2);
+        return $total === 0 ? 0 : number_format($part / ($total) * 100, 2);
     }
 
 }

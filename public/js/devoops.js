@@ -85,9 +85,9 @@
                 else {
                     $('#content').removeClass('full-content');
                 }
-                var url = $(this).attr('href');
-                window.location.hash = url;
-                LoadAjaxContent(url);
+                //var url = $(this).attr('href');
+                //window.location.hash = url;
+                //LoadAjaxContent(url);
             }
             if ($(this).attr('href') == '#') {
                 e.preventDefault();

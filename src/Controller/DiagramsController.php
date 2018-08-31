@@ -8,11 +8,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\BasicRum\WaterfallSvgRenderer;
 use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 use App\BasicRum\ResourceSize;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
 
+
+use DateTime;
+use DatePeriod;
+use DateInterval;
 
 class DiagramsController extends Controller
 {
@@ -58,114 +63,47 @@ class DiagramsController extends Controller
         );
     }
 
-    /**
-     * @Route("/diagrams/first_paint/distribution", name="diagrams_first_paint_distribution")
-     */
-    public function firstPaintDistribution()
+    private function _getInMetricInPeriod($start, $end, $conditionString)
     {
-        // Quick hack for out of memory problems
-        ini_set('memory_limit', -1);
+        $sessions = [];
+        $bouncedSessions = [];
 
         $repository = $this->getDoctrine()
             ->getRepository(NavigationTimings::class);
 
-        $conditionString = 'psm=GOO-0816-09';
-        $conditionString = 'psm=GOO-';
-
-        $dateCond = $dateConditionStart = '2018-08-24';
-
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.url LIKE '%" . $conditionString . "%' AND nt.userAgent NOT LIKE '%1Googlebot%' AND ((nt.ptFp > 0 AND nt.ptFp < 10000) OR (nt.speculativeFp > 0 AND nt.speculativeFp < 10000)) AND nt.createdAt >= '" . $dateCond . "'")
+            ->where("nt.url LIKE '%" . $conditionString . "%' AND nt.userAgent NOT LIKE '%1Googlebot%' AND ((nt.ptFp > 0 AND nt.ptFp < 10000) OR (nt.speculativeFp > 0 AND nt.speculativeFp < 10000)) AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
             ->orderBy('nt.createdAt', 'DESC')
             ->getQuery();
 
         $navigationTimings = $query->getResult();
 
-        $groupMultiplier = 200;
-        $upperLimit = 10000;
-        $firstPaintArr = [];
-        $bouncesGroup  = [];
-        $bouncesPercents = [];
+        foreach ($navigationTimings as $nav) {
 
-        $sessions = [];
-
-        $count = 0;
-        $bounces = 0;
-
-        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
-            $firstPaintArr[$i] = 0;
-            $bouncesGroup[$i] = 0;
-        }
-
-        foreach ($navigationTimings as $nav)
-        {
             $guid = $nav->getGuid();
 
-            $val = $nav->getPtFp();
-            if ($val <= 0 && $nav->getSpeculativeFp() > 0) {
-                $val = $nav->getSpeculativeFp() + 250;
-            }
-
-            $paintGroup = $groupMultiplier * (int) ($val / $groupMultiplier);
-
-            if ($upperLimit >= $paintGroup && $paintGroup > 0) {
-//                $firstPaintArr[$paintGroup]++;
-                $sessions[$guid] = $paintGroup;
-            }
-        }
-
-        foreach ($sessions as $guid => $paintGroup) {
             $repository = $this->getDoctrine()
                 ->getRepository(NavigationTimings::class);
 
             $query = $repository->createQueryBuilder('nt')
-                ->where("nt.guid = :guid AND nt.createdAt >= '" . $dateCond . "'")
+                ->where("nt.guid = :guid AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
                 ->setParameter('guid', $guid)
-                ->orderBy('nt.createdAt', 'ASC')
+                ->orderBy('nt.createdAt', 'DESC')
                 ->getQuery();
 
             $navigationTimings = $query->getResult();
 
-            // Test
-//            echo $guid;
-//            echo '<br />';
+            $ttfp = $nav->getPtFp();
+            if ($ttfp <= 0 && $nav->getSpeculativeFp() > 0) {
+                $ttfp = $nav->getSpeculativeFp() + 350;
+            }
 
-            $timeStamps = [];
+            $sessions[$guid] = $ttfp;
 
-
-//            foreach ($navigationTimings as $timing) {
-//                echo $timing->getUrl();
-//                echo '<br />';
-//                $timeStamps[] = $timing->getCreatedAt()->getTimestamp();
-//                echo '-----';
-//                echo '<br />';
-//            }
-//
-//            foreach ($timeStamps as $key => $timestamp) {
-//                if ($key > 0) {
-//                    $diffTime = $timestamp - $timeStamps[$key - 1];
-//                    echo $diffTime;
-//                    if ($diffTime > 800) {
-//                        echo ' Bounce Session';
-//                    }
-//                    echo '<br />';
-//                }
-//            }
-
-            // Start:
-            // ==============================================================================
-            // Filter just bounced sessions and sessions that just interacted with the website but
-            // Didn't abuse google shopping and came back over google again and again
-            //echo $navigationTimings[0]->getUrl();
-
-//            echo $guid;
-//            echo '<br />';
-//            echo count($navigationTimings);
-//            echo '<br />';
-//            echo '<br />';
-
+            // The session didn't start with Google shopping
             if (strpos($navigationTimings[0]->getUrl(), $conditionString) === false) {
                 //bounce logic / do not count
+                unset($sessions[$guid]);
                 continue;
             }
             // End:
@@ -188,24 +126,95 @@ class DiagramsController extends Controller
                 }
             }
             if ($shouldSkip === false) {
+                unset($sessions[$guid]);
                 continue;
             }
-            // End: Check if the person has first view but also came back later from google
-            // ==============================================================================
 
-            if (count($navigationTimings) <= 2) {
-//                echo 'Bounce!!!';
-//                echo '<br />';
-
-                $bouncesGroup[$paintGroup]++;
-                $bounces++;
+            if (count($navigationTimings) === 2) {
+                if ($navigationTimings[0]->getPid() == $navigationTimings[0]->getPid()) {
+                    continue;
+                }
             }
 
-//            echo '========================================================================================';
-//            echo '<br />';
+            // End: Check if the person has first view but also came back later from google
+            // ==============================================================================
+            if (count($navigationTimings) <= 2) {
+                // @todo: Check also process. Sometimes the browser does not send beacon when user leaves the page
+//
 
-            $count++;
-            $firstPaintArr[$paintGroup]++;
+                $bouncedSessions[$guid] = 1;
+            }
+        }
+
+        return [
+            'all_sessions'     => $sessions,
+            'bounced_sessions' => $bouncedSessions
+        ];
+    }
+
+
+    /**
+     * @Route("/diagrams/first_paint/distribution", name="diagrams_first_paint_distribution")
+     */
+    public function firstPaintDistribution()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', -1);
+        set_time_limit(0);
+
+        $sessionsCount = 0;
+        $bouncesCount = 0;
+
+        $conditionString = 'psm=GOO-0816-09';
+        $conditionString = 'psm=GOO-';
+
+        $dateConditionStart = '2018-07-24';
+        $dateConditionEnd   = '2018-08-30';
+
+        // Test periods
+        $periodChunks = $this->_gerPeriodDays($dateConditionStart, $dateConditionEnd);
+
+        $groupMultiplier = 200;
+        $upperLimit = 10000;
+
+        $firstPaintArr = [];
+        $bouncesGroup  = [];
+        $bouncesPercents = [];
+
+        // Init the groups/buckets
+        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
+            $firstPaintArr[$i] = 0;
+            $bouncesGroup[$i] = 0;
+        }
+
+        foreach ($periodChunks as $day) {
+            $cache = new FilesystemCache();
+
+            $cacheKey = 'test2' . md5($day['start'] . $day['end']);
+
+            if ($cache->has($cacheKey)) {
+                $dayReport = $cache->get($cacheKey);
+            } else {
+                $dayReport = $this->_getInMetricInPeriod($day['start'], $day['end'], $conditionString);
+                $cache->set($cacheKey, $dayReport);
+            }
+
+
+            foreach ($dayReport['all_sessions'] as $guid => $ttfp) {
+
+
+                $paintGroup = $groupMultiplier * (int) ($ttfp / $groupMultiplier);
+
+                if ($upperLimit >= $paintGroup && $paintGroup > 0) {
+                    $firstPaintArr[$paintGroup]++;
+                    $sessionsCount++;
+
+                    if (isset($dayReport['bounced_sessions'][$guid])) {
+                        $bouncesCount++;
+                        $bouncesGroup[$paintGroup]++;
+                    }
+                }
+            }
         }
 
         foreach($firstPaintArr as $paintGroup => $numberOfProbes) {
@@ -216,15 +225,42 @@ class DiagramsController extends Controller
 
         return $this->render('diagrams/diagram_first_paint.html.twig',
             [
-                'count'       => $count,
-                'bounceRate'  => (int) number_format(($bounces / $count) * 100),
+                'count'       => $sessionsCount,
+                'bounceRate'  => (int) number_format(($bouncesCount / $sessionsCount) * 100),
                 'x1Values'    => json_encode(array_keys($firstPaintArr)),
                 'y1Values'    => json_encode(array_values($firstPaintArr)),
                 'x2Values'    => json_encode(array_keys($bouncesPercents)),
                 'y2Values'    => json_encode(array_values($bouncesPercents)),
-                'annotations' => json_encode($bouncesPercents)
+                'annotations' => json_encode($bouncesPercents),
+                'startDate'   => $dateConditionStart,
+                'endDate'    => $dateConditionEnd
             ]
         );
+    }
+
+    private function _gerPeriodDays($startDate, $endDate)
+    {
+        $calendarDayFrom = $startDate;
+        $calendarDayTo = $endDate;
+
+        $period = new DatePeriod(
+            new DateTime($calendarDayFrom),
+            new DateInterval('P1D'),
+            new DateTime($calendarDayTo)
+        );
+
+        $betweenArr = [];
+
+        foreach ($period as $key => $value) {
+            $calendarDay = $value->format('Y-m-d');
+
+            $betweenArr[] = [
+                'start' => $calendarDay . ' 00:00:01',
+                'end'   => $calendarDay  . ' 23:59:59'
+            ];
+        }
+
+        return $betweenArr;
     }
 
     /**
@@ -237,7 +273,7 @@ class DiagramsController extends Controller
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.url LIKE '%GOO%'")
+            //->where("nt.url LIKE '%GOO%'")
             //->setParameter('url', 'GOO')
             ->orderBy('nt.pageViewId', 'DESC')
             ->setMaxResults(400)

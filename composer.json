@@ -6,6 +6,7 @@
         "ext-iconv": "*",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "^4.1",
+        "symfony/cache": "^4.1",
         "symfony/console": "^4.1",
         "symfony/expression-language": "^4.1",
         "symfony/flex": "^1.0",
