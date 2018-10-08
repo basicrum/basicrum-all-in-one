@@ -25,7 +25,7 @@ class DataFixController extends Controller
             ->getRepository(NavigationTimings::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.url LIKE '%GOO-%' AND nt.userAgent NOT LIKE '%Googlebot%' AND nt.ptFp = 0 AND nt.speculativeFp IS NULL")
+            ->where("nt.url LIKE '%psm=%' AND nt.userAgent NOT LIKE '%Googlebot%' AND nt.ptFp = 0 AND nt.speculativeFp IS NULL")
             ->orderBy('nt.pageViewId', 'DESC')
             ->setMaxResults(100)
             ->getQuery();

@@ -1,13 +1,165 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Google Shopping: First Paint vs. Bounce Rate</li>
+        <li class="breadcrumb-item active" aria-current="page"><h3>Paid Ads Traffic: First Paint vs. Bounce Rate</h3></li>
     </ol>
 </nav>
 <div>
+    {#<form class="form-horizontal" role="form">#}
+        {#<div class="diagram-filters">#}
+            {#<fieldset>#}
+                {#<legend>Diagram Settings</legend>#}
+                {#<div class="row">#}
+                    {#<div class="col-xs-12 col-sm-3">#}
+                        {#<div class="form-group">#}
+                            {#<label for="page-type">Reduce with (ms):</label>#}
+                            {#<input class="form-control form-control-sm" id="source" type="text" />#}
+                        {#</div>#}
+                    {#</div>#}
+                    {#<div class="col-xs-12 col-sm-3">#}
+                        {#<div class="form-group">#}
+                            {#<label for="source">Traffic Source:</label>#}
+                            {#<select class="form-control form-control-sm" id="source">#}
+                                {#<option selected="selected">All</option>#}
+                                {#<option >Organic</option>#}
+                                {#<option disabled>Email Campaign</option>#}
+                                {#<option disabled>AdSense</option>#}
+                                {#<option disabled>Direct</option>#}
+                            {#</select>#}
+                        {#</div>#}
+                    {#</div>#}
+                    {#<div class="col-xs-12 col-sm-3">#}
+                        {#<div class="form-group has-feedback">#}
+                            {#<label>Period:</label>#}
+                            {#<br />#}
+                            {#<div class="date-picker-wrapper float-left">#}
+                                {#<input class="form-control form-control-sm" type="text" id="from_date" name="from" value="04/24/2018">#}
+                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#</div>#}
+                            {#-#}
+                            {#<div class="date-picker-wrapper float-right">#}
+                                {#<input class="form-control form-control-sm" type="text" id="to_date" name="to" value="05/17/2018">#}
+                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#</div>#}
+                            {#<br />#}
+                            {#<label><input type="checkbox" checked /> Compare with previous period</label>#}
+                            {#<br />#}
+                            {#<div class="date-picker-wrapper float-left">#}
+                                {#<input class="form-control form-control-sm" type="text" id="to_date_prev" name="from" value="03/29/2018">#}
+                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#</div>#}
+                            {#-#}
+                            {#<div class="date-picker-wrapper float-right">#}
+                                {#<input class="form-control form-control-sm" type="text" id="from_date_prev" name="to" value="04/23/2018">#}
+                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                    {#<div class="col-xs-12 col-sm-3">#}
+                        {#<div class="form-group">#}
+                            {#<label>Business Metric:</label>#}
+                            {#<br />#}
+                            {#<label><input type="checkbox" name="bounce-rate" /> Bounce Rate</label>#}
+                            {#<br />#}
+                            {#<label><input type="checkbox" name="conversion-rate" /> Conversion Rate</label>#}
+                            {#<br />#}
+                        {#</div>#}
+                    {#</div>#}
+                {#</div>#}
+                {#<button type="submit" class="btn btn-primary btn-label-right float-right">#}
+                    {#Run <span><i class="fa fa-play-circle-o"></i></span>#}
+                {#</button>#}
+            {#</fieldset>#}
+        {#</div>#}
+    {#</form>#}
+    <script type="text/javascript">
+        $("#from_date, #to_date, #to_date_prev, #from_date_prev").datepicker();
+    </script>
     <p style="font-size: 12px"><strong>Sessions:</strong> {{ count }}</p>
     <p style="font-size: 12px"><strong>Bounce Rate:</strong> {{ bounceRate }}%</p>
+    <p style="font-size: 12px"><strong>Conversion Rate:</strong> {{ conversionRate }}%</p>
     <p style="font-size: 12px"><strong>Period:</strong> {{ startDate }} - {{ endDate }}</p>
-    <div id="BounceRateChart"></div>
+
+    <div class="row">
+        <div class="col-4">
+            <br />
+            <br />
+            <h5>Estimated improvement:</h5>
+            <table id="estimated-improvement" class="table table-sm table-scroll">
+                <thead>
+                    <tr>
+                        <th class="col-2" scope="col">Reduce</th>
+                        <th class="col-2" scope="col">Bounce</th>
+                        <th class="col-4" scope="col">Orders</th>
+                        <th class="col-4" scope="col">Revenue</th>
+                    </tr>
+                </thead>
+                <tbody style="height: auto !important;">
+                {% for reuced_time, bounce_rate in estimated_bounces %}
+                    <tr >
+                        <td class="col-2">-{{ reuced_time / 1000 }} sec.</td>
+                        <td style="color: #1c7430" data-bounce-rate="{{ bounceRate - bounce_rate }}" class="reduced-bounce-rate col-2"><strong>- {{ bounceRate - bounce_rate }} %</strong></td>
+                        <td class="col-4 orders">?</td>
+                        <td class="col-4 revenue">?</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <form id="estimation-form" class="form-horizontal" role="form">
+                <fieldset>
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="form-group">
+                                <label for="page-type">Average Order Value:</label>
+                                <input value="61.31" class="form-control form-control-sm" id="average-order-value" type="text" />
+                            </div>
+
+                        </div>
+                        <div class="col-4">
+                            <label for="page-type">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                            <button id="estimate-btn" type="submit" class="btn btn-primary btn-label-right float-right">
+                                Estimate <span><i class="fa fa-play-circle-o"></i></span>
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            <script type="text/javascript">
+                $('#estimation-form').submit(function(event) {
+                    // As we looked at small number of orders we try to estimate how it will look on bigger scale
+                    var factor = 1;
+
+                    event.preventDefault();
+
+                    var rows = $('#estimated-improvement tbody tr');
+
+                    var probes = {{ count }} * factor;
+                    var currentConversionRate = {{ conversionRate }} / 100;
+                    var averageOrderValue = $('#average-order-value').val();
+
+                    $(rows).each(function() {
+                        var br = $(this).find('.reduced-bounce-rate').attr('data-bounce-rate') / 100;
+
+                        var additionalVisits = probes * br;
+
+                        var orders = additionalVisits * currentConversionRate;
+                        orders = orders.toFixed(0);
+
+                        var additionalRevenue = additionalVisits * currentConversionRate * averageOrderValue;
+
+                        $(this).find('.orders').html('<strong style="color: #1c7430"> + ' + orders + '</strong>');
+                        $(this).find('.revenue').html('<strong style="color: #1c7430"> + ' + additionalRevenue.toFixed(0) + ' €</strong>');
+                    });
+
+                    return false;
+                });
+
+
+            </script>
+        </div>
+        <div class="col-8">
+            <div id="BounceRateChart"></div>
+        </div>
+    </div>
     <script type="text/javascript">
         var x1 = {{ x1Values }};
         var y1 = {{ y1Values }};
@@ -42,19 +194,22 @@
             title: "Time To First Paint vs Bounce Rate",
             xaxis: {
                 rangemode: 'tozero',
-                title: 'First Paint',
-                autotick: false,
+                title: 'First Paint (seconds)',
                 ticks: 'outside',
                 tick0: 0,
                 dtick: 200,
                 ticklen: 5,
                 tickwidth: 2,
                 tickcolor: '#000',
-                range: [0, 8000]
+                range: [0, 3600],
+                tickvals: x1,
+                ticktext: {{ x_axis_labels|raw }},
+                fixedrange: true
             },
             yaxis: {
                 title: 'Website Visits',
-                domain: [0, 0.65]
+                domain: [0, 0.2],
+                fixedrange: true
             },
             xaxis2: {
                 anchor: 'y2',
@@ -67,17 +222,19 @@
                 ticklen: 5,
                 tickwidth: 2,
                 tickcolor: '#000',
-                range: [0, 8000],
+                range: [0, 3600],
 //            autorange: true,
                 showgrid: false,
                 zeroline: false,
                 showline: false,
                 autotick: true,
                 ticks: '',
-                showticklabels: false
+                showticklabels: false,
+                fixedrange: true,
             },
             yaxis2: {
-                domain: [0.7, 1]
+                domain: [0.3, 1],
+                fixedrange: true
             },
             annotations: [],
             legend: {

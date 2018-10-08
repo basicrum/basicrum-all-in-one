@@ -1,0 +1,102 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><h3>Generate Diagram</h3></li>
+    </ol>
+</nav>
+<div>
+    <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
+        <div class="diagram-filters">
+            <fieldset>
+                <legend>Diagram Settings</legend>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="page-type">Perf. Metric:</label>
+                            <select name="perf_metric" class="form-control form-control-sm" id="source">
+                                <option value="" selected="selected">---</option>
+                                <option value="first-paint">First Paint</option>
+                                <option value="first-byte">First Byte</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label for="source">Traffic Source:</label>
+                            <select name="traffic_source" class="form-control form-control-sm" id="source">
+                                <option value="" selected="selected">All</option>
+                                <option value="organic">Organic</option>
+                                <option disabled>Email Campaign</option>
+                                <option disabled>AdSense</option>
+                                <option disabled>Direct</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group has-feedback">
+                            <label>Period:</label>
+                            <br />
+                            <div class="date-picker-wrapper float-left">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date" name="current_period_from_date" value="04/24/2018">
+                                <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                            </div>
+                            -
+                            <div class="date-picker-wrapper float-right">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date" name="current_period_to_date" value="05/17/2018">
+                                <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                            </div>
+                            <br />
+                            <label><input type="checkbox" checked /> Compare with previous period</label>
+                            <br />
+                            <div class="date-picker-wrapper float-left">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="previous_period_from_date" value="03/29/2018">
+                                <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                            </div>
+                            -
+                            <div class="date-picker-wrapper float-right">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="previous_period_to_date" value="04/23/2018">
+                                <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-3">
+                        <div class="form-group">
+                            <label>Business Metric:</label>
+                            <br />
+                            <label><input type="checkbox" name="bounce-rate" /> Bounce Rate</label>
+                            <br />
+                            <label><input type="checkbox" name="conversion-rate" /> Conversion Rate</label>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-label-right float-right">
+                    Run <span><i class="fa fa-play-circle-o"></i></span>
+                </button>
+            </fieldset>
+        </div>
+    </form>
+    <script type="text/javascript">
+        $(".calendar-date-picker").datepicker();
+    </script>
+</div>
+<script type="text/javascript">
+    var diagramGeneratorForm = $('#diagram_generator');
+
+    diagramGeneratorForm.on('submit', function(e) {
+        e.preventDefault();
+        var dataString = $(diagramGeneratorForm).serialize();
+        var formAction = $(this).attr('action');
+        $.ajax({
+            type: "POST",
+            url: formAction,
+            data: dataString,
+            dataType: "json",
+            success: function(data) {
+                alert(data.response);
+            },
+            error: function() {
+                alert('error');
+            }
+        });
+    });
+</script>
