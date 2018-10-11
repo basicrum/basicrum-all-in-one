@@ -8,6 +8,8 @@ use DateInterval;
 class DayInterval
 {
 
+    const TAIL_TIME = ' 00:00:00';
+
     /**
      * @param string $fromDate
      * @param string $toDate
@@ -15,17 +17,19 @@ class DayInterval
      */
     public function generateDayIntervals(string $fromDate, string $toDate)
     {
-        $calendarDayFrom = $fromDate;
-        $calendarDayTo = $toDate;
-
-        $period = new DatePeriod(
-            new DateTime($calendarDayFrom),
-            new DateInterval('P1D'),
-            new DateTime($calendarDayTo)
-        );
-
         $betweenArr = [];
 
+        $lastDay = new DateTime($toDate);
+        $theDayAfter = $lastDay->modify('+1 day');
+//        $theDayAfter = $lastDay;
+
+        $period = new DatePeriod(
+            new DateTime($fromDate),
+            new DateInterval('P1D'),
+            $theDayAfter
+        );
+
+        /** @var $value DateTime */
         foreach ($period as $key => $value) {
             $calendarDay = $value->format('Y-m-d');
 
@@ -33,10 +37,14 @@ class DayInterval
             $nextDay = $nextDay->modify( '+1 day' );
 
             $betweenArr[] = [
-                'start' => $calendarDay . ' 00:00:00',
-                'end'   => $nextDay->format('Y-m-d')  . ' 00:00:00'
+                'start' => $calendarDay . self::TAIL_TIME,
+                'end'   => $nextDay->format('Y-m-d')  . self::TAIL_TIME
             ];
         }
+
+        // Add last day here
+        $lastDay = new DateTime($toDate);
+
 
         return $betweenArr;
     }
