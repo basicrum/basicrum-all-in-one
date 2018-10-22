@@ -1,19 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\BasicRum;
 
-use App\BasicRum\Date\DayInterval;
+use App\BasicRum\Report;
 
 class DiagramBuilder
 {
 
+    /**
+     * @var Report
+     */
+    protected $report;
+
+    public function __construct(Report $report)
+    {
+       $this->report = $report;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
     public function build($data)
     {
-        $dayInterval = new DayInterval();
+        $type = 'histogram';
 
-        $interval = $dayInterval->generateDayIntervals($data['current_period_from_date'], $data['current_period_to_date']);
+        return $this->report->query($data);
+    }
 
-        return $interval;
+    /**
+     * @return array
+     */
+    public function getNavigationTimings()
+    {
+        return $this->report->getNavigationTimings();
     }
 
 }

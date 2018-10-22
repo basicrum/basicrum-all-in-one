@@ -21,7 +21,6 @@ class DayInterval
 
         $lastDay = new DateTime($toDate);
         $theDayAfter = $lastDay->modify('+1 day');
-//        $theDayAfter = $lastDay;
 
         $period = new DatePeriod(
             new DateTime($fromDate),
@@ -41,10 +40,6 @@ class DayInterval
                 'end'   => $nextDay->format('Y-m-d')  . self::TAIL_TIME
             ];
         }
-
-        // Add last day here
-        $lastDay = new DateTime($toDate);
-
 
         return $betweenArr;
     }

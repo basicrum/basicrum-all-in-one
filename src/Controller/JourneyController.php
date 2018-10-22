@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +22,8 @@ class JourneyController extends Controller
      */
     public function journeyList()
     {
-        $start = '2018-08-30 00:00:01';
-        $end   = '2018-08-30 23:59:59';
+        $start = '2018-09-13 00:00:01';
+        $end   = '2018-09-13 23:59:59';
 
         $repository = $this->getDoctrine()
             ->getRepository(NavigationTimings::class);

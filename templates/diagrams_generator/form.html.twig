@@ -14,8 +14,9 @@
                             <label for="page-type">Perf. Metric:</label>
                             <select name="perf_metric" class="form-control form-control-sm" id="source">
                                 <option value="" selected="selected">---</option>
-                                <option value="first-paint">First Paint</option>
-                                <option value="first-byte">First Byte</option>
+                                {% for metric in navigation_timings %}
+                                <option value="{{ metric.getMetricOffsetKey() }}">{{ metric.getMetricLabel() }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -36,24 +37,24 @@
                             <label>Period:</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date" name="current_period_from_date" value="04/24/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date" name="current_period_from_date" value="07/29/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date" name="current_period_to_date" value="05/17/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date" name="current_period_to_date" value="07/29/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             <br />
                             <label><input type="checkbox" checked /> Compare with previous period</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="previous_period_from_date" value="03/29/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="previous_period_from_date" value="07/28/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="previous_period_to_date" value="04/23/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="previous_period_to_date" value="07/28/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                         </div>
