@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Report;
+use App\BasicRum\Bucketizer;
 
 class DiagramBuilder
 {
@@ -25,9 +25,18 @@ class DiagramBuilder
      */
     public function build($data)
     {
-        $type = 'histogram';
+        $samples = $this->report->query($data);
 
-        return $this->report->query($data);
+        $bucketizer = new Bucketizer();
+
+        $buckets = $bucketizer->bucketize($samples, 400);
+
+        $diagramData = [
+            'xValues' => array_keys($buckets),
+            'yValues' => array_values($buckets),
+        ];
+
+        return $diagramData;
     }
 
     /**

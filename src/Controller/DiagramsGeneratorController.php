@@ -47,7 +47,7 @@ class DiagramsGeneratorController extends Controller
         $response = new Response(
             json_encode(
                 [
-                    'response' => print_r($diagramBuilder->build($_POST), true)
+                    'response' => $diagramBuilder->build($_POST)
                 ]
             )
         );

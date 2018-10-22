@@ -7,15 +7,23 @@ namespace App\BasicRum\NavigationTiming;
 class MetricAggregator
 {
 
+    /** @var array */
+    private $metrics = [];
+
+    public function __construct()
+    {
+        $this->metrics = [
+            new TimeToFirstByte(),
+            new TimeToFirstPaint()
+        ];
+    }
+
     /**
      * @return array
      */
     public function getMetrics()
     {
-        return [
-            new TimeToFirstByte(),
-            new TimeToFirstPaint()
-        ];
+        return $this->metrics;
     }
 
 }

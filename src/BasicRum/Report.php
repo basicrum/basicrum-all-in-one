@@ -48,11 +48,10 @@ class Report
 
         foreach ($interval as $day)
         {
-            $samples = $this->_getInMetricInPeriod($day['start'], $day['end'], $perfMetric);
-            break;
+            $samples += $this->_getInMetricInPeriod($day['start'], $day['end'], $perfMetric);
         }
 
-        return count($samples);
+        return $samples;
     }
 
     /**
