@@ -40,14 +40,33 @@ class DiagramsGeneratorController extends Controller
         set_time_limit(0);
         ini_set('display_errors', '1');
 
+        $periods = $_POST['period'];
+
+        $diagrams = [];
+
         $report = new Report($this->getDoctrine());
 
         $diagramBuilder = new DiagramBuilder($report);
 
+        foreach ($periods as $period) {
+            $data = [
+                'period'      => $period,
+                'perf_metric' => $_POST['perf_metric']
+            ];
+
+            $diagrams[] = array_merge(
+                            $diagramBuilder->build($data, (int) $_POST['bucket-size']),
+                            [
+                                'type' => 'line',
+                                'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date']
+                            ]
+                        );
+        }
+
         $response = new Response(
             json_encode(
                 [
-                    'response' => $diagramBuilder->build($_POST)
+                    'response' => $diagrams
                 ]
             )
         );

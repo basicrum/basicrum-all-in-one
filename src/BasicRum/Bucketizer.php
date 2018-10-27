@@ -8,7 +8,7 @@ class Bucketizer
 {
 
     /** @var int */
-    private $_upperLimit = 10000;
+    private $_upperLimit = 5000;
 
     /**
      * @param array $samples

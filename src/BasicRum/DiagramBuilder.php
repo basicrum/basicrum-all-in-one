@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\BasicRum;
 
 use App\BasicRum\Bucketizer;
+use App\BasicRum\Densityzer;
 
 class DiagramBuilder
 {
@@ -20,20 +21,23 @@ class DiagramBuilder
     }
 
     /**
-     * @param $data
+     * @param array $data
+     * @param int $bucketSize
      * @return array
      */
-    public function build($data)
+    public function build(array $data, int $bucketSize = 100)
     {
-        $samples = $this->report->query($data);
+        $samples = $this->report->query($data['period'], $data['perf_metric']);
 
         $bucketizer = new Bucketizer();
+        $densityzer = new Densityzer();
 
-        $buckets = $bucketizer->bucketize($samples, 400);
+        $buckets = $bucketizer->bucketize($samples, $bucketSize);
+        $densityBuckets = $densityzer->fillDensity($buckets, count($samples), 4);
 
         $diagramData = [
-            'xValues' => array_keys($buckets),
-            'yValues' => array_values($buckets),
+            'x' => array_keys($densityBuckets),
+            'y' => array_values($densityBuckets),
         ];
 
         return $diagramData;

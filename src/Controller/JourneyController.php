@@ -22,7 +22,7 @@ class JourneyController extends Controller
      */
     public function journeyList()
     {
-        $start = '2018-09-13 00:00:01';
+        $start = '2018-09-03 00:00:01';
         $end   = '2018-09-13 23:59:59';
 
         $repository = $this->getDoctrine()
@@ -30,7 +30,7 @@ class JourneyController extends Controller
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.url LIKE '%psm=GOO-0816-04%' AND nt.userAgent NOT LIKE '%Googlebot%' AND nt.userAgent NOT LIKE '%AdsBot-Google%' AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
+            ->where("nt.url LIKE '%.html' AND nt.userAgent NOT LIKE '%Googlebot%' AND nt.userAgent NOT LIKE '%AdsBot-Google%' AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
             //->setParameter('url', 'GOO')
             ->orderBy('nt.pageViewId', 'DESC')
             //->setMaxResults(100)

@@ -18,56 +18,77 @@
                                 <option value="{{ metric.getMetricOffsetKey() }}">{{ metric.getMetricLabel() }}</option>
                                 {% endfor %}
                             </select>
+                            <label for="bucket-size">Bucket Size:</label>
+                            <select name="bucket-size" class="form-control form-control-sm" id="bucket-size">
+                                <option value="100">0.1 sec</option>
+                                <option value="200">0.2 sec</option>
+                                <option value="300">0.3 sec</option>
+                                <option value="400">0.4 sec</option>
+                                <option value="500">0.5 sec</option>
+                            </select>
+                            <label for="range">Range:</label>
+                            <select name="range" class="form-control form-control-sm" id="range">
+                                <option value="1000">1 sec</option>
+                                <option value="2000">2 sec</option>
+                                <option value="3000">3 sec</option>
+                                <option value="4000">4 sec</option>
+                                <option selected value="5000">5 sec</option>
+                                <option value="6000">6 sec</option>
+                                <option value="7000">7 sec</option>
+                                <option value="8000">8 sec</option>
+                                <option value="9000">9 sec</option>
+                                <option value="10000">10 sec</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
-                        <div class="form-group">
-                            <label for="source">Traffic Source:</label>
-                            <select name="traffic_source" class="form-control form-control-sm" id="source">
-                                <option value="" selected="selected">All</option>
-                                <option value="organic">Organic</option>
-                                <option disabled>Email Campaign</option>
-                                <option disabled>AdSense</option>
-                                <option disabled>Direct</option>
-                            </select>
-                        </div>
+                        {#<div class="form-group">#}
+                            {#<label for="source">Traffic Source:</label>#}
+                            {#<select name="traffic_source" class="form-control form-control-sm" id="source">#}
+                                {#<option value="" selected="selected">All</option>#}
+                                {#<option value="organic">Organic</option>#}
+                                {#<option disabled>Email Campaign</option>#}
+                                {#<option disabled>AdSense</option>#}
+                                {#<option disabled>Direct</option>#}
+                            {#</select>#}
+                        {#</div>#}
                     </div>
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group has-feedback">
                             <label>Period:</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date" name="current_period_from_date" value="07/29/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date" name="period[0][current_period_from_date]" value="10/24/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date" name="current_period_to_date" value="07/29/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date" name="period[0][current_period_to_date]" value="10/24/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             <br />
-                            <label><input type="checkbox" checked /> Compare with previous period</label>
+                            <label><input type="checkbox" checked /> Compare with other periods</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="previous_period_from_date" value="07/28/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="period[1][current_period_from_date]" value="10/16/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="previous_period_to_date" value="07/28/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[1][current_period_to_date]" value="10/17/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
-                        <div class="form-group">
-                            <label>Business Metric:</label>
-                            <br />
-                            <label><input type="checkbox" name="bounce-rate" /> Bounce Rate</label>
-                            <br />
-                            <label><input type="checkbox" name="conversion-rate" /> Conversion Rate</label>
-                            <br />
-                        </div>
+                        {#<div class="form-group">#}
+                            {#<label>Business Metric:</label>#}
+                            {#<br />#}
+                            {#<label><input type="checkbox" name="bounce-rate" /> Bounce Rate</label>#}
+                            {#<br />#}
+                            {#<label><input type="checkbox" name="conversion-rate" /> Conversion Rate</label>#}
+                            {#<br />#}
+                        {#</div>#}
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary btn-label-right float-right">
@@ -83,35 +104,15 @@
 </div>
 <script type="text/javascript">
     var basicRumPlot = function(data) {
-        var x1 = data.xValues;
-        var y1 = data.yValues;
-
-        var timeToFirstPaint = {
-            x: x1,
-            y: y1,
-            type: 'bar',
-            name: 'First Paint'
-        };
-
         var layout = {
-            barmode: "overlay",
-            title: "Time To First Paint",
             xaxis: {
-                rangemode: 'tozero',
-                title: 'First Paint (seconds)',
-                ticks: 'outside',
-                tick0: 0,
-                dtick: 200,
-                ticklen: 5,
-                tickwidth: 2,
-                tickcolor: '#000',
-                range: [0, 10000],
-                tickvals: x1,
-                fixedrange: true
+                tickvals: [1000, 2000, 3000, 4000, 5000],
+                ticktext: ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"]
             },
             yaxis: {
                 title: 'Website Visits',
-                fixedrange: true
+                fixedrange: true,
+                range: [0, 3]
             },
             legend: {
                 x: 0,
@@ -128,9 +129,7 @@
             }
         };
 
-        var dataFirstPaintVsBounceRate = [timeToFirstPaint];
-
-        Plotly.newPlot('diagramContainer', dataFirstPaintVsBounceRate, layout);
+        Plotly.newPlot('diagramContainer', data, layout);
     };
 </script>
 

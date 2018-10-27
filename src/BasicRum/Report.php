@@ -12,12 +12,16 @@ use App\BasicRum\NavigationTiming\MetricAggregator;
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class Report
 {
 
     /* @var \Doctrine\Bundle\DoctrineBundle\Registry $em */
     protected $em;
+
+    /** @var \Symfony\Component\Cache\Simple\FilesystemCache */
+    protected $cache;
 
     /**
      * OneLevel Constructor
@@ -27,28 +31,36 @@ class Report
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $em)
     {
         $this->em = $em;
+        $this->cache = new FilesystemCache();
     }
 
     /**
      * @param array $data
+     * @param string $perfMetric
      * @return array
      */
-    public function query(array $data)
+    public function query(array $period, string $perfMetric)
     {
         $dayInterval = new DayInterval();
 
         $interval = $dayInterval->generateDayIntervals(
-            $data['current_period_from_date'],
-            $data['current_period_to_date']
+            $period['current_period_from_date'],
+            $period['current_period_to_date']
         );
-
-        $perfMetric = $data['perf_metric'];
 
         $samples = [];
 
         foreach ($interval as $day)
         {
-            $samples += $this->_getInMetricInPeriod($day['start'], $day['end'], $perfMetric);
+            $cacheKey = 'fdf3' . md5($day['start'] . $day['end'] . $perfMetric);
+
+            if ($this->cache->has($cacheKey)) {
+                $samples = array_merge($samples, $this->cache->get($cacheKey));
+            } else {
+                $cachedSamples = $this->_getInMetricInPeriod($day['start'], $day['end'], $perfMetric);
+                $this->cache->set($cacheKey, $cachedSamples);
+                $samples = array_merge($samples, $cachedSamples);
+            }
         }
 
         return $samples;
