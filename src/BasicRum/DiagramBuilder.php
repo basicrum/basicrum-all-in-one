@@ -6,6 +6,7 @@ namespace App\BasicRum;
 
 use App\BasicRum\Bucketizer;
 use App\BasicRum\Densityzer;
+use App\BasicRum\Statistics\Median;
 
 class DiagramBuilder
 {
@@ -31,6 +32,7 @@ class DiagramBuilder
 
         $bucketizer = new Bucketizer();
         $densityzer = new Densityzer();
+        $statisticMedian = new Median();
 
         $buckets = $bucketizer->bucketize($samples, $bucketSize);
         $densityBuckets = $densityzer->fillDensity($buckets, count($samples), 4);
@@ -38,6 +40,7 @@ class DiagramBuilder
         $diagramData = [
             'x' => array_keys($densityBuckets),
             'y' => array_values($densityBuckets),
+            'median' => $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1))
         ];
 
         return $diagramData;

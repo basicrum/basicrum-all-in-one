@@ -7,7 +7,6 @@
     <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
         <div class="diagram-filters">
             <fieldset>
-                <legend>Diagram Settings</legend>
                 <div class="row">
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
@@ -76,6 +75,17 @@
                             -
                             <div class="date-picker-wrapper float-right">
                                 <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[1][current_period_to_date]" value="10/17/2018">
+                                <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                            </div>
+                            <br />
+                            <br />
+                            <div class="date-picker-wrapper float-left">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="period[2][current_period_from_date]" value="09/30/2018">
+                                <span class="fa fa-calendar txt-danger form-control-feedback"></span>
+                            </div>
+                            -
+                            <div class="date-picker-wrapper float-right">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[2][current_period_to_date]" value="09/30/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                         </div>

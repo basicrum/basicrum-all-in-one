@@ -54,13 +54,17 @@ class DiagramsGeneratorController extends Controller
                 'perf_metric' => $_POST['perf_metric']
             ];
 
+            $diagram = $diagramBuilder->build($data, (int) $_POST['bucket-size']);
+
+            $median = ($diagram['median'] / 1000) . ' sec';
+
             $diagrams[] = array_merge(
-                            $diagramBuilder->build($data, (int) $_POST['bucket-size']),
-                            [
-                                'type' => 'line',
-                                'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date']
-                            ]
-                        );
+                $diagram,
+                [
+                    'type' => 'line',
+                    'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date'] . ' / ' . $median
+                ]
+            );
         }
 
         $response = new Response(
