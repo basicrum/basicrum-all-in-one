@@ -35,33 +35,20 @@ class Report
     }
 
     /**
-     * @param array $data
+     * @param array $period
      * @param string $perfMetric
      * @return array
      */
     public function query(array $period, string $perfMetric)
     {
-        $dayInterval = new DayInterval();
+        $cacheKey = 'fdf37' . md5($period['start'] . $period['end'] . $perfMetric);
 
-        $interval = $dayInterval->generateDayIntervals(
-            $period['current_period_from_date'],
-            $period['current_period_to_date']
-        );
-
-        $samples = [];
-
-        foreach ($interval as $day)
-        {
-            $cacheKey = 'fdf3' . md5($day['start'] . $day['end'] . $perfMetric);
-
-            if ($this->cache->has($cacheKey)) {
-                $samples = array_merge($samples, $this->cache->get($cacheKey));
-            } else {
-                $cachedSamples = $this->_getInMetricInPeriod($day['start'], $day['end'], $perfMetric);
-                $this->cache->set($cacheKey, $cachedSamples);
-                $samples = array_merge($samples, $cachedSamples);
-            }
+        if ($this->cache->has($cacheKey)) {
+            return $this->cache->get($cacheKey);
         }
+
+        $samples = $this->_getInMetricInPeriod($period['start'], $period['end'], $perfMetric);
+        $this->cache->set($cacheKey, $samples);
 
         return $samples;
     }

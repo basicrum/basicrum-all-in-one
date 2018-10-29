@@ -1,0 +1,38 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><h3>Performance Over Time</h3></li>
+    </ol>
+</nav>
+<div id="diagramContainer"></div>
+<script type="text/javascript">
+    var basicRumPlotOverTime = function(data) {
+        var layout = {
+//            xaxis: {
+//                tickvals: [1000, 2000, 3000, 4000, 5000],
+//                ticktext: ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"]
+//            },
+            yaxis: {
+//                title: 'Website Visits',
+//                fixedrange: true,
+                range: [0, 2000]
+            },
+            legend: {
+                x: 0,
+                y: 1.2,
+                traceorder: 'normal',
+                font: {
+                    family: 'sans-serif',
+                    size: 12,
+                    color: '#000'
+                },
+                bgcolor: '#E2E2E2',
+                bordercolor: '#FFFFFF',
+                borderwidth: 2
+            }
+        };
+
+        Plotly.newPlot('diagramContainer', data, layout);
+    };
+
+    basicRumPlotOverTime({{ diagrams|raw }});
+</script>

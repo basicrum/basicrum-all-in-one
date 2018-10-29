@@ -80,4 +80,50 @@ class DiagramsGeneratorController extends Controller
         return $response;
     }
 
+    /**
+     * @Route("/diagrams_generator/overtimeMedian", name="diagrams_generator_overtimeMedian")
+     */
+    public function overtimeView()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+        ini_set('display_errors', '1');
+
+        $periods =  [
+                        [
+                            'current_period_from_date' => '08/01/2018',
+                            'current_period_to_date'   => '08/30/2018',
+                        ]
+                    ];
+
+        $diagrams = [];
+
+        $report = new Report($this->getDoctrine());
+
+        $diagramBuilder = new DiagramBuilder($report);
+
+        foreach ($periods as $period) {
+            $data = [
+                'period'      => $period,
+                'perf_metric' => 'nt_first_paint'
+            ];
+
+            $diagram = $diagramBuilder->buildOverTime($data);
+
+            $diagrams[] = array_merge(
+                $diagram,
+                [
+                    'type' => 'line'
+                ]
+            );
+        }
+
+        return $this->render('diagrams/over_time.html.twig',
+            [
+                'diagrams' => json_encode($diagrams)
+            ]
+        );
+    }
+
 }

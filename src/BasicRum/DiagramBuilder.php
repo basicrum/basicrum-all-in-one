@@ -7,6 +7,7 @@ namespace App\BasicRum;
 use App\BasicRum\Bucketizer;
 use App\BasicRum\Densityzer;
 use App\BasicRum\Statistics\Median;
+use App\BasicRum\Date\DayInterval;
 
 class DiagramBuilder
 {
@@ -28,7 +29,18 @@ class DiagramBuilder
      */
     public function build(array $data, int $bucketSize = 100)
     {
-        $samples = $this->report->query($data['period'], $data['perf_metric']);
+        $dayInterval = new DayInterval();
+
+        $interval = $dayInterval->generateDayIntervals(
+            $data['period']['current_period_from_date'],
+            $data['period']['current_period_to_date']
+        );
+
+        $samples = [];
+
+        foreach ($interval as $day) {
+            $samples = array_merge($samples, $this->report->query($day, $data['perf_metric']));
+        }
 
         $bucketizer = new Bucketizer();
         $densityzer = new Densityzer();
@@ -41,6 +53,40 @@ class DiagramBuilder
             'x' => array_keys($densityBuckets),
             'y' => array_values($densityBuckets),
             'median' => $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1))
+        ];
+
+        return $diagramData;
+    }
+
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function buildOverTime(array $data)
+    {
+        $dayInterval = new DayInterval();
+
+        $interval = $dayInterval->generateDayIntervals(
+            $data['period']['current_period_from_date'],
+            $data['period']['current_period_to_date']
+        );
+
+        $bucketizer = new Bucketizer();
+        $statisticMedian = new Median();
+
+        $median = [];
+
+        foreach ($interval as $day) {
+            $samples = $this->report->query($day, $data['perf_metric']);
+            $median[] = $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1));
+        }
+
+
+
+        $diagramData = [
+            'x' => array_keys($median),
+            'y' => array_values($median)
         ];
 
         return $diagramData;
