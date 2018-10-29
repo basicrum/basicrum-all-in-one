@@ -62,7 +62,7 @@ class DiagramsGeneratorController extends Controller
                 $diagram,
                 [
                     'type' => 'line',
-                    'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date'] . ' / ' . $median
+                    'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date'] . ' / median (' . $median . ')'
                 ]
             );
         }
