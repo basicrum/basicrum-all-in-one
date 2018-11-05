@@ -13,7 +13,8 @@
             <tr>
                 <th class="col-7" scope="col">Session</th>
                 <th class="col-2" scope="col">First Paint</th>
-                <th class="col-3" scope="col">Spec. First Paint</th>
+                {#<th class="col-3" scope="col">Spec. First Paint</th>#}
+                <th class="col-3" scope="col">First Byte</th>
             </tr>
             </thead>
             <tbody>
@@ -21,7 +22,8 @@
                 <tr data-session-id="{{ page_view.getGuid() }}" class="session-row" id="row_{{ page_view.getPageViewId() }}">
                     <td class="col-7">{{ page_view.getGuid() }}</td>
                     <td class="col-2">{{ page_view.getPtFcp() }} ms</td>
-                    <td class="col-3">{{ page_view.getSpeculativeFp() }} ms</td>
+                    {#<td class="col-3">{{ page_view.getSpeculativeFp() }} ms</td>#}
+                    <td class="col-3">{{ page_view.getNtResSt() - page_view.getNtNavSt() }} ms</td>
                 </tr>
             {% endfor %}
             </tbody>

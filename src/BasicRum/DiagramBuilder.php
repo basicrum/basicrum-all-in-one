@@ -39,7 +39,7 @@ class DiagramBuilder
         $samples = [];
 
         foreach ($interval as $day) {
-            $samples = array_merge($samples, $this->report->query($day, $data['perf_metric']));
+            $samples = array_merge($samples, $this->report->query($day, $data['perf_metric'], $data['filters']));
         }
 
         $bucketizer = new Bucketizer();
@@ -78,7 +78,7 @@ class DiagramBuilder
         $median = [];
 
         foreach ($interval as $day) {
-            $samples = $this->report->query($day, $data['perf_metric']);
+            $samples = $this->report->query($day, $data['perf_metric'], []);
             $median[] = $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1));
         }
 

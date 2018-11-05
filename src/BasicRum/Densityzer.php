@@ -18,6 +18,11 @@ class Densityzer
         $densityBuckets = [];
 
         foreach ($buckets as $key => $value) {
+            if ($numberOfAllSamples === 0) {
+                $densityBuckets[$key] = 0;
+                continue;
+            }
+
             $densityBuckets[$key] = number_format(($value / $numberOfAllSamples) * 100, $precision);
         }
 

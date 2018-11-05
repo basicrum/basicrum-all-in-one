@@ -51,7 +51,8 @@ class DiagramsGeneratorController extends Controller
         foreach ($periods as $period) {
             $data = [
                 'period'      => $period,
-                'perf_metric' => $_POST['perf_metric']
+                'perf_metric' => $_POST['perf_metric'],
+                'filters'     => $_POST['filter']
             ];
 
             $diagram = $diagramBuilder->build($data, (int) $_POST['bucket-size']);

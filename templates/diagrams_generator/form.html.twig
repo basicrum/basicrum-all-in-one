@@ -41,16 +41,30 @@
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
-                        {#<div class="form-group">#}
-                            {#<label for="source">Traffic Source:</label>#}
-                            {#<select name="traffic_source" class="form-control form-control-sm" id="source">#}
-                                {#<option value="" selected="selected">All</option>#}
-                                {#<option value="organic">Organic</option>#}
-                                {#<option disabled>Email Campaign</option>#}
-                                {#<option disabled>AdSense</option>#}
-                                {#<option disabled>Direct</option>#}
-                            {#</select>#}
-                        {#</div>#}
+                        <div class="form-group">
+                            <label for="user_agent">User Agent:</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <select name="filter[user_agent][condition]" class="form-control" id="user_agent">
+                                        <option value="is">is</option>
+                                        <option value="contains">contains</option>
+                                        <option value="starts_with">starts with</option>
+                                        <option value="ends_on">ends on</option>
+                                    </select>
+                                </div>
+                                <div class="col-8">
+                                    <input name="filter[user_agent][search_value]" type="text" class="form-control form-control-sm" id="user_agent" />
+                                </div>
+                            </div>
+                            <label for="page_type">Page Type:</label>
+                            <div class="row">
+                                <div class="col-12">
+                                    <select name="filter2[page_type]" class="form-control form-control-sm" id="page_type">
+                                        <option value="*">All</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group has-feedback">
@@ -121,8 +135,8 @@
             },
             yaxis: {
                 title: 'Website Visits',
-                fixedrange: true,
-                range: [0, 3]
+//                fixedrange: true,
+//                range: [0, 3]
             },
             legend: {
                 x: 0,

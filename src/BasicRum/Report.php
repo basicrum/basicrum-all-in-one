@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManager;
 
 use App\BasicRum\Date\DayInterval;
 use App\BasicRum\NavigationTiming\MetricAggregator;
-
+use App\BasicRum\Report\Filter\FilterAggregator;
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
@@ -23,6 +23,9 @@ class Report
     /** @var \Symfony\Component\Cache\Simple\FilesystemCache */
     protected $cache;
 
+    /** @var \App\BasicRum\Report\Filter\FilterAggregator */
+    protected $filterAggregator;
+
     /**
      * OneLevel Constructor
      *
@@ -32,6 +35,7 @@ class Report
     {
         $this->em = $em;
         $this->cache = new FilesystemCache();
+        $this->filterAggregator = new FilterAggregator();
     }
 
     /**
@@ -39,15 +43,15 @@ class Report
      * @param string $perfMetric
      * @return array
      */
-    public function query(array $period, string $perfMetric)
+    public function query(array $period, string $perfMetric, $filters)
     {
-        $cacheKey = 'fdf37' . md5($period['start'] . $period['end'] . $perfMetric);
+        $cacheKey = 'fdf37ep3r333p36' . md5($period['start'] . $period['end'] . $perfMetric);
 
-        if ($this->cache->has($cacheKey)) {
+        if (false && $this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
         }
 
-        $samples = $this->_getInMetricInPeriod($period['start'], $period['end'], $perfMetric);
+        $samples = $this->_getInMetricInPeriod($period['start'], $period['end'], $perfMetric, $filters);
         $this->cache->set($cacheKey, $samples);
 
         return $samples;
@@ -57,27 +61,40 @@ class Report
      * @param string $start
      * @param string $end
      * @param string $perfMetric
+     * @param array $filters
+     *
      * @return array
      */
-    private function _getInMetricInPeriod($start, $end, $perfMetric)
+    private function _getInMetricInPeriod($start, $end, $perfMetric, array $filters)
     {
-        $samples = [];
-
-        $repository = $this->em->getRepository(NavigationTimings::class);
-
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-            ->getQuery();
-
-        $navigationTimings = $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
-
         /**
          * Crazy way to construct array key
          *
          * 'nt_res_st' -> 'ntResSt'
          *
          */
-        $perfMetricCamelized = lcfirst(str_replace(" ", "",ucwords(str_replace("_", " ", $perfMetric))));
+        $perfMetricCamelized = $this->_transformToEntityProperty($perfMetric);
+
+        $samples = [];
+
+        $repository = $this->em->getRepository(NavigationTimings::class);
+
+        /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
+        $queryBuilder = $repository->createQueryBuilder('nt');
+
+        $queryBuilder
+            ->select(['nt.ntNavSt', 'nt.' . $perfMetricCamelized])
+            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'");
+
+
+        foreach ($filters as $key => $data) {
+            $this->filterAggregator->getFilter($key)
+                ->attachTo($data['search_value'], $data['condition'], $queryBuilder);
+        }
+
+        $navigationTimings = $queryBuilder->getQuery()
+            ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
+
 
         /** @var NavigationTimings $nav */
         foreach ($navigationTimings as $nav) {
@@ -85,6 +102,15 @@ class Report
         }
 
         return $samples;
+    }
+
+    /**
+     * @param string $var
+     * @return string
+     */
+    private function _transformToEntityProperty(string $var)
+    {
+        return lcfirst(str_replace(" ", "",ucwords(str_replace("_", " ", $var))));
     }
 
     /**
