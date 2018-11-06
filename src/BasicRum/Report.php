@@ -45,9 +45,9 @@ class Report
      */
     public function query(array $period, string $perfMetric, $filters)
     {
-        $cacheKey = 'fdf37ep3r333p36' . md5($period['start'] . $period['end'] . $perfMetric);
+        $cacheKey = 'fdf37ep3r333p36' . md5($period['start'] . $period['end'] . $perfMetric . print_r($filters, true));
 
-        if (false && $this->cache->has($cacheKey)) {
+        if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
         }
 

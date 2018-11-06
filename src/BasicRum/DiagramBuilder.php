@@ -43,15 +43,20 @@ class DiagramBuilder
         }
 
         $bucketizer = new Bucketizer();
-        $densityzer = new Densityzer();
+
         $statisticMedian = new Median();
 
         $buckets = $bucketizer->bucketize($samples, $bucketSize);
-        $densityBuckets = $densityzer->fillDensity($buckets, count($samples), 4);
+
+        if (!empty($data['decorators']['density']) && $data['decorators']['density'] == 1) {
+            $densityzer = new Densityzer();
+            $buckets = $densityzer->fillDensity($buckets, count($samples), 4);
+        }
+
 
         $diagramData = [
-            'x' => array_keys($densityBuckets),
-            'y' => array_values($densityBuckets),
+            'x' => array_keys($buckets),
+            'y' => array_values($buckets),
             'median' => $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1))
         ];
 
