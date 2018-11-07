@@ -14,7 +14,8 @@ class FilterAggregator
     public function __construct()
     {
         $this->filters = [
-            UserAgent::INTERNAL_IDENTIFIER => new UserAgent()
+            UserAgent::INTERNAL_IDENTIFIER => new UserAgent(),
+            Url::INTERNAL_IDENTIFIER       => new Url()
         ];
     }
 

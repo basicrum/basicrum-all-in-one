@@ -56,6 +56,20 @@
                                     <input name="filter[user_agent][search_value]" type="text" class="form-control form-control-sm" id="user_agent" />
                                 </div>
                             </div>
+                            <label for="user_agent">Url:</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <select name="filter[url][condition]" class="form-control" id="url">
+                                        <option value="is">is</option>
+                                        <option value="contains">contains</option>
+                                        <option value="starts_with">starts with</option>
+                                        <option value="ends_on">ends on</option>
+                                    </select>
+                                </div>
+                                <div class="col-8">
+                                    <input name="filter[url][search_value]" type="text" class="form-control form-control-sm" id="url" />
+                                </div>
+                            </div>
                             <label for="page_type">Page Type:</label>
                             <div class="row">
                                 <div class="col-12">
