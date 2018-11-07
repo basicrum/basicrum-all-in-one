@@ -74,37 +74,39 @@ class DiagramsController extends Controller
             ->getRepository(NavigationTimings::class);
 
         $query = $repository->createQueryBuilder('nt')
+            ->select(['nt.guid', 'nt.ptFp', 'nt.speculativeFp'])
             ->where("nt.url LIKE '%" . $conditionString . "%' AND nt.userAgent NOT LIKE '%1Googlebot%' AND ((nt.ptFp > 0 AND nt.ptFp < 10000) OR (nt.speculativeFp > 0 AND nt.speculativeFp < 10000)) AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
             ->orderBy('nt.createdAt', 'DESC')
             ->groupBy('nt.guid')
             ->getQuery();
 
-        $navigationTimings = $query->getResult();
+        $navigationTimings1 = $query->getResult();
 
-        foreach ($navigationTimings as $nav) {
+        foreach ($navigationTimings1 as $nav) {
 
-            $guid = $nav->getGuid();
+            $guid = $nav['guid'];
 
             $repository = $this->getDoctrine()
                 ->getRepository(NavigationTimings::class);
 
             $query = $repository->createQueryBuilder('nt')
                 ->where("nt.guid = :guid AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
+                ->select(['nt.url', 'nt.pid'])
                 ->setParameter('guid', $guid)
                 ->orderBy('nt.createdAt', 'ASC')
                 ->getQuery();
 
             $navigationTimings = $query->getResult();
 
-            $ttfp = $nav->getPtFp();
-            if ($ttfp <= 0 && $nav->getSpeculativeFp() > 0) {
-                $ttfp = $nav->getSpeculativeFp() + 250;
+            $ttfp = $nav['ptFp'];
+            if ($ttfp <= 0 && $nav['speculativeFp'] > 0) {
+                $ttfp = $nav['speculativeFp'] + 250;
             }
 
             $sessions[$guid] = $ttfp;
 
             // The session didn't start with Google shopping
-            if (false && strpos($navigationTimings[0]->getUrl(), $conditionString) === false) {
+            if (false && strpos($navigationTimings[0]['url'], $conditionString) === false) {
                 //bounce logic / do not count
                 $this->_printSession($navigationTimings, 'Didn\'t start with Google shopping');
                 unset($sessions[$guid]);
@@ -117,13 +119,13 @@ class DiagramsController extends Controller
             // Start: Check if the person has first view but also came back later from google
             // ==============================================================================
             $shouldSkip = true;
-            if (count($navigationTimings) >= 2 && ($navigationTimings[0]->getUrl() == $navigationTimings[1]->getUrl())) {
+            if (count($navigationTimings) >= 2 && ($navigationTimings[0]['url'] == $navigationTimings[1]['url'])) {
                 foreach ($navigationTimings as $key => $timing) {
                     if ($key <= 2) {
                         continue;
                     }
 
-                    if ((strpos($timing->getUrl(), $conditionString) !== false)) {
+                    if ((strpos($timing['url'], $conditionString) !== false)) {
                         $shouldSkip = false;
                         break;
                     }
@@ -135,7 +137,7 @@ class DiagramsController extends Controller
             }
 
             if (count($navigationTimings) === 2) {
-                if ($navigationTimings[0]->getPid() !== $navigationTimings[1]->getPid()) {
+                if ($navigationTimings[0]['pid'] !== $navigationTimings[1]['pid']) {
                     continue;
                 }
             }
@@ -150,14 +152,14 @@ class DiagramsController extends Controller
             }
 
             foreach ($navigationTimings as $key => $timing) {
-                if (strpos($timing->getUrl(), 'checkout/cart') !== false) {
+                if (strpos($timing['url'], 'checkout/cart') !== false) {
                     $visitedCartSessions[$guid] = 1;
                 }
             }
 
             // Calculate conversion
             foreach ($navigationTimings as $key => $timing) {
-                if (strpos($timing->getUrl(), '/success') !== false) {
+                if (strpos($timing['url'], '/success') !== false) {
                     $convertedSessions[$guid] = 1;
                 }
             }
@@ -220,7 +222,7 @@ class DiagramsController extends Controller
         foreach ($periodChunks as $day) {
             $cache = new FilesystemCache();
 
-            $cacheKey = 'teadd2terue' . md5($day['start'] . $day['end']);
+            $cacheKey = 'teadd2teru3e' . md5($day['start'] . $day['end']);
 
             if (true && $cache->has($cacheKey)) {
                 $dayReport = $cache->get($cacheKey);
