@@ -22,8 +22,8 @@ class JourneyController extends Controller
      */
     public function journeyList()
     {
-        $start = '2018-09-19 00:00:01';
-        $end   = '2018-09-19 23:59:59';
+        $start = '2018-10-24 00:00:01';
+        $end   = '2018-10-24 23:59:59';
 
 //        $start = '2018-09-19 00:00:01';
 //        $end   = '2018-09-19 23:59:59';

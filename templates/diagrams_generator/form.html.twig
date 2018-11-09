@@ -12,7 +12,7 @@
                         <div class="form-group">
                             <label for="page-type">Perf. Metric:</label>
                             <select name="perf_metric" class="form-control form-control-sm" id="source">
-                                <option value="" selected="selected">---</option>
+                                {#<option value="" selected="selected">---</option>#}
                                 {% for metric in navigation_timings %}
                                 <option value="{{ metric.getMetricOffsetKey() }}">{{ metric.getMetricLabel() }}</option>
                                 {% endfor %}
@@ -47,7 +47,7 @@
                                 <div class="col-4">
                                     <select name="filter[user_agent][condition]" class="form-control" id="user_agent">
                                         <option value="is">is</option>
-                                        <option value="contains">contains</option>
+                                        <option selected value="contains">contains</option>
                                         <option value="starts_with">starts with</option>
                                         <option value="ends_on">ends on</option>
                                     </select>
@@ -61,7 +61,7 @@
                                 <div class="col-4">
                                     <select name="filter[url][condition]" class="form-control" id="url">
                                         <option value="is">is</option>
-                                        <option value="contains">contains</option>
+                                        <option selected value="contains">contains</option>
                                         <option value="starts_with">starts with</option>
                                         <option value="ends_on">ends on</option>
                                     </select>
@@ -122,7 +122,7 @@
                         <div class="form-group">
                             <label>Visualization:</label>
                             <br />
-                            <label><input type="checkbox" value="1" name="decorators[density]" /> Density</label>
+                            <label><input checked type="checkbox" value="1" name="decorators[density]" /> Density</label>
                             <br />
                             <label><input type="checkbox" value="1" name="decorators[show_median]" /> Show Median</label>
                             <br />

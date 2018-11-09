@@ -53,7 +53,7 @@ class DiagramsGeneratorController extends Controller
                 'period'      => $period,
                 'perf_metric' => $_POST['perf_metric'],
                 'filters'     => $_POST['filter'],
-                'decorators'  => $_POST['decorators']
+                'decorators'  => !empty($_POST['decorators']) ? $_POST['decorators'] : []
             ];
 
             $diagram = $diagramBuilder->build($data, (int) $_POST['bucket-size']);
