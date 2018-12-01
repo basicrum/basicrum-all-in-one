@@ -19,7 +19,7 @@ class TimeToFirstPaint implements MetricInterface
      */
     public function getMetricOffsetKey()
     {
-        return 'nt_first_paint';
+        return 'first_paint';
     }
 
     /**

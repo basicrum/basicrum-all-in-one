@@ -19,7 +19,7 @@ class TimeToFirstByte implements MetricInterface
      */
     public function getMetricOffsetKey()
     {
-        return 'nt_res_st';
+        return 'first_byte';
     }
 
     /**

@@ -27,9 +27,15 @@ class Url implements FilterInterface
         string $condition,
         \Doctrine\ORM\QueryBuilder $queryBuilder)
     {
-        $fieldName  = 'nt.' . $this->_transformToEntityProperty(self::INTERNAL_IDENTIFIER);
+        $fieldName  = 'nturl.' . $this->_transformToEntityProperty(self::INTERNAL_IDENTIFIER);
 
         $queryBuilder
+            ->leftJoin(
+                'App\Entity\NavigationTimingsUrls',
+                'nturl',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                "nt.urlId = nturl.id"
+            )
             ->andWhere($fieldName . ' LIKE :' . $this->getInternalIdentifier())
             ->setParameter($this->getInternalIdentifier(), '%' . $value . '%');
     }

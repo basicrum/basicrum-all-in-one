@@ -45,7 +45,7 @@ class Report
      */
     public function query(array $period, string $perfMetric, $filters)
     {
-        $cacheKey = 'fdf37ep3r333p36' . md5($period['start'] . $period['end'] . $perfMetric . print_r($filters, true));
+        $cacheKey = 'fdf37epf3rd333p36f' . md5($period['start'] . $period['end'] . $perfMetric . print_r($filters, true));
 
         if ($this->cache->has($cacheKey)) {
             return $this->cache->get($cacheKey);
@@ -83,11 +83,15 @@ class Report
         $queryBuilder = $repository->createQueryBuilder('nt');
 
         $queryBuilder
-            ->select(['nt.ntNavSt', 'nt.' . $perfMetricCamelized])
+            ->select(['nt.' . $perfMetricCamelized])
             ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'");
 
 
         foreach ($filters as $key => $data) {
+            if (empty($data['search_value'])) {
+                continue;
+            }
+
             $this->filterAggregator->getFilter($key)
                 ->attachTo($data['search_value'], $data['condition'], $queryBuilder);
         }
@@ -98,7 +102,9 @@ class Report
 
         /** @var NavigationTimings $nav */
         foreach ($navigationTimings as $nav) {
-            $samples[] = $nav[$perfMetricCamelized] - $nav['ntNavSt'];
+            if ($nav[$perfMetricCamelized] > 150) {
+                $samples[] = $nav[$perfMetricCamelized];
+            }
         }
 
         return $samples;

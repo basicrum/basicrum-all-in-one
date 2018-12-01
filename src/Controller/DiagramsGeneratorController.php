@@ -44,11 +44,19 @@ class DiagramsGeneratorController extends Controller
 
         $diagrams = [];
 
+        $shapes = [];
+
         $report = new Report($this->getDoctrine());
 
         $diagramBuilder = new DiagramBuilder($report);
 
-        foreach ($periods as $period) {
+        $colors = [
+            0 => 'rgb(44, 160, 44)',
+            1 => 'rgb(255, 127, 14)',
+            2 => 'rgb(31, 119, 180)'
+        ];
+
+        foreach ($periods as $key => $period) {
             $data = [
                 'period'      => $period,
                 'perf_metric' => $_POST['perf_metric'],
@@ -58,12 +66,29 @@ class DiagramsGeneratorController extends Controller
 
             $diagram = $diagramBuilder->build($data, (int) $_POST['bucket-size']);
 
+            $medianX =  ($diagram['median']);
             $median = ($diagram['median'] / 1000) . ' sec';
+
+            if (!empty($_POST['decorators']['show_median'])) {
+                $shapes[] = [
+                    'type' => 'line',
+                    'x0'   => $medianX,
+                    'y0'   => -0.5,
+                    'x1'   => $medianX,
+                    'y1'   => 7,
+                    'line' => [
+                        'color' => $colors[$key],
+                        'width' =>  1.5,
+                        'dash'  =>  'dot'
+                    ]
+                ];
+            }
 
             $diagrams[] = array_merge(
                 $diagram,
                 [
                     'type' => 'line',
+                    'line' => ['color' => $colors[$key]],
                     'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date'] . ' / median (' . $median . ')'
                 ]
             );
@@ -72,7 +97,8 @@ class DiagramsGeneratorController extends Controller
         $response = new Response(
             json_encode(
                 [
-                    'response' => $diagrams
+                    'diagrams'            => $diagrams,
+                    'layout_extra_shapes' => $shapes
                 ]
             )
         );
@@ -94,8 +120,8 @@ class DiagramsGeneratorController extends Controller
 
         $periods =  [
                         [
-                            'current_period_from_date' => '08/01/2018',
-                            'current_period_to_date'   => '08/30/2018',
+                            'current_period_from_date' => '09/03/2018',
+                            'current_period_to_date'   => '09/04/2018',
                         ]
                     ];
 
