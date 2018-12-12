@@ -434,7 +434,7 @@ class DiagramsController extends Controller
         $navTimingsFiltered = [];
 
         foreach ($navigationTimings as $navTiming) {
-            if ($navTiming->getPtFcp() > 0) {
+            if ($navTiming->getFirstContentfulPaint() > 0) {
                 $navTimingsFiltered[] = $navTiming;
             }
         }
@@ -471,7 +471,7 @@ class DiagramsController extends Controller
         /** @var array $resourceTimings */
         $resourceTimings = $this->getDoctrine()
             ->getRepository(ResourceTimings::class)
-            ->findBy(['pageView' => $pageViewId], ['starttime' => 'ASC']);
+            ->findBy(['pageViewId' => $pageViewId], ['start' => 'ASC']);
 
 
         $resourceTimingsData = [];
@@ -510,8 +510,8 @@ class DiagramsController extends Controller
 
         $timings = [
             'nt_nav_st'      => 0,
-            'nt_first_paint' => $navigationTiming[0]->getPtFcp(),
-            'nt_res_st'      => $navigationTiming[0]->getNtResSt() - $navigationTiming[0]->getNtNavSt(),
+            'nt_first_paint' => $navigationTiming[0]->getFirstContentfulPaint(),
+            'nt_res_st'      => $navigationTiming[0]->getFirstByte(),
             'restiming'      => $resourceTimingsData,
             'url'            => 'https://www.darvart.de/'
         ];
@@ -527,7 +527,7 @@ class DiagramsController extends Controller
                             'labels' => array_keys($sizeDistribution),
                             'values' => array_values($sizeDistribution)
                         ],
-                    'user_agent'            => $navigationTiming[0]->getUserAgent()
+                    'user_agent'            => 'none'
                 ]
             )
         );

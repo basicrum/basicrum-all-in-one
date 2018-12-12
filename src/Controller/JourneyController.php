@@ -33,14 +33,17 @@ class JourneyController extends Controller
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.userAgent LIKE '%Googlebot%' AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
+            ->select('nt.guid', 'nt.pageViewId')
+            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
             //->setParameter('url', 'GOO')
             ->orderBy('nt.pageViewId', 'DESC')
-            //->setMaxResults(100)
-            ->groupby('nt.guid')
+            ->setMaxResults(100)
+            ->groupBy('nt.pageViewId, nt.guid')
             ->getQuery();
 
         $navigationTimings = $query->getResult();
+//
+//        print_r($navigationTimings);
 
         return $this->render('diagrams/journey_list.html.twig',
             [

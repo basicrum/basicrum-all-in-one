@@ -26,8 +26,8 @@
                 <tr data-beacon-id="{{ page_view.getPageViewId() }}" class="beacon-row" id="row_{{ page_view.getPageViewId() }}">
                     <td class="col-3">View ID: {{ page_view.getPageViewId() }}</td>
                     <td class="col-3">{{ page_view.getCreatedAt()|date("m/d/Y H:i:s") }}</td>
-                    <td class="col-3">{{ page_view.getNtResSt() - page_view.getNtNavSt() }} ms</td>
-                    <td class="col-3">{{ page_view.getPtFcp() }} ms</td>
+                    <td class="col-3">{{ page_view.getFirstByte() }} ms</td>
+                    <td class="col-3">{{ page_view.getFirstContentfulPaint() }} ms</td>
                 </tr>
             {% endfor %}
             </tbody>
