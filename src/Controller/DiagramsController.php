@@ -468,10 +468,25 @@ class DiagramsController extends Controller
          * End getting page view
          */
 
-        /** @var array $resourceTimings */
-        $resourceTimings = $this->getDoctrine()
+        /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
+        $queryBuilder = $this->getDoctrine()
             ->getRepository(ResourceTimings::class)
-            ->findBy(['pageViewId' => $pageViewId], ['start' => 'ASC']);
+            ->createQueryBuilder('rest');
+
+        $queryBuilder
+            ->select(['rest.start', 'rest.duration', 'resturl.url'])
+            ->where('rest.pageViewId = ' . $pageViewId);
+
+        $queryBuilder
+            ->leftJoin(
+                'App\Entity\ResourceTimingsUrls',
+                'resturl',
+                \Doctrine\ORM\Query\Expr\Join::WITH,
+                "rest.urlId = resturl.id"
+            );
+
+        $resourceTimings = $queryBuilder->getQuery()
+            ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
 
 
         $resourceTimingsData = [];
@@ -479,24 +494,24 @@ class DiagramsController extends Controller
         /** @var ResourceTimings $res */
         foreach ($resourceTimings as $res) {
             $resourceTimingsData[] = [
-                'name'                  => $res->getUrl(),
-                'initiatorType'         => $res->getInitiatortype(),
-                'startTime'             => $res->getStarttime(),
-                'redirectStart'         => $res->getRedirectStart(),
-                'redirectEnd'           => $res->getRedirectEnd(),
-                'fetchStart'            => $res->getFetchStart(),
-                'domainLookupStart'     => $res->getDomainLookupEnd(),
-                'domainLookupEnd'       => $res->getDomainLookupEnd(),
-                'connectStart'          => $res->getConnectStart(),
-                'secureConnectionStart' => $res->getSecureConnectionStart(),
-                'connectEnd'            => $res->getConnectEnd(),
-                'requestStart'          => $res->getRequestStart(),
-                'responseStart'         => $res->getResponseStart(),
-                'responseEnd'           => $res->getResponseEnd(),
-                'duration'              => $res->getDuration(),
-                'encodedBodySize'       => $res->getEncodedBodySize(),
-                'transferSize'          => $res->getTransferSize(),
-                'decodedBodySize'       => $res->getDecodedBodySize()
+                'name'                  => $res['url'],
+                'initiatorType'         => 1,
+                'startTime'             => $res['start'],
+                'redirectStart'         => 0,
+                'redirectEnd'           => 0,
+                'fetchStart'            => 0,
+                'domainLookupStart'     => 0,
+                'domainLookupEnd'       => 0,
+                'connectStart'          => 0,
+                'secureConnectionStart' => 0,
+                'connectEnd'            => 0,
+                'requestStart'          => 0,
+                'responseStart'         => 0,
+                'responseEnd'           => $res['start'] + $res['duration'],
+                'duration'              => $res['duration'],
+                'encodedBodySize'       => 5,
+                'transferSize'          => 11,
+                'decodedBodySize'       => 52
             ];
         }
 
