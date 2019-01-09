@@ -85,18 +85,25 @@ class NavigationTimings
     private $urlId;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="user_agent_id", type="integer", nullable=false, options={"unsigned"=true})
+     */
+    private $userAgentId;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="process_id", type="string", length=8, nullable=false, options={"fixed"=true})
      */
-    private $processId = '';
+    private $processId;
 
     /**
      * @var string
      *
      * @ORM\Column(name="guid", type="string", length=128, nullable=false, options={"fixed"=true})
      */
-    private $guid = '';
+    private $guid;
 
     /**
      * @var \DateTime
@@ -214,6 +221,18 @@ class NavigationTimings
     public function setUrlId(int $urlId): self
     {
         $this->urlId = $urlId;
+
+        return $this;
+    }
+
+    public function getUserAgentId(): ?int
+    {
+        return $this->userAgentId;
+    }
+
+    public function setUserAgentId(int $userAgentId): self
+    {
+        $this->userAgentId = $userAgentId;
 
         return $this;
     }
