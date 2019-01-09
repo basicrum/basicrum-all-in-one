@@ -42,18 +42,16 @@
                     </div>
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
-                            <label for="user_agent">User Agent:</label>
+                            <label for="device_type">Device:</label>
                             <div class="row">
                                 <div class="col-4">
-                                    <select name="filter[user_agent][condition]" class="form-control form-control-sm" id="user_agent">
-                                        <option value="is">is</option>
-                                        <option selected value="contains">contains</option>
-                                        <option value="starts_with">starts with</option>
-                                        <option value="ends_on">ends on</option>
+                                    <input type="hidden" name="filter[device_type][condition]" value="is" />
+                                    <select name="filter[device_type][search_value]" class="form-control form-control-sm" id="device_type">
+                                        <option selected value="">All</option>
+                                        <option value="mobile">Mobile</option>
+                                        <option value="tablet">Tablet</option>
+                                        <option value="desktop">Desktop</option>
                                     </select>
-                                </div>
-                                <div class="col-8">
-                                    <input name="filter[user_agent][search_value]" type="text" class="form-control form-control-sm" id="user_agent" />
                                 </div>
                             </div>
                             <label for="user_agent">Url:</label>

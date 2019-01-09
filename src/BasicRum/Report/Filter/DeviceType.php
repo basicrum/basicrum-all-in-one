@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Report\Filter;
 
-class Url implements FilterInterface
+class DeviceType implements FilterInterface
 {
 
-    const INTERNAL_IDENTIFIER = 'url';
+    const INTERNAL_IDENTIFIER = 'device_type';
 
     /**
      * @return string
      */
     public function getFilterLabel()
     {
-        return 'Url';
+        return 'Device';
     }
 
     /**
@@ -27,17 +27,17 @@ class Url implements FilterInterface
         string $condition,
         \Doctrine\ORM\QueryBuilder $queryBuilder)
     {
-        $fieldName  = 'nturl.' . $this->_transformToEntityProperty(self::INTERNAL_IDENTIFIER);
+        $fieldName  = 'ntuser_agent.' . $this->_transformToEntityProperty(self::INTERNAL_IDENTIFIER);
 
         $queryBuilder
             ->leftJoin(
-                'App\Entity\NavigationTimingsUrls',
-                'nturl',
+                'App\Entity\NavigationTimingsUserAgents',
+                'ntuser_agent',
                 \Doctrine\ORM\Query\Expr\Join::WITH,
-                "nt.urlId = nturl.id"
+                "nt.userAgentId = ntuser_agent.id"
             )
-            ->andWhere($fieldName . ' LIKE :' . $this->getInternalIdentifier())
-            ->setParameter($this->getInternalIdentifier(), '%' . $value . '%');
+            ->andWhere($fieldName . ' = :' . $this->getInternalIdentifier())
+            ->setParameter($this->getInternalIdentifier(), $value);
     }
 
     /**
