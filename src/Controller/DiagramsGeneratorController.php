@@ -53,7 +53,8 @@ class DiagramsGeneratorController extends Controller
         $colors = [
             0 => 'rgb(44, 160, 44)',
             1 => 'rgb(255, 127, 14)',
-            2 => 'rgb(31, 119, 180)'
+            2 => 'rgb(31, 119, 180)',
+            3 => 'rgb(31, 119, 44)'
         ];
 
         foreach ($periods as $key => $period) {
