@@ -15,89 +15,32 @@ class ResourceTimings
     /**
      * @var int
      *
-     * @ORM\Column(name="resource_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="page_view_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     */
-    private $resourceId;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="url_id", type="integer", nullable=false, options={"unsigned"=true})
-     */
-    private $urlId;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="page_view_id", type="integer", nullable=false, options={"unsigned"=true})
      */
     private $pageViewId;
 
     /**
-     * @var int
+     * @var string
      *
-     * @ORM\Column(name="start", type="smallint", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="resource_timings", type="text", length=65535, nullable=false)
      */
-    private $start;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="duration", type="smallint", nullable=false, options={"unsigned"=true})
-     */
-    private $duration;
-
-    public function getResourceId(): ?int
-    {
-        return $this->resourceId;
-    }
-
-    public function getUrlId(): ?int
-    {
-        return $this->urlId;
-    }
-
-    public function setUrlId(int $urlId): self
-    {
-        $this->urlId = $urlId;
-
-        return $this;
-    }
+    private $resourceTimings;
 
     public function getPageViewId(): ?int
     {
         return $this->pageViewId;
     }
 
-    public function setPageViewId(int $pageViewId): self
+    public function getResourceTimings(): ?string
     {
-        $this->pageViewId = $pageViewId;
-
-        return $this;
+        return $this->resourceTimings;
     }
 
-    public function getStart(): ?int
+    public function setResourceTimings(string $resourceTimings): self
     {
-        return $this->start;
-    }
-
-    public function setStart(int $start): self
-    {
-        $this->start = $start;
-
-        return $this;
-    }
-
-    public function getDuration(): ?int
-    {
-        return $this->duration;
-    }
-
-    public function setDuration(int $duration): self
-    {
-        $this->duration = $duration;
+        $this->resourceTimings = $resourceTimings;
 
         return $this;
     }

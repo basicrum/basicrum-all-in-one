@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\BasicRum\WaterfallSvgRenderer;
 use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
+use App\BasicRum\ResourceTiming\Decompressor;
 use App\BasicRum\ResourceSize;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
@@ -457,44 +458,32 @@ class DiagramsController extends Controller
     {
         $pageViewId = $_POST['page_view_id'];
 
-        /**
-         * Start getting page view
-         */
         /** @var NavigationTimings $navigationTiming */
         $navigationTiming = $this->getDoctrine()
             ->getRepository(NavigationTimings::class)
             ->findBy(['pageViewId' => $pageViewId]);
-        /**
-         * End getting page view
-         */
 
-        /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
-        $queryBuilder = $this->getDoctrine()
+
+        /** @var ResourceTimings $resourceTimings */
+        $resourceTimings = $this->getDoctrine()
             ->getRepository(ResourceTimings::class)
-            ->createQueryBuilder('rest');
-
-        $queryBuilder
-            ->select(['rest.start', 'rest.duration', 'resturl.url'])
-            ->where('rest.pageViewId = ' . $pageViewId);
-
-        $queryBuilder
-            ->leftJoin(
-                'App\Entity\ResourceTimingsUrls',
-                'resturl',
-                \Doctrine\ORM\Query\Expr\Join::WITH,
-                "rest.urlId = resturl.id"
-            );
-
-        $resourceTimings = $queryBuilder->getQuery()
-            ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
+            ->findBy(['pageViewId' => $pageViewId]);
 
 
-        $resourceTimingsData = [];
+        $decompressor = new Decompressor();
+
+        $resourceTimingsDecompressed = [];
 
         /** @var ResourceTimings $res */
         foreach ($resourceTimings as $res) {
+            $resourceTimingsDecompressed = $decompressor->decompress($res->getResourceTimings());
+        }
+
+        $resourceTimingsData = [];
+
+        foreach ($resourceTimingsDecompressed as $res) {
             $resourceTimingsData[] = [
-                'name'                  => $res['url'],
+                'name'                  => $res['url_id'],
                 'initiatorType'         => 1,
                 'startTime'             => $res['start'],
                 'redirectStart'         => 0,

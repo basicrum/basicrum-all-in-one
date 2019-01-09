@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimings
  *
- * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="url_id", columns={"url_id"})})
+ * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="guid", columns={"guid"})})
  * @ORM\Entity
  */
 class NavigationTimings
