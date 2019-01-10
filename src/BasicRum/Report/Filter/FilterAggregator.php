@@ -14,10 +14,11 @@ class FilterAggregator
     public function __construct()
     {
         $this->filters = [
-            UserAgent::INTERNAL_IDENTIFIER  => new UserAgent(),
-            Url::INTERNAL_IDENTIFIER        => new Url(),
-            DeviceType::INTERNAL_IDENTIFIER => new DeviceType(),
-            OsName::INTERNAL_IDENTIFIER     => new OsName()
+            UserAgent::INTERNAL_IDENTIFIER   => new UserAgent(),
+            Url::INTERNAL_IDENTIFIER         => new Url(),
+            DeviceType::INTERNAL_IDENTIFIER  => new DeviceType(),
+            OsName::INTERNAL_IDENTIFIER      => new OsName(),
+            BrowserName::INTERNAL_IDENTIFIER => new BrowserName()
         ];
     }
 
