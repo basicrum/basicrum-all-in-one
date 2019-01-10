@@ -14,6 +14,7 @@ use Symfony\Component\Cache\Simple\FilesystemCache;
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
+use App\Entity\ResourceTimingsUrls;
 
 
 use DateTime;
@@ -482,8 +483,14 @@ class DiagramsController extends Controller
         $resourceTimingsData = [];
 
         foreach ($resourceTimingsDecompressed as $res) {
+            // We do this in guly way but so far nice looking code is not a priority
+            /** @var \App\Entity\ResourceTimingsUrls $resourceTimingUrl */
+            $resourceTimingUrl = $this->getDoctrine()
+                ->getRepository(ResourceTimingsUrls::class)
+                ->findOneBy(['id' => $res['url_id']]);
+
             $resourceTimingsData[] = [
-                'name'                  => $res['url_id'],
+                'name'                  => $resourceTimingUrl->getUrl(),
                 'initiatorType'         => 1,
                 'startTime'             => $res['start'],
                 'redirectStart'         => 0,
