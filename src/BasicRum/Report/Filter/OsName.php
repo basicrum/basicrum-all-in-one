@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Report\Filter;
 
-class DeviceType implements FilterInterface
+class OsName implements FilterInterface
 {
 
-    const INTERNAL_IDENTIFIER = 'device_type';
+    const INTERNAL_IDENTIFIER = 'os_name';
 
     /**
      * @return string
      */
     public function getFilterLabel()
     {
-        return 'Device';
+        return 'OS';
     }
 
     /**

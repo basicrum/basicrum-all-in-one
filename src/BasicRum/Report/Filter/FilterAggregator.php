@@ -16,7 +16,8 @@ class FilterAggregator
         $this->filters = [
             UserAgent::INTERNAL_IDENTIFIER  => new UserAgent(),
             Url::INTERNAL_IDENTIFIER        => new Url(),
-            DeviceType::INTERNAL_IDENTIFIER => new DeviceType()
+            DeviceType::INTERNAL_IDENTIFIER => new DeviceType(),
+            OsName::INTERNAL_IDENTIFIER     => new OsName()
         ];
     }
 

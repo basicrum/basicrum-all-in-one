@@ -42,14 +42,24 @@
                     </div>
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
-                            <label for="device_type">Device:</label>
                             <div class="row">
                                 <div class="col-4">
+                                    <label for="device_type">Device:</label>
                                     <input type="hidden" name="filter[device_type][condition]" value="is" />
                                     <select name="filter[device_type][search_value]" class="form-control form-control-sm" id="device_type">
                                         <option selected value="">All</option>
                                         <option value="mobile">Mobile</option>
                                         <option value="tablet">Tablet</option>
+                                        <option value="desktop">Desktop</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label for="os_name">OS:</label>
+                                    <input type="hidden" name="filter[os_name][condition]" value="is" />
+                                    <select name="filter[os_name][search_value]" class="form-control form-control-sm" id="os_name">
+                                        <option selected value="">All</option>
+                                        <option value="Android">Android</option>
+                                        <option value="iOS">iOS</option>
                                         <option value="desktop">Desktop</option>
                                     </select>
                                 </div>
