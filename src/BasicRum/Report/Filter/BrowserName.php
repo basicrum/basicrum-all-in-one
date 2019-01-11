@@ -36,8 +36,8 @@ class BrowserName implements FilterInterface
                 \Doctrine\ORM\Query\Expr\Join::WITH,
                 "nt.userAgentId = ntuser_agent_" . self::INTERNAL_IDENTIFIER . ".id"
             )
-            ->andWhere($fieldName . ' = :' . $this->getInternalIdentifier())
-            ->setParameter($this->getInternalIdentifier(), $value);
+            ->andWhere($fieldName . ' LIKE :' . $this->getInternalIdentifier())
+            ->setParameter($this->getInternalIdentifier(), '%' . $value . '%');
     }
 
     /**
