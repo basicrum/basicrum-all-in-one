@@ -415,24 +415,6 @@ class DiagramsController extends Controller
 
         $navigationTimings = $query->getResult();
 
-        $beacon = '{"https://www.":{"darvart.de/":{"holzfliegen.html":"6,29s,14c,ia,i9,dt,5q,5q,6*1obr,gj,2kz0","skin/frontend/darvart/default/images/":{"darvart-navy-logo.png":"*01y,1y,1l,2t,2s,2s|129s,2h6,2h5,4*12h5,bs","icon_sprite@2x.png":"42a5,35t,346,2gr,2gr,2,2*18m7,bv","opc-ajax-loader.gif":"42at,358,357,2g5*15sj,bt"},"media/":{"js/387cfdcd3b7e1ac11df96a1adb39c25b.js":"32a1,4ap,2gw,1*12yh1,h2,8pfd*24","catalog/product/cache/1/small_image/280x/17f82f742ffe127f42dca9de82fb58b1/d/a/darvena-papi":{"jonka-dilov-01.jpg":"*09l,7q,86,2o,9o,7s|12b4,3nr,3mk,34v*18j0,bv","onka-":{"mini-rudolf.jpg":"*09l,7q,86,b7,9o,7s|12b5,3nq,3n6,34x*161j,bu","classic-rudolf_1.jpg":"*09l,7q,86,jq,9o,7s|12b5,3yb,3y8,3j2,3j0,2ye,2ft,2ft,2ft*16ky,bv","golyam-sechko.jpg":"*09l,7q,86,s9,9o,7s|12b5,3zo,3y9,3j2,3j1,34t,34t,34t,34t*19ef,bw"}}}},"google-analytics.com/":{"analytics.js":"36md,2b,22,5*1b3m,5g,g40*25","collect?v=1&_v=j68&aip=1&a=1185933321&t=pageview&_s=1&dl=https%3A%2F%2Fwww.darvart.de%2Fholzfliegen.html&ul=en-us&de=UTF-8&dt=Handgefertigte%20Holzfliegen%20f%C3%BCr%20M%C3%A4nner%20und%20Frauen%20%7C%20DarvArt.de&sd=24-bit&sr=1440x900&vp=1391x304&je=0&_u=QACAAEAB~&jid=&gjid=&cid=1241074160.1507998957&tid=UA-89019502-1&_gid=1486960115.1528871993&z=49870228":"16p8,1s"}}}';
-
-        $renderer = new WaterfallSvgRenderer();
-        $resTimingDecompressor = new ResourceTimingDecompressor_v_0_3_4();
-
-        $res = $resTimingDecompressor->decompressResources(json_decode($beacon, true));
-        $resourceSizesCalculator = new ResourceSize();
-
-        $timings = [
-            'nt_nav_st'      => 0,
-            'nt_first_paint' => 2480,
-            'nt_res_st'      => 1800,
-            'restiming'      => $res,
-            'url'            => 'https://www.darvart.de/'
-        ];
-
-        $resourceSizes = $resourceSizesCalculator->calculateSizes($res);
-
         $navTimingsFiltered = [];
 
         foreach ($navigationTimings as $navTiming) {
@@ -444,10 +426,7 @@ class DiagramsController extends Controller
         return $this->render(
             'diagrams/waterfalls_list.html.twig',
             [
-                'page_views'            => $navTimingsFiltered,
-                'waterfallHtml'         => $renderer->render($timings),
-                'resource_sizes_labels' => json_encode(array_keys($resourceSizes)),
-                'resource_sizes_values' => json_encode(array_values($resourceSizes))
+                'page_views' => $navTimingsFiltered
             ]
         );
     }
