@@ -83,15 +83,16 @@ class DiagramBuilder
         $median = [];
 
         foreach ($interval as $day) {
-            $samples = $this->report->query($day, $data['perf_metric'], []);
-            $median[] = $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1));
+//            $samples = $this->report->query($day, $data['perf_metric'], []);
+//            $median[] = $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1));
+
+            $median[$day['start']] = rand(1987, 2100);
         }
-
-
 
         $diagramData = [
             'x' => array_keys($median),
-            'y' => array_values($median)
+            'y' => array_values($median),
+            'name' => 'Desktop'
         ];
 
         return $diagramData;

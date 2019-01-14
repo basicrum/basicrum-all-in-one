@@ -121,8 +121,8 @@ class DiagramsGeneratorController extends Controller
 
         $periods =  [
                         [
-                            'current_period_from_date' => '09/03/2018',
-                            'current_period_to_date'   => '09/04/2018',
+                            'current_period_from_date' => '10/16/2018',
+                            'current_period_to_date'   => '01/14/2019',
                         ]
                     ];
 
@@ -135,7 +135,7 @@ class DiagramsGeneratorController extends Controller
         foreach ($periods as $period) {
             $data = [
                 'period'      => $period,
-                'perf_metric' => 'nt_first_paint'
+                'perf_metric' => 'first_paint'
             ];
 
             $diagram = $diagramBuilder->buildOverTime($data);
@@ -148,10 +148,42 @@ class DiagramsGeneratorController extends Controller
             );
         }
 
+        $releaseDates = [
+            '2018-10-18',
+            '2018-11-11',
+            '2018-11-16',
+            '2018-12-09',
+            '2019-01-09'
+        ];
+
+        $shapes = [];
+
+        foreach ($releaseDates as $date) {
+            $shapes[] = [
+                'type' => 'line',
+                'x0'   => $date,
+                'y0'   => -0.5,
+                'x1'   => $date,
+                'y1'   => 3000,
+                'line' => [
+                    'color' => '#ccc',
+                    'width' =>  1.5,
+                    'dash'  =>  'dot'
+                ]
+            ];
+        }
+
+
         return $this->render('diagrams/over_time.html.twig',
             [
-                'diagrams' => json_encode($diagrams)
+                'diagrams' =>
+                     [
+                         'diagrams'            => json_encode($diagrams),
+                         'layout_extra_shapes' => json_encode($shapes)
+                     ]
+
             ]
+
         );
     }
 

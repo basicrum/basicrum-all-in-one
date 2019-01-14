@@ -5,16 +5,15 @@
 </nav>
 <div id="diagramContainer"></div>
 <script type="text/javascript">
-    var basicRumPlotOverTime = function(data) {
+    var basicRumPlotOverTime = function(data, layout_extra_shapes) {
         var layout = {
-//            xaxis: {
-//                tickvals: [1000, 2000, 3000, 4000, 5000],
-//                ticktext: ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"]
-//            },
             yaxis: {
-//                title: 'Website Visits',
-//                fixedrange: true,
-                range: [0, 2000]
+                range: [0, 3000],
+                tickvals: [1000, 2000, 3000],
+                ticktext: ["1 sec", "2 sec", "3 sec"]
+            },
+            xaxis: {
+                showgrid: false
             },
             legend: {
                 x: 0,
@@ -31,8 +30,12 @@
             }
         };
 
+        if (layout_extra_shapes.length > 0) {
+            layout.shapes = layout_extra_shapes;
+        }
+
         Plotly.newPlot('diagramContainer', data, layout);
     };
 
-    basicRumPlotOverTime({{ diagrams|raw }});
+    basicRumPlotOverTime({{ diagrams.diagrams|raw }}, {{ diagrams.layout_extra_shapes|raw }});
 </script>
