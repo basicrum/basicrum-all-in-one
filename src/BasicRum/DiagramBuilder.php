@@ -66,9 +66,11 @@ class DiagramBuilder
 
     /**
      * @param array $data
+     * @param int $offset
+     *
      * @return array
      */
-    public function buildOverTime(array $data)
+    public function buildOverTime(array $data, $offset)
     {
         $dayInterval = new DayInterval();
 
@@ -86,13 +88,12 @@ class DiagramBuilder
 //            $samples = $this->report->query($day, $data['perf_metric'], []);
 //            $median[] = $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1));
 
-            $median[$day['start']] = rand(1987, 2100);
+            $median[$day['start']] = rand(1987, 2100) + rand($offset - 15, $offset);
         }
 
         $diagramData = [
             'x' => array_keys($median),
-            'y' => array_values($median),
-            'name' => 'Desktop'
+            'y' => array_values($median)
         ];
 
         return $diagramData;

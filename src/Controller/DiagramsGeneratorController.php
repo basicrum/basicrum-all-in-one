@@ -126,6 +126,12 @@ class DiagramsGeneratorController extends Controller
                         ]
                     ];
 
+        $deviceTypes = [
+            'Desktop' => 0,
+            'Tablet'  => 348,
+            'Mobile'  => 517
+        ];
+
         $diagrams = [];
 
         $report = new Report($this->getDoctrine());
@@ -138,14 +144,19 @@ class DiagramsGeneratorController extends Controller
                 'perf_metric' => 'first_paint'
             ];
 
-            $diagram = $diagramBuilder->buildOverTime($data);
+            foreach ($deviceTypes as $device => $offset) {
+                $diagram = $diagramBuilder->buildOverTime($data, $offset);
 
-            $diagrams[] = array_merge(
-                $diagram,
-                [
-                    'type' => 'line'
-                ]
-            );
+                $diagram = array_merge(
+                    $diagram,
+                    [
+                        'type' => 'line',
+                        'name' => $device
+                    ]
+                );
+
+                $diagrams[] = $diagram;
+            }
         }
 
         $releaseDates = [
@@ -172,7 +183,6 @@ class DiagramsGeneratorController extends Controller
                 ]
             ];
         }
-
 
         return $this->render('diagrams/over_time.html.twig',
             [
