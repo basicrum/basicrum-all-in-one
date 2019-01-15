@@ -10,6 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use App\BasicRum\Report;
 use App\BasicRum\DiagramBuilder;
+use App\Entity\Releases;
+
+use DateTime;
 
 class DiagramsGeneratorController extends Controller
 {
@@ -159,22 +162,36 @@ class DiagramsGeneratorController extends Controller
             }
         }
 
-        $releaseDates = [
-            '2018-10-18',
-            '2018-11-11',
-            '2018-11-16',
-            '2018-12-09',
-            '2019-01-09'
-        ];
+        $repository = $this->getDoctrine()
+            ->getRepository(Releases::class);
+
+        $start = new DateTime($periods[0]['current_period_from_date']);
+        $end   = new DateTime($periods[0]['current_period_to_date']);
+
+        $query = $repository->createQueryBuilder('r')
+            ->where('r.date BETWEEN :start AND :end')
+            ->setParameter('start', $start->format('Y-m-d'))
+            ->setParameter('end', $end->format('Y-m-d'))
+            ->getQuery();
+
+        $releases = $query->getResult();
+
+        $releaseDates = [];
+
+        /** @var \App\Entity\Releases $release  */
+        foreach ($releases as $release) {
+            $releaseDates[] = $release->getDate();
+        }
 
         $shapes = [];
 
+        /** @var DateTime $date */
         foreach ($releaseDates as $date) {
             $shapes[] = [
                 'type' => 'line',
-                'x0'   => $date,
+                'x0'   => $date->format('Y-m-d'),
                 'y0'   => -0.5,
-                'x1'   => $date,
+                'x1'   => $date->format('Y-m-d'),
                 'y1'   => 3000,
                 'line' => [
                     'color' => '#ccc',
