@@ -31,9 +31,9 @@ class PageTypeConfig
     /**
      * @var string
      *
-     * @ORM\Column(name="condition", type="text", length=65535, nullable=false)
+     * @ORM\Column(name="condition_value", type="text", length=65535, nullable=false)
      */
-    private $condition;
+    private $conditionValue;
 
     /**
      * @var string
@@ -59,14 +59,14 @@ class PageTypeConfig
         return $this;
     }
 
-    public function getCondition(): ?string
+    public function getConditionValue(): ?string
     {
-        return $this->condition;
+        return $this->conditionValue;
     }
 
-    public function setCondition(string $condition): self
+    public function setConditionValue(string $conditionValue): self
     {
-        $this->condition = $condition;
+        $this->conditionValue = $conditionValue;
 
         return $this;
     }

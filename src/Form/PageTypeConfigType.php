@@ -13,7 +13,7 @@ class PageTypeConfigType extends AbstractType
     {
         $builder
             ->add('pageTypeName')
-            ->add('condition')
+            ->add('conditionValue')
             ->add('conditionTerm')
         ;
     }

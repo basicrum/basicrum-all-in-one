@@ -10,7 +10,7 @@
             <tr>
                 <th>Id</th>
                 <th>PageTypeName</th>
-                <th>Condition</th>
+                <th>ConditionValue</th>
                 <th>ConditionTerm</th>
                 <th>actions</th>
             </tr>
@@ -20,7 +20,7 @@
             <tr>
                 <td>{{ page_type_config.id }}</td>
                 <td>{{ page_type_config.pageTypeName }}</td>
-                <td>{{ page_type_config.condition }}</td>
+                <td>{{ page_type_config.conditionValue }}</td>
                 <td>{{ page_type_config.conditionTerm }}</td>
                 <td>
                     <a href="{{ path('page_type_config_show', {'id': page_type_config.id}) }}">show</a>
