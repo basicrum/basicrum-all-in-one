@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New PageTypeConfig{% endblock %}
+
+{% block body %}
+    <h1>Create new PageTypeConfig</h1>
+
+    {{ include('page_type_config/_form.html.twig') }}
+
+    <a href="{{ path('page_type_config_index') }}">back to list</a>
+{% endblock %}

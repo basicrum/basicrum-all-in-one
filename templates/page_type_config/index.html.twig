@@ -1,78 +1,37 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Configure</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Page Types</li>
-    </ol>
-</nav>
-<div class="row">
-    <div class="col-12">
-        <button type="submit" class="btn btn-primary float-right">Add Page Type <i class="fa fa-plus"></i></button>
-        <br />
-        <br />
-    </div>
-</div>
-<div id="accordion" class="page-type-config">
-    {% for type in page_types %}
-    <div class="card">
-        <div class="card-header" id="heading-{{ type.id }}">
-            <h5 class="mb-0">
-                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse-{{ type.id }}" aria-expanded="false">
-                    {{ type.name }}
-                    <i class="more-less fa fa-plus"></i>
-                    <i class="more-less fa fa-minus"></i>
-                </button>
-            </h5>
-        </div>
-        <div id="collapse-{{ type.id }}" class="collapse" aria-labelledby="heading-{{ type.id }}" data-parent="#accordion">
-            <div class="configure-form">
-                <form class="form-inline page-type-config-form" method="post" action="/page/type/save">
-                    <input type="hidden" value="{{ type.id }}" name="page_type_id" />
-                    <div class="form-row">
-                        <div class="col-md-3">
-                            <input value="{{ type.name }}" name="page_type_name" type="text" class="form-control mb-2 mr-sm-2" id="inlineFormInputName2" placeholder="Type e.g. Product">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="input-group mb-2 mr-sm-2">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text">
-                                        <select name="page_type_rule_condition" class="form-control form-control-sm" id="source">
-                                            <option value=""> --- Select Condition --- </option>
-                                            {% for key,label in condition_options %}
-                                                {% set selected = '' %}
-                                                {% if key == type.condition.page_type_rule_condition %}
-                                                    {% set selected = 'selected' %}
-                                                {% endif %}
-                                                <option value="{{ key }}" {{ selected }}>{{ label }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <input value="{{ type.condition.page_type_rule_value }}" name="page_type_rule_value" type="text" class="form-control" />
-                            </div>
-                        </div>
+{% extends 'base.html.twig' %}
 
-                        <button type="submit" class="btn btn-primary mb-2">Update</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-<script type="text/javascript">
-    $('.page-type-config-form').submit( function (e) {
-        e.preventDefault();
+{% block title %}PageTypeConfig index{% endblock %}
 
-        var action = $(this).attr('action');
-        var data = $(this).serialize();
+{% block body %}
+    <h1>PageTypeConfig index</h1>
 
-        $.ajax({
-            url: action,
-            context: this,
-            method: "POST",
-            data: data
-        }).done(function(html) {
-            alert(html);
-        });
-    });
-</script>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>PageTypeName</th>
+                <th>ConditionsSerialized</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for page_type_config in page_type_configs %}
+            <tr>
+                <td>{{ page_type_config.id }}</td>
+                <td>{{ page_type_config.pageTypeName }}</td>
+                <td>{{ page_type_config.conditionsSerialized }}</td>
+                <td>
+                    <a href="{{ path('page_type_config_show', {'id': page_type_config.id}) }}">show</a>
+                    <a href="{{ path('page_type_config_edit', {'id': page_type_config.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('page_type_config_new') }}">Create new</a>
+{% endblock %}

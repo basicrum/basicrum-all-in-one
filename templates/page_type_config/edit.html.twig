@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit PageTypeConfig{% endblock %}
+
+{% block body %}
+    <h1>Edit PageTypeConfig</h1>
+
+    {{ include('page_type_config/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('page_type_config_index') }}">back to list</a>
+
+    {{ include('page_type_config/_delete_form.html.twig') }}
+{% endblock %}

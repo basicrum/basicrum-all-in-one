@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PageTypeConfig{% endblock %}
+
+{% block body %}
+    <h1>PageTypeConfig</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ page_type_config.id }}</td>
+            </tr>
+            <tr>
+                <th>PageTypeName</th>
+                <td>{{ page_type_config.pageTypeName }}</td>
+            </tr>
+            <tr>
+                <th>ConditionsSerialized</th>
+                <td>{{ page_type_config.conditionsSerialized }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('page_type_config_index') }}">back to list</a>
+
+    <a href="{{ path('page_type_config_edit', {'id': page_type_config.id}) }}">edit</a>
+
+    {{ include('page_type_config/_delete_form.html.twig') }}
+{% endblock %}
