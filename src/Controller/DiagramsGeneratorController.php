@@ -184,6 +184,7 @@ class DiagramsGeneratorController extends Controller
             'y'    => [],
             'text' => [],
             'mode' => 'markers',
+            'hoverinfo' => 'text',
             'showlegend' => false
         ];
 
