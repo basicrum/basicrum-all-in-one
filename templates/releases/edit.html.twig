@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Releases{% endblock %}
+
+{% block body %}
+    <h1>Edit Releases</h1>
+
+    {{ include('releases/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('releases_index') }}">back to list</a>
+
+    {{ include('releases/_delete_form.html.twig') }}
+{% endblock %}

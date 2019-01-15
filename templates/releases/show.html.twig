@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Releases{% endblock %}
+
+{% block body %}
+    <h1>Releases</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ release.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ release.date ? release.date|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ release.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('releases_index') }}">back to list</a>
+
+    <a href="{{ path('releases_edit', {'id': release.id}) }}">edit</a>
+
+    {{ include('releases/_delete_form.html.twig') }}
+{% endblock %}
