@@ -10,7 +10,8 @@
             <tr>
                 <th>Id</th>
                 <th>PageTypeName</th>
-                <th>ConditionsSerialized</th>
+                <th>Condition</th>
+                <th>ConditionTerm</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -19,7 +20,8 @@
             <tr>
                 <td>{{ page_type_config.id }}</td>
                 <td>{{ page_type_config.pageTypeName }}</td>
-                <td>{{ page_type_config.conditionsSerialized }}</td>
+                <td>{{ page_type_config.condition }}</td>
+                <td>{{ page_type_config.conditionTerm }}</td>
                 <td>
                     <a href="{{ path('page_type_config_show', {'id': page_type_config.id}) }}">show</a>
                     <a href="{{ path('page_type_config_edit', {'id': page_type_config.id}) }}">edit</a>
@@ -27,7 +29,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="5">no records found</td>
             </tr>
         {% endfor %}
         </tbody>

@@ -31,9 +31,16 @@ class PageTypeConfig
     /**
      * @var string
      *
-     * @ORM\Column(name="conditions_serialized", type="text", length=0, nullable=false)
+     * @ORM\Column(name="condition", type="text", length=65535, nullable=false)
      */
-    private $conditionsSerialized;
+    private $condition;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="condition_term", type="text", length=65535, nullable=false)
+     */
+    private $conditionTerm;
 
     public function getId(): ?int
     {
@@ -52,14 +59,26 @@ class PageTypeConfig
         return $this;
     }
 
-    public function getConditionsSerialized(): ?string
+    public function getCondition(): ?string
     {
-        return $this->conditionsSerialized;
+        return $this->condition;
     }
 
-    public function setConditionsSerialized(string $conditionsSerialized): self
+    public function setCondition(string $condition): self
     {
-        $this->conditionsSerialized = $conditionsSerialized;
+        $this->condition = $condition;
+
+        return $this;
+    }
+
+    public function getConditionTerm(): ?string
+    {
+        return $this->conditionTerm;
+    }
+
+    public function setConditionTerm(string $conditionTerm): self
+    {
+        $this->conditionTerm = $conditionTerm;
 
         return $this;
     }

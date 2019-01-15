@@ -13,7 +13,8 @@ class PageTypeConfigType extends AbstractType
     {
         $builder
             ->add('pageTypeName')
-            ->add('conditionsSerialized')
+            ->add('condition')
+            ->add('conditionTerm')
         ;
     }
 
