@@ -176,30 +176,39 @@ class DiagramsGeneratorController extends Controller
 
         $releases = $query->getResult();
 
-        $releaseDates = [];
+        $shapes = [];
+
+        // Defaults
+        $releaseAnnotations = [
+            'x'    => [],
+            'y'    => [],
+            'text' => [],
+            'mode' => 'markers',
+            'showlegend' => false
+        ];
 
         /** @var \App\Entity\Releases $release  */
         foreach ($releases as $release) {
             $releaseDates[] = $release->getDate();
-        }
-
-        $shapes = [];
-
-        /** @var DateTime $date */
-        foreach ($releaseDates as $date) {
             $shapes[] = [
                 'type' => 'line',
-                'x0'   => $date->format('Y-m-d'),
+                'x0'   => $release->getDate()->format('Y-m-d'),
                 'y0'   => -0.5,
-                'x1'   => $date->format('Y-m-d'),
+                'x1'   => $release->getDate()->format('Y-m-d'),
                 'y1'   => 3000,
                 'line' => [
                     'color' => '#ccc',
-                    'width' =>  1.5,
+                    'width' =>  2,
                     'dash'  =>  'dot'
                 ]
             ];
+
+            $releaseAnnotations['x'][]    = $release->getDate()->format('Y-m-d');
+            $releaseAnnotations['y'][]    = 3000;
+            $releaseAnnotations['text'][] = $release->getDescription();
         }
+
+        $diagrams[] = $releaseAnnotations;
 
         return $this->render('diagrams/over_time.html.twig',
             [
@@ -208,7 +217,6 @@ class DiagramsGeneratorController extends Controller
                          'diagrams'            => json_encode($diagrams),
                          'layout_extra_shapes' => json_encode($shapes)
                      ]
-
             ]
 
         );
