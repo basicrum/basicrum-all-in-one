@@ -94,13 +94,14 @@
                             <label for="page_type">Page Type:</label>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="filter2[page_type]" class="form-control form-control-sm" id="page_type">
+                                    <select name="filter[page_type][search_value]" class="form-control form-control-sm" id="page_type">
                                         <option value="">All</option>
                                         {#<option value="" selected="selected">---</option>#}
                                         {% for page in page_types %}
                                             <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
                                         {% endfor %}
                                     </select>
+                                    <input type="hidden" name="filter[page_type][condition]" value="is" />
                                 </div>
                             </div>
                         </div>

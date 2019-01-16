@@ -18,7 +18,8 @@ class FilterAggregator
             Url::INTERNAL_IDENTIFIER         => new Url(),
             DeviceType::INTERNAL_IDENTIFIER  => new DeviceType(),
             OsName::INTERNAL_IDENTIFIER      => new OsName(),
-            BrowserName::INTERNAL_IDENTIFIER => new BrowserName()
+            BrowserName::INTERNAL_IDENTIFIER => new BrowserName(),
+            PageType::INTERNAL_IDENTIFIER    => new PageType()
         ];
     }
 
