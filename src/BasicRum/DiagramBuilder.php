@@ -107,4 +107,12 @@ class DiagramBuilder
         return $this->report->getNavigationTimings();
     }
 
+    /**
+     * @return array
+     */
+    public function getPageTypes()
+    {
+        return $this->report->getPageTypes();
+    }
+
 }

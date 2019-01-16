@@ -11,7 +11,6 @@ use App\BasicRum\NavigationTiming\MetricAggregator;
 use App\BasicRum\Report\Filter\FilterAggregator;
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
-use App\Entity\ResourceTimings;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 class Report
@@ -126,6 +125,18 @@ class Report
     {
         $metricAggregator = new MetricAggregator();
         return $metricAggregator->getMetrics();
+    }
+
+    /**
+     * @return array
+     */
+    public function getPageTypes()
+    {
+        $repository = $this->em->getRepository(PageTypeConfig::class);
+
+        $repository->findAll();
+
+        return $repository->findAll();;
     }
 
 }

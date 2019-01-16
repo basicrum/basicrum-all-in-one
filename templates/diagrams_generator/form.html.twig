@@ -10,8 +10,8 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
-                            <label for="page-type">Perf. Metric:</label>
-                            <select name="perf_metric" class="form-control form-control-sm" id="source">
+                            <label for="perf_metric">Perf. Metric:</label>
+                            <select name="perf_metric" class="form-control form-control-sm" id="perf_metric">
                                 {#<option value="" selected="selected">---</option>#}
                                 {% for metric in navigation_timings %}
                                 <option value="{{ metric.getMetricOffsetKey() }}">{{ metric.getMetricLabel() }}</option>
@@ -95,7 +95,11 @@
                             <div class="row">
                                 <div class="col-12">
                                     <select name="filter2[page_type]" class="form-control form-control-sm" id="page_type">
-                                        <option value="*">All</option>
+                                        <option value="">All</option>
+                                        {#<option value="" selected="selected">---</option>#}
+                                        {% for page in page_types %}
+                                            <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>

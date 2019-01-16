@@ -28,7 +28,8 @@ class DiagramsGeneratorController extends Controller
 
         return $this->render('diagrams_generator/form.html.twig',
             [
-                'navigation_timings' => $diagramBuilder->getNavigationTimings()
+                'navigation_timings' => $diagramBuilder->getNavigationTimings(),
+                'page_types'         => $diagramBuilder->getPageTypes()
             ]
         );
     }
