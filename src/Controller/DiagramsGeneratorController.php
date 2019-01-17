@@ -123,12 +123,47 @@ class DiagramsGeneratorController extends Controller
         set_time_limit(0);
         ini_set('display_errors', '1');
 
+        $pages = [
+            'All',
+            'Cart',
+            'Product',
+            'Checkout'
+        ];
+
+        $pageDiagrams = [];
+
+        foreach ($pages as $pageName) {
+            $res = $this->_pageOvertime($pageName);
+
+            $pageDiagrams[] = [
+                'diagrams'            => json_encode($res['diagrams']),
+                'layout_extra_shapes' => json_encode($res['shapes']),
+                'title'               => $pageName . " TTFP (median)"
+            ];
+        }
+
+        return $this->render('diagrams/over_time.html.twig',
+            [
+                'diagrams' => $pageDiagrams
+            ]
+        );
+    }
+
+    /**
+     * @param string $pageName
+     * @return array
+     */
+    private function _pageOvertime(string $pageName)
+    {
+        $today = new \DateTime();
+        $past  = new \DateTime('-3 months');
+
         $periods =  [
-                        [
-                            'current_period_from_date' => '10/16/2018',
-                            'current_period_to_date'   => '01/14/2019',
-                        ]
-                    ];
+            [
+                'current_period_from_date' => $past->format('Y-m-d'),
+                'current_period_to_date'   => $today->format('Y-m-d'),
+            ]
+        ];
 
         $deviceTypes = [
             'Desktop' => 0,
@@ -212,16 +247,10 @@ class DiagramsGeneratorController extends Controller
 
         $diagrams[] = $releaseAnnotations;
 
-        return $this->render('diagrams/over_time.html.twig',
-            [
-                'diagrams' =>
-                     [
-                         'diagrams'            => json_encode($diagrams),
-                         'layout_extra_shapes' => json_encode($shapes)
-                     ]
-            ]
-
-        );
+        return [
+            'diagrams' => $diagrams,
+            'shapes'   => $shapes
+        ];
     }
 
 }

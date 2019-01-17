@@ -136,7 +136,7 @@ class Report
 
         $repository->findAll();
 
-        return $repository->findAll();;
+        return $repository->findAll();
     }
 
 }

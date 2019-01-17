@@ -3,18 +3,22 @@
         <li class="breadcrumb-item active" aria-current="page"><h3>Performance Over Time</h3></li>
     </ol>
 </nav>
-<div id="diagramContainer"></div>
+{% for key,diagram in diagrams %}
+<div id="diagramContainer{{ key }}" style="height: 300px"></div>
+{% endfor %}
 <script type="text/javascript">
-    var basicRumPlotOverTime = function(data, layout_extra_shapes) {
+    var basicRumPlotOverTime = function(key, data, layout_extra_shapes, title) {
         var layout = {
-            title: "Time to First Paint (median)",
+            title: title,
             yaxis: {
                 range: [0, 3500],
                 tickvals: [1000, 2000, 3000],
-                ticktext: ["1 sec", "2 sec", "3 sec"]
+                ticktext: ["1 sec", "2 sec", "3 sec"],
+                fixedrange: true
             },
             xaxis: {
-                showgrid: false
+                showgrid: false,
+                fixedrange: true
             },
             legend: {
                 x: 0,
@@ -35,8 +39,10 @@
             layout.shapes = layout_extra_shapes;
         }
 
-        Plotly.newPlot('diagramContainer', data, layout);
+        Plotly.newPlot('diagramContainer' + key, data, layout, {displayModeBar: false});
     };
 
-    basicRumPlotOverTime({{ diagrams.diagrams|raw }}, {{ diagrams.layout_extra_shapes|raw }});
+    {% for key,diagram in diagrams %}
+    basicRumPlotOverTime({{ key }}, {{ diagram.diagrams|raw }}, {{ diagram.layout_extra_shapes|raw }}, '{{ diagram.title }}');
+    {% endfor %}
 </script>
