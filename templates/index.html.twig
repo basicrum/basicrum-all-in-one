@@ -58,7 +58,7 @@
             <div id="sidebar-left" class="col-xs-2 col-sm-2">
                 <ul class="nav flex-column main-menu" id="side-menu">
                     <li class="nav-item">
-                        <a href="/diagrams/waterfalls/list" class="nav-link ajax-link">
+                        <a href="{{ path('dashboard') }}" class="nav-link ajax-link">
                             <i class="fa fa-dashboard"></i>
                             <span class="hidden-xs">Dashboard</span>
                         </a>
@@ -140,7 +140,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('plugins/poper/popper.min.js') }}"></script>
     <script src="{{ asset('plugins/bootstrap.4.1.1/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('plugins/plotly/plotly.1.31.2.min.js') }}"></script>
+    <script src="{{ asset('plugins/plotly/plotly.1.43.2.min.js') }}"></script>
     <!-- All functions for this theme + document.ready processing -->
     <script src="{{ asset('js/devoops.js') }}"></script>
     </body>

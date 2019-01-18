@@ -398,40 +398,6 @@ class DiagramsController extends Controller
     }
 
     /**
-     * @Route("/diagrams/waterfalls/list", name="diagrams_waterfalls_list")
-     */
-    public function waterfallsList()
-    {
-        $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
-        // createQueryBuilder() automatically selects FROM AppBundle:Product
-        // and aliases it to "p"
-        $query = $repository->createQueryBuilder('nt')
-            //->where("nt.url LIKE '%GOO%'")
-            //->setParameter('url', 'GOO')
-            ->orderBy('nt.pageViewId', 'DESC')
-            ->setMaxResults(400)
-            ->getQuery();
-
-        $navigationTimings = $query->getResult();
-
-        $navTimingsFiltered = [];
-
-        foreach ($navigationTimings as $navTiming) {
-            if ($navTiming->getFirstContentfulPaint() > 0) {
-                $navTimingsFiltered[] = $navTiming;
-            }
-        }
-
-        return $this->render(
-            'diagrams/waterfalls_list.html.twig',
-            [
-                'page_views' => $navTimingsFiltered
-            ]
-        );
-    }
-
-    /**
      * @Route("/diagrams/beacon/draw", name="diagrams_beacon_draw")
      */
     public function beaconDraw()

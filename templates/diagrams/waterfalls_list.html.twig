@@ -1,12 +1,12 @@
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Waterfalls</li>
-    </ol>
-</nav>
-
 <div class="row">
-    <div class="col-6">
+    <div class="col-xs-12 col-sm-12 col-md-12">
+        <ol class="breadcrumb pull-left">
+            <li>Last 400 page views</li>
+        </ol>
+    </div>
+</div>
+<div class="row">
+    <div class="col-4">
         <label for="page_view_id">Page View ID:</label>
         <input id="page_view_id" type="text" />
         <button type="button" id="load_page_view">Load</button>
@@ -15,23 +15,26 @@
         <table class="table table-sm table-scroll">
             <thead>
             <tr>
-                <th class="col-3" scope="col">Page Type</th>
-                <th class="col-3" scope="col">Date</th>
-                <th class="col-3" scope="col">First Byte</th>
-                <th class="col-3" scope="col">First Paint</th>
+                <th class="col-4" scope="col">View ID</th>
+                {#<th class="col-3" scope="col">Date</th>#}
+                <th class="col-4" scope="col">First Byte</th>
+                <th class="col-4" scope="col">First Paint</th>
             </tr>
             </thead>
             <tbody>
             {% for page_view in page_views %}
                 <tr data-beacon-id="{{ page_view.getPageViewId() }}" class="beacon-row" id="row_{{ page_view.getPageViewId() }}">
-                    <td class="col-3">View ID: {{ page_view.getPageViewId() }}</td>
-                    <td class="col-3">{{ page_view.getCreatedAt()|date("m/d/Y H:i:s") }}</td>
-                    <td class="col-3">{{ page_view.getFirstByte() }} ms</td>
-                    <td class="col-3">{{ page_view.getFirstContentfulPaint() }} ms</td>
+                    <td class="col-4">{{ page_view.getPageViewId() }}</td>
+                    {#<td class="col-3">{{ page_view.getCreatedAt()|date("m/d/Y H:i:s") }}</td>#}
+                    <td class="col-4">{{ page_view.getFirstByte() }} ms</td>
+                    <td class="col-4">{{ page_view.getFirstContentfulPaint() }} ms</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
+
+        <div id="resourcesSize" style="margin-top: 20px;"></div>
+
         <script type="text/javascript">
             var loadBeacon = function(pageViewId) {
 
@@ -92,14 +95,9 @@
             beaconRows.first().click();
         </script>
     </div>
-    <div class="col-6">
-        <div id="resourcesSize" style="margin-top: 20px;"></div>
-    </div>
-</div>
-
-<div class="row">
     <div class="col-8">
         <div id="waterfall-container">
+            <p>Waterfall</p>
             <div id="legend-holder">
                 <ul class="resource-legend">
                     {#<li class="legend-blocked" title="Time spent in a queue waiting for a network connection.">Blocked</li>#}
@@ -109,7 +107,7 @@
                     {#<li class="legend-send" title="Time required to send HTTP request to the server.">Send</li>#}
                     {#<li class="legend-wait" title="Waiting for a response from the server.">Wait</li>#}
                     {#<li class="legend-receive" title="Time required to read entire response from the server (or cache).">#}
-                        {#Receive#}
+                    {#Receive#}
                     {#</li>#}
                     <li class="legend-receive" title="Duration">Duration</li>
                 </ul>
