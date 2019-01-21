@@ -6,7 +6,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Entity\NavigationTimings;
 
-use App\BasicRum\Date\DayInterval;
+use App\BasicRum\Report;
+use App\BasicRum\DiagramBuilder;
 
 class DashboardController extends Controller
 {
@@ -15,20 +16,23 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $today = new \DateTime();
-        $past  = new \DateTime('-3 months');
-
-        $dayInterval = new DayInterval();
-
-        $interval = $dayInterval->generateDayIntervals(
-            $past->format('Y-m-d'),
-            $today->format('Y-m-d')
+        return $this->render('dashboard.html.twig',
+            [
+                'device_samples'  => json_encode($this->deviceSamples()),
+                'last_page_views' => $this->lastPageViewsListHTML()
+            ]
         );
+    }
 
-        $samples = [
-            'Desktop' => [],
-            'Tablet'  => [],
-            'Mobile'  => []
+    /**
+     * @return array
+     */
+    private function deviceSamples()
+    {
+        $devices = [
+            'Desktop',
+            'Tablet',
+            'Mobile'
         ];
 
         $colors = [
@@ -37,28 +41,33 @@ class DashboardController extends Controller
             'Mobile'  => 'rgb(44, 160, 44)'
         ];
 
-        $growthCounter = 0;
+        $today = new \DateTime(('-1 day'));
+        $past  = new \DateTime('-2 weeks');
 
-        foreach ($interval as $period) {
-            foreach ($samples as $deviceType => $data) {
-                $count = 0;
+        $period = [
+            'current_period_from_date' => $past->format('Y-m-d'),
+            'current_period_to_date'   => $today->format('Y-m-d'),
+        ];
 
-                if ($deviceType === 'Desktop') {
-                    $count = rand(20000, 26000);
-                }
+        $samples = [];
 
-                if ($deviceType === 'Tablet') {
-                    $count = rand(7000, 7500);
-                }
+        foreach ($devices as $device) {
+            $data = [
+                'period'      => $period,
+                'perf_metric' => 'first_byte',
+                'filters'     => [
+                    'device_type' => [
+                        'search_value' => $device,
+                        'condition'    => 'is'
+                    ]
+                ]
+            ];
 
-                if ($deviceType === 'Mobile') {
-                    $count = rand(23000, 28000);
-                }
+            $report = new Report($this->getDoctrine());
 
-                $samples[$deviceType][$period['start']] = $count + $growthCounter * rand(10, 25);
+            $diagramBuilder = new DiagramBuilder($report);
 
-                $growthCounter++;
-            }
+            $samples[$device] = $diagramBuilder->count($data);
         }
 
         $deviceDiagrams = [];
@@ -75,13 +84,7 @@ class DashboardController extends Controller
             ];
         }
 
-        return $this->render('dashboard.html.twig',
-            [
-                'device_samples'  => json_encode($deviceDiagrams),
-                'last_page_views' => $this->lastPageViewsListHTML()
-
-            ]
-        );
+        return $deviceDiagrams;
     }
 
     private function lastPageViewsListHTML()

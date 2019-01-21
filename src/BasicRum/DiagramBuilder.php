@@ -63,6 +63,28 @@ class DiagramBuilder
         return $diagramData;
     }
 
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function count(array $data)
+    {
+        $dayInterval = new DayInterval();
+
+        $interval = $dayInterval->generateDayIntervals(
+            $data['period']['current_period_from_date'],
+            $data['period']['current_period_to_date']
+        );
+
+        $samples = [];
+
+        foreach ($interval as $day) {
+            $samples[$day['start']] = count($this->report->query($day, $data['perf_metric'], $data['filters']));
+        }
+
+        return $samples;
+    }
+
 
     /**
      * @param array $data
