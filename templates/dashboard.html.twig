@@ -5,7 +5,34 @@
         </ol>
     </div>
 </div>
+
 <div class="row">
+    <div class="col-xs-6 col-sm-12 col-md-6">
+        <br />
+        <p>10 most popular pages: <br /> <span style="font-size: 12px">Performance (current week vs. last week)</span></p>
+        <table class="table table-sm table-scroll">
+            <thead>
+                <tr>
+                    {#<th class="col-1" scope="col">#</th>#}
+                    <th class="col-4" scope="col">Url</th>
+                    <th class="col-2" scope="col">Views</th>
+                    <th class="col-3" scope="col">First Byte</th>
+                    <th class="col-3" scope="col">First Paint</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for page_perf in popular_pages_performance %}
+                <tr>
+                    {#<td class="col-1">{{ page_perf.number }}</td>#}
+                    <td class="col-4">{{ page_perf.url }}</td>
+                    <td class="col-2">{{ page_perf.page_views }}</td>
+                    <td class="col-3">{{ page_perf.first_byte_median }} (<span style="font-weight: bold; {{ page_perf.first_byte_diff_style }}">{{ page_perf.first_byte_diff }}</span>)</td>
+                    <td class="col-3">{{ page_perf.first_paint_median }} (<span style="font-weight: bold; {{ page_perf.first_paint_diff_style }}">{{ page_perf.first_paint_diff }}</span>)</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div class="col-xs-6 col-sm-12 col-md-6">
         <div id="visits-per-device" style="width: 100%;"></div>
 
@@ -22,80 +49,6 @@
 
             Plotly.newPlot(stacksDiv, {{ device_samples|raw }}, layout, {displayModeBar: false});
         </script>
-    </div>
-
-    <div class="col-xs-6 col-sm-12 col-md-6">
-        <br />
-        <p>10 most popular pages: <br /> <span style="font-size: 12px">Performance (current week vs. last week)</span></p>
-        <table class="table table-sm table-scroll">
-            <thead>
-                <tr>
-                    <th class="col-1" scope="col">#</th>
-                    <th class="col-4" scope="col">Url</th>
-                    <th class="col-1" scope="col">Visits</th>
-                    <th class="col-3" scope="col">First Byte</th>
-                    <th class="col-3" scope="col">First Paint</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="col-1">1</td>
-                    <td class="col-4">https://www.lostweek.de</td>
-                    <td class="col-1">10 %</td>
-                    <td class="col-3">0.63 s (<span style="font-weight: bold; color: green">-0.1 s</span>)</td>
-                    <td class="col-3">0.85 s (<span style="font-weight: bold; color: red">+0.2 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">2</td>
-                    <td class="col-4">https://www.lostweek.de/sale</td>
-                    <td class="col-1">7,4 %</td>
-                    <td class="col-3">0.46 s (<span style="font-weight: bold;"> 0.0 s</span>)</td>
-                    <td class="col-3">0.71 s (<span style="font-weight: bold; color: red">+0.3 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">3</td>
-                    <td class="col-4">https://www.lostweek.de/books</td>
-                    <td class="col-1">5,3 %</td>
-                    <td class="col-3">0.46 s (<span style="font-weight: bold; color: red">+0.05 s</span>)</td>
-                    <td class="col-3">0.71 s (<span style="font-weight: bold; color: red">+0.5 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">4</td>
-                    <td class="col-4">https://www.lostweek.de/cart</td>
-                    <td class="col-1">5,1 %</td>
-                    <td class="col-3">0.46 s (<span style="font-weight: bold;"> 0.0 s</span>)</td>
-                    <td class="col-3">0.71 s (<span style="font-weight: bold; color: red">+0.3 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">5</td>
-                    <td class="col-4">https://www.lostweek.de/account</td>
-                    <td class="col-1">4,7 %</td>
-                    <td class="col-3">0.46 s (<span style="font-weight: bold;"> 0.0 s</span>)</td>
-                    <td class="col-3">0.71 s (<span style="font-weight: bold; color: green">-0.2 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">6</td>
-                    <td class="col-4">https://www.lostweek.de/checkout</td>
-                    <td class="col-1">4,4 %</td>
-                    <td class="col-3">0.46 s (<span style="font-weight: bold; color: green">-0.3 s</span>)</td>
-                    <td class="col-3">0.71 s (<span style="font-weight: bold; color: red">+0.3 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">7</td>
-                    <td class="col-4">https://www.lostweek.de/magazine</td>
-                    <td class="col-1">4,2 %</td>
-                    <td class="col-3">0.63 s (<span style="font-weight: bold; color: green">-0.1 s</span>)</td>
-                    <td class="col-3">0.85 s (<span style="font-weight: bold; color: red">+0.2 s</span>)</td>
-                </tr>
-                <tr>
-                    <td class="col-1">8</td>
-                    <td class="col-4">https://www.lostweek.de/razgrad</td>
-                    <td class="col-1">4,1 %</td>
-                    <td class="col-3">0.46 s (<span style="font-weight: bold;"> 0.0 s</span>)</td>
-                    <td class="col-3">0.71 s (<span style="font-weight: bold; color: red">+0.3 s</span>)</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 </div>
 

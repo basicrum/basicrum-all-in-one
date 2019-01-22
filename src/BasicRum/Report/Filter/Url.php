@@ -35,9 +35,18 @@ class Url implements FilterInterface
                 'nturl',
                 \Doctrine\ORM\Query\Expr\Join::WITH,
                 "nt.urlId = nturl.id"
-            )
-            ->andWhere($fieldName . ' LIKE :' . $this->getInternalIdentifier())
-            ->setParameter($this->getInternalIdentifier(), '%' . $value . '%');
+            );
+
+        if ('is' === $condition) {
+            $queryBuilder
+                ->andWhere($fieldName . ' = :' . $this->getInternalIdentifier())
+                ->setParameter($this->getInternalIdentifier(), $value);
+        } else {
+            $queryBuilder
+                ->andWhere($fieldName . ' LIKE :' . $this->getInternalIdentifier())
+                ->setParameter($this->getInternalIdentifier(), '%' . $value . '%');
+        }
+
     }
 
     /**
