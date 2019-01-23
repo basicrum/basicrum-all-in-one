@@ -58,7 +58,8 @@ class DiagramsGeneratorController extends Controller
             0 => 'rgb(44, 160, 44)',
             1 => 'rgb(255, 127, 14)',
             2 => 'rgb(31, 119, 180)',
-            3 => 'rgb(31, 119, 44)'
+            3 => 'rgb(31, 119, 44)',
+            4 => 'rgb(255, 119, 44)'
         ];
 
         foreach ($periods as $key => $period) {
@@ -124,21 +125,21 @@ class DiagramsGeneratorController extends Controller
         ini_set('display_errors', '1');
 
         $pages = [
-            'All',
-            'Cart',
-            'Product',
-            'Checkout'
+            'All Pages'      => '',
+//            'Cart'     => '/checkout/cart',
+//            'Product'  => '/catalog/product/view/id/',
+//            'Checkout' => '/checkout/onepage'
         ];
 
         $pageDiagrams = [];
 
-        foreach ($pages as $pageName) {
-            $res = $this->_pageOvertime($pageName);
+        foreach ($pages as $pageName => $url) {
+            $res = $this->_pageOvertime($url);
 
             $pageDiagrams[] = [
                 'diagrams'            => json_encode($res['diagrams']),
                 'layout_extra_shapes' => json_encode($res['shapes']),
-                'title'               => $pageName . " TTFP (median)"
+                'title'               => $pageName . " - First Paint (median)"
             ];
         }
 
@@ -150,10 +151,10 @@ class DiagramsGeneratorController extends Controller
     }
 
     /**
-     * @param string $pageName
+     * @param string $url
      * @return array
      */
-    private function _pageOvertime(string $pageName)
+    private function _pageOvertime(string $url)
     {
         $today = new \DateTime();
         $past  = new \DateTime('-3 months');
@@ -166,9 +167,9 @@ class DiagramsGeneratorController extends Controller
         ];
 
         $deviceTypes = [
-            'Desktop' => 0,
-            'Tablet'  => 348,
-            'Mobile'  => 517
+            'Desktop',
+            'Tablet',
+            'Mobile'
         ];
 
         $diagrams = [];
@@ -178,13 +179,23 @@ class DiagramsGeneratorController extends Controller
         $diagramBuilder = new DiagramBuilder($report);
 
         foreach ($periods as $period) {
-            $data = [
-                'period'      => $period,
-                'perf_metric' => 'first_paint'
-            ];
+            foreach ($deviceTypes as $device) {
+                $data = [
+                    'period'      => $period,
+                    'perf_metric' => 'first_paint',
+                    'filters'     => [
+                        'device_type' => [
+                            'search_value' => $device,
+                            'condition'    => 'is'
+                        ],
+                        'url' => [
+                            'search_value' => '',
+                            'condition'    => 'contains'
+                        ]
+                    ]
+                ];
 
-            foreach ($deviceTypes as $device => $offset) {
-                $diagram = $diagramBuilder->buildOverTime($data, $offset);
+                $diagram = $diagramBuilder->buildOverTime($data);
 
                 $diagram = array_merge(
                     $diagram,
