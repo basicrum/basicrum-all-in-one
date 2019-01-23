@@ -11,7 +11,7 @@ use App\BasicRum\NavigationTiming\MetricAggregator;
 use App\BasicRum\Report\Filter\FilterAggregator;
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
-use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class Report
 {
@@ -19,7 +19,7 @@ class Report
     /* @var \Doctrine\Bundle\DoctrineBundle\Registry $em */
     protected $em;
 
-    /** @var \Symfony\Component\Cache\Simple\FilesystemCache */
+    /** @var \Symfony\Component\Cache\Adapter\FilesystemAdapter */
     protected $cache;
 
     /** @var \App\BasicRum\Report\Filter\FilterAggregator */
@@ -33,25 +33,30 @@ class Report
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $em)
     {
         $this->em = $em;
-        $this->cache = new FilesystemCache();
+        $this->cache = new FilesystemAdapter('cache.app');
         $this->filterAggregator = new FilterAggregator();
     }
 
     /**
      * @param array $period
      * @param string $perfMetric
+     * @param array $filters
      * @return array
      */
-    public function query(array $period, string $perfMetric, $filters)
+    public function query(array $period, string $perfMetric, array $filters)
     {
-        $cacheKey = 'test-dddaa' . md5($period['start'] . $period['end'] . $perfMetric . print_r($filters, true));
+        $cacheKey = 'query_report_' . md5($period['start'] . $period['end'] . $perfMetric . print_r($filters, true));
 
-        if ($this->cache->has($cacheKey)) {
-            return $this->cache->get($cacheKey);
+        if ($this->cache->hasItem($cacheKey)) {
+            return $this->cache->getItem($cacheKey)->get();
         }
 
         $samples = $this->_getInMetricInPeriod($period['start'], $period['end'], $perfMetric, $filters);
-        $this->cache->set($cacheKey, $samples);
+
+        $cacheItem = $this->cache->getItem($cacheKey);
+        $cacheItem->set($samples);
+
+        $this->cache->save($cacheItem);
 
         return $samples;
     }
@@ -81,9 +86,12 @@ class Report
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');
 
+        $maxId = $this->_getHighestIdInInterval($start, $end);
+        $minId = $this->_getLowesIdInInterval($start, $end);
+
         $queryBuilder
             ->select(['nt.' . $perfMetricCamelized])
-            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'");
+            ->where("nt.pageViewId >= '" . $minId . "' AND nt.pageViewId <= '" . $maxId . "'");
 
 
         foreach ($filters as $key => $data) {
@@ -96,7 +104,7 @@ class Report
         }
 
         $navigationTimings = $queryBuilder->getQuery()
-            ->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
+            ->getArrayResult();
 
 
         /** @var NavigationTimings $nav */
@@ -107,6 +115,28 @@ class Report
         }
 
         return $samples;
+    }
+
+    private function _getHighestIdInInterval(string $start, string $end)
+    {
+        $repository = $this->em->getRepository(NavigationTimings::class);
+
+        return $repository->createQueryBuilder('nt')
+            ->select('MAX(nt.pageViewId)')
+            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    private function _getLowesIdInInterval(string $start, string $end)
+    {
+        $repository = $this->em->getRepository(NavigationTimings::class);
+
+        return $repository->createQueryBuilder('nt')
+            ->select('MIN(nt.pageViewId)')
+            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
