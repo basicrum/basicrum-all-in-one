@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\PageTypeConfig;
 use App\Form\PageTypeConfigType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/page/type/config")
  */
-class PageTypeConfigController extends Controller
+class PageTypeConfigController extends AbstractController
 {
     /**
      * @Route("/", name="page_type_config_index", methods="GET")

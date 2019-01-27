@@ -8,12 +8,12 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
 
-class DataFixController extends Controller
+class DataFixController extends AbstractController
 {
 
     /**

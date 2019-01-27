@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUrls;
 
 use App\BasicRum\Report;
 use App\BasicRum\DiagramBuilder;
 
-class DashboardController extends Controller
+class DashboardController extends AbstractController
 {
     /**
      * @Route("/dashboard", name="dashboard")

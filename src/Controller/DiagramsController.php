@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\BasicRum\WaterfallSvgRenderer;
 use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 use App\BasicRum\ResourceTiming\Decompressor;
@@ -21,7 +21,7 @@ use DateTime;
 use DatePeriod;
 use DateInterval;
 
-class DiagramsController extends Controller
+class DiagramsController extends AbstractController
 {
 
     /**
