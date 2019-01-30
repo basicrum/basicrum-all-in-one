@@ -156,7 +156,7 @@ class DiagramsGeneratorController extends AbstractController
      */
     private function _pageOvertime(string $url)
     {
-        $today = new \DateTime();
+        $today = new \DateTime('-1 day');
         $past  = new \DateTime('-3 months');
 
         $periods =  [
