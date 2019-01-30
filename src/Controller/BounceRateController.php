@@ -8,176 +8,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use Symfony\Component\Cache\Simple\FilesystemCache;
-
-use App\Entity\NavigationTimings;
-use App\Entity\NavigationTimingsUserAgents;
-
 use DateTime;
 use DatePeriod;
 use DateInterval;
 
+use App\BasicRum\BounceRate;
+
 class BounceRateController extends AbstractController
 {
 
-    private function _getInMetricInPeriod($start, $end)
-    {
-        $botsUA = $this->_botUserAgents();
-
-        $filteredUA = $this->_userAgents('mobile');
-
-        $sessions = [];
-        $bouncedSessions = [];
-
-        $cache = new FilesystemCache();
-
-        $cacheKey = 'bounce_day_report_' . md5($start . $end);
-
-        if ($cache->has($cacheKey)) {
-            $navigationTimings = $cache->get($cacheKey);
-        } else {
-            $minId = $this->_getLowesIdInInterval($start, $end);
-            $maxId = $this->_getHighestIdInInterval($start, $end);
-
-            $repository = $this->getDoctrine()
-                ->getRepository(NavigationTimings::class);
-
-            $query = $repository->createQueryBuilder('nt')
-                ->where("nt.pageViewId >= '" . $minId . "' AND nt.pageViewId <= '" . $maxId . "'")
-                ->select(['nt.guid', 'nt.urlId', 'nt.processId', 'nt.firstPaint', 'nt.userAgentId', 'nt.createdAt'])
-                ->orderBy('nt.guid, nt.createdAt', 'ASC')
-                ->getQuery();
-
-            $navigationTimings = $query->getResult();
-
-            $cache->set($cacheKey, $navigationTimings);
-        }
-
-        $scannedGuid = 'test-guid';
-        $viewsCount = 0;
-
-        foreach ($navigationTimings as $nav) {
-            if ( empty($nav['guid'] )) {
-                continue;
-            }
-
-            if ( $scannedGuid !== $nav['guid']) {
-                $viewsCount = 0;
-            }
-
-            if ($viewsCount >= 2) {
-                continue;
-            }
-
-            $scannedGuid = $nav['guid'];
-            $viewsCount++;
-
-//            if (!in_array((int) $nav['userAgentId'], $filteredUA)) {
-//                continue;
-//            }
-
-            if (in_array((int) $nav['urlId'], [11773, 13])) {
-                continue;
-            }
-
-            if (in_array((int) $nav['userAgentId'], $botsUA)) {
-                continue;
-            }
-
-            $ttfp = $nav['firstPaint'];
-
-            if ($ttfp == 0) {
-                continue;
-            }
-
-            // Diff in minutes
-//            if (count($navigationTimings) > 1) {
-//                $startDiff  = strtotime($nav['createdAt']->format('Y-m-d H:i:s'));
-//                $endDiff    = strtotime($nav['createdAt']->format('Y-m-d H:i:s'));
-//
-//                $minutes = round(abs($startDiff - $endDiff) / 60, 2);
-//
-//                if ($minutes > 30) {
-//                    continue;
-//                }
-//            }
-
-            if (!isset($sessions[$scannedGuid])) {
-                $sessions[$scannedGuid] = $ttfp;
-            }
-
-            $bouncedSessions[$scannedGuid] = 1;
-
-            if ($viewsCount > 1) {
-                unset($bouncedSessions[$scannedGuid]);
-            }
-        }
-
-        return [
-            'all_sessions'          => $sessions,
-            'bounced_sessions'      => $bouncedSessions,
-            'converted_sessions'    => [],
-            'visited_cart_sessions' => []
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    private function _botUserAgents()
-    {
-        $userAgentRepo = $this->getDoctrine()
-            ->getRepository(NavigationTimingsUserAgents::class);
-
-        $query = $userAgentRepo->createQueryBuilder('ua')
-            ->where("ua.deviceType = 'bot'")
-            ->select('ua.id')
-            ->getQuery();
-
-        $userAgents = $query->getResult();
-
-        $userAgentsArr = [];
-
-        foreach ($userAgents as $agent) {
-            $userAgentsArr[] = $agent['id'];
-        }
-
-        return $userAgentsArr;
-    }
-
-    /**
-     * @param string $device
-     * @param string $os
-     * @return mixed
-     */
-    private function _userAgents(string $device, string $os = '')
-    {
-        $userAgentRepo = $this->getDoctrine()
-            ->getRepository(NavigationTimingsUserAgents::class);
-
-        /** @var \Doctrine\ORM\QueryBuilder $qb */
-        $qb = $userAgentRepo->createQueryBuilder('ua');
-
-        $qb->where("ua.deviceType = '{$device}'");
-
-        if (!empty($os)) {
-            $qb->andWhere("ua.osName = '{$os}'");
-        }
-
-        $query = $qb
-            ->select('ua.id')
-            ->getQuery();
-
-        $userAgents = $query->getResult();
-
-        $userAgentsMobileArr = [];
-
-        foreach ($userAgents as $agent) {
-            $userAgentsMobileArr[] = $agent['id'];
-        }
-
-        return $userAgentsMobileArr;
-    }
 
     /**
      * @Route("/diagrams/bounce_rate/distribution", name="diagrams_bounce_rate_distribution")
@@ -195,14 +34,17 @@ class BounceRateController extends AbstractController
         $dateConditionStart = '2018-12-10';
         $dateConditionEnd   = '2019-01-24';
 
+//        $dateConditionStart = '2018-10-24';
+//        $dateConditionEnd   = '2018-12-10';
+
         $dateConditionStart = '2018-10-24';
-        $dateConditionEnd   = '2018-12-10';
+        $dateConditionEnd   = '2018-10-25';
 
         // Test periods
         $periodChunks = $this->_gerPeriodDays($dateConditionStart, $dateConditionEnd);
 
         $groupMultiplier = 200;
-        $upperLimit = 7000;
+        $upperLimit = 5000;
 
         $firstPaintArr = [];
         $allFirstPaintArr = [];
@@ -210,7 +52,7 @@ class BounceRateController extends AbstractController
         $bouncesPercents = [];
 
         // Init the groups/buckets
-        for($i = $groupMultiplier; $i <= 7000; $i += $groupMultiplier) {
+        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
             $allFirstPaintArr[$i] = 0;
         }
 
@@ -222,8 +64,10 @@ class BounceRateController extends AbstractController
             }
         }
 
+        $bounceRateReport = new BounceRate($this->getDoctrine());
+
         foreach ($periodChunks as $day) {
-            $dayReport = $this->_getInMetricInPeriod($day['start'], $day['end']);
+            $dayReport = $bounceRateReport->getInMetricInPeriod($day['start'], $day['end']);
 
             $convertedSessions += count($dayReport['converted_sessions']);
 
@@ -231,7 +75,7 @@ class BounceRateController extends AbstractController
 
                 $paintGroup = $groupMultiplier * (int) ($ttfp / $groupMultiplier);
 
-                if (7000 >= $paintGroup && $paintGroup > 0) {
+                if ($upperLimit >= $paintGroup && $paintGroup > 0) {
                     $allFirstPaintArr[$paintGroup]++;
                 }
 
@@ -283,6 +127,11 @@ class BounceRateController extends AbstractController
         );
     }
 
+    /**
+     * @param $startDate
+     * @param $endDate
+     * @return array
+     */
     private function _gerPeriodDays($startDate, $endDate)
     {
         $calendarDayFrom = $startDate;
@@ -306,28 +155,6 @@ class BounceRateController extends AbstractController
         }
 
         return $betweenArr;
-    }
-
-    private function _getHighestIdInInterval(string $start, string $end)
-    {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
-
-        return $repository->createQueryBuilder('nt')
-            ->select('MAX(nt.pageViewId)')
-            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    private function _getLowesIdInInterval(string $start, string $end)
-    {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
-
-        return $repository->createQueryBuilder('nt')
-            ->select('MIN(nt.pageViewId)')
-            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
 }
