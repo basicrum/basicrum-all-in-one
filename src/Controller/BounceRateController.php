@@ -29,23 +29,29 @@ class BounceRateController extends AbstractController
         $sessions = [];
         $bouncedSessions = [];
 
-        $minId = $this->_getLowesIdInInterval($start, $end);
-        $maxId = $this->_getHighestIdInInterval($start, $end);
+        $cache = new FilesystemCache();
 
-        $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+        $cacheKey = 'bounce_day_report_' . md5($start . $end);
 
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '" . $minId . "' AND nt.pageViewId <= '" . $maxId . "'")
-            ->select(['nt.guid', 'nt.urlId', 'nt.processId', 'nt.firstPaint', 'nt.userAgentId', 'nt.createdAt'])
-            ->orderBy('nt.guid, nt.createdAt', 'ASC')
-            ->getQuery();
+        if ($cache->has($cacheKey)) {
+            $navigationTimings = $cache->get($cacheKey);
+        } else {
+            $minId = $this->_getLowesIdInInterval($start, $end);
+            $maxId = $this->_getHighestIdInInterval($start, $end);
 
-        $navigationTimings = $query->getResult();
+            $repository = $this->getDoctrine()
+                ->getRepository(NavigationTimings::class);
 
+            $query = $repository->createQueryBuilder('nt')
+                ->where("nt.pageViewId >= '" . $minId . "' AND nt.pageViewId <= '" . $maxId . "'")
+                ->select(['nt.guid', 'nt.urlId', 'nt.processId', 'nt.firstPaint', 'nt.userAgentId', 'nt.createdAt'])
+                ->orderBy('nt.guid, nt.createdAt', 'ASC')
+                ->getQuery();
 
-//        echo '<pre>';
-//        print_r($navigationTimings);
+            $navigationTimings = $query->getResult();
+
+            $cache->set($cacheKey, $navigationTimings);
+        }
 
         $scannedGuid = 'test-guid';
         $viewsCount = 0;
@@ -66,9 +72,9 @@ class BounceRateController extends AbstractController
             $scannedGuid = $nav['guid'];
             $viewsCount++;
 
-            if (!in_array((int) $nav['userAgentId'], $filteredUA)) {
-                continue;
-            }
+//            if (!in_array((int) $nav['userAgentId'], $filteredUA)) {
+//                continue;
+//            }
 
             if (in_array((int) $nav['urlId'], [11773, 13])) {
                 continue;
@@ -112,90 +118,6 @@ class BounceRateController extends AbstractController
             'bounced_sessions'      => $bouncedSessions,
             'converted_sessions'    => [],
             'visited_cart_sessions' => []
-        ];
-    }
-
-    private function _getBounces(array $guids, string $minId, string $maxId, array $filteredUA, array $botsUA)
-    {
-        $sessions        = [];
-        $bouncedSessions = [];
-
-        $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
-
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.guid IN (:guids) AND nt.pageViewId >= '" . $minId . "' AND nt.pageViewId <= '" . $maxId . "'")
-            ->select(['nt.guid', 'nt.urlId', 'nt.processId', 'nt.firstPaint', 'nt.userAgentId', 'nt.createdAt'])
-//            ->setParameter('guids', $guids)
-            ->orderBy('nt.guid, nt.createdAt', 'ASC')
-            ->getQuery();
-
-        $navigationTimings = $query->getResult();
-
-
-//        echo '<pre>';
-//        print_r($navigationTimings);
-
-        $scannedGuid = '';
-        $viewsCount = 0;
-
-        foreach ($navigationTimings as $nav) {
-            if ( $scannedGuid !== $nav['guid']) {
-                $viewsCount = 0;
-            }
-
-            if ($viewsCount >= 2) {
-                continue;
-            }
-
-
-            $scannedGuid = $nav['guid'];
-            $viewsCount++;
-
-            if (!in_array((int) $nav['userAgentId'], $filteredUA)) {
-                continue;
-            }
-
-            if (in_array((int) $nav['urlId'], [11773, 13])) {
-                continue;
-            }
-
-            if (in_array((int) $nav['userAgentId'], $botsUA)) {
-                continue;
-            }
-
-            $ttfp = $nav['firstPaint'];
-
-            if ($ttfp == 0) {
-                continue;
-            }
-
-            // Diff in minutes
-//            if (count($navigationTimings) > 1) {
-//                $startDiff  = strtotime($nav['createdAt']->format('Y-m-d H:i:s'));
-//                $endDiff    = strtotime($nav['createdAt']->format('Y-m-d H:i:s'));
-//
-//                $minutes = round(abs($startDiff - $endDiff) / 60, 2);
-//
-//                if ($minutes > 30) {
-//                    continue;
-//                }
-//            }
-
-            if (!isset($sessions[$scannedGuid])) {
-                $sessions[$scannedGuid] = $ttfp;
-            }
-
-            $bouncedSessions[$scannedGuid] = 1;
-
-            if ($viewsCount > 1) {
-                unset($bouncedSessions[$scannedGuid]);
-            }
-        }
-
-        return [
-            'sessions'         => $sessions,
-            'bounced_sessions' => $bouncedSessions
         ];
     }
 
@@ -270,8 +192,11 @@ class BounceRateController extends AbstractController
         $bouncesCount = 0;
         $convertedSessions = 0;
 
-        $dateConditionStart = '2019-01-28';
-        $dateConditionEnd   = '2019-01-29';
+        $dateConditionStart = '2018-12-10';
+        $dateConditionEnd   = '2019-01-24';
+
+        $dateConditionStart = '2018-10-24';
+        $dateConditionEnd   = '2018-12-10';
 
         // Test periods
         $periodChunks = $this->_gerPeriodDays($dateConditionStart, $dateConditionEnd);
@@ -298,16 +223,7 @@ class BounceRateController extends AbstractController
         }
 
         foreach ($periodChunks as $day) {
-            $cache = new FilesystemCache();
-
-            $cacheKey = '133teadd2teru3e' . md5($day['start'] . $day['end']);
-
-//            if ($cache->has($cacheKey)) {
-//                $dayReport = $cache->get($cacheKey);
-//            } else {
             $dayReport = $this->_getInMetricInPeriod($day['start'], $day['end']);
-//                $cache->set($cacheKey, $dayReport);
-//            }
 
             $convertedSessions += count($dayReport['converted_sessions']);
 
