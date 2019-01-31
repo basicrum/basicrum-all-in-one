@@ -5,6 +5,7 @@
 </nav>
 {% for key,diagram in diagrams %}
 <div id="diagramContainer{{ key }}" style="height: 300px"></div>
+<div id="bounceRateDiagramContainer{{ key }}" style="height: 300px"></div>
 {% endfor %}
 <script type="text/javascript">
     var basicRumPlotOverTime = function(key, data, layout_extra_shapes, title) {
@@ -42,7 +43,40 @@
         Plotly.newPlot('diagramContainer' + key, data, layout, {displayModeBar: false});
     };
 
+    var basicRumPlotBounceRateOverTime = function(key, data, title) {
+        var layout = {
+            title: title,
+            yaxis: {
+                range: [0, 100],
+                fixedrange: true
+            },
+            xaxis: {
+                showgrid: false,
+                fixedrange: true
+            },
+            legend: {
+                x: 0,
+                y: 1.2,
+                traceorder: 'normal',
+                font: {
+                    family: 'sans-serif',
+                    size: 12,
+                    color: '#000'
+                },
+                bgcolor: '#E2E2E2',
+                bordercolor: '#FFFFFF',
+                borderwidth: 2
+            }
+        };
+
+        Plotly.newPlot('bounceRateDiagramContainer' + key, data, layout, {displayModeBar: false});
+    };
+
     {% for key,diagram in diagrams %}
     basicRumPlotOverTime({{ key }}, {{ diagram.diagrams|raw }}, {{ diagram.layout_extra_shapes|raw }}, '{{ diagram.title }}');
+    {% endfor %}
+
+    {% for key,diagram in bounce_rate_diagrams %}
+    basicRumPlotBounceRateOverTime({{ key }}, {{ diagram|raw }}, 'Bounce Rate');
     {% endfor %}
 </script>

@@ -131,7 +131,8 @@ class DiagramsGeneratorController extends AbstractController
 //            'Checkout' => '/checkout/onepage'
         ];
 
-        $pageDiagrams = [];
+        $pageDiagrams       = [];
+        $bounceRateDiagrams = [];
 
         foreach ($pages as $pageName => $url) {
             $res = $this->_pageOvertime($url);
@@ -141,11 +142,14 @@ class DiagramsGeneratorController extends AbstractController
                 'layout_extra_shapes' => json_encode($res['shapes']),
                 'title'               => $pageName . " - First Paint (median)"
             ];
+
+            $bounceRateDiagrams[] =json_encode($res['bounce_rate_diagrams']);
         }
 
         return $this->render('diagrams/over_time.html.twig',
             [
-                'diagrams' => $pageDiagrams
+                'diagrams'             => $pageDiagrams,
+                'bounce_rate_diagrams' => $bounceRateDiagrams
             ]
         );
     }
@@ -178,6 +182,8 @@ class DiagramsGeneratorController extends AbstractController
 
         $diagramBuilder = new DiagramBuilder($report);
 
+        $bounceRateDiagrams = [];
+
         foreach ($periods as $period) {
             foreach ($deviceTypes as $device) {
                 $data = [
@@ -195,7 +201,11 @@ class DiagramsGeneratorController extends AbstractController
                     ]
                 ];
 
-                $diagram = $diagramBuilder->buildOverTime($data);
+                $report = $diagramBuilder->buildOverTime($data);
+
+                $diagram = $report['performance'];
+
+                $bounceRateDiagram = $report['bounce_rate'];
 
                 $diagram = array_merge(
                     $diagram,
@@ -205,7 +215,17 @@ class DiagramsGeneratorController extends AbstractController
                     ]
                 );
 
+
+                $bounceRateDiagram = array_merge(
+                    $bounceRateDiagram,
+                    [
+                        'type' => 'line',
+                        'name' => $device
+                    ]
+                );
+
                 $diagrams[] = $diagram;
+                $bounceRateDiagrams[] = $bounceRateDiagram;
             }
         }
 
@@ -260,7 +280,8 @@ class DiagramsGeneratorController extends AbstractController
 
         return [
             'diagrams' => $diagrams,
-            'shapes'   => $shapes
+            'shapes'   => $shapes,
+            'bounce_rate_diagrams' => $bounceRateDiagrams
         ];
     }
 

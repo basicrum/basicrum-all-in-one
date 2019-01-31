@@ -93,6 +93,10 @@ class DiagramBuilder
      */
     public function buildOverTime(array $data)
     {
+        $bounceRateReport = new BounceRate($this->report->getDoctrine());
+
+        $bounceRateDay = [];
+
         $dayInterval = new DayInterval();
 
         $interval = $dayInterval->generateDayIntervals(
@@ -108,6 +112,8 @@ class DiagramBuilder
         foreach ($interval as $day) {
             $samples = $this->report->query($day, $data['perf_metric'], $data['filters']);
             $median[$day['start']] = $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1));
+            $device = $data['filters']['device_type']['search_value'];
+            $bounceRateDay[$day['start']] = $bounceRateReport->bounceRateInPeriod($day['start'], $day['end'], $device);
         }
 
         $diagramData = [
@@ -115,7 +121,12 @@ class DiagramBuilder
             'y' => array_values($median)
         ];
 
-        return $diagramData;
+        $bounceRateDiagramData = [
+            'x' => array_keys($bounceRateDay),
+            'y' => array_values($bounceRateDay)
+        ];
+
+        return ['performance' => $diagramData, 'bounce_rate' => $bounceRateDiagramData];
     }
 
     /**

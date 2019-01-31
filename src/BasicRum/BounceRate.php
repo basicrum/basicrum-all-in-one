@@ -29,11 +29,31 @@ class BounceRate
         $this->cache = new FilesystemAdapter('cache.app');
     }
 
-    public function getInMetricInPeriod($start, $end)
+    /**
+     * @param string $start
+     * @param string $end
+     * @param string $device
+     * @return int|string
+     */
+    public function bounceRateInPeriod(string $start, string $end, string $device)
+    {
+        $data = $this->getInMetricInPeriod($start, $end, $device);
+
+        $all = count($data['all_sessions']);
+        $bounced =  count($data['bounced_sessions']);
+
+        if ($all === 0) {
+            return 0;
+        }
+
+        return number_format(($bounced / $all) * 100, 2);
+    }
+
+    public function getInMetricInPeriod($start, $end, $device = 'tablet')
     {
         $botsUA = $this->_botUserAgents();
 
-        $filteredUA = $this->_userAgents('tablet');
+        $filteredUA = $this->_userAgents($device);
 
         $sessions = [];
         $bouncedSessions = [];

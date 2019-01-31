@@ -169,4 +169,12 @@ class Report
         return $repository->findAll();
     }
 
+    /**
+     * @return \Doctrine\Bundle\DoctrineBundle\Registry
+     */
+    public function getDoctrine()
+    {
+        return $this->em;
+    }
+
 }

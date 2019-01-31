@@ -31,14 +31,8 @@ class BounceRateController extends AbstractController
         $bouncesCount = 0;
         $convertedSessions = 0;
 
-        $dateConditionStart = '2018-12-10';
-        $dateConditionEnd   = '2019-01-24';
-
-//        $dateConditionStart = '2018-10-24';
-//        $dateConditionEnd   = '2018-12-10';
-
-        $dateConditionStart = '2018-10-24';
-        $dateConditionEnd   = '2018-10-25';
+        $dateConditionStart = '2019-01-19';
+        $dateConditionEnd   = '2019-01-20';
 
         // Test periods
         $periodChunks = $this->_gerPeriodDays($dateConditionStart, $dateConditionEnd);
