@@ -26,8 +26,7 @@ class BounceRate
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $em)
     {
         $this->em = $em;
-        $this->cache = new FilesystemAdapter('cache.app');
-//        $this->cache->clear();
+        $this->cache = new FilesystemAdapter('basicrum.report.cache');
     }
 
     /**
