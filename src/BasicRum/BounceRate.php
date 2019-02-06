@@ -27,6 +27,7 @@ class BounceRate
     {
         $this->em = $em;
         $this->cache = new FilesystemAdapter('cache.app');
+//        $this->cache->clear();
     }
 
     /**

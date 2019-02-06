@@ -14,9 +14,36 @@ use DateInterval;
 
 use App\BasicRum\BounceRate;
 
+use App\BasicRum\BounceRate\Calculator;
+
 class BounceRateController extends AbstractController
 {
 
+
+    /**
+     * @Route("/diagrams/bounce_rate/calculate", name="diagrams_bounce_rate_calculate")
+     */
+    public function calculate()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+
+        $calculator = new Calculator($this->getDoctrine());
+        $calculator->calculate();
+
+        $response = new Response(
+            json_encode(
+                [
+                    'test' => 'test'
+                ]
+            )
+        );
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 
     /**
      * @Route("/diagrams/bounce_rate/distribution", name="diagrams_bounce_rate_distribution")
