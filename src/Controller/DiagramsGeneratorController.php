@@ -12,6 +12,8 @@ use App\BasicRum\Report;
 use App\BasicRum\DiagramBuilder;
 use App\Entity\Releases;
 
+use App\BasicRum\DiagramOrchestrator;
+
 use DateTime;
 
 class DiagramsGeneratorController extends AbstractController
@@ -32,6 +34,119 @@ class DiagramsGeneratorController extends AbstractController
                 'page_types'         => $diagramBuilder->getPageTypes()
             ]
         );
+    }
+
+    private function _getTestData()
+    {
+        $data =
+<<<EOT
+{
+  "technical_metrics": {
+    "first_paint": "1"
+  },
+  "visualize": {
+    "bucket_size": "100",
+    "time_range": "5000"
+  },
+  "filters": {
+    "device_type": {
+        "condition": "is",
+      "search_value": ""
+    },
+    "os_name": {
+        "condition": "is",
+      "search_value": ""
+    },
+    "browser_name": {
+        "condition": "is",
+      "search_value": ""
+    },
+    "url": {
+        "condition": "contains",
+      "search_value": ""
+    },
+    "page_type": {
+      "search_value": "",
+      "condition": "contains"
+    }
+  },
+  "periods": [
+    {
+        "current_period_from_date": "10/24/2018",
+      "current_period_to_date": "10/24/2018"
+    },
+    {
+        "current_period_from_date": "10/16/2018",
+      "current_period_to_date": "10/17/2018"
+    },
+    {
+        "current_period_from_date": "09/30/2018",
+      "current_period_to_date": "09/30/2018"
+    },
+    {
+        "current_period_from_date": "12/09/2018",
+      "current_period_to_date": "12/09/2018"
+    },
+    {
+        "current_period_from_date": "01/04/2019",
+      "current_period_to_date": "01/20/2019"
+    }
+  ],
+  "decorators": {
+    "density": "1",
+    "show_median": "1"
+  },
+  "business_metrics": {
+    "bounce_rate": "1"
+  }
+}
+EOT;
+
+        $filtersData =
+<<<EOT
+{
+  "filters": {
+    "device_type": {
+        "condition": "is",
+      "search_value": "mobile"
+    },
+    "os_name": {
+        "condition": "is",
+      "search_value": ""
+    },
+    "browser_name": {
+        "condition": "is",
+      "search_value": ""
+    },
+    "url": {
+        "condition": "contains",
+      "search_value": ""
+    },
+    "page_type": {
+      "search_value": "",
+      "condition": "contains"
+    }
+  }
+}
+EOT;
+
+
+        return $filtersData;
+    }
+
+    /**
+     * @Route("/diagrams_generator/generate_clean", name="diagrams_generator_generate_clean")
+     */
+    public function generateClean()
+    {
+        $test = new DiagramOrchestrator();
+
+        $reqs = json_decode($this->_getTestData(), true);
+
+        // Test only for filters
+        $test->fillRequirements($reqs);
+
+        return new Response(json_encode($_POST));
     }
 
     /**

@@ -4,29 +4,29 @@
     </ol>
 </nav>
 <div>
-    <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
+    <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate_clean') }}">
         <div class="diagram-filters">
             <fieldset>
                 <div class="row">
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
-                            <label for="perf_metric">Perf. Metric:</label>
-                            <select name="perf_metric" class="form-control form-control-sm" id="perf_metric">
+                            <label for="technical_metrics">Perf. Metric:</label>
+                            <select name="technical_metrics" class="form-control form-control-sm" id="technical_metrics">
                                 {#<option value="" selected="selected">---</option>#}
                                 {% for metric in navigation_timings %}
                                 <option value="{{ metric.getMetricOffsetKey() }}">{{ metric.getMetricLabel() }}</option>
                                 {% endfor %}
                             </select>
-                            <label for="bucket-size">Bucket Size:</label>
-                            <select name="bucket-size" class="form-control form-control-sm" id="bucket-size">
+                            <label for="visualize_bucket_size">Bucket Size:</label>
+                            <select name="visualize[bucket_size]" class="form-control form-control-sm" id="visualize_bucket_size">
                                 <option value="100">0.1 sec</option>
                                 <option value="200">0.2 sec</option>
                                 <option value="300">0.3 sec</option>
                                 <option value="400">0.4 sec</option>
                                 <option value="500">0.5 sec</option>
                             </select>
-                            <label for="range">Range:</label>
-                            <select name="range" class="form-control form-control-sm" id="range">
+                            <label for="visualize_time_range">Range:</label>
+                            <select name="visualize[time_range]" class="form-control form-control-sm" id="visualize_time_range">
                                 <option value="1000">1 sec</option>
                                 <option value="2000">2 sec</option>
                                 <option value="3000">3 sec</option>
@@ -44,9 +44,9 @@
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-4">
-                                    <label for="device_type">Device:</label>
-                                    <input type="hidden" name="filter[device_type][condition]" value="is" />
-                                    <select name="filter[device_type][search_value]" class="form-control form-control-sm" id="device_type">
+                                    <label for="filters_device_type">Device:</label>
+                                    <input type="hidden" name="filters[device_type][condition]" value="is" />
+                                    <select name="filters[device_type][search_value]" class="form-control form-control-sm" id="filters_device_type">
                                         <option selected value="">All</option>
                                         <option value="mobile">Mobile</option>
                                         <option value="tablet">Tablet</option>
@@ -54,18 +54,18 @@
                                     </select>
                                 </div>
                                 <div class="col-4">
-                                    <label for="os_name">OS:</label>
-                                    <input type="hidden" name="filter[os_name][condition]" value="is" />
-                                    <select name="filter[os_name][search_value]" class="form-control form-control-sm" id="os_name">
+                                    <label for="filters_os_name">OS:</label>
+                                    <input type="hidden" name="filters[os_name][condition]" value="is" />
+                                    <select name="filters[os_name][search_value]" class="form-control form-control-sm" id="filters_os_name">
                                         <option selected value="">All</option>
                                         <option value="Android">Android</option>
                                         <option value="iOS">iOS</option>
                                     </select>
                                 </div>
                                 <div class="col-4">
-                                    <label for="os_name">Browser:</label>
-                                    <input type="hidden" name="filter[browser_name][condition]" value="is" />
-                                    <select name="filter[browser_name][search_value]" class="form-control form-control-sm" id="os_name">
+                                    <label for="filters_browser_name">Browser:</label>
+                                    <input type="hidden" name="filters[browser_name][condition]" value="is" />
+                                    <select name="filters[browser_name][search_value]" class="form-control form-control-sm" id="filters_browser_name">
                                         <option selected value="">All</option>
                                         <option value="Chrome">Chrome</option>
                                         <option value="Firefox">Firefox</option>
@@ -77,10 +77,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <label for="user_agent">Url:</label>
+                            <label for="filters_url_search_value">Url:</label>
                             <div class="row">
                                 <div class="col-4">
-                                    <select name="filter[url][condition]" class="form-control form-control-sm" id="url">
+                                    <select name="filters[url][condition]" class="form-control form-control-sm" id="filters_url_condition">
                                         <option value="is">is</option>
                                         <option selected value="contains">contains</option>
                                         <option value="starts_with">starts with</option>
@@ -88,80 +88,80 @@
                                     </select>
                                 </div>
                                 <div class="col-8">
-                                    <input name="filter[url][search_value]" type="text" class="form-control form-control-sm" id="url" />
+                                    <input name="filters[url][search_value]" type="text" class="form-control form-control-sm" id="filters_url_search_value" />
                                 </div>
                             </div>
-                            <label for="page_type">Page Type:</label>
+                            <label for="filters_page_type">Page Type:</label>
                             <div class="row">
                                 <div class="col-12">
-                                    <select name="filter[page_type][search_value]" class="form-control form-control-sm" id="page_type">
+                                    <select name="filters[page_type][search_value]" class="form-control form-control-sm" id="filters_page_type">
                                         <option value="">All</option>
                                         {#<option value="" selected="selected">---</option>#}
                                         {% for page in page_types %}
                                             <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
                                         {% endfor %}
                                     </select>
-                                    <input type="hidden" name="filter[page_type][condition]" value="contains" />
+                                    <input type="hidden" name="filters[page_type][condition]" value="contains" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group has-feedback">
-                            <label>Period:</label>
+                            <label>Periods:</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date" name="period[0][current_period_from_date]" value="10/24/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="periods[0][current_period_from_date]" value="10/24/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date" name="period[0][current_period_to_date]" value="10/24/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="periods[0][current_period_to_date]" value="10/24/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             <br />
                             <label><input type="checkbox" checked /> Compare with other periods</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="period[1][current_period_from_date]" value="10/16/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_1" name="periods[1][current_period_from_date]" value="10/16/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[1][current_period_to_date]" value="10/17/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_1" name="periods[1][current_period_to_date]" value="10/17/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             <br />
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="period[2][current_period_from_date]" value="09/30/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_2" name="periods[2][current_period_from_date]" value="09/30/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[2][current_period_to_date]" value="09/30/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_2" name="periods[2][current_period_to_date]" value="09/30/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             <br />
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="period[3][current_period_from_date]" value="12/09/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_3" name="periods[3][current_period_from_date]" value="12/09/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[3][current_period_to_date]" value="12/09/2018">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_3" name="periods[3][current_period_to_date]" value="12/09/2018">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             <br />
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date" name="period[4][current_period_from_date]" value="01/04/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_4" name="periods[4][current_period_from_date]" value="01/04/2019">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date" name="period[4][current_period_to_date]" value="01/20/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_4" name="periods[4][current_period_to_date]" value="01/20/2019">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                         </div>
@@ -173,6 +173,14 @@
                             <label><input checked type="checkbox" value="1" name="decorators[density]" /> Density</label>
                             <br />
                             <label><input type="checkbox" value="1" name="decorators[show_median]" /> Show Median</label>
+                            <br />
+                        </div>
+                        <div class="form-group">
+                            <label>Business Metrics:</label>
+                            <br />
+                            <label><input type="checkbox" value="1" name="business_metrics[bounce_rate]" /> Bounce Rate</label>
+                            <br />
+                            <label><input type="checkbox" value="1" name="business_metrics[conversion_rate]" /> Conversion Rate</label>
                             <br />
                         </div>
                     </div>

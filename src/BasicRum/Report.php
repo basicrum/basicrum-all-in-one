@@ -22,9 +22,6 @@ class Report
     /** @var \Symfony\Component\Cache\Adapter\FilesystemAdapter */
     protected $cache;
 
-    /** @var \App\BasicRum\Report\Filter\FilterAggregator */
-    protected $filterAggregator;
-
     /**
      * OneLevel Constructor
      *
@@ -34,7 +31,6 @@ class Report
     {
         $this->em = $em;
         $this->cache = new FilesystemAdapter('basicrum.report.cache');
-        $this->filterAggregator = new FilterAggregator();
     }
 
     /**

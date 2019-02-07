@@ -32,6 +32,8 @@ class Calculator
     {
         /**
          * @todo: Validate first and last page view id time difference seems that there is a small glitch
+         * When we scan big chunk if visits we may miss bounce sometimes because we my have expired sessions
+         * in current scan
          */
 
         /**
