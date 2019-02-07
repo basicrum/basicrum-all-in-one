@@ -139,12 +139,13 @@ EOT;
      */
     public function generateClean()
     {
-        $test = new DiagramOrchestrator();
+        $test = new DiagramOrchestrator($this->getDoctrine());
 
         $reqs = json_decode($this->_getTestData(), true);
 
         // Test only for filters
         $test->fillRequirements($reqs);
+        $test->process();
 
         return new Response(json_encode($_POST));
     }

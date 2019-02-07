@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
+use App\BasicRum\Layers\DataLayer;
+
 class DiagramOrchestrator
 {
 
@@ -11,17 +13,21 @@ class DiagramOrchestrator
     private $collaboratorsClassMap = [
         Filters\Collaborator::class,
 //        Visualize\Collaborator::class,
-//        TechnicalMetrics\Collaborator::class,
 //        Periods\Collaborator::class,
 //        Decorators\Collaborator::class,
 //        BusinessMetrics\Collaborator::class
     ];
 
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
+    private $registry;
+
     /** @var array */
     private $collaborators = [];
 
-    public function __construct()
+    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
+        $this->registry = $registry;
+
         foreach ($this->collaboratorsClassMap as $class) {
             /** @var CollaboratorsInterface $collaborator */
             $collaborator = new $class();
@@ -56,6 +62,7 @@ class DiagramOrchestrator
          *
          */
 
+        $dataLayer = new DataLayer($this->registry, $this->collaborators['filters'], []);
 
     }
 

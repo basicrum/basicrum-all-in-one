@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum;
+namespace App\BasicRum\Decorators;
 
 class Densityzer
 {
