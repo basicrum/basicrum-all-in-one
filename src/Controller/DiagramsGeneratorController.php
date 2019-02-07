@@ -126,7 +126,29 @@ EOT;
       "search_value": "",
       "condition": "contains"
     }
-  }
+  },
+  "periods": [
+    {
+        "from_date": "10/24/2018",
+      "to_date": "10/24/2018"
+    },
+    {
+        "from_date": "10/16/2018",
+      "to_date": "10/17/2018"
+    },
+    {
+        "from_date": "09/30/2018",
+      "to_date": "09/30/2018"
+    },
+    {
+        "from_date": "12/09/2018",
+      "to_date": "12/09/2018"
+    },
+    {
+        "from_date": "01/04/2019",
+      "to_date": "01/20/2019"
+    }
+  ]
 }
 EOT;
 

@@ -13,7 +13,7 @@ class DiagramOrchestrator
     private $collaboratorsClassMap = [
         Filters\Collaborator::class,
 //        Visualize\Collaborator::class,
-//        Periods\Collaborator::class,
+        Periods\Collaborator::class,
 //        Decorators\Collaborator::class,
 //        BusinessMetrics\Collaborator::class
     ];
@@ -62,7 +62,13 @@ class DiagramOrchestrator
          *
          */
 
-        $dataLayer = new DataLayer($this->registry, $this->collaborators['filters'], []);
+        $periods = $this->collaborators['periods']->getRequirements();
+
+        foreach ($periods as $period) {
+            $dataLayer = new DataLayer($this->registry, $period ,[$this->collaborators['filters']]);
+            $data = $dataLayer->process();
+            var_dump($data);
+        }
 
     }
 
