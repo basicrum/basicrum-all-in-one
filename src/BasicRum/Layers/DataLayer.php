@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers;
 
+use App\BasicRum\Layers\DataLayer\Query\Planner;
+use App\BasicRum\Layers\DataLayer\Query\Runner;
+
 class DataLayer
 {
 
@@ -39,14 +42,29 @@ class DataLayer
      */
     public function process()
     {
-        var_dump($this->period->hasPeriods());
-
         while ($this->period->hasPeriods()) {
             $interval = $this->period->requestPeriodInterval();
-            var_dump($interval->getStartInterval());
-            var_dump($interval->getEndInterval());
+
+            $queryPlanner = new Planner(
+                $interval->getStartInterval(),
+                $interval->getEndInterval(),
+                $this->dataRequirements
+            );
+
+            $planActions = $queryPlanner->createPlan()->releasePlan();
+
+
+
+            $planRunner = new Runner($this->registry, $planActions);
+
+            $res = $planRunner->run();
+
+            dd($planActions, $res);
         }
+
         return [];
     }
+
+
 
 }

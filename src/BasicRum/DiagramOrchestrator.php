@@ -65,9 +65,12 @@ class DiagramOrchestrator
         $periods = $this->collaborators['periods']->getRequirements();
 
         foreach ($periods as $period) {
-            $dataLayer = new DataLayer($this->registry, $period ,[$this->collaborators['filters']]);
+            $dataLayer = new DataLayer(
+                $this->registry,
+                $period,
+                $this->collaborators['filters']->getRequirements()
+            );
             $data = $dataLayer->process();
-            var_dump($data);
         }
 
     }

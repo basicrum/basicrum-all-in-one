@@ -17,4 +17,9 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         return $this;
     }
 
+    public function getRequirements() : array
+    {
+        return [];
+    }
+
 }

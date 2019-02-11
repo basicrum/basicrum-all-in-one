@@ -11,4 +11,6 @@ interface CollaboratorsInterface
 
     public function applyForRequirement(array $requirement) : self;
 
+    public function getRequirements() : array;
+
 }
