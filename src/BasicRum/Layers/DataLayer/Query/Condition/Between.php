@@ -33,5 +33,39 @@ class Between
         $this->rightPart  = $rightPart;
     }
 
+    /**
+     * @return string
+     */
+    public function getWhere() : string
+    {
+        return $this->entityName . "." . $this->fieldName . " BETWEEN " . ":" . $this->_leftPartName() . " AND :" . $this->_rightPartName();
+    }
+
+    /**
+     * @return string
+     */
+    private function _leftPartName() : string
+    {
+        return $this->entityName . "_" . $this->fieldName . '_left';
+    }
+
+    /**
+     * @return string
+     */
+    private function _rightPartName() : string
+    {
+        return $this->entityName . "_" . $this->fieldName . '_right';
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams() : array
+    {
+        return [
+            $this->_leftPartName()  => $this->leftPart,
+            $this->_rightPartName() => $this->rightPart,
+        ];
+    }
 
 }

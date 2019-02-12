@@ -23,6 +23,12 @@ class Min
         $this->fieldName  = $fieldName;
     }
 
-
+    /**
+     * @return array
+     */
+    public function getFields() : array
+    {
+        return ["MIN({$this->entityName}.{$this->fieldName})"];
+    }
 
 }

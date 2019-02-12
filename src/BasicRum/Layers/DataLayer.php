@@ -42,6 +42,8 @@ class DataLayer
      */
     public function process()
     {
+        $res = [];
+
         while ($this->period->hasPeriods()) {
             $interval = $this->period->requestPeriodInterval();
 
@@ -57,10 +59,11 @@ class DataLayer
 
             $planRunner = new Runner($this->registry, $planActions);
 
-            $res = $planRunner->run();
+            $res[] = $planRunner->run();
 
-            dd($planActions, $res);
         }
+
+        dd($res);
 
         return [];
     }

@@ -23,6 +23,12 @@ class Max
         $this->fieldName  = $fieldName;
     }
 
-
+    /**
+     * @return array
+     */
+    public function getFields() : array
+    {
+        return ["MAX({$this->entityName}.{$this->fieldName})"];
+    }
 
 }

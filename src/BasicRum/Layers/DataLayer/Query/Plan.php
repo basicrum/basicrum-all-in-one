@@ -54,26 +54,18 @@ class Plan
     /**
      * @return array
      */
-    public function releasePlan()
+    public function releasePlan() : array
     {
         return [
+            'main_entity_name' => $this->mainEntityName,
             'select' => [
-                $this->mainEntityName => 'pageViewId'
+                [$this->mainEntityName => 'pageViewId']
             ],
             'where'  => [
                 'normal'   => $this->normalFilters,
                 'prefetch' => $this->prefetchFilters
             ]
         ];
-    }
-
-    /**
-     * @param $entityName
-     * @return string|void
-     */
-    private function _getEntityNamePrefix($entityName)
-    {
-        return strtolower(preg_replace('/[a-z]/', '$1', $entityName));
     }
 
 }

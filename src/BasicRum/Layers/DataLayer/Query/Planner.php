@@ -38,7 +38,7 @@ class Planner
 
         $between = new Condition\Between(
             'NavigationTimings',
-            'pageViewId',
+            'createdAt',
             $this->startPeriod,
             $this->endPeriod
         );
@@ -88,41 +88,6 @@ class Planner
 //        }
 
         return $plan;
-    }
-
-    /**
-     * @param $repository
-     * @param string $start
-     * @param string $end
-     * @return mixed
-     */
-    private function _getHighestIdInInterval(
-        \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        string $start,
-        string $end)
-    {
-        $repository = $registry->getRepository(NavigationTimings::class);
-
-        return $repository->createQueryBuilder('nt')
-            ->select('MAX(nt.pageViewId)')
-            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    private function _getLowesIdInInterval(
-        \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        string $start,
-        string $end
-    )
-    {
-        $repository = $registry->getRepository(NavigationTimings::class);
-
-        return $repository->createQueryBuilder('nt')
-            ->select('MIN(nt.pageViewId)')
-            ->where("nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
 }
