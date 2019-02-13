@@ -26,13 +26,17 @@ class Runner
     {
         $repository = $this->registry->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
 
-        $filters = $this->_processPrefetchFilters();
+        $filters = array_merge($this->_processPrefetchFilters(), $this->_processFilter());
 
-        $queryBuilder = $repository->createQueryBuilder($this->getEntityNamePrefix($this->planActions['main_entity_name']));
+        $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
 
+        foreach ($filters as $filter) {
+            $queryBuilder->where($filter);
+        }
 
+        $queryBuilder->select([$this->planActions['main_entity_name'] . '.pageViewId']);
 
-        return [$this->_processPrefetchFilters(), $this->planActions];
+        return [$this->_processPrefetchFilters(), $queryBuilder->getQuery()->getResult()];
     }
 
     private function _processPrefetchFilters()
@@ -63,12 +67,22 @@ class Runner
                 $queryBuilder->setParameter($name, $value);
             }
 
-            $queryBuilder->select($selectFields[0]);
+            $queryBuilder->select($selectFields);
 
-            $res[] = $queryBuilder->getQuery()->getSingleScalarResult();
+            $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
+
+            $res[] = $prefetch['entityName'] . "."  . $prefetch['filterField'] .  " " . $prefetch['mainCondition'] .  ' ' . $fetched;
         }
 
         return $res;
+    }
+
+    /**
+     * @return array
+     */
+    private function _processFilter() : array
+    {
+        return [];
     }
 
     /**
@@ -84,7 +98,7 @@ class Runner
      * @param $entityName
      * @return string
      */
-    public function getEntityNamePrefix($entityName)
+    public function getEntityNamePrefix($entityName) : string
     {
         return strtolower(preg_replace('/[a-z]/', '$1', $entityName));
     }

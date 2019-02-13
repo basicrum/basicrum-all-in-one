@@ -67,25 +67,19 @@ class Planner
         );
 
 
-//        $minId = $this->_getLowesIdInInterval($registry, $this->startPeriod, $this->endPeriod);
-//        $maxId = $this->_getHighestIdInInterval($registry, $this->startPeriod, $this->endPeriod);
-
-//        $queryBuilder
-//            ->select(['nt.' . $perfMetricCamelized])
-//            ->where("nt.pageViewId >= '" . $minId . "' AND nt.pageViewId <= '" . $maxId . "'");
-
-//        $select = [];
-//
-//        foreach ($this->requirements as $requirement) {
+        foreach ($this->requirements as $requirement) {
 //
 //            if ($requirement instanceof \App\BasicRum\Report\SelectableInterface ) {
-////                $select[] = [$this->_getEntityNamePrefix($requirement->getEntity()) . '.' . $requirement->getDataField()];
+//                $select[] = [$this->_getEntityNamePrefix($requirement->getEntity()) . '.' . $requirement->getDataField()];
 //            }
-//
-//            if ($requirement instanceof \App\BasicRum\Report\FilterableInterface ) {
-//
-//            }
-//        }
+
+            if (
+                $requirement instanceof \App\BasicRum\Report\FilterableInterface
+                && $requirement instanceof \App\BasicRum\Report\SelectableInterface) {
+//                $plan->addFilter($requirement->getEntity()
+                var_dump($requirement->getEntity());
+            }
+        }
 
         return $plan;
     }

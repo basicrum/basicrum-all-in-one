@@ -13,19 +13,19 @@ class OsName
         return 'os_name';
     }
 
-public function getEntity() : string
+    public function getEntity() : string
     {
         return 'NavigationTimingsUserAgents';
     }
 
     public function getRelatedEntity() : string
     {
-        return 'id';
+        return 'NavigationTimings';
     }
 
     public function getKeyField() : string
     {
-        return 'NavigationTimings';
+        return 'id';
     }
 
     public function getRelatedKeyField() : string

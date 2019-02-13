@@ -20,12 +20,12 @@ class Url
 
     public function getRelatedEntity() : string
     {
-        return 'id';
+        return 'NavigationTimings';
     }
 
     public function getKeyField() : string
     {
-        return 'NavigationTimings';
+        return 'id';
     }
 
     public function getRelatedKeyField() : string

@@ -14,7 +14,7 @@ class Plan
     private $prefetchFilters = [];
 
     /** @var array */
-    private $normalFilters   = [];
+    private $filters   = [];
 
     /** @var array */
     private $selects         = [];
@@ -52,6 +52,27 @@ class Plan
     }
 
     /**
+     * @param string $entityName
+     * @param string $filterField
+     * @param string $mainCondition
+     * @return Plan
+     */
+    public function addFilter(
+        string $entityName,
+        string $filterField,
+        string $mainCondition
+    ) : self
+    {
+        $this->filters[] = [
+            'entityName'        => $entityName,
+            'filterField'       => $filterField,
+            'mainCondition'     => $mainCondition
+        ];
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function releasePlan() : array
@@ -62,7 +83,7 @@ class Plan
                 [$this->mainEntityName => 'pageViewId']
             ],
             'where'  => [
-                'normal'   => $this->normalFilters,
+                'normal'   => $this->filters,
                 'prefetch' => $this->prefetchFilters
             ]
         ];
