@@ -31,11 +31,11 @@ class Runner
         $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
 
         foreach ($filters as $filter) {
-            $queryBuilder->where($filter);
+            $queryBuilder->andWhere($filter);
         }
 
         $queryBuilder->select([$this->planActions['main_entity_name'] . '.pageViewId']);
-
+        
         return [$this->_processPrefetchFilters(), $queryBuilder->getQuery()->getResult()];
     }
 
@@ -57,9 +57,18 @@ class Runner
             $selectFields = $prefetchSelect->getFields();
 
             $repository = $this->registry
-                ->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
+                ->getRepository($this->getEntityClassName($prefetch['entityName']));
 
-            $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
+            if ($prefetch['mainCondition'] === 'IN') {
+                $repository = $this->registry
+                    ->getRepository($this->getEntityClassName('NavigationTimingsUserAgents'));
+            }
+
+            $queryBuilder = $repository->createQueryBuilder($prefetch['entityName']);
+
+            if ($prefetch['mainCondition'] === 'IN') {
+                $queryBuilder = $repository->createQueryBuilder('NavigationTimingsUserAgents');
+            }
 
             $queryBuilder->where($where);
 
@@ -69,9 +78,21 @@ class Runner
 
             $queryBuilder->select($selectFields);
 
-            $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
+//            var_dump($prefetch['mainCondition']);
 
-            $res[] = $prefetch['entityName'] . "."  . $prefetch['filterField'] .  " " . $prefetch['mainCondition'] .  ' ' . $fetched;
+            if ($prefetch['mainCondition'] === 'IN') {
+//                var_dump($this->getEntityClassName($prefetch['entityName']));
+
+                $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+
+                //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
+                $ids = array_column($fetched, "id");
+                $res[] = $prefetch['entityName'] . "."  . $prefetch['filterField'] .  " " .  ' IN(' . implode(',', $ids) . ')';
+            } else {
+                // If not MIN or MAX then we need get the result in array
+                $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
+                $res[] = $prefetch['entityName'] . "."  . $prefetch['filterField'] .  " " . $prefetch['mainCondition'] .  ' ' . $fetched;
+            }
         }
 
         return $res;

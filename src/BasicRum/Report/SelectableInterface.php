@@ -7,14 +7,8 @@ namespace App\BasicRum\Report;
 interface SelectableInterface
 {
 
-    public function getDataField() : string;
+    public function getSelectDataField() : string;
 
-    public function getEntity() : string;
-
-    public function getRelatedEntity() : string;
-
-    public function getKeyField() : string;
-
-    public function getRelatedKeyField() : string;
+    public function getSelectEntityName() : string;
 
 }

@@ -8,29 +8,29 @@ class BrowserName
     extends AbstractFilter
 {
 
-    public function getDataField() : string
-    {
-        return 'browser_name';
-    }
-
-    public function getEntity() : string
+    public function getSecondaryEntityName() : string
     {
         return 'NavigationTimingsUserAgents';
     }
 
-    public function getRelatedEntity() : string
-    {
-        return 'NavigationTimings';
-    }
-
-    public function getKeyField() : string
+    public function getSecondaryKeyFieldName() : string
     {
         return 'id';
     }
 
-    public function getRelatedKeyField() : string
+    public function getSecondarySearchFieldName() : string
     {
-        return 'user_agent_id';
+        return 'browserName';
+    }
+
+    public function getPrimaryEntityName() : string
+    {
+        return 'NavigationTimings';
+    }
+
+    public function getPrimarySearchFieldName() : string
+    {
+        return 'userAgentId';
     }
 
 }

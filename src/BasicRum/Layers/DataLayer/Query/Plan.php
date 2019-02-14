@@ -54,19 +54,19 @@ class Plan
     /**
      * @param string $entityName
      * @param string $filterField
-     * @param string $mainCondition
+     * @param string $condition
      * @return Plan
      */
     public function addFilter(
         string $entityName,
         string $filterField,
-        string $mainCondition
+        string $condition
     ) : self
     {
         $this->filters[] = [
-            'entityName'        => $entityName,
-            'filterField'       => $filterField,
-            'mainCondition'     => $mainCondition
+            'entityName'  => $entityName,
+            'filterField' => $filterField,
+            'condition'   => $condition
         ];
 
         return $this;

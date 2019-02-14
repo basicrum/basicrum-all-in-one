@@ -8,29 +8,29 @@ class Url
     extends AbstractFilter
 {
 
-    public function getDataField() : string
-    {
-        return 'url';
-    }
-
-    public function getEntity() : string
+    public function getSecondaryEntityName() : string
     {
         return 'NavigationTimingsUrls';
     }
 
-    public function getRelatedEntity() : string
-    {
-        return 'NavigationTimings';
-    }
-
-    public function getKeyField() : string
+    public function getSecondaryKeyFieldName() : string
     {
         return 'id';
     }
 
-    public function getRelatedKeyField() : string
+    public function getSecondarySearchFieldName() : string
     {
-        return 'url_id';
+        return 'url';
+    }
+
+    public function getPrimaryEntityName() : string
+    {
+        return 'NavigationTimings';
+    }
+
+    public function getPrimarySearchFieldName() : string
+    {
+        return 'urlId';
     }
 
 }

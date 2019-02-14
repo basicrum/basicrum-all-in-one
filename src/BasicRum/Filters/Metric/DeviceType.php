@@ -8,29 +8,29 @@ class DeviceType
     extends AbstractFilter
 {
 
-    public function getDataField() : string
-    {
-        return 'device_type';
-    }
-
-    public function getEntity() : string
+    public function getSecondaryEntityName() : string
     {
         return 'NavigationTimingsUserAgents';
     }
 
-    public function getRelatedEntity() : string
-    {
-        return 'NavigationTimings';
-    }
-
-    public function getKeyField() : string
+    public function getSecondaryKeyFieldName() : string
     {
         return 'id';
     }
 
-    public function getRelatedKeyField() : string
+    public function getSecondarySearchFieldName() : string
     {
-        return 'user_agent_id';
+        return 'deviceType';
+    }
+
+    public function getPrimaryEntityName() : string
+    {
+        return 'NavigationTimings';
+    }
+
+    public function getPrimarySearchFieldName() : string
+    {
+        return 'userAgentId';
     }
 
 }

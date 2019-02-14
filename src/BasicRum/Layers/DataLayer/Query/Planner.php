@@ -43,7 +43,6 @@ class Planner
             $this->endPeriod
         );
 
-
         $plan->addPrefetchFilter(
             'NavigationTimings',
             'pageViewId',
@@ -66,18 +65,36 @@ class Planner
             "<="
         );
 
-
         foreach ($this->requirements as $requirement) {
+
 //
 //            if ($requirement instanceof \App\BasicRum\Report\SelectableInterface ) {
 //                $select[] = [$this->_getEntityNamePrefix($requirement->getEntity()) . '.' . $requirement->getDataField()];
 //            }
 
-            if (
-                $requirement instanceof \App\BasicRum\Report\FilterableInterface
-                && $requirement instanceof \App\BasicRum\Report\SelectableInterface) {
-//                $plan->addFilter($requirement->getEntity()
-                var_dump($requirement->getEntity());
+            if ($requirement instanceof \App\BasicRum\Report\SecondaryFilterableInterface) {
+//                continue;
+
+                $itself = new Select\Itself(
+                    $requirement->getSecondaryEntityName(),
+                    $requirement->getSecondaryKeyFieldName()
+                );
+
+                $condition = new Condition\Equals(
+                    $requirement->getSecondaryEntityName(),
+                    $requirement->getSecondarySearchFieldName(),
+                    $requirement->getSearchValue()
+                );
+
+                $plan->addPrefetchFilter(
+                    $requirement->getPrimaryEntityName(),
+                    $requirement->getPrimarySearchFieldName(),
+                    $condition,
+                    $itself,
+                    "IN"
+                );
+
+//                var_dump($requirement->getEntity());
             }
         }
 

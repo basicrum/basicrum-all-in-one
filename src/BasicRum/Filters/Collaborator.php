@@ -9,10 +9,10 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     /** @var array */
     private $filtersClassMap = [
-        Metric\BrowserName::class,
-        Metric\DeviceType::class,
-        Metric\OsName::class,
-        Metric\Url::class,
+        'browser_name' => Metric\BrowserName::class,
+        'device_type'  => Metric\DeviceType::class,
+        'os_name'      => Metric\OsName::class,
+        'url'          => Metric\Url::class,
     ];
 
     private $filters = [];
@@ -24,16 +24,19 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     public function applyForRequirement(array $requirements) : \App\BasicRum\CollaboratorsInterface
     {
-        foreach ($this->filtersClassMap as $class) {
-            /** @var Metric\AbstractFilter $collaborator */
-            $filter = new $class();
-            if (isset($requirements[$filter->getDataField()])) {
-                $requirement = $requirements[$filter->getDataField()];
+        foreach ($this->filtersClassMap as $filterKey => $class) {
+            if (isset($requirements[$filterKey])) {
+                $requirement = $requirements[$filterKey];
 
-                $filter->setCondition($requirement['condition']);
-                $filter->setSearchValue($requirement['search_value']);
+                if (empty($requirement['search_value'])) {
+                    continue;
+                }
 
-                $this->filters[$filter->getDataField()] = $filter;
+                /** @var Metric\AbstractFilter $collaborator */
+                $filter = new $class($requirement['condition'], $requirement['search_value']);
+
+
+                $this->filters[$filterKey] = $filter;
             }
         }
 
