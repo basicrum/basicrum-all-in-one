@@ -43,6 +43,9 @@ class DiagramOrchestrator
         }
     }
 
+    /**
+     * @return array
+     */
     public function process()
     {
         /**
@@ -64,15 +67,18 @@ class DiagramOrchestrator
 
         $periods = $this->collaborators['periods']->getRequirements();
 
+        $data = [];
+
         foreach ($periods as $period) {
             $dataLayer = new DataLayer(
                 $this->registry,
                 $period,
                 $this->collaborators['filters']->getRequirements()
             );
-            $data = $dataLayer->process();
+            $data[] = $dataLayer->process();
         }
 
+        return $data;
     }
 
 }

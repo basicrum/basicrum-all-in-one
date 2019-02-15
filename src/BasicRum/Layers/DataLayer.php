@@ -63,9 +63,7 @@ class DataLayer
 
         }
 
-        dd($res);
-
-        return [];
+        return $res;
     }
 
 

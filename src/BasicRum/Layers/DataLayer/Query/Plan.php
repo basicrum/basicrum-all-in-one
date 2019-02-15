@@ -11,10 +11,10 @@ class Plan
     private $mainEntityName;
 
     /** @var array */
-    private $prefetchFilters = [];
+    private $secondaryFilters = [];
 
     /** @var array */
-    private $filters   = [];
+    private $primaryFilters   = [];
 
     /** @var array */
     private $selects         = [];
@@ -25,28 +25,28 @@ class Plan
     }
 
     /**
-     * @param string $entityName
-     * @param string $filterField
+     * @param string $primaryEntityName
+     * @param string $primarySearchFieldName
      * @param ConditionInterface $prefetchCondition
      * @param SelectInterface $prefetchSelect
      * @param string $mainCondition
      * @return Plan
      */
-    public function addPrefetchFilter(
-        string $entityName,
-        string $filterField,
+    public function addSecondaryFilter(
+        string $primaryEntityName,
+        string $primarySearchFieldName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
     ) : self
     {
-        $this->prefetchFilters[] = [
-            'entityName'        => $entityName,
-            'filterField'       => $filterField,
-            'prefetchCondition' => $prefetchCondition,
-            'prefetchSelect'    => $prefetchSelect,
-            'mainCondition'     => $mainCondition
-        ];
+        $this->secondaryFilters[] = new Plan\SecondaryFilter(
+                $primaryEntityName,
+                $primarySearchFieldName,
+                $prefetchCondition,
+                $prefetchSelect,
+                $mainCondition
+            );
 
         return $this;
     }
@@ -63,7 +63,7 @@ class Plan
         string $condition
     ) : self
     {
-        $this->filters[] = [
+        $this->primaryFilters[] = [
             'entityName'  => $entityName,
             'filterField' => $filterField,
             'condition'   => $condition
@@ -83,8 +83,8 @@ class Plan
                 [$this->mainEntityName => 'pageViewId']
             ],
             'where'  => [
-                'normal'   => $this->filters,
-                'prefetch' => $this->prefetchFilters
+                'primaryFilters'   => $this->primaryFilters,
+                'secondaryFilters' => $this->secondaryFilters
             ]
         ];
     }

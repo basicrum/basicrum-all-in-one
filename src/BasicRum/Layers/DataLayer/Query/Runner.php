@@ -22,7 +22,7 @@ class Runner
     /**
      * @return array
      */
-    public function run()
+    public function run() : array
     {
         $repository = $this->registry->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
 
@@ -35,38 +35,39 @@ class Runner
         }
 
         $queryBuilder->select([$this->planActions['main_entity_name'] . '.pageViewId']);
-        
-        return [$this->_processPrefetchFilters(), $queryBuilder->getQuery()->getResult()];
+
+        $res = $queryBuilder->getQuery()->getResult();
+
+        return $res;
     }
 
-    private function _processPrefetchFilters()
+    /**
+     * @return array
+     */
+    private function _processPrefetchFilters() : array
     {
         $res = [];
 
         // Concept for prefetch filter
-        foreach ($this->planActions['where']['prefetch'] as $prefetch) {
-            /** @var \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition */
-            $prefetchCondition = $prefetch['prefetchCondition'];
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $prefetchCondition */
+        foreach ($this->planActions['where']['secondaryFilters'] as $prefetchCondition) {
 
-            $where = $prefetchCondition->getWhere();
-            $params = $prefetchCondition->getParams();
+            $where = $prefetchCondition->getPrefetchCondition()->getWhere();
+            $params = $prefetchCondition->getPrefetchCondition()->getParams();
 
-            /** @var \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect */
-            $prefetchSelect = $prefetch['prefetchSelect'];
-
-            $selectFields = $prefetchSelect->getFields();
+            $selectFields = $prefetchCondition->getPrefetchSelect()->getFields();
 
             $repository = $this->registry
-                ->getRepository($this->getEntityClassName($prefetch['entityName']));
+                ->getRepository($this->getEntityClassName($prefetchCondition->getPrimaryEntityName()));
 
-            if ($prefetch['mainCondition'] === 'IN') {
+            if ($prefetchCondition->getMainCondition() === 'IN') {
                 $repository = $this->registry
                     ->getRepository($this->getEntityClassName('NavigationTimingsUserAgents'));
             }
 
-            $queryBuilder = $repository->createQueryBuilder($prefetch['entityName']);
+            $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getPrimaryEntityName());
 
-            if ($prefetch['mainCondition'] === 'IN') {
+            if ($prefetchCondition->getMainCondition() === 'IN') {
                 $queryBuilder = $repository->createQueryBuilder('NavigationTimingsUserAgents');
             }
 
@@ -78,20 +79,16 @@ class Runner
 
             $queryBuilder->select($selectFields);
 
-//            var_dump($prefetch['mainCondition']);
-
-            if ($prefetch['mainCondition'] === 'IN') {
-//                var_dump($this->getEntityClassName($prefetch['entityName']));
-
+            if ($prefetchCondition->getMainCondition() === 'IN') {
                 $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
-
+                
                 //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
                 $ids = array_column($fetched, "id");
-                $res[] = $prefetch['entityName'] . "."  . $prefetch['filterField'] .  " " .  ' IN(' . implode(',', $ids) . ')';
+                $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
             } else {
                 // If not MIN or MAX then we need get the result in array
                 $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
-                $res[] = $prefetch['entityName'] . "."  . $prefetch['filterField'] .  " " . $prefetch['mainCondition'] .  ' ' . $fetched;
+                $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $fetched;
             }
         }
 

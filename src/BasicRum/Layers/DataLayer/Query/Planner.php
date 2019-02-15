@@ -43,7 +43,7 @@ class Planner
             $this->endPeriod
         );
 
-        $plan->addPrefetchFilter(
+        $plan->addSecondaryFilter(
             'NavigationTimings',
             'pageViewId',
             $between,
@@ -54,7 +54,7 @@ class Planner
             ">="
         );
 
-        $plan->addPrefetchFilter(
+        $plan->addSecondaryFilter(
             'NavigationTimings',
             'pageViewId',
             $between,
@@ -73,7 +73,6 @@ class Planner
 //            }
 
             if ($requirement instanceof \App\BasicRum\Report\SecondaryFilterableInterface) {
-//                continue;
 
                 $itself = new Select\Itself(
                     $requirement->getSecondaryEntityName(),
@@ -86,15 +85,13 @@ class Planner
                     $requirement->getSearchValue()
                 );
 
-                $plan->addPrefetchFilter(
+                $plan->addSecondaryFilter(
                     $requirement->getPrimaryEntityName(),
                     $requirement->getPrimarySearchFieldName(),
                     $condition,
                     $itself,
                     "IN"
                 );
-
-//                var_dump($requirement->getEntity());
             }
         }
 
