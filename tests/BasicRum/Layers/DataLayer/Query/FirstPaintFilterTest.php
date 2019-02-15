@@ -2,13 +2,14 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
+use App\BasicRum\Filters\Primary\TimeToFirstPaint;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\TimeToFirstByte;
 
-class FirstByteFilterTest extends KernelTestCase
+class FirstPaintFilterTest extends KernelTestCase
 {
 
     protected function setUp()
@@ -24,14 +25,14 @@ class FirstByteFilterTest extends KernelTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
-    public function testBytePaintEqualsTo()
+    public function testFirstPaintEqualsTo()
     {
         $period = new Period();
         $period->setPeriod('10/24/2018', '10/24/2018');
 
-        $firstByte = new TimeToFirstByte(
+        $firstByte = new TimeToFirstPaint(
             'is',
-            '150'
+            '344'
         );
 
         $dataLayer = new DataLayer(
@@ -54,12 +55,12 @@ class FirstByteFilterTest extends KernelTestCase
         );
     }
 
-    public function testFirstByteNotFound()
+    public function testFirstPaintNotFound()
     {
         $period = new Period();
         $period->setPeriod('10/24/2018', '10/24/2018');
 
-        $firstByte = new TimeToFirstByte(
+        $firstByte = new TimeToFirstPaint(
             'is',
             '91999991'
         );
