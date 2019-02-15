@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Filters\Metric;
+namespace App\BasicRum\Filters\Secondary;
 
-class OsName
+class BrowserName
     extends AbstractFilter
 {
 
@@ -20,7 +20,7 @@ class OsName
 
     public function getSecondarySearchFieldName() : string
     {
-        return 'osName';
+        return 'browserName';
     }
 
     public function getPrimaryEntityName() : string

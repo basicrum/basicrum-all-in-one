@@ -66,11 +66,19 @@ class Planner
         );
 
         foreach ($this->requirements as $requirement) {
+            if ($requirement instanceof \App\BasicRum\Report\PrimaryFilterableInterface) {
+                $condition = new Condition\Equals(
+                    $requirement->getPrimaryEntityName(),
+                    $requirement->getPrimarySearchFieldName(),
+                    $requirement->getSearchValue()
+                );
 
-//
-//            if ($requirement instanceof \App\BasicRum\Report\SelectableInterface ) {
-//                $select[] = [$this->_getEntityNamePrefix($requirement->getEntity()) . '.' . $requirement->getDataField()];
-//            }
+                $plan->addPrimaryFilter(
+                    $requirement->getPrimaryEntityName(),
+                    $requirement->getPrimarySearchFieldName(),
+                    $condition
+                );
+            }
 
             if ($requirement instanceof \App\BasicRum\Report\SecondaryFilterableInterface) {
 

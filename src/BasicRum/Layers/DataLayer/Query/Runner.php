@@ -26,12 +26,22 @@ class Runner
     {
         $repository = $this->registry->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
 
-        $filters = array_merge($this->_processPrefetchFilters(), $this->_processFilter());
+        $filters = array_merge($this->_processPrefetchFilters());
 
         $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
 
         foreach ($filters as $filter) {
             $queryBuilder->andWhere($filter);
+        }
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
+        foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
+            $queryBuilder->andWhere($primaryFilter->getCondition()->getWhere());
+
+            $params = $primaryFilter->getCondition()->getParams();
+            foreach ($params as $name => $value) {
+                $queryBuilder->setParameter($name, $value);
+            }
         }
 
         $queryBuilder->select([$this->planActions['main_entity_name'] . '.pageViewId']);
@@ -98,9 +108,16 @@ class Runner
     /**
      * @return array
      */
-    private function _processFilter() : array
+    private function _processPrimaryFilter() : array
     {
-        return [];
+        $res = [];
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
+        foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
+            $res[] = $primaryFilter->getCondition()->getWhere();
+        }
+
+        return $res;
     }
 
     /**

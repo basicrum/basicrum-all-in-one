@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Filters\Metric;
+namespace App\BasicRum\Filters\Secondary;
 
-class DeviceType
+class OsName
     extends AbstractFilter
 {
 
@@ -20,7 +20,7 @@ class DeviceType
 
     public function getSecondarySearchFieldName() : string
     {
-        return 'deviceType';
+        return 'osName';
     }
 
     public function getPrimaryEntityName() : string

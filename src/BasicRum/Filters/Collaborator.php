@@ -9,10 +9,12 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     /** @var array */
     private $filtersClassMap = [
-        'browser_name' => Metric\BrowserName::class,
-        'device_type'  => Metric\DeviceType::class,
-        'os_name'      => Metric\OsName::class,
-        'url'          => Metric\Url::class,
+        'browser_name'        => Secondary\BrowserName::class,
+        'device_type'         => Secondary\DeviceType::class,
+        'os_name'             => Secondary\OsName::class,
+        'url'                 => Secondary\Url::class,
+        'time_to_first_byte'  => Primary\TimeToFirstByte::class,
+        'time_to_first_paint' => Primary\TimeToFirstPaint::class
     ];
 
     private $filters = [];
@@ -32,7 +34,7 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
                     continue;
                 }
 
-                /** @var Metric\AbstractFilter $collaborator */
+                /** @var Secondary\AbstractFilter $collaborator */
                 $filter = new $class($requirement['condition'], $requirement['search_value']);
 
 

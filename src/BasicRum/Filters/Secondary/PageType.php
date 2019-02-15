@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Filters\Metric;
+namespace App\BasicRum\Filters\Secondary;
 
 class PageType
 {

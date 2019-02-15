@@ -6,9 +6,9 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
-use App\BasicRum\Filters\Secondary\DeviceType;
+use App\BasicRum\Filters\Primary\TimeToFirstByte;
 
-class DeviceTypeTest extends KernelTestCase
+class FirstByteFilterTest extends KernelTestCase
 {
 
     protected function setUp()
@@ -24,20 +24,20 @@ class DeviceTypeTest extends KernelTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
-    public function testDeviceTypeMobile()
+    public function testFirstPaintEqualsTo()
     {
         $period = new Period();
         $period->setPeriod('10/24/2018', '10/24/2018');
 
-        $deviceType = new DeviceType(
+        $firstByte = new TimeToFirstByte(
             'is',
-            'mobile'
+            '150'
         );
 
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$deviceType]
+            [$firstByte]
         );
 
         $res = $dataLayer->process();
@@ -54,20 +54,20 @@ class DeviceTypeTest extends KernelTestCase
         );
     }
 
-    public function testDeviceTypeDesktop()
+    public function testFirstPaintNotFound()
     {
         $period = new Period();
         $period->setPeriod('10/24/2018', '10/24/2018');
 
-        $deviceType = new DeviceType(
+        $firstByte = new TimeToFirstByte(
             'is',
-            'desktop'
+            '91999991'
         );
 
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$deviceType]
+            [$firstByte]
         );
 
         $res = $dataLayer->process();
@@ -75,9 +75,7 @@ class DeviceTypeTest extends KernelTestCase
         $this->assertEquals(
             [
                 [
-                    [
-                        'pageViewId' => 2
-                    ]
+
                 ]
             ],
             $res

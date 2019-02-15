@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Filters\Metric;
+namespace App\BasicRum\Filters\Secondary;
 
-class BrowserName
+class Url
     extends AbstractFilter
 {
 
     public function getSecondaryEntityName() : string
     {
-        return 'NavigationTimingsUserAgents';
+        return 'NavigationTimingsUrls';
     }
 
     public function getSecondaryKeyFieldName() : string
@@ -20,7 +20,7 @@ class BrowserName
 
     public function getSecondarySearchFieldName() : string
     {
-        return 'browserName';
+        return 'url';
     }
 
     public function getPrimaryEntityName() : string
@@ -30,7 +30,7 @@ class BrowserName
 
     public function getPrimarySearchFieldName() : string
     {
-        return 'userAgentId';
+        return 'urlId';
     }
 
 }

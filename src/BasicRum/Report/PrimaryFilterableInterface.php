@@ -7,10 +7,17 @@ namespace App\BasicRum\Report;
 interface PrimaryFilterableInterface
 {
 
-//    public function __construct(string $condition, string  $searchValue);
-//
-//    public function getCondition() : string;
-//
-//    public function getSearchValue() : string;
+    public function __construct(
+        string $condition,
+        string $searchValue
+    );
+
+    public function getCondition() : string;
+
+    public function getSearchValue() : string;
+
+    public function getPrimaryEntityName() : string;
+
+    public function getPrimarySearchFieldName() : string;
 
 }

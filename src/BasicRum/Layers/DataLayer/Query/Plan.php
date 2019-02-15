@@ -52,22 +52,22 @@ class Plan
     }
 
     /**
-     * @param string $entityName
-     * @param string $filterField
-     * @param string $condition
+     * @param string $primaryEntityName
+     * @param string $primarySearchFieldName
+     * @param string $mainCondition
      * @return Plan
      */
-    public function addFilter(
-        string $entityName,
-        string $filterField,
-        string $condition
+    public function addPrimaryFilter(
+        string $primaryEntityName,
+        string $primarySearchFieldName,
+        \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition
     ) : self
     {
-        $this->primaryFilters[] = [
-            'entityName'  => $entityName,
-            'filterField' => $filterField,
-            'condition'   => $condition
-        ];
+        $this->primaryFilters[] = new Plan\PrimaryFilter(
+                $primaryEntityName,
+                $primarySearchFieldName,
+                $condition
+            );
 
         return $this;
     }
