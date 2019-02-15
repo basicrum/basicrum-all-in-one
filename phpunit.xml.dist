@@ -7,6 +7,7 @@
          colors="true"
          bootstrap="vendor/autoload.php"
 >
+
     <php>
         <ini name="error_reporting" value="-1" />
         <env name="KERNEL_CLASS" value="App\Kernel" />
@@ -14,6 +15,7 @@
         <env name="APP_DEBUG" value="1" />
         <env name="APP_SECRET" value="s$cretf0rt3st" />
         <env name="SHELL_VERBOSITY" value="-1" />
+        <env name="DATABASE_URL" value="mysql://root:root@192.168.99.100:3306/basic_rum_test_db" />
         <!-- define your env variables for the test env here -->
     </php>
 

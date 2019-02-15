@@ -81,7 +81,7 @@ class Runner
 
             if ($prefetchCondition->getMainCondition() === 'IN') {
                 $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
-                
+
                 //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
                 $ids = array_column($fetched, "id");
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
