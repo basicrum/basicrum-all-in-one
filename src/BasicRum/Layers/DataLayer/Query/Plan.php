@@ -17,11 +17,30 @@ class Plan
     private $primaryFilters   = [];
 
     /** @var array */
-    private $selects         = [];
+    private $selects          = [];
 
     public function __construct(string $mainEntityName)
     {
+        $this->selects[] = new Plan\Select(
+            $mainEntityName,
+            'pageViewId'
+        );
+
+
         $this->mainEntityName = $mainEntityName;
+    }
+
+    public function addSelect(
+        string $entityName,
+        string $dataFieldName
+    ) : self
+    {
+        $this->selects[] = new Plan\Select(
+            $entityName,
+            $dataFieldName
+        );
+
+        return $this;
     }
 
     /**
@@ -79,9 +98,7 @@ class Plan
     {
         return [
             'main_entity_name' => $this->mainEntityName,
-            'select' => [
-                [$this->mainEntityName => 'pageViewId']
-            ],
+            'selects' => $this->selects,
             'where'  => [
                 'primaryFilters'   => $this->primaryFilters,
                 'secondaryFilters' => $this->secondaryFilters

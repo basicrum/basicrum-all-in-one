@@ -66,6 +66,13 @@ class Planner
         );
 
         foreach ($this->requirements as $requirement) {
+            if ($requirement instanceof \App\BasicRum\Report\SelectableInterface) {
+                $plan->addSelect(
+                    $requirement->getSelectEntityName(),
+                    $requirement->getSelectDataFieldName()
+                );
+            }
+
             if ($requirement instanceof \App\BasicRum\Report\PrimaryFilterableInterface) {
                 $condition = new Condition\Equals(
                     $requirement->getPrimaryEntityName(),

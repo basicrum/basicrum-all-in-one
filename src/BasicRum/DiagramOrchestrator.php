@@ -12,6 +12,7 @@ class DiagramOrchestrator
     /** @var array */
     private $collaboratorsClassMap = [
         Filters\Collaborator::class,
+        TechnicalMetrics\Collaborator::class,
 //        Visualize\Collaborator::class,
         Periods\Collaborator::class,
 //        Decorators\Collaborator::class,
@@ -73,7 +74,10 @@ class DiagramOrchestrator
             $dataLayer = new DataLayer(
                 $this->registry,
                 $period,
-                $this->collaborators['filters']->getRequirements()
+                array_merge(
+                    $this->collaborators['filters']->getRequirements(),
+                    $this->collaborators['technical_metrics']->getRequirements()
+                )
             );
             $data[] = $dataLayer->process();
         }

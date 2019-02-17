@@ -44,7 +44,14 @@ class Runner
             }
         }
 
-        $queryBuilder->select([$this->planActions['main_entity_name'] . '.pageViewId']);
+        $selects = [];
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\Select $select */
+        foreach ($this->planActions['selects'] as $select) {
+            $selects[] = $select->getEntityName() . '.' . $select->getDataFieldName();
+        }
+
+        $queryBuilder->select($selects);
 
         $res = $queryBuilder->getQuery()->getResult();
 

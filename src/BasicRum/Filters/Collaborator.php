@@ -34,9 +34,7 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
                     continue;
                 }
 
-                /** @var Secondary\AbstractFilter $collaborator */
                 $filter = new $class($requirement['condition'], $requirement['search_value']);
-
 
                 $this->filters[$filterKey] = $filter;
             }
