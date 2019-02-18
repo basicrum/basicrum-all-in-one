@@ -113,21 +113,6 @@ class Runner
     }
 
     /**
-     * @return array
-     */
-    private function _processPrimaryFilter() : array
-    {
-        $res = [];
-
-        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
-        foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
-            $res[] = $primaryFilter->getCondition()->getWhere();
-        }
-
-        return $res;
-    }
-
-    /**
      * @param string $className
      * @return string
      */

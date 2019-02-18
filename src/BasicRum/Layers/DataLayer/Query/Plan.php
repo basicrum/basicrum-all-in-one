@@ -19,6 +19,8 @@ class Plan
     /** @var array */
     private $selects          = [];
 
+    private $complexSelects   = [];
+
     public function __construct(string $mainEntityName)
     {
         $this->selects[] = new Plan\Select(
@@ -38,6 +40,33 @@ class Plan
         $this->selects[] = new Plan\Select(
             $entityName,
             $dataFieldName
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $primarySelectEntityName
+     * @param string $primaryKeyFieldName
+     * @param string $secondarySelectEntityName
+     * @param string $secondaryKeyFieldName
+     * @param array $secondarySelectDataFieldNames
+     * @return Plan
+     */
+    public function addComplexSelect(
+        string $primarySelectEntityName,
+        string $primaryKeyFieldName,
+        string $secondarySelectEntityName,
+        string $secondaryKeyFieldName,
+        array $secondarySelectDataFieldNames
+    ) : self
+    {
+        $this->complexSelects[] = new Plan\ComplexSelect(
+            $primarySelectEntityName,
+            $primaryKeyFieldName,
+            $secondaryKeyFieldName,
+            $secondarySelectEntityName,
+            $secondarySelectDataFieldNames
         );
 
         return $this;

@@ -66,6 +66,16 @@ class Planner
         );
 
         foreach ($this->requirements as $requirement) {
+            if ($requirement instanceof \App\BasicRum\Report\ComplexSelectableInterface) {
+                $plan->addComplexSelect(
+                    $requirement->getPrimarySelectEntityName(),
+                    $requirement->getPrimaryKeyFieldName(),
+                    $requirement->getSecondarySelectEntityName(),
+                    $requirement->getSecondaryKeyFieldName(),
+                    $requirement->getSecondarySelectDataFieldNames()
+                );
+            }
+
             if ($requirement instanceof \App\BasicRum\Report\SelectableInterface) {
                 $plan->addSelect(
                     $requirement->getSelectEntityName(),

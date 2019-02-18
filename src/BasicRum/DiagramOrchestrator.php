@@ -16,7 +16,7 @@ class DiagramOrchestrator
 //        Visualize\Collaborator::class,
         Periods\Collaborator::class,
 //        Decorators\Collaborator::class,
-//        BusinessMetrics\Collaborator::class
+        BusinessMetrics\Collaborator::class
     ];
 
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */

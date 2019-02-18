@@ -55,8 +55,6 @@ class DataLayer
 
             $planActions = $queryPlanner->createPlan()->releasePlan();
 
-
-
             $planRunner = new Runner($this->registry, $planActions);
 
             $res[] = $planRunner->run();
