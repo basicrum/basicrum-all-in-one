@@ -19,7 +19,11 @@ class Plan
     /** @var array */
     private $selects          = [];
 
+    /** @var array */
     private $complexSelects   = [];
+
+    /** @var array */
+    private $limiterFilters   = [];
 
     public function __construct(string $mainEntityName)
     {
@@ -64,9 +68,36 @@ class Plan
         $this->complexSelects[] = new Plan\ComplexSelect(
             $primarySelectEntityName,
             $primaryKeyFieldName,
-            $secondaryKeyFieldName,
             $secondarySelectEntityName,
+            $secondaryKeyFieldName,
             $secondarySelectDataFieldNames
+        );
+
+        return $this;
+    }
+
+    /**
+     * @param string $primaryEntityName
+     * @param string $primarySearchFieldName
+     * @param ConditionInterface $prefetchCondition
+     * @param SelectInterface $prefetchSelect
+     * @param string $mainCondition
+     * @return Plan
+     */
+    public function addLimiterFilter(
+        string $primaryEntityName,
+        string $primarySearchFieldName,
+        \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
+        \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
+        string $mainCondition
+    ) : self
+    {
+        $this->limiterFilters[] = new Plan\SecondaryFilter(
+            $primaryEntityName,
+            $primarySearchFieldName,
+            $prefetchCondition,
+            $prefetchSelect,
+            $mainCondition
         );
 
         return $this;
@@ -127,10 +158,12 @@ class Plan
     {
         return [
             'main_entity_name' => $this->mainEntityName,
-            'selects' => $this->selects,
+            'selects'         => $this->selects,
+            'complex_selects' => $this->complexSelects,
             'where'  => [
                 'primaryFilters'   => $this->primaryFilters,
-                'secondaryFilters' => $this->secondaryFilters
+                'secondaryFilters' => $this->secondaryFilters,
+                'limitFilters'     => $this->limiterFilters
             ]
         ];
     }

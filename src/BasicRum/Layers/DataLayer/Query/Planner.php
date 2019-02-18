@@ -43,7 +43,7 @@ class Planner
             $this->endPeriod
         );
 
-        $plan->addSecondaryFilter(
+        $plan->addLimiterFilter(
             'NavigationTimings',
             'pageViewId',
             $between,
@@ -54,7 +54,7 @@ class Planner
             ">="
         );
 
-        $plan->addSecondaryFilter(
+        $plan->addLimiterFilter(
             'NavigationTimings',
             'pageViewId',
             $between,

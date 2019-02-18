@@ -26,7 +26,21 @@ class Runner
     {
         $repository = $this->registry->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
 
-        $filters = array_merge($this->_processPrefetchFilters());
+        $limitFilters = $this->_processPrefetchFilters($this->planActions['where']['limitFilters']);
+
+        // Complex Select case
+        $complexSelectData = [];
+        $complexSelectFilters = [];
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\ComplexSelect $complexSelect */
+        foreach ($this->planActions['complex_selects'] as $complexSelect) {
+            $complexSelectData = $this->_processComplexSelect($complexSelect, $limitFilters);
+            $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($complexSelectData)) . ')';
+        }
+
+        $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters']);
+
+        $filters = array_merge($limitFilters, $filters, $complexSelectFilters);
 
         $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
 
@@ -55,19 +69,68 @@ class Runner
 
         $res = $queryBuilder->getQuery()->getResult();
 
+        if (!empty($complexSelectData)) {
+            foreach ($res as $key => $row) {
+                $res[$key] = array_merge($row, $complexSelectData[$row[$complexSelect->getPrimaryKeyFieldName()]]);
+            }
+        }
+
         return $res;
     }
 
     /**
+     * @param Plan\ComplexSelect $complexSelect
+     * @param $filters array
      * @return array
      */
-    private function _processPrefetchFilters() : array
+    private function _processComplexSelect(Plan\ComplexSelect $complexSelect, array $filters) : array
+    {
+        $repository = $this->registry
+            ->getRepository($this->getEntityClassName($complexSelect->getSecondarySelectEntityName()));
+
+        $queryBuilder = $repository->createQueryBuilder($complexSelect->getSecondarySelectEntityName());
+
+        $selects = [];
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\Select $select */
+        foreach ($complexSelect->getSecondarySelectDataFieldNames() as $field) {
+            $selects[] = $complexSelect->getSecondarySelectEntityName() . '.' . $field;
+        }
+
+        foreach ($filters as $filter) {
+            $corrected = str_replace(
+                $complexSelect->getPrimarySelectEntityName() . '.' . $complexSelect->getPrimaryKeyFieldName(),
+                $complexSelect->getSecondarySelectEntityName()  . '.' . $complexSelect->getSecondaryKeyFieldName(),
+                $filter
+            );
+            $queryBuilder->andWhere($corrected);
+        }
+
+        $queryBuilder->select($selects);
+
+        $res = $queryBuilder->getQuery()->getResult();
+
+        $data = [];
+
+        // We need $complexSelect->getSecondaryKeyFieldName() as a key in new array because we will use it later for IN clause
+        foreach ($res as $row) {
+            $data[$row[$complexSelect->getSecondaryKeyFieldName()]] = $row;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $filters array
+     * @return array
+     */
+    private function _processPrefetchFilters(array $filters) : array
     {
         $res = [];
 
         // Concept for prefetch filter
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $prefetchCondition */
-        foreach ($this->planActions['where']['secondaryFilters'] as $prefetchCondition) {
+        foreach ($filters as $prefetchCondition) {
 
             $where = $prefetchCondition->getPrefetchCondition()->getWhere();
             $params = $prefetchCondition->getPrefetchCondition()->getParams();
@@ -119,15 +182,6 @@ class Runner
     public function getEntityClassName(string $className) : string
     {
         return '\App\Entity\\' . $className;
-    }
-
-    /**
-     * @param $entityName
-     * @return string
-     */
-    public function getEntityNamePrefix($entityName) : string
-    {
-        return strtolower(preg_replace('/[a-z]/', '$1', $entityName));
     }
 
 }

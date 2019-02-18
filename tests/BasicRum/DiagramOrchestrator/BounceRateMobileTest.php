@@ -56,6 +56,7 @@ class BounceRateMobileTest extends KernelTestCase
                 [
                     [
                         [
+                            'pageViewId'      => 1,
                             'firstPageViewId' => 1,
                             'firstPaint'      => 344,
                             'pageViewsCount'  => 1,

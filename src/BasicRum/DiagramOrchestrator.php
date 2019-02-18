@@ -76,7 +76,8 @@ class DiagramOrchestrator
                 $period,
                 array_merge(
                     $this->collaborators['filters']->getRequirements(),
-                    $this->collaborators['technical_metrics']->getRequirements()
+                    $this->collaborators['technical_metrics']->getRequirements(),
+                    $this->collaborators['business_metrics']->getRequirements()
                 )
             );
             $data[] = $dataLayer->process();

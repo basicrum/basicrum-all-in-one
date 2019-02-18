@@ -58,7 +58,7 @@ class ComplexSelect
      */
     public function getSecondarySelectEntityName() : string
     {
-        return $this->getSecondarySelectEntityName();
+        return $this->secondarySelectEntityName;
     }
 
     /**
