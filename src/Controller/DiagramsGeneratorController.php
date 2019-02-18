@@ -36,128 +36,39 @@ class DiagramsGeneratorController extends AbstractController
         );
     }
 
-    private function _getTestData()
-    {
-        $data =
-<<<EOT
-{
-  "technical_metrics": {
-    "first_paint": "1"
-  },
-  "visualize": {
-    "bucket_size": "100",
-    "time_range": "5000"
-  },
-  "filters": {
-    "device_type": {
-        "condition": "is",
-      "search_value": ""
-    },
-    "os_name": {
-        "condition": "is",
-      "search_value": ""
-    },
-    "browser_name": {
-        "condition": "is",
-      "search_value": ""
-    },
-    "url": {
-        "condition": "contains",
-      "search_value": ""
-    },
-    "page_type": {
-      "search_value": "",
-      "condition": "contains"
-    }
-  },
-  "periods": [
-    {
-        "current_period_from_date": "10/24/2018",
-      "current_period_to_date": "10/24/2018"
-    },
-    {
-        "current_period_from_date": "10/16/2018",
-      "current_period_to_date": "10/17/2018"
-    },
-    {
-        "current_period_from_date": "09/30/2018",
-      "current_period_to_date": "09/30/2018"
-    },
-    {
-        "current_period_from_date": "12/09/2018",
-      "current_period_to_date": "12/09/2018"
-    },
-    {
-        "current_period_from_date": "01/04/2019",
-      "current_period_to_date": "01/20/2019"
-    }
-  ],
-  "decorators": {
-    "density": "1",
-    "show_median": "1"
-  },
-  "business_metrics": {
-    "bounce_rate": "1"
-  }
-}
-EOT;
-
-        $filtersData =
-<<<EOT
-{
-  "filters": {
-    "device_type": {
-        "condition": "is",
-      "search_value": "mobile"
-    },
-    "os_name": {
-        "condition": "is",
-      "search_value": ""
-    },
-    "browser_name": {
-        "condition": "is",
-      "search_value": ""
-    },
-    "url": {
-        "condition": "contains",
-      "search_value": ""
-    },
-    "page_type": {
-      "search_value": "",
-      "condition": "contains"
-    }
-  },
-  "periods": [
-    {
-        "from_date": "10/24/2018",
-        "to_date": "10/25/2018"
-    },
-    {
-        "from_date": "10/24/2018",
-        "to_date": "10/25/2018"
-    }
-  ]
-}
-EOT;
-
-
-        return $filtersData;
-    }
-
     /**
      * @Route("/diagrams_generator/generate_clean", name="diagrams_generator_generate_clean")
      */
     public function generateClean()
     {
-        $test = new DiagramOrchestrator($this->getDoctrine());
+        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
 
-        $reqs = json_decode($this->_getTestData(), true);
+        $requirementsArr = [
+            'filters' => [
+                'device_type' => [
+                    'condition'    => 'is',
+                    'search_value' => 'mobile'
+                ]
+            ],
+            'periods' => [
+                [
+                    'from_date' => '10/24/2018',
+                    'to_date'   => '10/24/2018'
+                ]
+            ],
+            'technical_metrics' => [
+                'time_to_first_paint' => 1
+            ],
+            'business_metrics'  => [
+                'bounce_rate' => 1
+            ]
+        ];
 
-        // Test only for filters
-        $test->fillRequirements($reqs);
-        $test->process();
+        $diagramOrchestrator->fillRequirements($requirementsArr);
 
-        return new Response(count($test->process()));
+        $res = $diagramOrchestrator->process();
+
+        return new Response(count($res));
     }
 
     /**
