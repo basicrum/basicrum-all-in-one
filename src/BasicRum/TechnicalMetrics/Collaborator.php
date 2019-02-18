@@ -31,7 +31,7 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
                 if ($requirement == 1) {
                     /** @var \App\BasicRum\Report\SelectableInterface $filter */
-                    $filter = new $class($requirement['condition'], $requirement['search_value']);
+                    $filter = new $class();
 
                     $this->technicalMetrics[$filterKey] = $filter;
                 }
