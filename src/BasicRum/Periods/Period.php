@@ -29,6 +29,7 @@ class Period
     /**
      * @param string $startPeriod
      * @param string $endPeriod
+     * @return \App\BasicRum\Report\PeriodicFilterableInterface
      */
     public function setPeriod(string $startPeriod, string $endPeriod) : \App\BasicRum\Report\PeriodicFilterableInterface
     {
@@ -52,18 +53,24 @@ class Period
         }
     }
 
+    /**
+     * @return string
+     */
     public function getDataField() : string
     {
         return 'created_at';
     }
 
+    /**
+     * @return string
+     */
     public function getEntity() : string
     {
         return 'NavigationTimings';
     }
 
     /**
-     * @return bool
+     * @return \App\BasicRum\Periods\PeriodInterval
      */
     public function requestPeriodInterval() : \App\BasicRum\Periods\PeriodInterval
     {
