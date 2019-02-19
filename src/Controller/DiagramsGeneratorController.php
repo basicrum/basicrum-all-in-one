@@ -68,7 +68,7 @@ class DiagramsGeneratorController extends AbstractController
 
         $res = $diagramOrchestrator->process();
 
-        return new Response(count($res));
+        return new Response(print_r($res, true));
     }
 
     /**

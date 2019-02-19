@@ -8,11 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use DateTime;
-use DatePeriod;
-use DateInterval;
-
-use App\BasicRum\BounceRate;
+use App\BasicRum\DiagramOrchestrator;
 
 use App\BasicRum\BounceRate\Calculator;
 
@@ -54,15 +50,36 @@ class BounceRateController extends AbstractController
         ini_set('memory_limit', '-1');
         set_time_limit(0);
 
+        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
+
+        $requirementsArr = [
+            'filters' => [
+                'device_type' => [
+                    'condition'    => 'is',
+                    'search_value' => 'desktop'
+                ]
+            ],
+            'periods' => [
+                [
+                    'from_date' => '10/24/2018',
+                    'to_date'   => '10/24/2018'
+                ]
+            ],
+            'technical_metrics' => [
+                'time_to_first_paint' => 1
+            ],
+            'business_metrics'  => [
+                'bounce_rate' => 1
+            ]
+        ];
+
+        $diagramOrchestrator->fillRequirements($requirementsArr);
+
+        $res = $diagramOrchestrator->process();
+
         $sessionsCount = 0;
         $bouncesCount = 0;
         $convertedSessions = 0;
-
-        $dateConditionStart = '2019-01-19';
-        $dateConditionEnd   = '2019-01-20';
-
-        // Test periods
-        $periodChunks = $this->_gerPeriodDays($dateConditionStart, $dateConditionEnd);
 
         $groupMultiplier = 200;
         $upperLimit = 5000;
@@ -85,14 +102,10 @@ class BounceRateController extends AbstractController
             }
         }
 
-        $bounceRateReport = new BounceRate($this->getDoctrine());
 
-        foreach ($periodChunks as $day) {
-            $dayReport = $bounceRateReport->getInMetricInPeriod($day['start'], $day['end']);
-
-            $convertedSessions += count($dayReport['converted_sessions']);
-
-            foreach ($dayReport['all_sessions'] as $guid => $ttfp) {
+        foreach ($res[0] as $day) {
+            foreach ($day as $row) {
+                $ttfp  = $row['firstPaint'];
 
                 $paintGroup = $groupMultiplier * (int) ($ttfp / $groupMultiplier);
 
@@ -106,11 +119,9 @@ class BounceRateController extends AbstractController
                         $firstPaintArr[$paintGroup]++;
                         $sessionsCount++;
 
-                        if (isset($dayReport['bounced_sessions'][$guid])) {
+                        if ($row['pageViewsCount'] == 1) {
                             $bouncesCount++;
-
                             $bouncesGroup[$paintGroup]++;
-
                         }
                     }
                 }
@@ -142,40 +153,10 @@ class BounceRateController extends AbstractController
                 'y2Values'          => json_encode(array_values($bouncesPercents)),
                 'annotations'       => json_encode($bouncesPercents),
                 'x_axis_labels'     => json_encode(array_values($xAxisLabels)),
-                'startDate'         => $dateConditionStart,
-                'endDate'           => $dateConditionEnd
+                'startDate'         => 'none',
+                'endDate'           => 'none'
             ]
         );
-    }
-
-    /**
-     * @param $startDate
-     * @param $endDate
-     * @return array
-     */
-    private function _gerPeriodDays($startDate, $endDate)
-    {
-        $calendarDayFrom = $startDate;
-        $calendarDayTo = $endDate;
-
-        $period = new DatePeriod(
-            new DateTime($calendarDayFrom),
-            new DateInterval('P1D'),
-            new DateTime($calendarDayTo)
-        );
-
-        $betweenArr = [];
-
-        foreach ($period as $key => $value) {
-            $calendarDay = $value->format('Y-m-d');
-
-            $betweenArr[] = [
-                'start' => $calendarDay . ' 00:00:01',
-                'end'   => $calendarDay  . ' 23:59:59'
-            ];
-        }
-
-        return $betweenArr;
     }
 
 }
