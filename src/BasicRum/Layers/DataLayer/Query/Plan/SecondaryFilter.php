@@ -11,6 +11,8 @@ class SecondaryFilter
 
     private $primarySearchFieldName;
 
+    private $secondaryEntityName;
+
     private $prefetchCondition;
 
     private $prefetchSelect;
@@ -20,6 +22,7 @@ class SecondaryFilter
     public function __construct(
         string $primaryEntityName,
         string $primarySearchFieldName,
+        string $secondaryEntityName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
@@ -27,6 +30,7 @@ class SecondaryFilter
     {
         $this->primaryEntityName      = $primaryEntityName;
         $this->primarySearchFieldName = $primarySearchFieldName;
+        $this->secondaryEntityName    = $secondaryEntityName;
         $this->prefetchCondition      = $prefetchCondition;
         $this->prefetchSelect         = $prefetchSelect;
         $this->mainCondition          = $mainCondition;
@@ -46,6 +50,14 @@ class SecondaryFilter
     public function getPrimarySearchFieldName() : string
     {
         return $this->primarySearchFieldName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSecondaryEntityName() : string
+    {
+        return $this->secondaryEntityName;
     }
 
     /**

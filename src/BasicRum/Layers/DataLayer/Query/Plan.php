@@ -79,6 +79,7 @@ class Plan
     /**
      * @param string $primaryEntityName
      * @param string $primarySearchFieldName
+     * @param string $secondaryEntityName
      * @param ConditionInterface $prefetchCondition
      * @param SelectInterface $prefetchSelect
      * @param string $mainCondition
@@ -87,6 +88,7 @@ class Plan
     public function addLimiterFilter(
         string $primaryEntityName,
         string $primarySearchFieldName,
+        string $secondaryEntityName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
@@ -95,6 +97,7 @@ class Plan
         $this->limiterFilters[] = new Plan\SecondaryFilter(
             $primaryEntityName,
             $primarySearchFieldName,
+            $secondaryEntityName,
             $prefetchCondition,
             $prefetchSelect,
             $mainCondition
@@ -106,6 +109,7 @@ class Plan
     /**
      * @param string $primaryEntityName
      * @param string $primarySearchFieldName
+     * @param string $secondaryEntityName
      * @param ConditionInterface $prefetchCondition
      * @param SelectInterface $prefetchSelect
      * @param string $mainCondition
@@ -114,6 +118,7 @@ class Plan
     public function addSecondaryFilter(
         string $primaryEntityName,
         string $primarySearchFieldName,
+        string $secondaryEntityName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
@@ -122,6 +127,7 @@ class Plan
         $this->secondaryFilters[] = new Plan\SecondaryFilter(
                 $primaryEntityName,
                 $primarySearchFieldName,
+                $secondaryEntityName,
                 $prefetchCondition,
                 $prefetchSelect,
                 $mainCondition

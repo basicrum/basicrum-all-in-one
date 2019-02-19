@@ -142,13 +142,13 @@ class Runner
 
             if ($prefetchCondition->getMainCondition() === 'IN') {
                 $repository = $this->registry
-                    ->getRepository($this->getEntityClassName('NavigationTimingsUserAgents'));
+                    ->getRepository($this->getEntityClassName($prefetchCondition->getSecondaryEntityName()));
             }
 
             $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getPrimaryEntityName());
 
             if ($prefetchCondition->getMainCondition() === 'IN') {
-                $queryBuilder = $repository->createQueryBuilder('NavigationTimingsUserAgents');
+                $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getSecondaryEntityName());
             }
 
             $queryBuilder->where($where);

@@ -46,6 +46,7 @@ class Planner
         $plan->addLimiterFilter(
             'NavigationTimings',
             'pageViewId',
+            'NavigationTimings',
             $between,
             new Select\Min(
                 'NavigationTimings',
@@ -57,6 +58,7 @@ class Planner
         $plan->addLimiterFilter(
             'NavigationTimings',
             'pageViewId',
+            'NavigationTimings',
             $between,
             $max = new Select\Max(
                 'NavigationTimings',
@@ -98,21 +100,29 @@ class Planner
             }
 
             if ($requirement instanceof \App\BasicRum\Report\SecondaryFilterableInterface) {
-
                 $itself = new Select\Itself(
                     $requirement->getSecondaryEntityName(),
                     $requirement->getSecondaryKeyFieldName()
                 );
 
-                $condition = new Condition\Equals(
-                    $requirement->getSecondaryEntityName(),
-                    $requirement->getSecondarySearchFieldName(),
-                    $requirement->getSearchValue()
-                );
+                if ($requirement->getCondition() === 'contains') {
+                    $condition = new Condition\Contains(
+                        $requirement->getSecondaryEntityName(),
+                        $requirement->getSecondarySearchFieldName(),
+                        $requirement->getSearchValue()
+                    );
+                } else {
+                    $condition = new Condition\Equals(
+                        $requirement->getSecondaryEntityName(),
+                        $requirement->getSecondarySearchFieldName(),
+                        $requirement->getSearchValue()
+                    );
+                }
 
                 $plan->addSecondaryFilter(
                     $requirement->getPrimaryEntityName(),
                     $requirement->getPrimarySearchFieldName(),
+                    $requirement->getSecondaryEntityName(),
                     $condition,
                     $itself,
                     "IN"
