@@ -11,6 +11,7 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     private $filtersClassMap = [
         'browser_name'        => Secondary\BrowserName::class,
         'device_type'         => Secondary\DeviceType::class,
+        'device_manufacturer' => Secondary\DeviceManufacturer::class,
         'os_name'             => Secondary\OsName::class,
         'url'                 => Secondary\Url::class,
         'time_to_first_byte'  => Primary\TimeToFirstByte::class,

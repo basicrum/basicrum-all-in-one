@@ -13,7 +13,7 @@ class Calculator
 {
 
     /** @var int */
-    private $scannedChunkSize = 20000;
+    private $scannedChunkSize = 1000;
 
     private $batchSize        = 500;
 

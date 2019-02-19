@@ -56,13 +56,21 @@ class BounceRateController extends AbstractController
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
-                    'search_value' => 'desktop'
+                    'search_value' => 'mobile'
+                ],
+                'device_manufacturer' => [
+                    'condition'    => 'is',
+                    'search_value' => 'Huawei'
+                ],
+                'browser_name' => [
+                    'condition'    => 'is',
+                    'search_value' => 'Chrome Dev'
                 ]
             ],
             'periods' => [
                 [
-                    'from_date' => '10/24/2018',
-                    'to_date'   => '10/24/2018'
+                    'from_date' => '02/01/2019',
+                    'to_date'   => '02/07/2019'
                 ]
             ],
             'technical_metrics' => [
@@ -97,11 +105,10 @@ class BounceRateController extends AbstractController
         for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
             $firstPaintArr[$i] = 0;
             $allFirstPaintArr[$i] = 0;
-            if ($i >= 150 && $i <= $upperLimit) {
+            if ($i >= 250 && $i <= $upperLimit) {
                 $bouncesGroup[$i] = 0;
             }
         }
-
 
         foreach ($res[0] as $day) {
             foreach ($day as $row) {
@@ -115,7 +122,7 @@ class BounceRateController extends AbstractController
 
                 if ($upperLimit >= $paintGroup && $paintGroup > 0) {
 
-                    if ($paintGroup >= 150 && $paintGroup  <= $upperLimit) {
+                    if ($paintGroup >= 250 && $paintGroup  <= $upperLimit) {
                         $firstPaintArr[$paintGroup]++;
                         $sessionsCount++;
 
@@ -136,7 +143,7 @@ class BounceRateController extends AbstractController
             $xAxisLabels[] = $time;
 
             if ($numberOfProbes > 0) {
-                if ($paintGroup >= 150 && $paintGroup <= $upperLimit) {
+                if ($paintGroup >= 250 && $paintGroup <= $upperLimit) {
                     $bouncesPercents[$paintGroup] = (int) number_format(($bouncesGroup[$paintGroup] / $numberOfProbes) * 100);
                 }
             }
