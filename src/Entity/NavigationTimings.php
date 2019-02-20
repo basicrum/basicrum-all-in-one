@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimings
  *
- * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="created_at_2", columns={"created_at", "user_agent_id"}), @ORM\Index(name="url_id", columns={"url_id"})})
+ * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="created_at_2", columns={"created_at", "user_agent_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="created_at", columns={"created_at"})})
  * @ORM\Entity
  */
 class NavigationTimings
@@ -104,6 +104,13 @@ class NavigationTimings
      * @ORM\Column(name="guid", type="string", length=128, nullable=false, options={"fixed"=true})
      */
     private $guid;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="stay_on_page_time", type="smallint", nullable=false, options={"unsigned"=true})
+     */
+    private $stayOnPageTime;
 
     /**
      * @var \DateTime
@@ -257,6 +264,18 @@ class NavigationTimings
     public function setGuid(string $guid): self
     {
         $this->guid = $guid;
+
+        return $this;
+    }
+
+    public function getStayOnPageTime(): ?int
+    {
+        return $this->stayOnPageTime;
+    }
+
+    public function setStayOnPageTime(int $stayOnPageTime): self
+    {
+        $this->stayOnPageTime = $stayOnPageTime;
 
         return $this;
     }

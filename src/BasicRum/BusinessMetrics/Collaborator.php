@@ -10,7 +10,8 @@ class Collaborator
 
     /** @var array */
     private $businessMetricsClassMap = [
-        'bounce_rate' => BounceRate::class
+        'bounce_rate'       => BounceRate::class,
+        'stay_on_page_time' => StayOnPageTyme::class
     ];
 
     /** @var array */

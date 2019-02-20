@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\TechnicalMetrics;
+namespace App\BasicRum\BusinessMetrics;
 
-class TimeToFirstPaint
+class StayOnPageTyme
     implements \App\BasicRum\Report\SelectableInterface
 {
 
     public function getSelectDataFieldName(): string
     {
-        return 'firstPaint';
+        return 'stayOnPageTime';
     }
 
     public function getSelectEntityName() : string

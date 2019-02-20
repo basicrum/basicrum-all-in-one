@@ -140,14 +140,14 @@ class Runner
             $repository = $this->registry
                 ->getRepository($this->getEntityClassName($prefetchCondition->getPrimaryEntityName()));
 
-            if ($prefetchCondition->getMainCondition() === 'IN') {
+            if (in_array($prefetchCondition->getMainCondition(), ['is', 'isNot', 'contains'])) {
                 $repository = $this->registry
                     ->getRepository($this->getEntityClassName($prefetchCondition->getSecondaryEntityName()));
             }
 
             $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getPrimaryEntityName());
 
-            if ($prefetchCondition->getMainCondition() === 'IN') {
+            if (in_array($prefetchCondition->getMainCondition(), ['is', 'isNot', 'contains'])) {
                 $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getSecondaryEntityName());
             }
 
@@ -159,13 +159,20 @@ class Runner
 
             $queryBuilder->select($selectFields);
 
-            if ($prefetchCondition->getMainCondition() === 'IN') {
+            if ($prefetchCondition->getMainCondition() === 'is' || $prefetchCondition->getMainCondition() === 'contains') {
                 $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
 
                 //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
                 $ids = array_column($fetched, "id");
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
-            } else {
+            } elseif ($prefetchCondition->getMainCondition() === 'isNot') {
+                $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+
+                //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
+                $ids = array_column($fetched, "id");
+                $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  'NOT IN(' . implode(',', $ids) . ')';
+            }
+            else {
                 // If not MIN or MAX then we need get the result in array
                 $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $fetched;

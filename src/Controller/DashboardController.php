@@ -11,6 +11,7 @@ use App\Entity\NavigationTimingsUrls;
 
 use App\BasicRum\Report;
 use App\BasicRum\DiagramBuilder;
+use App\BasicRum\DiagramOrchestrator;
 
 class DashboardController extends AbstractController
 {
@@ -19,10 +20,10 @@ class DashboardController extends AbstractController
      */
     public function index()
     {
-        return $this->render('dashboard.html.twig',
+        return $this->render('waterfall.html.twig',
             [
-                'popular_pages_performance' => $this->getPagesPerformanceData($this->tenMostPopularVisitedPages()),
-                'device_samples'            => json_encode($this->deviceSamples()),
+//                'popular_pages_performance' => $this->getPagesPerformanceData($this->tenMostPopularVisitedPages()),
+//                'device_samples'            => json_encode($this->deviceSamples()),
                 'last_page_views'           => $this->lastPageViewsListHTML()
             ]
         );
@@ -241,13 +242,106 @@ class DashboardController extends AbstractController
 
     private function lastPageViewsListHTML()
     {
+        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
+
+        $requirementsArr = [
+            'filters' => [
+                'device_type' => [
+                    'condition'    => 'is',
+                    'search_value' => 'mobile'
+                ],
+//                'device_manufacturer' => [
+//                    'condition'    => 'is',
+//                    'search_value' => 'Huawei'
+//                ],
+//                'browser_name' => [
+//                    'condition'    => 'is',
+//                    'search_value' => 'Chrome Dev'
+//                ],
+                'url' => [
+                    'condition'    => 'contains',
+                    'search_value' => 'catalog/product/view/id'
+                ]
+            ],
+            'periods' => [
+                [
+                    'from_date' => '02/01/2019',
+                    'to_date'   => '02/02/2019'
+                ]
+            ],
+            'technical_metrics' => [
+                'time_to_first_paint' => 1
+            ],
+            'business_metrics'  => [
+                'bounce_rate' => 1
+            ]
+        ];
+
+        $diagramOrchestrator->fillRequirements($requirementsArr);
+
+        $res = $diagramOrchestrator->process();
+
+        $sessionsCount = 0;
+        $bouncesCount = 0;
+        $convertedSessions = 0;
+
+        $groupMultiplier = 100;
+        $upperLimit = 5000;
+
+        $firstPaintArr = [];
+        $allFirstPaintArr = [];
+        $bouncesGroup  = [];
+        $bouncedPageViews = [];
+
+        // Init the groups/buckets
+        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
+            $allFirstPaintArr[$i] = 0;
+        }
+
+        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
+            $firstPaintArr[$i] = 0;
+            $allFirstPaintArr[$i] = 0;
+            if ($i >= 250 && $i <= $upperLimit) {
+                $bouncesGroup[$i] = 0;
+            }
+        }
+
+        foreach ($res[0] as $day) {
+            foreach ($day as $row) {
+                $ttfp  = $row['firstPaint'];
+
+                $paintGroup = $groupMultiplier * (int) ($ttfp / $groupMultiplier);
+
+                if ($upperLimit >= $paintGroup && $paintGroup > 0) {
+                    $allFirstPaintArr[$paintGroup]++;
+                }
+
+                if ($upperLimit >= $paintGroup && $paintGroup > 0) {
+
+                    if ($paintGroup >= 250 && $paintGroup  <= $upperLimit) {
+                        $firstPaintArr[$paintGroup]++;
+                        $sessionsCount++;
+
+                        if ($row['pageViewsCount'] == 1) {
+                            if ($paintGroup >= 1200 && $paintGroup <= 2200) {
+                                $bouncedPageViews[] = $row['pageViewId'];
+                            }
+
+                            $bouncesCount++;
+                            $bouncesGroup[$paintGroup]++;
+                        }
+                    }
+                }
+            }
+        }
+
+        //print_r($bouncedPageViews);
+
         $repository = $this->getDoctrine()
             ->getRepository(NavigationTimings::class);
         $query = $repository->createQueryBuilder('nt')
-            //->where("nt.url LIKE '%GOO%'")
-            //->setParameter('url', 'GOO')
             ->orderBy('nt.pageViewId', 'DESC')
-            ->setMaxResults(400)
+            ->where('nt.pageViewId IN (' . implode(',', $bouncedPageViews) . ')')
             ->getQuery();
 
         $navigationTimings = $query->getResult();

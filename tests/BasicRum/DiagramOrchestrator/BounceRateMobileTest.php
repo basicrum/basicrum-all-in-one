@@ -43,7 +43,8 @@ class BounceRateMobileTest extends KernelTestCase
                 'time_to_first_paint' => 1
             ],
             'business_metrics'  => [
-                'bounce_rate' => 1
+                'bounce_rate'       => 1,
+                'stay_on_page_time' => 1
             ]
         ];
 
@@ -60,7 +61,8 @@ class BounceRateMobileTest extends KernelTestCase
                             'firstPageViewId' => 1,
                             'firstPaint'      => 344,
                             'pageViewsCount'  => 1,
-                            'guid'            => 'ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901'
+                            'guid'            => 'ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901',
+                            'stayOnPageTime'  => 24
                         ]
                     ]
                 ]

@@ -46,7 +46,8 @@ class UrlLikeTest extends KernelTestCase
             [
                 [
                     [
-                        'pageViewId' => 2
+                        'pageViewId' => 2,
+
                     ]
                 ]
             ],

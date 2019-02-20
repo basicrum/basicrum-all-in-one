@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use Doctrine\ORM\EntityManager;
-
-use App\BasicRum\Date\DayInterval;
 use App\BasicRum\NavigationTiming\MetricAggregator;
-use App\BasicRum\Report\Filter\FilterAggregator;
 use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;

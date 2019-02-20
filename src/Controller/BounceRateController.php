@@ -55,22 +55,27 @@ class BounceRateController extends AbstractController
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
-                    'condition'    => 'is',
-                    'search_value' => 'mobile'
+                    'condition'    => 'isNot',
+                    'search_value' => 'bot'
                 ],
-                'device_manufacturer' => [
-                    'condition'    => 'is',
-                    'search_value' => 'Huawei'
-                ],
-                'browser_name' => [
-                    'condition'    => 'is',
-                    'search_value' => 'Chrome Dev'
+//                'device_manufacturer' => [
+//                    'condition'    => 'is',
+//                    'search_value' => 'Huawei'
+//                ],
+//                'browser_name' => [
+//                    'condition'    => 'is',
+//                    'search_value' => 'Chrome Dev'
+//                ],
+                'url' => [
+                    'condition'    => 'contains',
+                    'search_value' => 'https://www.hundeland.de/marken/marken-hund/wolfsblut',
+//                    'search_value' => 'https://www.hundeland.de/catalog/product/view/id/18858'
                 ]
             ],
             'periods' => [
                 [
                     'from_date' => '02/01/2019',
-                    'to_date'   => '02/07/2019'
+                    'to_date'   => '02/18/2019'
                 ]
             ],
             'technical_metrics' => [
@@ -90,7 +95,8 @@ class BounceRateController extends AbstractController
         $convertedSessions = 0;
 
         $groupMultiplier = 200;
-        $upperLimit = 5000;
+        $upperLimit = 2800;
+        $bottomLimit = 800;
 
         $firstPaintArr = [];
         $allFirstPaintArr = [];
@@ -105,7 +111,7 @@ class BounceRateController extends AbstractController
         for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
             $firstPaintArr[$i] = 0;
             $allFirstPaintArr[$i] = 0;
-            if ($i >= 250 && $i <= $upperLimit) {
+            if ($i >= $bottomLimit && $i <= $upperLimit) {
                 $bouncesGroup[$i] = 0;
             }
         }
@@ -122,11 +128,17 @@ class BounceRateController extends AbstractController
 
                 if ($upperLimit >= $paintGroup && $paintGroup > 0) {
 
-                    if ($paintGroup >= 250 && $paintGroup  <= $upperLimit) {
+                    if ($paintGroup >= $bottomLimit && $paintGroup  <= $upperLimit) {
                         $firstPaintArr[$paintGroup]++;
                         $sessionsCount++;
 
                         if ($row['pageViewsCount'] == 1) {
+//                            echo '<pre>';
+//                            print_r($row);
+//                            var_dump($paintGroup);
+//                            echo '==============================================================';
+//                            echo '</pre>';
+
                             $bouncesCount++;
                             $bouncesGroup[$paintGroup]++;
                         }
@@ -143,7 +155,7 @@ class BounceRateController extends AbstractController
             $xAxisLabels[] = $time;
 
             if ($numberOfProbes > 0) {
-                if ($paintGroup >= 250 && $paintGroup <= $upperLimit) {
+                if ($paintGroup >= $bottomLimit && $paintGroup <= $upperLimit) {
                     $bouncesPercents[$paintGroup] = (int) number_format(($bouncesGroup[$paintGroup] / $numberOfProbes) * 100);
                 }
             }

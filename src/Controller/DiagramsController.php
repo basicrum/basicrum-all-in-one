@@ -15,6 +15,7 @@ use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
 use App\Entity\ResourceTimingsUrls;
+use App\Entity\NavigationTimingsUserAgents;
 
 
 use DateTime;
@@ -415,6 +416,10 @@ class DiagramsController extends AbstractController
             ->getRepository(ResourceTimings::class)
             ->findBy(['pageViewId' => $pageViewId]);
 
+        /** @var NavigationTimingsUserAgents $userAgent */
+        $userAgent = $this->getDoctrine()
+            ->getRepository(NavigationTimingsUserAgents::class)
+            ->findBy(['id' => $navigationTiming[0]->getUserAgentId()]);
 
         $decompressor = new Decompressor();
 
@@ -483,7 +488,8 @@ class DiagramsController extends AbstractController
                             'labels' => array_keys($sizeDistribution),
                             'values' => array_values($sizeDistribution)
                         ],
-                    'user_agent'            => 'none'
+                    'user_agent'            => $userAgent[0]->getUserAgent(),
+                    'browser_name'          => $userAgent[0]->getBrowserName()
                 ]
             )
         );

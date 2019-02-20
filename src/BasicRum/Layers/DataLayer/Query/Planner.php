@@ -125,7 +125,7 @@ class Planner
                     $requirement->getSecondaryEntityName(),
                     $condition,
                     $itself,
-                    "IN"
+                    $requirement->getCondition()
                 );
             }
         }
