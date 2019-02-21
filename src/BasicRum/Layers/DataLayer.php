@@ -7,6 +7,8 @@ namespace App\BasicRum\Layers;
 use App\BasicRum\Layers\DataLayer\Query\Planner;
 use App\BasicRum\Layers\DataLayer\Query\Runner;
 
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+
 class DataLayer
 {
 
@@ -35,6 +37,7 @@ class DataLayer
         $this->registry = $registry;
         $this->period = $period;
         $this->dataRequirements = $dataRequirements;
+
     }
 
     /**
@@ -44,8 +47,20 @@ class DataLayer
     {
         $res = [];
 
+        /** todo: Inject the cache Adapter in different way in order to support different cache storage */
+        /** todo: Check if this affects the result of PHP unit, we do not want always to return cached results */
+        $cache = new FilesystemAdapter('basicrum.report.cache');
+
         while ($this->period->hasPeriods()) {
             $interval = $this->period->requestPeriodInterval();
+
+            /** todo: Think about adding a tag that at least can invalidate cache for certain day in interval */
+            $cacheKey = 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
+
+            if ($cache->hasItem($cacheKey)) {
+                $res[] =  $cache->getItem($cacheKey)->get();
+                continue;
+            }
 
             $queryPlanner = new Planner(
                 $interval->getStartInterval(),
@@ -57,8 +72,14 @@ class DataLayer
 
             $planRunner = new Runner($this->registry, $planActions);
 
-            $res[] = $planRunner->run();
+            $data = $planRunner->run();
 
+            $cacheItem = $cache->getItem($cacheKey);
+            $cacheItem->set($data);
+
+            $cache->save($cacheItem);
+
+            $res[] = $data;
         }
 
         return $res;
