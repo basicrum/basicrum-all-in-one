@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimings
  *
- * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="created_at_2", columns={"created_at", "user_agent_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="created_at", columns={"created_at"})})
+ * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="created_at_2", columns={"created_at", "user_agent_id"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="created_at", columns={"created_at"})})
  * @ORM\Entity
  */
 class NavigationTimings
@@ -110,7 +110,7 @@ class NavigationTimings
      *
      * @ORM\Column(name="stay_on_page_time", type="smallint", nullable=false, options={"unsigned"=true})
      */
-    private $stayOnPageTime;
+    private $stayOnPageTime = '0';
 
     /**
      * @var \DateTime
@@ -118,6 +118,13 @@ class NavigationTimings
      * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
      */
     private $createdAt = 'CURRENT_TIMESTAMP';
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="load_event_end", type="smallint", nullable=false, options={"unsigned"=true})
+     */
+    private $loadEventEnd;
 
     public function getPageViewId(): ?int
     {
@@ -288,6 +295,18 @@ class NavigationTimings
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getLoadEventEnd(): ?int
+    {
+        return $this->loadEventEnd;
+    }
+
+    public function setLoadEventEnd(int $loadEventEnd): self
+    {
+        $this->loadEventEnd = $loadEventEnd;
 
         return $this;
     }
