@@ -4,23 +4,11 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Bucketizer;
-use App\BasicRum\Densityzer;
 use App\BasicRum\Statistics\Median;
 use App\BasicRum\Date\DayInterval;
 
 class DiagramBuilder
 {
-
-    /**
-     * @var Report
-     */
-    protected $report;
-
-    public function __construct(Report $report)
-    {
-       $this->report = $report;
-    }
 
     /**
      * @param array $data
@@ -127,22 +115,6 @@ class DiagramBuilder
         ];
 
         return ['performance' => $diagramData, 'bounce_rate' => $bounceRateDiagramData];
-    }
-
-    /**
-     * @return array
-     */
-    public function getNavigationTimings()
-    {
-        return $this->report->getNavigationTimings();
-    }
-
-    /**
-     * @return array
-     */
-    public function getPageTypes()
-    {
-        return $this->report->getPageTypes();
     }
 
 }

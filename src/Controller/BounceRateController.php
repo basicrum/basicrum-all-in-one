@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
 use App\BasicRum\BounceRate\Calculator;
@@ -50,43 +51,41 @@ class BounceRateController extends AbstractController
         ini_set('memory_limit', '-1');
         set_time_limit(0);
 
-        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
-
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
-                    'condition'    => 'isNot',
-                    'search_value' => 'bot'
+                    'condition'    => 'is',
+                    'search_value' => 'mobile'
                 ],
-//                'device_manufacturer' => [
-//                    'condition'    => 'is',
-//                    'search_value' => 'Huawei'
-//                ],
-//                'browser_name' => [
-//                    'condition'    => 'is',
-//                    'search_value' => 'Chrome Dev'
-//                ],
                 'url' => [
                     'condition'    => 'contains',
-                    'search_value' => 'https://www.hundeland.de/marken/marken-hund/wolfsblut',
-//                    'search_value' => 'https://www.hundeland.de/catalog/product/view/id/18858'
+                    'search_value' => 'product/view/id'
                 ]
             ],
             'periods' => [
                 [
                     'from_date' => '02/01/2019',
-                    'to_date'   => '02/18/2019'
+                    'to_date'   => '02/01/2019'
                 ]
             ],
             'technical_metrics' => [
                 'time_to_first_paint' => 1
             ],
             'business_metrics'  => [
-                'bounce_rate' => 1
+                'bounce_rate'       => 1,
+                'stay_on_page_time' => 1
             ]
         ];
 
-        $diagramOrchestrator->fillRequirements($requirementsArr);
+        $collaboratorsAggregator = new CollaboratorsAggregator();
+
+        $collaboratorsAggregator->fillRequirements($requirementsArr);
+
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->getDoctrine()
+        );
+
 
         $res = $diagramOrchestrator->process();
 
@@ -95,8 +94,8 @@ class BounceRateController extends AbstractController
         $convertedSessions = 0;
 
         $groupMultiplier = 200;
-        $upperLimit = 2800;
-        $bottomLimit = 800;
+        $upperLimit = 5000;
+        $bottomLimit = 300;
 
         $firstPaintArr = [];
         $allFirstPaintArr = [];
@@ -116,6 +115,9 @@ class BounceRateController extends AbstractController
             }
         }
 
+        $zeroStayOnPage = 0;
+        $moreThanZeroStayOnPage = 0;
+
         foreach ($res[0] as $day) {
             foreach ($day as $row) {
                 $ttfp  = $row['firstPaint'];
@@ -132,7 +134,14 @@ class BounceRateController extends AbstractController
                         $firstPaintArr[$paintGroup]++;
                         $sessionsCount++;
 
-                        if ($row['pageViewsCount'] == 1) {
+                        if ($row['pageViewsCount'] == 1 /** && $row['stayOnPageTime'] < 11 */ ) {
+//                            if ($row['stayOnPageTime'] == 0) {
+//                                $zeroStayOnPage++;
+//                            } else {
+//                                $moreThanZeroStayOnPage++;
+//                                var_dump($row['pageViewId']);
+//                            }
+
 //                            echo '<pre>';
 //                            print_r($row);
 //                            var_dump($paintGroup);

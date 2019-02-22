@@ -8,10 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use App\BasicRum\Report;
-use App\BasicRum\DiagramBuilder;
 use App\Entity\Releases;
 
+use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
 use DateTime;
@@ -24,9 +23,7 @@ class DiagramsGeneratorController extends AbstractController
      */
     public function index()
     {
-        $report = new Report($this->getDoctrine());
 
-        $diagramBuilder = new DiagramBuilder($report);
 
         return $this->render('diagrams_generator/form.html.twig',
             [
@@ -41,8 +38,6 @@ class DiagramsGeneratorController extends AbstractController
      */
     public function generateClean()
     {
-        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
-
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
@@ -64,7 +59,14 @@ class DiagramsGeneratorController extends AbstractController
             ]
         ];
 
-        $diagramOrchestrator->fillRequirements($requirementsArr);
+        $collaboratorsAggregator = new CollaboratorsAggregator();
+
+        $collaboratorsAggregator->fillRequirements($requirementsArr);
+
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->getDoctrine()
+        );
 
         $res = $diagramOrchestrator->process();
 

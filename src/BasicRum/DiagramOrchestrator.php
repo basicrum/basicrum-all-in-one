@@ -9,39 +9,19 @@ use App\BasicRum\Layers\DataLayer;
 class DiagramOrchestrator
 {
 
-    /** @var array */
-    private $collaboratorsClassMap = [
-        Filters\Collaborator::class,
-        TechnicalMetrics\Collaborator::class,
-//        Visualize\Collaborator::class,
-        Periods\Collaborator::class,
-//        Decorators\Collaborator::class,
-        BusinessMetrics\Collaborator::class
-    ];
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /** @var array */
     private $collaborators = [];
 
-    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
+    public function __construct(
+        array $collaborators,
+        \Doctrine\Bundle\DoctrineBundle\Registry $registry
+    )
     {
-        $this->registry = $registry;
-
-        foreach ($this->collaboratorsClassMap as $class) {
-            /** @var CollaboratorsInterface $collaborator */
-            $collaborator = new $class();
-            $this->collaborators[$collaborator->getCommandParameterName()] = $collaborator;
-        }
-    }
-
-    // What about return scenario
-    public function fillRequirements(array $requirements)
-    {
-        foreach ($requirements as $requirementCode => $requirement) {
-            $this->collaborators[$requirementCode]->applyForRequirement($requirement);
-        }
+        $this->registry      = $registry;
+        $this->collaborators = $collaborators;
     }
 
     /**

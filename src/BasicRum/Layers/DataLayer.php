@@ -85,6 +85,4 @@ class DataLayer
         return $res;
     }
 
-
-
 }

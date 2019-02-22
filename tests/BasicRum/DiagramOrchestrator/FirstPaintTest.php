@@ -4,6 +4,7 @@ namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
 class FirstPaintTest extends KernelTestCase
@@ -24,8 +25,6 @@ class FirstPaintTest extends KernelTestCase
 
     public function testFirstPaintSelected()
     {
-        $diagramOrchestrator = new DiagramOrchestrator($this->_getDoctrine());
-
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
@@ -44,7 +43,14 @@ class FirstPaintTest extends KernelTestCase
             ]
         ];
 
-        $diagramOrchestrator->fillRequirements($requirementsArr);
+        $collaboratorsAggregator = new CollaboratorsAggregator();
+
+        $collaboratorsAggregator->fillRequirements($requirementsArr);
+
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->_getDoctrine()
+        );
 
         $res = $diagramOrchestrator->process();
 
@@ -66,8 +72,6 @@ class FirstPaintTest extends KernelTestCase
 
     public function testFirstPaintNotSelected()
     {
-        $diagramOrchestrator = new DiagramOrchestrator($this->_getDoctrine());
-
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
@@ -83,7 +87,14 @@ class FirstPaintTest extends KernelTestCase
             ]
         ];
 
-        $diagramOrchestrator->fillRequirements($requirementsArr);
+        $collaboratorsAggregator = new CollaboratorsAggregator();
+
+        $collaboratorsAggregator->fillRequirements($requirementsArr);
+
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->_getDoctrine()
+        );
 
         $res = $diagramOrchestrator->process();
 

@@ -4,6 +4,7 @@ namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
 class BounceRateMobileTest extends KernelTestCase
@@ -24,8 +25,6 @@ class BounceRateMobileTest extends KernelTestCase
 
     public function testMobileFirstPaintBounceRateSelected()
     {
-        $diagramOrchestrator = new DiagramOrchestrator($this->_getDoctrine());
-
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
@@ -48,7 +47,14 @@ class BounceRateMobileTest extends KernelTestCase
             ]
         ];
 
-        $diagramOrchestrator->fillRequirements($requirementsArr);
+        $collaboratorsAggregator = new CollaboratorsAggregator();
+
+        $collaboratorsAggregator->fillRequirements($requirementsArr);
+
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->_getDoctrine()
+        );
 
         $res = $diagramOrchestrator->process();
 

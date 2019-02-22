@@ -244,12 +244,18 @@ class DashboardController extends AbstractController
     {
         $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
 
+        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
+
         $requirementsArr = [
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
                     'search_value' => 'mobile'
                 ],
+//                'os_name' => [
+//                    'condition'    => 'is',
+//                    'search_value' => 'iOS'
+//                ],
 //                'device_manufacturer' => [
 //                    'condition'    => 'is',
 //                    'search_value' => 'Huawei'
@@ -258,10 +264,11 @@ class DashboardController extends AbstractController
 //                    'condition'    => 'is',
 //                    'search_value' => 'Chrome Dev'
 //                ],
-                'url' => [
-                    'condition'    => 'contains',
-                    'search_value' => 'catalog/product/view/id'
-                ]
+//                'url' => [
+//                    'condition'    => 'contains',
+////                    'search_value' => 'https://www.hundeland.de/marken/marken-hund/wolfsblut',
+//                    'search_value' => 'https://www.hundeland.de/catalog/product/view/id'
+//                ]
             ],
             'periods' => [
                 [
@@ -273,7 +280,8 @@ class DashboardController extends AbstractController
                 'time_to_first_paint' => 1
             ],
             'business_metrics'  => [
-                'bounce_rate' => 1
+                'bounce_rate'       => 1,
+                'stay_on_page_time' => 1
             ]
         ];
 
@@ -322,10 +330,10 @@ class DashboardController extends AbstractController
                         $firstPaintArr[$paintGroup]++;
                         $sessionsCount++;
 
-                        if ($row['pageViewsCount'] == 1) {
-                            if ($paintGroup >= 1200 && $paintGroup <= 2200) {
+                        if ($row['pageViewsCount'] == 1 && $row['stayOnPageTime'] == 0) {
+//                            if ($paintGroup >= 1200 && $paintGroup <= 2200) {
                                 $bouncedPageViews[] = $row['pageViewId'];
-                            }
+//                            }
 
                             $bouncesCount++;
                             $bouncesGroup[$paintGroup]++;
