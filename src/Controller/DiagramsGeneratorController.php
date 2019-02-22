@@ -13,6 +13,8 @@ use App\Entity\Releases;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
+use App\BasicRum\Layers\Presentation;
+
 use DateTime;
 
 class DiagramsGeneratorController extends AbstractController
@@ -23,12 +25,12 @@ class DiagramsGeneratorController extends AbstractController
      */
     public function index()
     {
-
+        $presentation = new Presentation();
 
         return $this->render('diagrams_generator/form.html.twig',
             [
-                'navigation_timings' => $diagramBuilder->getNavigationTimings(),
-                'page_types'         => $diagramBuilder->getPageTypes()
+                'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
+                'page_types'         => []
             ]
         );
     }
@@ -38,30 +40,25 @@ class DiagramsGeneratorController extends AbstractController
      */
     public function generateClean()
     {
-        $requirementsArr = [
-            'filters' => [
-                'device_type' => [
-                    'condition'    => 'is',
-                    'search_value' => 'mobile'
-                ]
-            ],
-            'periods' => [
-                [
-                    'from_date' => '10/24/2018',
-                    'to_date'   => '10/24/2018'
-                ]
-            ],
-            'technical_metrics' => [
-                'time_to_first_paint' => 1
-            ],
-            'business_metrics'  => [
-                'bounce_rate' => 1
-            ]
-        ];
-
         $collaboratorsAggregator = new CollaboratorsAggregator();
 
-        $collaboratorsAggregator->fillRequirements($requirementsArr);
+        $requirements = [];
+
+        /**
+         * Ugly filtering of post data in order to map form data correctly to dataLayer API
+         */
+        foreach ($_POST as $keyO => $data) {
+            if (is_string($data) && strpos($data, '|') !== false) {
+                $e = explode('|', $data);
+                $requirements[$keyO] = [$e[0] => $e[1]];
+
+                continue;
+            }
+
+            $requirements[$keyO] = $data;
+        }
+
+        $collaboratorsAggregator->fillRequirements($requirements);
 
         $diagramOrchestrator = new DiagramOrchestrator(
             $collaboratorsAggregator->getCollaborators(),

@@ -20,8 +20,8 @@ class DiagramOrchestrator
         \Doctrine\Bundle\DoctrineBundle\Registry $registry
     )
     {
-        $this->registry      = $registry;
         $this->collaborators = $collaborators;
+        $this->registry      = $registry;
     }
 
     /**
@@ -48,17 +48,19 @@ class DiagramOrchestrator
 
         $periods = $this->collaborators['periods']->getRequirements();
 
+        $requirements =                 array_merge(
+            $this->collaborators['filters']->getRequirements(),
+            $this->collaborators['technical_metrics']->getRequirements(),
+            $this->collaborators['business_metrics']->getRequirements()
+        );
+
         $data = [];
 
         foreach ($periods as $period) {
             $dataLayer = new DataLayer(
                 $this->registry,
                 $period,
-                array_merge(
-                    $this->collaborators['filters']->getRequirements(),
-                    $this->collaborators['technical_metrics']->getRequirements(),
-                    $this->collaborators['business_metrics']->getRequirements()
-                )
+                $requirements
             );
             $data[] = $dataLayer->process();
         }

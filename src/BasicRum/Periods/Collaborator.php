@@ -9,11 +9,18 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     private $periods;
 
+    /**
+     * @return string
+     */
     public function getCommandParameterName() : string
     {
         return 'periods';
     }
 
+    /**
+     * @param array $requirements
+     * @return \App\BasicRum\CollaboratorsInterface
+     */
     public function applyForRequirement(array $requirements) : \App\BasicRum\CollaboratorsInterface
     {
         foreach ($requirements as $requirement) {
@@ -26,9 +33,20 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getRequirements() : array
     {
         return $this->periods;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllPossibleRequirementsKeys() : array
+    {
+        return array_keys([]);
     }
 
 }

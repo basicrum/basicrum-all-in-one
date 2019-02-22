@@ -13,4 +13,6 @@ interface CollaboratorsInterface
 
     public function getRequirements() : array;
 
+    public function getAllPossibleRequirementsKeys() : array;
+
 }

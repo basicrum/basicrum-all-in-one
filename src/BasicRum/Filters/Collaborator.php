@@ -20,11 +20,18 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     private $filters = [];
 
+    /**
+     * @return string
+     */
     public function getCommandParameterName() : string
     {
         return 'filters';
     }
 
+    /**
+     * @param array $requirements
+     * @return \App\BasicRum\CollaboratorsInterface
+     */
     public function applyForRequirement(array $requirements) : \App\BasicRum\CollaboratorsInterface
     {
         foreach ($this->filtersClassMap as $filterKey => $class) {
@@ -44,9 +51,20 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getRequirements() : array
     {
         return $this->filters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllPossibleRequirementsKeys() : array
+    {
+        return array_keys($this->filtersClassMap);
     }
 
 }

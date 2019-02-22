@@ -55,4 +55,13 @@ class Collaborator
         return $this->businessMetrics;
     }
 
+
+    /**
+     * @return array
+     */
+    public function getAllPossibleRequirementsKeys() : array
+    {
+        return array_keys($this->businessMetricsClassMap);
+    }
+
 }

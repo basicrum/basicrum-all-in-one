@@ -50,4 +50,12 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         return $this->technicalMetrics;
     }
 
+    /**
+     * @return array
+     */
+    public function getAllPossibleRequirementsKeys() : array
+    {
+        return array_keys($this->technicalMetricsClassMap);
+    }
+
 }

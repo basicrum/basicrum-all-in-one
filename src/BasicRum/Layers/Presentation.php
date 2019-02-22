@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\BasicRum\Layers;
+
+use App\BasicRum\CollaboratorsAggregator;
+
+class Presentation
+{
+
+    /** @var CollaboratorsAggregator */
+    private $collaboratorsAggregator;
+
+    public function __construct()
+    {
+        $this->collaboratorsAggregator = new \App\BasicRum\CollaboratorsAggregator();
+    }
+
+    public function getTechnicalMetricsSelectValues()
+    {
+        $metrics = $this->collaboratorsAggregator
+            ->getTechnicalMetrics()
+            ->getAllPossibleRequirementsKeys();
+
+        $pairs = [];
+
+        foreach ($metrics as $metric) {
+            $label = explode('_', $metric);
+            $label = array_map('ucfirst', $label);
+            $label = implode(' ', $label);
+
+            $pairs[] = [
+                'key'   => $metric,
+                'label' => $label
+            ];
+        }
+
+        return $pairs;
+    }
+
+
+}

@@ -11,9 +11,9 @@ class CollaboratorsAggregator
     private $collaboratorsClassMap = [
         Filters\Collaborator::class,
         TechnicalMetrics\Collaborator::class,
-//        Visualize\Collaborator::class,
+        Visualize\Collaborator::class,
         Periods\Collaborator::class,
-//        Decorators\Collaborator::class,
+        Decorators\Collaborator::class,
         BusinessMetrics\Collaborator::class
     ];
 
@@ -53,17 +53,9 @@ class CollaboratorsAggregator
     /**
      * @return array
      */
-    public function getPeriods()
-    {
-        return $this->collaborators['periods']->getRequirements();
-    }
-
-    /**
-     * @return array
-     */
     public function getFilters()
     {
-        return $this->collaborators['filters']->getRequirements();
+        return $this->collaborators['filters'];
     }
 
     /**
@@ -71,7 +63,7 @@ class CollaboratorsAggregator
      */
     public function getTechnicalMetrics()
     {
-        return $this->collaborators['technical_metrics']->getRequirements();
+        return $this->collaborators['technical_metrics'];
     }
 
     /**
@@ -79,7 +71,7 @@ class CollaboratorsAggregator
      */
     public function getBusinessMetrics()
     {
-        return $this->collaborators['business_metrics']->getRequirements();
+        return $this->collaborators['business_metrics'];
     }
 
 }
