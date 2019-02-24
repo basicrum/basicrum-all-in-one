@@ -14,7 +14,7 @@ class Decompressor
      * @param string $timings
      * @return array
      */
-    public function decompress(string $timings)
+    public function decompress(string $timings) : array
     {
         $decompressedResources = [];
 
@@ -44,7 +44,8 @@ class Decompressor
      * @param int $startTime
      * @return array
      */
-    private function _extractTimings(array $data, int $startTime) {
+    private function _extractTimings(array $data, int $startTime) : array
+    {
         $startOffset  = 0;
         $duration     = 0;
 

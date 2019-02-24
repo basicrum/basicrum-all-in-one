@@ -11,14 +11,14 @@
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
                             <label for="technical_metrics">Perf. Metric:</label>
-                            <select name="technical_metrics[]" class="form-control form-control-sm" id="technical_metrics">
+                            <select name="technical_metrics" class="form-control form-control-sm" id="technical_metrics">
                                 {#<option value="" selected="selected">---</option>#}
                                 {% for metric in navigation_timings %}
                                 <option value="{{ metric.key }}|1">{{ metric.label }}</option>
                                 {% endfor %}
                             </select>
-                            <label for="visualize_bucket_size">Bucket Size:</label>
-                            <select name="visualize[bucket_size]" class="form-control form-control-sm" id="visualize_bucket_size">
+                            <label for="visualize_bucket">Bucket Size:</label>
+                            <select name="visualize[bucket]" class="form-control form-control-sm" id="visualize_bucket">
                                 <option value="100">0.1 sec</option>
                                 <option value="200">0.2 sec</option>
                                 <option value="300">0.3 sec</option>
@@ -91,19 +91,19 @@
                                     <input name="filters[url][search_value]" type="text" class="form-control form-control-sm" id="filters_url_search_value" />
                                 </div>
                             </div>
-                            <label for="filters_page_type">Page Type:</label>
-                            <div class="row">
-                                <div class="col-12">
-                                    <select name="filters[page_type][search_value]" class="form-control form-control-sm" id="filters_page_type">
-                                        <option value="">All</option>
+                            {#<label for="filters_page_type">Page Type:</label>#}
+                            {#<div class="row">#}
+                                {#<div class="col-12">#}
+                                    {#<select name="filters[page_type][search_value]" class="form-control form-control-sm" id="filters_page_type">#}
+                                        {#<option value="">All</option>#}
                                         {#<option value="" selected="selected">---</option>#}
-                                        {% for page in page_types %}
-                                            <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
-                                        {% endfor %}
-                                    </select>
-                                    <input type="hidden" name="filters[page_type][condition]" value="contains" />
-                                </div>
-                            </div>
+                                        {#{% for page in page_types %}#}
+                                            {#<option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>#}
+                                        {#{% endfor %}#}
+                                    {#</select>#}
+                                    {#<input type="hidden" name="filters[page_type][condition]" value="contains" />#}
+                                {#</div>#}
+                            {#</div>#}
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
@@ -111,12 +111,12 @@
                             <label>Periods:</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="periods[0][from_date]" value="02/22/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="periods[0][from_date]" value="02/01/2019">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="periods[0][to_date]" value="02/22/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="periods[0][to_date]" value="02/01/2019">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             {#<br />#}
@@ -179,9 +179,9 @@
                             <label>Business Metrics:</label>
                             <br />
                             <label><input type="checkbox" value="1" name="business_metrics[bounce_rate]" /> Bounce Rate</label>
-                            <br />
-                            <label><input type="checkbox" value="1" name="business_metrics[conversion_rate]" /> Conversion Rate</label>
-                            <br />
+                            {#<br />#}
+                            {#<label><input type="checkbox" value="1" name="business_metrics[conversion_rate]" /> Conversion Rate</label>#}
+                            {#<br />#}
                         </div>
                     </div>
                 </div>

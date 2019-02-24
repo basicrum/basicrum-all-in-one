@@ -4,48 +4,20 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Statistics\Median;
-use App\BasicRum\Date\DayInterval;
-
 class DiagramBuilder
 {
 
+
     /**
-     * @param array $data
-     * @param int $bucketSize
+     * @param array $buckets
+     *
      * @return array
      */
-    public function build(array $data, int $bucketSize = 100)
+    public function build(array $buckets) : array
     {
-        $dayInterval = new DayInterval();
-
-        $interval = $dayInterval->generateDayIntervals(
-            $data['period']['current_period_from_date'],
-            $data['period']['current_period_to_date']
-        );
-
-        $samples = [];
-
-        foreach ($interval as $day) {
-            $samples = array_merge($samples, $this->report->query($day, $data['perf_metric'], $data['filters']));
-        }
-
-        $bucketizer = new Bucketizer();
-
-        $statisticMedian = new Median();
-
-        $buckets = $bucketizer->bucketize($samples, $bucketSize);
-
-        if (!empty($data['decorators']['density']) && $data['decorators']['density'] == 1) {
-            $densityzer = new Densityzer();
-            $buckets = $densityzer->fillDensity($buckets, count($samples), 4);
-        }
-
-
         $diagramData = [
             'x' => array_keys($buckets),
             'y' => array_values($buckets),
-            'median' => $statisticMedian->calculateMedian($bucketizer->bucketize($samples, 1))
         ];
 
         return $diagramData;

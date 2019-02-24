@@ -74,4 +74,12 @@ class CollaboratorsAggregator
         return $this->collaborators['business_metrics'];
     }
 
+    /**
+     * @return array
+     */
+    public function getDecorators()
+    {
+        return $this->collaborators['decorators'];
+    }
+
 }
