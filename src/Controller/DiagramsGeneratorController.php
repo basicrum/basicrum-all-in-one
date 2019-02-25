@@ -81,8 +81,8 @@ class DiagramsGeneratorController extends AbstractController
 
         $usedTechnicalMetrics = $collaboratorsAggregator->getTechnicalMetrics()->getRequirements();
 
-        $bucketizer = new Buckets(100);
-        $buckets = $bucketizer->bucketize($res[0][0], reset($usedTechnicalMetrics)->getSelectDataFieldName());
+        $bucketizer = new Buckets(200);
+        $buckets = $bucketizer->bucketizePeriod($res[0], reset($usedTechnicalMetrics)->getSelectDataFieldName());
 
         $builder = new DiagramBuilder();
 

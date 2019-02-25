@@ -8,7 +8,7 @@ class Buckets
 {
 
     /** @var int */
-    private $_upperLimit = 5000;
+    private $_upperLimit = 15000;
 
     /** @var int */
     private $bucketSize;
@@ -16,6 +16,26 @@ class Buckets
     public function __construct(int $bucketSize)
     {
         $this->bucketSize = $bucketSize;
+    }
+
+    /**
+     * @param array $periodSamples
+     * @param string $searchKey
+     * @return array
+     */
+    public function bucketizePeriod(array $periodSamples, string $searchKey) : array
+    {
+        $buckets = [];
+
+        foreach ($periodSamples as $samples) {
+            $subBuckets = $this->bucketize($samples, $searchKey);
+
+            foreach ($subBuckets as $bucketNumber => $count) {
+                $buckets[$bucketNumber] = isset($buckets[$bucketNumber]) ? $buckets[$bucketNumber] + $count : $count;
+            }
+        }
+
+        return $buckets;
     }
 
     /**

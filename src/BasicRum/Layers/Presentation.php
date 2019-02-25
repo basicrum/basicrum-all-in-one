@@ -17,6 +17,9 @@ class Presentation
         $this->collaboratorsAggregator = new \App\BasicRum\CollaboratorsAggregator();
     }
 
+    /**
+     * @return array
+     */
     public function getTechnicalMetricsSelectValues()
     {
         $metrics = $this->collaboratorsAggregator
@@ -39,5 +42,14 @@ class Presentation
         return $pairs;
     }
 
+    /**
+     * @param array $samples
+     * @param array $requirements
+     * @return array
+     */
+    public function generateDiagramData(array $samples, array $requirements)
+    {
+        return [];
+    }
 
 }
