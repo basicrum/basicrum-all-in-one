@@ -12,6 +12,7 @@ use App\Entity\NavigationTimingsUrls;
 use App\BasicRum\Report;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\CollaboratorsAggregator;
 
 class DashboardController extends AbstractController
 {
@@ -242,9 +243,7 @@ class DashboardController extends AbstractController
 
     private function lastPageViewsListHTML()
     {
-        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
-
-        $diagramOrchestrator = new DiagramOrchestrator($this->getDoctrine());
+        $collaboratorsAggregator = new CollaboratorsAggregator();
 
         $requirementsArr = [
             'filters' => [
@@ -285,7 +284,9 @@ class DashboardController extends AbstractController
             ]
         ];
 
-        $diagramOrchestrator->fillRequirements($requirementsArr);
+        $collaboratorsAggregator->fillRequirements($requirementsArr);
+
+        $diagramOrchestrator = new DiagramOrchestrator($collaboratorsAggregator->getCollaborators(), $this->getDoctrine());
 
         $res = $diagramOrchestrator->process();
 
