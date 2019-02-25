@@ -42,16 +42,6 @@ class DiagramsGeneratorController extends AbstractController
      */
     public function generateClean()
     {
-        $colors = [
-            0 => 'rgb(44, 160, 44)',
-            1 => 'rgb(255, 127, 14)',
-            2 => 'rgb(31, 119, 180)',
-            3 => 'rgb(31, 119, 44)',
-            4 => 'rgb(255, 119, 44)'
-        ];
-
-        $diagrams = [];
-
         $collaboratorsAggregator = new CollaboratorsAggregator();
 
         $requirements = [];
@@ -86,23 +76,9 @@ class DiagramsGeneratorController extends AbstractController
 
         $builder = new DiagramBuilder();
 
-        $diagram = $builder->build($buckets);
-
-        $diagrams[] = array_merge(
-            $diagram,
-            [
-                'type' => 'line',
-                'line' => ['color' => $colors[0]],
-                'name' => 'Test name'
-            ]
-        );
-
         $response = new Response(
             json_encode(
-                [
-                    'diagrams'            => $diagrams,
-                    'layout_extra_shapes' => []
-                ]
+                $builder->build($buckets, $collaboratorsAggregator)
             )
         );
 
