@@ -197,31 +197,31 @@
     <div id="diagramContainer"></div>
 </div>
 <script type="text/javascript">
-    var basicRumPlot = function(diagrams, layout_extra_shapes) {
-        var layout = {
-            xaxis: {
-                tickvals: [1000, 2000, 3000, 4000, 5000],
-                ticktext: ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"]
-            },
-            yaxis: {
-                title: 'Website Visits'
-//                fixedrange: true,
-//                range: [0, 3]
-            },
-            legend: {
-                x: 0,
-                y: 1.3,
-                traceorder: 'normal',
-                font: {
-                    family: 'sans-serif',
-                    size: 12,
-                    color: '#000'
-                },
-                bgcolor: '#E2E2E2',
-                bordercolor: '#FFFFFF',
-                borderwidth: 2
-            }
-        };
+    var basicRumPlot = function(diagrams, layout_extra_shapes, layout) {
+//         var layout = {
+//             xaxis: {
+//                 tickvals: [1000, 2000, 3000, 4000, 5000],
+//                 ticktext: ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"]
+//             },
+//             yaxis: {
+//                 title: 'Website Visits'
+// //                fixedrange: true,
+// //                range: [0, 3]
+//             },
+//             legend: {
+//                 x: 0,
+//                 y: 1.3,
+//                 traceorder: 'normal',
+//                 font: {
+//                     family: 'sans-serif',
+//                     size: 12,
+//                     color: '#000'
+//                 },
+//                 bgcolor: '#E2E2E2',
+//                 bordercolor: '#FFFFFF',
+//                 borderwidth: 2
+//             }
+//         };
 
         if (layout_extra_shapes.length > 0) {
             layout.shapes = layout_extra_shapes;
@@ -244,7 +244,7 @@
             data: dataString,
             dataType: "json",
             success: function(data) {
-                basicRumPlot(data.diagrams, data.layout_extra_shapes);
+                basicRumPlot(data.diagrams, data.layout_extra_shapes, data.layout);
             },
             error: function() {
                 alert('error');

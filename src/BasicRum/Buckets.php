@@ -47,11 +47,11 @@ class Buckets
     public function bucketize(array $samples, string $searchKey)  : array
     {
         // Initialize the ZERO bucket
-        $buckets = [0 => 0];
+        $buckets = [0 => []];
 
         //Initialize all buckets with ZEROES
         for($i = $this->bucketSize; $i <= $this->_upperLimit; $i += $this->bucketSize) {
-            $buckets[$i] = 0;
+            $buckets[$i] = [];
         }
 
         // Fill buckets
@@ -63,7 +63,7 @@ class Buckets
             }
 
             if ($bucket >= 0 && $bucket <= $this->_upperLimit) {
-                $buckets[$bucket]++;
+                $buckets[$bucket][] = $sample;
             }
         }
 
