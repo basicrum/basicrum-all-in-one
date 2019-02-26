@@ -38,9 +38,9 @@ class DiagramsGeneratorController extends AbstractController
     }
 
     /**
-     * @Route("/diagrams_generator/generate_clean", name="diagrams_generator_generate_clean")
+     * @Route("/diagrams_generator/generate", name="diagrams_generator_generate")
      */
-    public function generateClean()
+    public function generate()
     {
         $collaboratorsAggregator = new CollaboratorsAggregator();
 
@@ -90,86 +90,6 @@ class DiagramsGeneratorController extends AbstractController
         $response = new Response(
             json_encode(
                 $builder->build($buckets, $collaboratorsAggregator)
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/diagrams_generator/generate", name="diagrams_generator_generate")
-     */
-    public function generate()
-    {
-        // Quick hack for out of memory problems
-        ini_set('memory_limit', '-1');
-        set_time_limit(0);
-        ini_set('display_errors', '1');
-
-        $periods = $_POST['period'];
-
-        $diagrams = [];
-
-        $shapes = [];
-
-        $report = new Report($this->getDoctrine());
-
-        $diagramBuilder = new DiagramBuilder($report);
-
-        $colors = [
-            0 => 'rgb(44, 160, 44)',
-            1 => 'rgb(255, 127, 14)',
-            2 => 'rgb(31, 119, 180)',
-            3 => 'rgb(31, 119, 44)',
-            4 => 'rgb(255, 119, 44)'
-        ];
-
-        foreach ($periods as $key => $period) {
-            $data = [
-                'period'      => $period,
-                'perf_metric' => $_POST['perf_metric'],
-                'filters'     => $_POST['filter'],
-                'decorators'  => !empty($_POST['decorators']) ? $_POST['decorators'] : []
-            ];
-
-            $diagram = $diagramBuilder->build($data, (int) $_POST['bucket-size']);
-
-            $medianX =  ($diagram['median']);
-            $median = ($diagram['median'] / 1000) . ' sec';
-
-            if (!empty($_POST['decorators']['show_median'])) {
-                $shapes[] = [
-                    'type' => 'line',
-                    'x0'   => $medianX,
-                    'y0'   => -0.5,
-                    'x1'   => $medianX,
-                    'y1'   => 7,
-                    'line' => [
-                        'color' => $colors[$key],
-                        'width' =>  1.5,
-                        'dash'  =>  'dot'
-                    ]
-                ];
-            }
-
-            $diagrams[] = array_merge(
-                $diagram,
-                [
-                    'type' => 'line',
-                    'line' => ['color' => $colors[$key]],
-                    'name' => $period['current_period_from_date'] . ' - ' . $period['current_period_to_date'] . ' / median (' . $median . ')'
-                ]
-            );
-        }
-
-        $response = new Response(
-            json_encode(
-                [
-                    'diagrams'            => $diagrams,
-                    'layout_extra_shapes' => $shapes
-                ]
             )
         );
 
