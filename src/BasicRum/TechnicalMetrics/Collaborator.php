@@ -11,7 +11,7 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     private $technicalMetricsClassMap = [
         'time_to_first_paint' => TimeToFirstPaint::class,
         'document_ready'      => DocumentReady::class,
-        'time_to_first_byte'  => TimeToFirstPaint::class,
+        'time_to_first_byte'  => TimeToFirstByte::class,
     ];
 
     private $technicalMetrics = [];

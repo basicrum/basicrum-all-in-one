@@ -8,6 +8,40 @@ use App\BasicRum\Layers\Presentation;
 
 class DiagramBuilder
 {
+    private $oneLevelDiagramsLayout = [
+        'barmode' => 'overlay',
+        'title'   => 'Time To First Paint vs Bounce Rate',
+        'xaxis'=> [
+            'rangemode' => 'tozero',
+            'title' => '',
+            'ticks' => 'outside',
+            'tick0' => 0,
+            'dtick' => 200,
+            'ticklen' => 5,
+            'tickwidth' => 2,
+            'tickcolor' => '#000',
+            'tickvals' => 'x1',
+//            'ticktext' => '{{ x_axis_labels|raw }}',
+            'fixedrange' => true
+        ],
+        'yaxis' => [
+            'title' => 'Website Visits',
+            'fixedrange' => true
+        ],
+        'legend' => [
+            'x' => 0,
+            'y' => 1.2,
+            'traceorder' => 'normal',
+            'font' => [
+                'family' => 'sans-serif',
+                'size'   => 12,
+                'color'  => '#000'
+            ],
+            'bgcolor' => '#E2E2E2',
+            'bordercolor' => '#FFFFFF',
+            'borderwidth' => 2
+        ]
+    ];
 
     private $twoLevelDiagramsLayout = [
         'barmode' => 'overlay',
@@ -86,7 +120,8 @@ class DiagramBuilder
     {
         $humanReadableTechnicalMetrics = [
             'loadEventEnd' => 'Document Ready',
-            'firstPaint'   => 'Time To First Paint'
+            'firstPaint'   => 'Time To First Paint',
+            'firstByte'    => 'Time To First Byte'
         ];
 
         $diagrams = [];
@@ -121,7 +156,8 @@ class DiagramBuilder
             }
         }
 
-        $layout = [];
+        $this->oneLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' distribution';
+        $layout = $this->attachSecondsToTimeLine($this->oneLevelDiagramsLayout, $buckets);
 
         if (count($diagrams) > 1) {
             $layout = $this->attachSecondsToTimeLine($this->twoLevelDiagramsLayout, $buckets);
