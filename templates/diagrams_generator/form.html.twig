@@ -169,8 +169,8 @@
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
                             <label>Visualization:</label>
-                            <br />
-                            <label><input checked type="checkbox" value="1" name="decorators[density]" /> Density</label>
+                            {#<br />#}
+                            {#<label><input checked type="checkbox" value="1" name="decorators[density]" /> Density</label>#}
                             <br />
                             <label><input type="checkbox" value="1" name="decorators[show_median]" /> Show Median</label>
                             <br />
@@ -194,6 +194,7 @@
     <script type="text/javascript">
         $(".calendar-date-picker").datepicker();
     </script>
+    <p id="callbackText"></p>
     <div id="diagramContainer"></div>
 </div>
 <script type="text/javascript">
@@ -244,6 +245,7 @@
             data: dataString,
             dataType: "json",
             success: function(data) {
+                document.getElementById('callbackText').innerHTML = data.text;
                 basicRumPlot(data.diagrams, data.layout_extra_shapes, data.layout);
             },
             error: function() {

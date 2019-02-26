@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\BasicRum;
 
 use App\BasicRum\Layers\Presentation;
+use App\BasicRum\Statistics\Median;
 
 class DiagramBuilder
 {
@@ -122,6 +123,9 @@ class DiagramBuilder
             'firstByte'    => 'Time To First Byte'
         ];
 
+        $probesCount = 0;
+        $bouncedCount = 0;
+
         $diagrams = [];
 
         $usedTechnicalMetrics = $collaboratorsAggregator->getTechnicalMetrics()->getRequirements();
@@ -131,6 +135,7 @@ class DiagramBuilder
 
         foreach ($buckets as $bucketSize => $bucket) {
             $sampleDiagramValues[$bucketSize] = count($bucket);
+            $probesCount += $sampleDiagramValues[$bucketSize];
         }
 
         $this->twoLevelDiagramsLayout['xaxis']['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' seconds';
@@ -161,8 +166,29 @@ class DiagramBuilder
             $layout = $this->attachSecondsToTimeLine($this->twoLevelDiagramsLayout, $buckets);
         }
 
+        if (isset($_POST['decorators']['show_median'])) {
+            $median = new Median();
+            $medianVal = $median->calculateMedian($sampleDiagramValues);
+            $layout['shapes'] = [
+                [
+                    'type' => 'line',
+                    'x0' => $medianVal,
+                    'y0' => 0,
+                    'x1' => $medianVal,
+                    'yref'=> 'paper',
+                    'y1' => 0.9,
+                    'line' => [
+                        'color' => 'red',
+                        'width' => 1.5,
+                        'dash'  => 'dot'
+                    ]
+                ]
+            ];
+        }
+
 
         return [
+            'text'                => 'Probes Count: ' . $probesCount,
             'diagrams'            => $diagrams,
             'layout_extra_shapes' => [],
             'layout'              => $layout
