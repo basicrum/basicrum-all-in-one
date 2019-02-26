@@ -13,9 +13,10 @@ class Buckets
     /** @var int */
     private $bucketSize;
 
-    public function __construct(int $bucketSize)
+    public function __construct(int $bucketSize, int $upperLimit)
     {
-        $this->bucketSize = $bucketSize;
+        $this->bucketSize  = $bucketSize;
+        $this->_upperLimit = $upperLimit;
     }
 
     /**

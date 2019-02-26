@@ -14,7 +14,7 @@ class DiagramBuilder
         'title'   => 'Time To First Paint vs Bounce Rate',
         'xaxis'=> [
             'rangemode' => 'tozero',
-            'title' => 'First Paint (seconds)',
+            'title' => '',
             'ticks' => 'outside',
             'tick0' => 0,
             'dtick' => 200,
@@ -84,63 +84,52 @@ class DiagramBuilder
      */
     public function build(array $buckets, \App\BasicRum\CollaboratorsAggregator $collaboratorsAggregator) : array
     {
+        $humanReadableTechnicalMetrics = [
+            'loadEventEnd' => 'Document Ready',
+            'firstPaint'   => 'Time To First Paint'
+        ];
+
+        $diagrams = [];
+
+        $usedTechnicalMetrics = $collaboratorsAggregator->getTechnicalMetrics()->getRequirements();
+        $technicalMetricName = reset($usedTechnicalMetrics)->getSelectDataFieldName();
+
         $sampleDiagramValues = [];
 
         foreach ($buckets as $bucketSize => $bucket) {
             $sampleDiagramValues[$bucketSize] = count($bucket);
         }
 
+        $this->twoLevelDiagramsLayout['xaxis']['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' seconds';
+
         $samplesDiagram = [
             'x' => array_keys($sampleDiagramValues),
             'y' => array_values($sampleDiagramValues),
             'type' => 'bar',
-            'name' => 'First Paint',
+            'name' => $humanReadableTechnicalMetrics[$technicalMetricName],
             'color' => $this->colors[0]
         ];
 
-        $bounces  = [];
+        $diagrams[] = $samplesDiagram;
 
-        foreach ($buckets as $bucketSize => $bucket) {
-            $bounces[$bucketSize] = 0;
-        }
+        foreach ($collaboratorsAggregator->getBusinessMetrics()->getRequirements() as $businessMetric) {
+            if (strpos(get_class($businessMetric), 'BounceRate') !== false) {
+                $bounceRateDiagramBuilder = new Presentation\BounceRate();
+                $diagrams[] = $bounceRateDiagramBuilder->generate($buckets);
 
-        $bounceRatePercents = [];
-
-        foreach ($buckets as $bucketSize => $bucket) {
-            foreach ($bucket as $sample) {
-
-                if ($sample['pageViewsCount'] == 1) {
-                    $bounces[$bucketSize]++;
-                }
+                $this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
             }
         }
 
-        foreach ($buckets as $bucketSize => $bucket) {
-            if (count($bucket) === 0) {
-                $bounceRatePercents[$bucketSize] = 0;
-                continue;
-            }
+        $layout = [];
 
-            $bounceRatePercents[$bucketSize] = number_format(($bounces[$bucketSize] / count($bucket)) * 100, 2);
+        if (count($diagrams) > 1) {
+            $layout = $this->attachSecondsToTimeLine($this->twoLevelDiagramsLayout, $buckets);
         }
 
-
-        $bounceRate = [
-            'x' => array_keys($bounceRatePercents),
-            'y' => array_values($bounceRatePercents),
-            'type' => 'scatter',
-            'name' => 'Bounce Rate',
-            'marker' => [
-                'color' => 'rgb(255, 127, 14)'
-            ],
-            'xaxis' => 'x2',
-            'yaxis' => 'y2'
-        ];
-
-        $layout = $this->attachSecondsToTimeLine($this->twoLevelDiagramsLayout, $buckets);
 
         return [
-            'diagrams'            => [$samplesDiagram, $bounceRate],
+            'diagrams'            => $diagrams,
             'layout_extra_shapes' => [],
             'layout'              => $layout
         ];

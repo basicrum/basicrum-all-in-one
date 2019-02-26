@@ -72,9 +72,18 @@ class DiagramsGeneratorController extends AbstractController
         $res = $diagramOrchestrator->process();
 
         $usedTechnicalMetrics = $collaboratorsAggregator->getTechnicalMetrics()->getRequirements();
+        $technicalMetricName = reset($usedTechnicalMetrics)->getSelectDataFieldName();
 
-        $bucketizer = new Buckets(200);
-        $buckets = $bucketizer->bucketizePeriod($res[0], reset($usedTechnicalMetrics)->getSelectDataFieldName());
+        $upperLimit = 5000;
+
+        if ($technicalMetricName === 'loadEventEnd') {
+            $upperLimit = 12000;
+        }
+
+        $bucketSize = (int) $requirements['visualize']['bucket'];
+
+        $bucketizer = new Buckets($bucketSize, $upperLimit);
+        $buckets = $bucketizer->bucketizePeriod($res[0], $technicalMetricName);
 
         $builder = new DiagramBuilder();
 
