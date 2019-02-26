@@ -57,6 +57,10 @@ class BounceRateController extends AbstractController
                     'condition'    => 'is',
                     'search_value' => 'mobile'
                 ],
+                'os_name' => [
+                    'condition'    => 'is',
+                    'search_value' => 'Android'
+                ],
                 'url' => [
                     'condition'    => 'contains',
                     'search_value' => 'product/view/id'
@@ -64,12 +68,12 @@ class BounceRateController extends AbstractController
             ],
             'periods' => [
                 [
-                    'from_date' => '02/01/2019',
-                    'to_date'   => '02/01/2019'
+                    'from_date' => '01/01/2019',
+                    'to_date'   => '02/20/2019'
                 ]
             ],
             'technical_metrics' => [
-                'time_to_first_paint' => 1
+                'document_ready' => 1
             ],
             'business_metrics'  => [
                 'bounce_rate'       => 1,
@@ -94,7 +98,7 @@ class BounceRateController extends AbstractController
         $convertedSessions = 0;
 
         $groupMultiplier = 200;
-        $upperLimit = 5000;
+        $upperLimit = 15000;
         $bottomLimit = 300;
 
         $firstPaintArr = [];
@@ -120,7 +124,9 @@ class BounceRateController extends AbstractController
 
         foreach ($res[0] as $day) {
             foreach ($day as $row) {
-                $ttfp  = $row['firstPaint'];
+//                print_r($row);
+
+                $ttfp  = $row['loadEventEnd'];
 
                 $paintGroup = $groupMultiplier * (int) ($ttfp / $groupMultiplier);
 

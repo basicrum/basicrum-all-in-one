@@ -104,17 +104,30 @@ class DiagramBuilder
             $bounces[$bucketSize] = 0;
         }
 
+        $bounceRatePercents = [];
+
         foreach ($buckets as $bucketSize => $bucket) {
             foreach ($bucket as $sample) {
+
                 if ($sample['pageViewsCount'] == 1) {
                     $bounces[$bucketSize]++;
                 }
             }
         }
 
+        foreach ($buckets as $bucketSize => $bucket) {
+            if (count($bucket) === 0) {
+                $bounceRatePercents[$bucketSize] = 0;
+                continue;
+            }
+
+            $bounceRatePercents[$bucketSize] = number_format(($bounces[$bucketSize] / count($bucket)) * 100, 2);
+        }
+
+
         $bounceRate = [
-            'x' => array_keys($bounces),
-            'y' => array_values($bounces),
+            'x' => array_keys($bounceRatePercents),
+            'y' => array_values($bounceRatePercents),
             'type' => 'scatter',
             'name' => 'Bounce Rate',
             'marker' => [

@@ -30,8 +30,8 @@ class Buckets
         foreach ($periodSamples as $samples) {
             $subBuckets = $this->bucketize($samples, $searchKey);
 
-            foreach ($subBuckets as $bucketNumber => $count) {
-                $buckets[$bucketNumber] = isset($buckets[$bucketNumber]) ? $buckets[$bucketNumber] + $count : $count;
+            foreach ($subBuckets as $bucketNumber => $subBucket) {
+                $buckets[$bucketNumber] = isset($buckets[$bucketNumber]) ? array_merge($buckets[$bucketNumber], $subBucket) : $subBucket;
             }
         }
 

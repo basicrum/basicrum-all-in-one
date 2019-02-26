@@ -60,6 +60,8 @@ class DiagramsGeneratorController extends AbstractController
             $requirements[$keyO] = $data;
         }
 
+        $requirements['business_metrics']['stay_on_page_time'] = 1;
+
         $collaboratorsAggregator->fillRequirements($requirements);
 
         $diagramOrchestrator = new DiagramOrchestrator(
