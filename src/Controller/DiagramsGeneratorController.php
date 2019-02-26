@@ -13,6 +13,7 @@ use App\Entity\Releases;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Buckets;
+use App\BasicRum\Statistics\Median;
 use App\BasicRum\DiagramBuilder;
 
 use App\BasicRum\Layers\Presentation;
@@ -121,6 +122,8 @@ class DiagramsGeneratorController extends AbstractController
         foreach ($pages as $pageName => $url) {
             $res = $this->_pageOvertime($url);
 
+//            print_r($res);
+
             $pageDiagrams[] = [
                 'diagrams'            => json_encode($res['diagrams']),
                 'layout_extra_shapes' => json_encode($res['shapes']),
@@ -144,15 +147,11 @@ class DiagramsGeneratorController extends AbstractController
      */
     private function _pageOvertime(string $url)
     {
-        $today = new \DateTime('-1 day');
-        $past  = new \DateTime('-3 days');
+        $today = new \DateTime('-6 day');
+        $past  = new \DateTime('-4 months');
 
-        $periods =  [
-            [
-                'current_period_from_date' => $past->format('Y-m-d'),
-                'current_period_to_date'   => $today->format('Y-m-d'),
-            ]
-        ];
+        $bucketizer = new Buckets(1, 10000);
+        $median = new Median();
 
         $deviceTypes = [
             'Desktop',
@@ -160,64 +159,75 @@ class DiagramsGeneratorController extends AbstractController
             'Mobile'
         ];
 
-        $diagrams = [];
+        $diagramsByType = [];
 
-        $report = new Report($this->getDoctrine());
-
-        $diagramBuilder = new DiagramBuilder($report);
+        foreach ($deviceTypes as $deviceType) {
+            $diagramsByType[$deviceType] = [];
+        }
 
         $bounceRateDiagrams = [];
 
-        foreach ($periods as $period) {
-            foreach ($deviceTypes as $device) {
-                $data = [
-                    'period'      => $period,
-                    'perf_metric' => 'first_paint',
-                    'filters'     => [
-                        'device_type' => [
-                            'search_value' => $device,
-                            'condition'    => 'is'
-                        ],
-                        'url' => [
-                            'search_value' => '',
-                            'condition'    => 'contains'
-                        ]
+        foreach ($deviceTypes as $device) {
+            $requirementsArr = [
+                'filters' => [
+                    'device_type' => [
+                        'condition'    => 'is',
+                        'search_value' => $device
                     ]
-                ];
-
-                $report = $diagramBuilder->buildOverTime($data);
-
-                $diagram = $report['performance'];
-
-                $bounceRateDiagram = $report['bounce_rate'];
-
-                $diagram = array_merge(
-                    $diagram,
+                ],
+                'periods' => [
                     [
-                        'type' => 'line',
-                        'name' => $device
+                        'from_date' => $past->format('Y-m-d'),
+                        'to_date'   => $today->format('Y-m-d')
                     ]
-                );
+                ],
+                'technical_metrics' => [
+                    'time_to_first_paint' => 1
+                ],
+//                'business_metrics'  => [
+//                    'bounce_rate'       => 1
+//                ]
+            ];
 
+            $collaboratorsAggregator = new CollaboratorsAggregator();
 
-                $bounceRateDiagram = array_merge(
-                    $bounceRateDiagram,
-                    [
-                        'type' => 'line',
-                        'name' => $device
-                    ]
-                );
+            $collaboratorsAggregator->fillRequirements($requirementsArr);
 
-                $diagrams[] = $diagram;
-                $bounceRateDiagrams[] = $bounceRateDiagram;
+            $diagramOrchestrator = new DiagramOrchestrator(
+                $collaboratorsAggregator->getCollaborators(),
+                $this->getDoctrine()
+            );
+
+            $res = $diagramOrchestrator->process();
+
+            foreach ($res as $daySamples) {
+                foreach ($daySamples as $day => $samples) {
+                    $buckets = $bucketizer->bucketize($samples, 'firstPaint');
+                    $sampleDiagramValues = [];
+
+                    foreach ($buckets as $bucketSize => $bucket) {
+                        $sampleDiagramValues[$bucketSize] = count($bucket);
+                    }
+
+                    $diagramsByType[$device][$day] = $median->calculateMedian($sampleDiagramValues);
+                }
             }
+        }
+
+        foreach ($diagramsByType as $device => $data) {
+            $diagrams[] = [
+                'name' => $device,
+                'type' => 'line',
+                'x'    => array_keys($data),
+                'y'    => array_values($data)
+            ];
         }
 
         $repository = $this->getDoctrine()
             ->getRepository(Releases::class);
 
-        $start = new DateTime($periods[0]['current_period_from_date']);
-        $end   = new DateTime($periods[0]['current_period_to_date']);
+        $start = $past;
+        $end   = $today;
 
         $query = $repository->createQueryBuilder('r')
             ->where('r.date BETWEEN :start AND :end')

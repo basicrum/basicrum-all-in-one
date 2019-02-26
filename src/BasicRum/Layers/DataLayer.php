@@ -58,7 +58,7 @@ class DataLayer
             $cacheKey = 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
 
             if ($cache->hasItem($cacheKey)) {
-                $res[] =  $cache->getItem($cacheKey)->get();
+                $res[$interval->getStartInterval()] =  $cache->getItem($cacheKey)->get();
                 continue;
             }
 
@@ -79,7 +79,7 @@ class DataLayer
 
             $cache->save($cacheItem);
 
-            $res[] = $data;
+            $res[$interval->getStartInterval()] = $data;
         }
 
         return $res;

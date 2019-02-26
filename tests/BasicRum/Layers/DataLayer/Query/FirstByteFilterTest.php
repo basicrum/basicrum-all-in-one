@@ -44,11 +44,12 @@ class FirstByteFilterTest extends KernelTestCase
 
         $this->assertEquals(
             [
-                [
+                '2018-10-24 00:00:00' =>
                     [
-                        'pageViewId' => 1
+                        [
+                            'pageViewId' => 1
+                        ]
                     ]
-                ]
             ],
             $res
         );
@@ -74,9 +75,10 @@ class FirstByteFilterTest extends KernelTestCase
 
         $this->assertEquals(
             [
-                [
+                '2018-10-24 00:00:00' =>
+                    [
 
-                ]
+                    ]
             ],
             $res
         );

@@ -61,16 +61,17 @@ class BounceRateMobileTest extends KernelTestCase
         $this->assertEquals(
             [
                 [
-                    [
+                    '2018-10-24 00:00:00' =>
                         [
-                            'pageViewId'      => 1,
-                            'firstPageViewId' => 1,
-                            'firstPaint'      => 344,
-                            'pageViewsCount'  => 1,
-                            'guid'            => 'ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901',
-                            'stayOnPageTime'  => 24
+                            [
+                                'pageViewId'      => 1,
+                                'firstPageViewId' => 1,
+                                'firstPaint'      => 344,
+                                'pageViewsCount'  => 1,
+                                'guid'            => 'ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901',
+                                'stayOnPageTime'  => 24
+                            ]
                         ]
-                    ]
                 ]
             ],
             $res

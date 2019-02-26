@@ -44,12 +44,13 @@ class UrlLikeTest extends KernelTestCase
 
         $this->assertEquals(
             [
-                [
+                '2018-10-24 00:00:00' =>
                     [
-                        'pageViewId' => 2,
+                        [
+                            'pageViewId' => 2,
 
+                        ]
                     ]
-                ]
             ],
             $res
         );

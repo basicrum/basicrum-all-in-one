@@ -20,10 +20,6 @@ class Median
 
         foreach ($buckets as $bucket => $values)
         {
-            if ($bucket <= 100) {
-                continue;
-            }
-
             $scanSum += $values;
 
             if ($halfSum <= $scanSum) {

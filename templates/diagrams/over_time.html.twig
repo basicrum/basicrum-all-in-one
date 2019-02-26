@@ -76,7 +76,7 @@
     basicRumPlotOverTime({{ key }}, {{ diagram.diagrams|raw }}, {{ diagram.layout_extra_shapes|raw }}, '{{ diagram.title }}');
     {% endfor %}
 
-    {% for key,diagram in bounce_rate_diagrams %}
-    basicRumPlotBounceRateOverTime({{ key }}, {{ diagram|raw }}, 'Bounce Rate');
-    {% endfor %}
+    {#{% for key,diagram in bounce_rate_diagrams %}#}
+    {#basicRumPlotBounceRateOverTime({{ key }}, {{ diagram|raw }}, 'Bounce Rate');#}
+    {#{% endfor %}#}
 </script>
