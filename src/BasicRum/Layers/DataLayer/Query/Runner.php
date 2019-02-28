@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query;
 
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+
 class Runner
 {
 
@@ -13,10 +15,18 @@ class Runner
     /** @var array */
     private $planActions = [];
 
+    private $cacheAdapter;
+
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry, array $planActions)
     {
-        $this->registry    = $registry;
-        $this->planActions = $planActions;
+        $this->registry     = $registry;
+        $this->planActions  = $planActions;
+        $this->cacheAdapter = new FilesystemAdapter('basicrum.report.cache', 300);
+    }
+
+    private function getPrefetcCacheKey(\App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition) {
+        return 'prefetch_condition_query_data_layer_' .
+            md5($condition->getWhere() . print_r($condition->getParams(), true));
     }
 
     /**
@@ -138,6 +148,7 @@ class Runner
         // Concept for prefetch filter
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $prefetchCondition */
         foreach ($filters as $prefetchCondition) {
+            $cacheKey = $this->getPrefetcCacheKey($prefetchCondition->getPrefetchCondition());
 
             $where = $prefetchCondition->getPrefetchCondition()->getWhere();
             $params = $prefetchCondition->getPrefetchCondition()->getParams();
@@ -167,7 +178,16 @@ class Runner
             $queryBuilder->select($selectFields);
 
             if ($prefetchCondition->getMainCondition() === 'is' || $prefetchCondition->getMainCondition() === 'contains') {
-                $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+
+                if ($this->cacheAdapter->hasItem($cacheKey)) {
+                    $fetched =  $this->cacheAdapter->getItem($cacheKey)->get();
+                } else {
+                    $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+                    $cacheItem = $this->cacheAdapter->getItem($cacheKey);
+                    $cacheItem->set($fetched);
+                    $this->cacheAdapter->save($cacheItem);
+                }
+
                 if(empty($fetched)) {
                     continue;
                 }
@@ -176,7 +196,16 @@ class Runner
                 $ids = array_column($fetched, "id");
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
             } elseif ($prefetchCondition->getMainCondition() === 'isNot') {
-                $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+
+                if ($this->cacheAdapter->hasItem($cacheKey)) {
+                    $fetched =  $this->cacheAdapter->getItem($cacheKey)->get();
+                } else {
+                    $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+                    $cacheItem = $this->cacheAdapter->getItem($cacheKey);
+                    $cacheItem->set($fetched);
+                    $this->cacheAdapter->save($cacheItem);
+                }
+
                 if(empty($fetched)) {
                     continue;
                 }
