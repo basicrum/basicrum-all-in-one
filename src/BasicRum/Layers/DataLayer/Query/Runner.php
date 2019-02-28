@@ -84,6 +84,8 @@ class Runner
 
         $queryBuilder->select($selects);
 
+//        var_dump($queryBuilder->getQuery()->getSQL());
+
         $res = $queryBuilder->getQuery()->getResult();
 
         if (!empty($complexSelectData)) {

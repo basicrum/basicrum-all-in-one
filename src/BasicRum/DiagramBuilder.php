@@ -123,8 +123,9 @@ class DiagramBuilder
             'firstByte'    => 'Time To First Byte'
         ];
 
+        $bounceRate = '';
+
         $probesCount = 0;
-        $bouncedCount = 0;
 
         $diagrams = [];
 
@@ -154,6 +155,8 @@ class DiagramBuilder
             if (strpos(get_class($businessMetric), 'BounceRate') !== false) {
                 $bounceRateDiagramBuilder = new Presentation\BounceRate();
                 $diagrams[] = $bounceRateDiagramBuilder->generate($buckets);
+
+                $bounceRate = 'Bounce rate: ' . $this->getBounceRate($buckets, $probesCount);
 
                 $this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
             }
@@ -186,13 +189,32 @@ class DiagramBuilder
             ];
         }
 
-
         return [
-            'text'                => 'Probes Count: ' . $probesCount,
+            'text'                => 'Probes Count: ' . $probesCount . '<br />' . $bounceRate,
             'diagrams'            => $diagrams,
             'layout_extra_shapes' => [],
             'layout'              => $layout
         ];
+    }
+
+    /**
+     * @param array $buckets
+     * @param int $probesCount
+     * @return string
+     */
+    private function getBounceRate(array $buckets, int $probesCount) : string
+    {
+        $bouncedProbesCount = 0;
+
+        foreach ($buckets as $bucketSize => $bucket) {
+            foreach ($bucket as $sample) {
+                if ($sample['pageViewsCount'] == 1) {
+                    $bouncedProbesCount++;
+                }
+            }
+        }
+
+        return number_format(($bouncedProbesCount / $probesCount) * 100, 2) . '%';
     }
 
     /**
