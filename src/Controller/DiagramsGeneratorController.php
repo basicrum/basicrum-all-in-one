@@ -43,6 +43,10 @@ class DiagramsGeneratorController extends AbstractController
      */
     public function generate()
     {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+
         $collaboratorsAggregator = new CollaboratorsAggregator();
 
         $requirements = [];
@@ -60,7 +64,7 @@ class DiagramsGeneratorController extends AbstractController
 
             $requirements[$keyO] = $data;
         }
-        
+
         $collaboratorsAggregator->fillRequirements($requirements);
 
         $diagramOrchestrator = new DiagramOrchestrator(
@@ -145,8 +149,8 @@ class DiagramsGeneratorController extends AbstractController
      */
     private function _pageOvertime(string $url)
     {
-        $today = new \DateTime('-6 day');
-        $past  = new \DateTime('-4 months');
+        $today = new \DateTime();
+        $past  = new \DateTime('-3 months');
 
         $bucketizer = new Buckets(1, 10000);
         $median = new Median();

@@ -28,6 +28,11 @@ class Runner
 
         $limitFilters = $this->_processPrefetchFilters($this->planActions['where']['limitFilters']);
 
+        // Abort if we do not have limit result in day
+        if(empty($limitFilters)) {
+            return [];
+        }
+
         // Complex Select case
         $complexSelectData = [];
         $complexSelectFilters = [];
@@ -35,7 +40,9 @@ class Runner
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\ComplexSelect $complexSelect */
         foreach ($this->planActions['complex_selects'] as $complexSelect) {
             $complexSelectData = $this->_processComplexSelect($complexSelect, $limitFilters);
-            $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($complexSelectData)) . ')';
+            if (!empty($complexSelectData)) {
+                $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($complexSelectData)) . ')';
+            }
         }
 
         $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters']);
@@ -161,12 +168,18 @@ class Runner
 
             if ($prefetchCondition->getMainCondition() === 'is' || $prefetchCondition->getMainCondition() === 'contains') {
                 $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+                if(empty($fetched)) {
+                    continue;
+                }
 
                 //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
                 $ids = array_column($fetched, "id");
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
             } elseif ($prefetchCondition->getMainCondition() === 'isNot') {
                 $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+                if(empty($fetched)) {
+                    continue;
+                }
 
                 //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
                 $ids = array_column($fetched, "id");
@@ -175,6 +188,9 @@ class Runner
             else {
                 // If not MIN or MAX then we need get the result in array
                 $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
+                if(empty($fetched)) {
+                    continue;
+                }
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $fetched;
             }
         }

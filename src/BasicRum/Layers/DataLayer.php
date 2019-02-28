@@ -74,10 +74,12 @@ class DataLayer
 
             $data = $planRunner->run();
 
-            $cacheItem = $cache->getItem($cacheKey);
-            $cacheItem->set($data);
+            if (!empty($data)) {
+                $cacheItem = $cache->getItem($cacheKey);
+                $cacheItem->set($data);
 
-            $cache->save($cacheItem);
+                $cache->save($cacheItem);
+            }
 
             $res[$interval->getStartInterval()] = $data;
         }
