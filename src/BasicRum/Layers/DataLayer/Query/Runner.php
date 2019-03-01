@@ -21,7 +21,7 @@ class Runner
     {
         $this->registry     = $registry;
         $this->planActions  = $planActions;
-        $this->cacheAdapter = new FilesystemAdapter('basicrum.report.cache', 300);
+        $this->cacheAdapter = new FilesystemAdapter('basicrum.datalayer.runner.cache', 300);
     }
 
     private function getPrefetcCacheKey(\App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition) {
