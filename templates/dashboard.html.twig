@@ -8,6 +8,32 @@
 
 <div class="row">
     <div class="col-xs-6 col-sm-12 col-md-6">
+        <div id="visits-per-device" style="width: 100%;"></div>
+
+        <script type="text/javascript">
+            var stacksDiv = document.getElementById("visits-per-device");
+
+            var layout = {
+                title: 'Page views per device - last 3 weeks',
+                height: 300,
+                margin: {
+                    l: 40
+                }
+            };
+
+            $.ajax('/dashboard/device/distribution',
+                {
+                    method: 'post',
+                    success : function(response) {
+                        Plotly.newPlot(stacksDiv, response, layout, {displayModeBar: false});
+
+                    }
+                }
+            );
+        </script>
+    </div>
+
+    <div class="col-xs-6 col-sm-12 col-md-6">
         <br />
         <p>10 most popular pages: <br /> <span style="font-size: 12px">Performance (current week vs. last week)</span></p>
         <table class="table table-sm table-scroll">

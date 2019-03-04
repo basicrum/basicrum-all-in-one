@@ -1,11 +1,41 @@
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12">
         <ol class="breadcrumb pull-left">
-            <li>Last 400 page views</li>
+            <li>Dashboard</li>
         </ol>
     </div>
 </div>
 <div class="row">
+    <div class="col-12">
+        <div id="visits-per-device" style="width: 100%;"></div>
+
+        <script type="text/javascript">
+            var stacksDiv = document.getElementById("visits-per-device");
+
+            var layout = {
+                title: 'Visits per device - last 4 weeks',
+                height: 300,
+                margin: {
+                    l: 40
+                }
+            };
+
+            var postData = {
+                past_weeks : 4
+            };
+
+            $.ajax('/dashboard/device/distribution',
+                {
+                    method: 'post',
+                    data: postData,
+                    success : function(response) {
+                        Plotly.newPlot(stacksDiv, response, layout, {displayModeBar: false});
+
+                    }
+                }
+            );
+        </script>
+    </div>
     <div class="col-4">
         <label for="page_view_id">Page View ID:</label>
         <input id="page_view_id" type="text" />

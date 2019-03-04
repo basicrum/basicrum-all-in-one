@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\NavigationTimings;
@@ -179,10 +180,16 @@ class DashboardController extends AbstractController
     }
 
     /**
-     * @return array
+     * @Route("/dashboard/device/distribution", name="dashboard_device_distribution")
      */
-    private function deviceSamples()
+    public function deviceDistribution()
     {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+
+        $pastWeeks = !empty($_POST['past_weeks']) ? (int) $_POST['past_weeks'] : 2;
+
         $devices = [
             'Desktop',
             'Tablet',
@@ -196,19 +203,23 @@ class DashboardController extends AbstractController
         ];
 
         $today = new \DateTime(('-1 day'));
-        $past  = new \DateTime('-2 weeks');
+        $past  = new \DateTime('-' . $pastWeeks . ' weeks');
 
         $period = [
-            'current_period_from_date' => $past->format('Y-m-d'),
-            'current_period_to_date'   => $today->format('Y-m-d'),
+            [
+                'from_date' => $past->format('Y-m-d'),
+                'to_date'   => $today->format('Y-m-d')
+            ]
         ];
 
-        $samples = [];
+        $deviceSamples = [];
+        $daysCount     = [];
 
         foreach ($devices as $device) {
-            $data = [
-                'period'      => $period,
-                'perf_metric' => 'first_byte',
+            //Domain logic
+
+            $requirements = [
+                'periods'      => $period,
                 'filters'     => [
                     'device_type' => [
                         'search_value' => $device,
@@ -217,16 +228,44 @@ class DashboardController extends AbstractController
                 ]
             ];
 
-            $report = new Report($this->getDoctrine());
+            $collaboratorsAggregator = new CollaboratorsAggregator();
+            $collaboratorsAggregator->fillRequirements($requirements);
 
-            $diagramBuilder = new DiagramBuilder($report);
 
-            $samples[$device] = $diagramBuilder->count($data);
+            $diagramOrchestrator = new DiagramOrchestrator(
+                $collaboratorsAggregator->getCollaborators(),
+                $this->getDoctrine()
+            );
+
+            $res = $diagramOrchestrator->process();
+
+            $data = [];
+
+            foreach ($res[0]  as $day => $samples) {
+                $data[$day] = count($samples);
+
+                // Summing total visits per day. Used later for calculating percentage
+                $daysCount[$day] = isset($daysCount[$day]) ? $daysCount[$day] + $data[$day] : $data[$day];
+            }
+
+            $deviceSamples[$device] = $data;
         }
 
+        foreach ($deviceSamples as $device => $data) {
+            foreach ($data as $day => $c) {
+                if ($daysCount[$day] == 0) {
+                    $deviceSamples[$device][$day] = '0.00';
+                    continue;
+                }
+
+                $deviceSamples[$device][$day] = number_format(($c / $daysCount[$day]) * 100, 2);
+            }
+        }
+
+        // Presentation logic
         $deviceDiagrams = [];
 
-        foreach ($samples as $device => $data) {
+        foreach ($deviceSamples as $device => $data) {
             $deviceDiagrams[] = [
                 'x'          => array_keys($data),
                 'y'          => array_values($data),
@@ -238,7 +277,11 @@ class DashboardController extends AbstractController
             ];
         }
 
-        return $deviceDiagrams;
+        $response = new Response(json_encode($deviceDiagrams));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     private function lastPageViewsListHTML()
@@ -271,7 +314,7 @@ class DashboardController extends AbstractController
             ],
             'periods' => [
                 [
-                    'from_date' => '02/01/2019',
+                    'from_date' => '02/02/2019',
                     'to_date'   => '02/02/2019'
                 ]
             ],
@@ -292,7 +335,6 @@ class DashboardController extends AbstractController
 
         $sessionsCount = 0;
         $bouncesCount = 0;
-        $convertedSessions = 0;
 
         $groupMultiplier = 100;
         $upperLimit = 5000;
