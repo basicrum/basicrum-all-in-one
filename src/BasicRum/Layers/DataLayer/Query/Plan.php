@@ -25,26 +25,22 @@ class Plan
     /** @var array */
     private $limiterFilters   = [];
 
+    /**
+     * Plan constructor.
+     * @param string $mainEntityName
+     */
     public function __construct(string $mainEntityName)
     {
-        $this->selects[] = new Plan\Select(
-            $mainEntityName,
-            'pageViewId'
-        );
-
-
         $this->mainEntityName = $mainEntityName;
     }
 
-    public function addSelect(
-        string $entityName,
-        string $dataFieldName
-    ) : self
+    /**
+     * @param SelectInterface $select
+     * @return Plan
+     */
+    public function addSelect(SelectInterface $select) : self
     {
-        $this->selects[] = new Plan\Select(
-            $entityName,
-            $dataFieldName
-        );
+        $this->selects[] = new Plan\Select($select);
 
         return $this;
     }

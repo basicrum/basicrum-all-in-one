@@ -7,35 +7,23 @@ namespace App\BasicRum\Layers\DataLayer\Query\Plan;
 class Select
 {
 
-    /** @var string */
-    private $entityName;
+    /** @var \App\BasicRum\Layers\DataLayer\Query\SelectInterface $select */
+    private $select;
 
-    /** @var string */
-    private $dataFieldName;
-
-    public function __construct(
-        string $entityName,
-        string $dataFieldName
-    )
+    /**
+     * @param Select $select
+     */
+    public function __construct(\App\BasicRum\Layers\DataLayer\Query\SelectInterface $select)
     {
-        $this->entityName      = $entityName;
-        $this->dataFieldName   = $dataFieldName;
+        $this->select = $select;
     }
 
     /**
-     * @return string
+     * @return Select|\App\BasicRum\Layers\DataLayer\Query\SelectInterface
      */
-    public function getEntityName() : string
+    public function getSelect()
     {
-        return $this->entityName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDataFieldName() : string
-    {
-        return $this->dataFieldName;
+        return $this->select;
     }
 
 }

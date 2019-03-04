@@ -79,7 +79,7 @@ class Runner
 
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\Select $select */
         foreach ($this->planActions['selects'] as $select) {
-            $selects[] = $select->getEntityName() . '.' . $select->getDataFieldName();
+            $selects[] = $select->getSelect()->getFields()[0];
         }
 
         $queryBuilder->select($selects);
@@ -92,6 +92,14 @@ class Runner
             foreach ($res as $key => $row) {
                 $res[$key] = array_merge($row, $complexSelectData[$row[$complexSelect->getPrimaryKeyFieldName()]]);
             }
+        }
+
+        if (strpos(print_r($selects, true),'COUNT(') !== false) {
+            return [
+                [
+                    'count' => $res[0][1]
+                ]
+            ];
         }
 
         return $res;

@@ -225,6 +225,9 @@ class DashboardController extends AbstractController
                         'search_value' => $device,
                         'condition'    => 'is'
                     ]
+                ],
+                'business_metrics' => [
+                    'page_views_count' => 1
                 ]
             ];
 
@@ -241,8 +244,8 @@ class DashboardController extends AbstractController
 
             $data = [];
 
-            foreach ($res[0]  as $day => $samples) {
-                $data[$day] = count($samples);
+            foreach ($res[0]  as $day => $samplesCount) {
+                $data[$day] = $samplesCount[0]['count'];
 
                 // Summing total visits per day. Used later for calculating percentage
                 $daysCount[$day] = isset($daysCount[$day]) ? $daysCount[$day] + $data[$day] : $data[$day];

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\BasicRum\Layers\DataLayer\Query;
+namespace  App\Tests\BasicRum\DiagramOrchestrator;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 

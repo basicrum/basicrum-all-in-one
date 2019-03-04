@@ -36,6 +36,40 @@ class Planner
     {
         $plan = new Plan('NavigationTimings');
 
+        /**
+         * Check for selects that may break select query.
+         *
+         * E.g we can't have "SELECT pageViewId, COUNT(pageViewId) ..."
+         * We can have only   "SELECT COUNT(pageViewId)"
+         */
+        $addDefaultSelect = true;
+
+        foreach ($this->requirements as $requirement) {
+            if ($requirement instanceof \App\BasicRum\Report\CountableInterface) {
+                $addDefaultSelect = false;
+            }
+        }
+
+        if ($addDefaultSelect) {
+            $itself = new Select\Itself(
+                'NavigationTimings',
+                'pageViewId'
+            );
+
+            $plan->addSelect($itself);
+
+            foreach ($this->requirements as $requirement) {
+                if ($requirement instanceof \App\BasicRum\Report\SelectableInterface) {
+                    $itself = new Select\Itself(
+                        $requirement->getSelectEntityName(),
+                        $requirement->getSelectDataFieldName()
+                    );
+
+                    $plan->addSelect($itself);
+                }
+            }
+        }
+
         $between = new Condition\Between(
             'NavigationTimings',
             'createdAt',
@@ -78,11 +112,13 @@ class Planner
                 );
             }
 
-            if ($requirement instanceof \App\BasicRum\Report\SelectableInterface) {
-                $plan->addSelect(
+            if ($requirement instanceof \App\BasicRum\Report\CountableInterface) {
+                $itself = new Select\Count(
                     $requirement->getSelectEntityName(),
                     $requirement->getSelectDataFieldName()
                 );
+
+                $plan->addSelect($itself);
             }
 
             if ($requirement instanceof \App\BasicRum\Report\PrimaryFilterableInterface) {
