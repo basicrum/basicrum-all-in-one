@@ -193,13 +193,15 @@ class DashboardController extends AbstractController
         $devices = [
             'Desktop',
             'Tablet',
-            'Mobile'
+            'Mobile',
+            'Bot'
         ];
 
         $colors = [
             'Desktop' => 'rgb(31, 119, 180)',
             'Tablet'  => 'rgb(255, 127, 14)',
-            'Mobile'  => 'rgb(44, 160, 44)'
+            'Mobile'  => 'rgb(44, 160, 44)',
+            'Bot'     => 'rgb(0, 0, 0)'
         ];
 
         $today = new \DateTime(('-1 day'));

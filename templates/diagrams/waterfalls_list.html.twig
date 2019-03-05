@@ -13,7 +13,7 @@
             var stacksDiv = document.getElementById("visits-per-device");
 
             var layout = {
-                title: 'Visits per device - last 4 weeks',
+                title: 'Visits per device - last 8 weeks',
                 height: 300,
                 margin: {
                     l: 40
@@ -21,7 +21,7 @@
             };
 
             var postData = {
-                past_weeks : 4
+                past_weeks : 8
             };
 
             $.ajax('/dashboard/device/distribution',
