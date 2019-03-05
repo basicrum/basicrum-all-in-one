@@ -142,7 +142,15 @@ class Calculator
                 $entity->setCompleted($completed);
 
                 if ($completed) {
-                    $entity->setVisitDuration($this->_calculateSessionDuration($visit));
+                    $entity->setVisitDuration(
+                        $this->_calculatePageViewsDurationDuration($visit['firstPageViewId'], $visit['lastPageViewId'])
+                    );
+
+                    $entity->setAfterLastVisitDuration(
+                        $this->_calculateAfterLastVisitDuration(
+                            $visit
+                        )
+                    );
                 }
             }
 
@@ -159,12 +167,13 @@ class Calculator
     }
 
     /**
-     * @param array $visit
+     * @param int $firstPageViewId
+     * @param int $lastPageViewId
      * @return int
      */
-    private function _calculateSessionDuration(array $visit)
+    private function _calculatePageViewsDurationDuration($firstPageViewId, $lastPageViewId)
     {
-        if ($visit['firstPageViewId'] === $visit['lastPageViewId']) {
+        if ($firstPageViewId === $lastPageViewId) {
             return 0;
         }
 
@@ -173,7 +182,7 @@ class Calculator
 
         $query = $repository->createQueryBuilder('nt')
             ->where("nt.pageViewId IN (:pageViewIds)")
-            ->setParameter('pageViewIds', [$visit['firstPageViewId'], $visit['lastPageViewId']])
+            ->setParameter('pageViewIds', [$firstPageViewId, $lastPageViewId])
             ->select(['nt.createdAt', 'nt.pageViewId'])
             ->getQuery();
 
@@ -186,6 +195,35 @@ class Calculator
         $lastPageView = $res[1]['createdAt'];
 
         return $lastPageView->getTimestamp() - $firstPageView->getTimestamp();
+    }
+
+    /**
+     * @param array $visit
+     * @return int
+     */
+    private function _calculateAfterLastVisitDuration(array $visit)
+    {
+        $repository = $this->registry
+            ->getRepository(VisitsOverview::class);
+
+        $query = $repository->createQueryBuilder('vo')
+            ->where("vo.firstPageViewId < :firstPageViewId")
+            ->andWhere(("vo.guid = (:guid)"))
+            ->setParameter('firstPageViewId', $visit['firstPageViewId'])
+            ->setParameter('guid', $visit['guid'])
+            ->select(['vo.lastPageViewId'])
+            ->orderBy('vo.lastPageViewId', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery();
+
+        $res = $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+
+
+        if (empty($res)) {
+            return 0;
+        }
+
+        return $this->_calculatePageViewsDurationDuration($res[0]['lastPageViewId'], $visit['firstPageViewId']);
     }
 
     /**
