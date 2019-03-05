@@ -138,7 +138,12 @@ class Calculator
 
 //            var_dump($lastScannedDate);
             if (isset($visit['visitId']) && $lastScannedDate !== false) {
-                $entity->setCompleted($this->_isVisitCompleted($entity, $lastScannedDate));
+                $completed = $this->_isVisitCompleted($entity, $lastScannedDate);
+                $entity->setCompleted($completed);
+
+                if ($completed) {
+                    $entity->setVisitDuration($this->_calculateSessionDuration($visit));
+                }
             }
 
             $this->registry->getManager()->persist($entity);
@@ -151,6 +156,36 @@ class Calculator
 
         $this->registry->getManager()->flush();
         $this->registry->getManager()->clear();
+    }
+
+    /**
+     * @param array $visit
+     * @return int
+     */
+    private function _calculateSessionDuration(array $visit)
+    {
+        if ($visit['firstPageViewId'] === $visit['lastPageViewId']) {
+            return 0;
+        }
+
+        $repository = $this->registry
+            ->getRepository(NavigationTimings::class);
+
+        $query = $repository->createQueryBuilder('nt')
+            ->where("nt.pageViewId IN (:pageViewIds)")
+            ->setParameter('pageViewIds', [$visit['firstPageViewId'], $visit['lastPageViewId']])
+            ->select(['nt.createdAt', 'nt.pageViewId'])
+            ->getQuery();
+
+        $res = $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
+
+        /** @var \DateTime $firstPageView */
+        $firstPageView = $res[0]['createdAt'];
+
+        /** @var \DateTime $lastPageView */
+        $lastPageView = $res[1]['createdAt'];
+
+        return $lastPageView->getTimestamp() - $firstPageView->getTimestamp();
     }
 
     /**
