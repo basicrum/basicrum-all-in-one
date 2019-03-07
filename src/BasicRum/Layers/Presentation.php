@@ -6,6 +6,8 @@ namespace App\BasicRum\Layers;
 
 use App\BasicRum\CollaboratorsAggregator;
 
+use App\Entity\OperatingSystems;
+
 class Presentation
 {
 
@@ -36,6 +38,32 @@ class Presentation
             $pairs[] = [
                 'key'   => $metric,
                 'label' => $label
+            ];
+        }
+
+        return $pairs;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOperatingSystemSelectValues(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
+    {
+        $repository = $registry
+            ->getRepository(OperatingSystems::class);
+
+        $query = $repository->createQueryBuilder('r')
+            ->getQuery();
+
+        $operatingSystems = $query->getResult();
+
+        $pairs = [];
+
+        /** @var \App\Entity\OperatingSystems $os  */
+        foreach ($operatingSystems as $os) {
+            $pairs[] = [
+                'key'   => $os->getId(),
+                'label' => $os->getLabel()
             ];
         }
 

@@ -56,12 +56,13 @@
                                     </select>
                                 </div>
                                 <div class="col-4">
-                                    <label for="filters_os_name">OS:</label>
-                                    <input type="hidden" name="filters[os_name][condition]" value="is" />
-                                    <select name="filters[os_name][search_value]" class="form-control form-control-sm" id="filters_os_name">
+                                    <label for="filters_operating_system">OS:</label>
+                                    <input type="hidden" name="filters[operating_system][condition]" value="is" />
+                                    <select name="filters[operating_system][search_value]" class="form-control form-control-sm" id="filters_operating_system">
                                         <option selected value="">All</option>
-                                        <option value="Android">Android</option>
-                                        <option value="iOS">iOS</option>
+                                        {% for os in operating_systems %}
+                                            <option value="{{ os.key }}|1">{{ os.label }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                                 <div class="col-4">
@@ -113,12 +114,12 @@
                             <label>Periods:</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="periods[0][from_date]" value="02/07/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="periods[0][from_date]" value="03/04/2019">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="periods[0][to_date]" value="02/25/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="periods[0][to_date]" value="03/04/2019">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             {#<br />#}

@@ -33,7 +33,7 @@ class DiagramsGeneratorController extends AbstractController
         return $this->render('diagrams_generator/form.html.twig',
             [
                 'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
-                'page_types'         => []
+                'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine())
             ]
         );
     }
