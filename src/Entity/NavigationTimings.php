@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimings
  *
- * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="created_at_2", columns={"created_at", "user_agent_id"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="created_at", columns={"created_at"})})
+ * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="user_agent_id", columns={"user_agent_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"}), @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="page_view_id", columns={"page_view_id", "user_agent_id"})})
  * @ORM\Entity
  */
 class NavigationTimings
@@ -90,6 +90,20 @@ class NavigationTimings
      * @ORM\Column(name="user_agent_id", type="integer", nullable=false, options={"unsigned"=true})
      */
     private $userAgentId;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="device_type_id", type="integer", nullable=false)
+     */
+    private $deviceTypeId;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="os_id", type="integer", nullable=false)
+     */
+    private $osId;
 
     /**
      * @var string
@@ -247,6 +261,30 @@ class NavigationTimings
     public function setUserAgentId(int $userAgentId): self
     {
         $this->userAgentId = $userAgentId;
+
+        return $this;
+    }
+
+    public function getDeviceTypeId(): int
+    {
+        return $this->deviceTypeId;
+    }
+
+    public function setDeviceTypeId(int $deviceTypeId): self
+    {
+        $this->deviceTypeId = $deviceTypeId;
+
+        return $this;
+    }
+
+    public function getOsId(): int
+    {
+        return $this->osId;
+    }
+
+    public function setOsId(int $osId): self
+    {
+        $this->osId = $osId;
 
         return $this;
     }

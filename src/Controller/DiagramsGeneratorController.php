@@ -156,9 +156,9 @@ class DiagramsGeneratorController extends AbstractController
         $median = new Median();
 
         $deviceTypes = [
-            'Desktop',
-            'Tablet',
-            'Mobile'
+            2 => 'Desktop',
+            3 => 'Tablet',
+            1 => 'Mobile'
         ];
 
         $diagramsByType = [];
@@ -169,12 +169,12 @@ class DiagramsGeneratorController extends AbstractController
 
         $bounceRateDiagrams = [];
 
-        foreach ($deviceTypes as $device) {
+        foreach ($deviceTypes as $deviceId => $device) {
             $requirementsArr = [
                 'filters' => [
                     'device_type' => [
                         'condition'    => 'is',
-                        'search_value' => $device
+                        'search_value' =>  (string) $deviceId
                     ]
                 ],
                 'periods' => [

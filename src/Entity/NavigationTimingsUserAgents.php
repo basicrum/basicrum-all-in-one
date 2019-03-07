@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimingsUserAgents
  *
- * @ORM\Table(name="navigation_timings_user_agents", indexes={@ORM\Index(name="created_at", columns={"created_at"})})
+ * @ORM\Table(name="navigation_timings_user_agents", indexes={@ORM\Index(name="device_type_id", columns={"device_type_id"}), @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="os_id", columns={"os_id"})})
  * @ORM\Entity
  */
 class NavigationTimingsUserAgents
@@ -34,6 +34,13 @@ class NavigationTimingsUserAgents
      * @ORM\Column(name="device_type", type="text", length=65535, nullable=false)
      */
     private $deviceType;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(name="device_type_id", type="integer", nullable=false)
+     */
+    private $deviceTypeId;
 
     /**
      * @var string
@@ -78,6 +85,13 @@ class NavigationTimingsUserAgents
     private $osVersion;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(name="os_id", type="integer", nullable=false)
+     */
+    private $osId;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
@@ -109,6 +123,18 @@ class NavigationTimingsUserAgents
     public function setDeviceType(string $deviceType): self
     {
         $this->deviceType = $deviceType;
+
+        return $this;
+    }
+
+    public function getDeviceTypeId(): int
+    {
+        return $this->deviceTypeId;
+    }
+
+    public function setDeviceTypeId(int $deviceTypeId): self
+    {
+        $this->deviceTypeId = $deviceTypeId;
 
         return $this;
     }
@@ -181,6 +207,18 @@ class NavigationTimingsUserAgents
     public function setOsVersion(string $osVersion): self
     {
         $this->osVersion = $osVersion;
+
+        return $this;
+    }
+
+    public function getOsId(): int
+    {
+        return $this->osId;
+    }
+
+    public function setOsId(int $osId): self
+    {
+        $this->osId = $osId;
 
         return $this;
     }
