@@ -122,11 +122,19 @@ class Planner
             }
 
             if ($requirement instanceof \App\BasicRum\Report\PrimaryFilterableInterface) {
-                $condition = new Condition\Equals(
-                    $requirement->getPrimaryEntityName(),
-                    $requirement->getPrimarySearchFieldName(),
-                    $requirement->getSearchValue()
-                );
+                if ($requirement->getCondition() === 'isNot') {
+                    $condition = new Condition\NotEquals(
+                        $requirement->getPrimaryEntityName(),
+                        $requirement->getPrimarySearchFieldName(),
+                        $requirement->getSearchValue()
+                    );
+                } else {
+                    $condition = new Condition\Equals(
+                        $requirement->getPrimaryEntityName(),
+                        $requirement->getPrimarySearchFieldName(),
+                        $requirement->getSearchValue()
+                    );
+                }
 
                 $plan->addPrimaryFilter(
                     $requirement->getPrimaryEntityName(),
