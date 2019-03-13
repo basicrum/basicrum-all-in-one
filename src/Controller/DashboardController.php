@@ -191,10 +191,10 @@ class DashboardController extends AbstractController
         $pastWeeks = !empty($_POST['past_weeks']) ? (int) $_POST['past_weeks'] : 2;
 
         $devices = [
-            'Desktop',
-            'Tablet',
-            'Mobile',
-            'Bot'
+            '2' => 'Desktop',
+            '3' => 'Tablet',
+            '1' => 'Mobile',
+            '4' => 'Bot'
         ];
 
         $colors = [
@@ -204,27 +204,27 @@ class DashboardController extends AbstractController
             'Bot'     => 'rgb(0, 0, 0)'
         ];
 
-        $today = new \DateTime(('-1 day'));
-        $past  = new \DateTime('-' . $pastWeeks . ' weeks');
+        $past   = '01/01/2019';
+        $today  = '03/01/2019';
 
         $period = [
             [
-                'from_date' => $past->format('Y-m-d'),
-                'to_date'   => $today->format('Y-m-d')
+                'from_date' => $past,
+                'to_date'   => $today
             ]
         ];
 
         $deviceSamples = [];
         $daysCount     = [];
 
-        foreach ($devices as $device) {
+        foreach ($devices as $key => $device) {
             //Domain logic
 
             $requirements = [
-                'periods'      => $period,
+                'periods'     => $period,
                 'filters'     => [
                     'device_type' => [
-                        'search_value' => $device,
+                        'search_value' => (string) $key,
                         'condition'    => 'is'
                     ]
                 ],
@@ -297,7 +297,7 @@ class DashboardController extends AbstractController
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
-                    'search_value' => 'mobile'
+                    'search_value' => '1'
                 ],
 //                'os_name' => [
 //                    'condition'    => 'is',
@@ -319,8 +319,8 @@ class DashboardController extends AbstractController
             ],
             'periods' => [
                 [
-                    'from_date' => '02/02/2019',
-                    'to_date'   => '02/02/2019'
+                    'from_date'   => '02/18/2019',
+                    'to_date'     => '02/18/2019'
                 ]
             ],
             'technical_metrics' => [
@@ -378,7 +378,7 @@ class DashboardController extends AbstractController
                         $firstPaintArr[$paintGroup]++;
                         $sessionsCount++;
 
-                        if ($row['pageViewsCount'] == 1 && $row['stayOnPageTime'] == 0) {
+                        if ($row['pageViewsCount'] == 1) {
 //                            if ($paintGroup >= 1200 && $paintGroup <= 2200) {
                                 $bouncedPageViews[] = $row['pageViewId'];
 //                            }

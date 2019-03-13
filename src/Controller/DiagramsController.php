@@ -6,21 +6,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\BasicRum\WaterfallSvgRenderer;
-use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
+
 use App\BasicRum\ResourceTiming\Decompressor;
 use App\BasicRum\ResourceSize;
-use Symfony\Component\Cache\Simple\FilesystemCache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-use App\Entity\PageTypeConfig;
 use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
 use App\Entity\ResourceTimingsUrls;
 use App\Entity\NavigationTimingsUserAgents;
 
+use App\BasicRum\CollaboratorsAggregator;
+use App\BasicRum\DiagramOrchestrator;
 
-use DateTime;
-use DatePeriod;
-use DateInterval;
+use App\BasicRum\Buckets;
+
+use App\Entity\NavigationTimingsQueryParams;
+use App\Entity\NavigationTimingsUrls;
+use App\Entity\VisitsOverview;
 
 class DiagramsController extends AbstractController
 {
@@ -33,263 +36,284 @@ class DiagramsController extends AbstractController
         return $this->render('diagrams/diagram_builder.html.twig');
     }
 
-    private function _getInMetricInPeriod($start, $end, $conditionString)
-    {
-        $sessions = [];
-        $bouncedSessions = [];
-        $convertedSessions = [];
-        $visitedCartSessions = [];
-
-        $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
-
-        $query = $repository->createQueryBuilder('nt')
-            ->select(['nt.guid', 'nt.ptFp', 'nt.speculativeFp'])
-            ->where("nt.url LIKE '%" . $conditionString . "%' AND nt.userAgent NOT LIKE '%1Googlebot%' AND ((nt.ptFp > 0 AND nt.ptFp < 10000) OR (nt.speculativeFp > 0 AND nt.speculativeFp < 10000)) AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-            ->orderBy('nt.createdAt', 'DESC')
-            ->groupBy('nt.guid')
-            ->getQuery();
-
-        $navigationTimings1 = $query->getResult();
-
-        foreach ($navigationTimings1 as $nav) {
-
-            $guid = $nav['guid'];
-
-            $repository = $this->getDoctrine()
-                ->getRepository(NavigationTimings::class);
-
-            $query = $repository->createQueryBuilder('nt')
-                ->where("nt.guid = :guid AND nt.createdAt BETWEEN '" . $start . "' AND '" . $end . "'")
-                ->select(['nt.url', 'nt.pid'])
-                ->setParameter('guid', $guid)
-                ->orderBy('nt.createdAt', 'ASC')
-                ->getQuery();
-
-            $navigationTimings = $query->getResult();
-
-            $ttfp = $nav['ptFp'];
-            if ($ttfp <= 0 && $nav['speculativeFp'] > 0) {
-                $ttfp = $nav['speculativeFp'] + 250;
-            }
-
-            $sessions[$guid] = $ttfp;
-
-            // The session didn't start with Google shopping
-            if (false && strpos($navigationTimings[0]['url'], $conditionString) === false) {
-                //bounce logic / do not count
-                $this->_printSession($navigationTimings, 'Didn\'t start with Google shopping');
-                unset($sessions[$guid]);
-                continue;
-            }
-            // End:
-            // ==============================================================================
-
-
-            // Start: Check if the person has first view but also came back later from google
-            // ==============================================================================
-            $shouldSkip = true;
-            if (count($navigationTimings) >= 2 && ($navigationTimings[0]['url'] == $navigationTimings[1]['url'])) {
-                foreach ($navigationTimings as $key => $timing) {
-                    if ($key <= 2) {
-                        continue;
-                    }
-
-                    if ((strpos($timing['url'], $conditionString) !== false)) {
-                        $shouldSkip = false;
-                        break;
-                    }
-                }
-            }
-            if ($shouldSkip === false) {
-                unset($sessions[$guid]);
-                continue;
-            }
-
-            if (count($navigationTimings) === 2) {
-                if ($navigationTimings[0]['pid'] !== $navigationTimings[1]['pid']) {
-                    continue;
-                }
-            }
-
-            // End: Check if the person has first view but also came back later from google
-            // ==============================================================================
-            if (count($navigationTimings) <= 2) {
-                // @todo: Check also process. Sometimes the browser does not send beacon when user leaves the page
-//
-
-                $bouncedSessions[$guid] = 1;
-            }
-
-            foreach ($navigationTimings as $key => $timing) {
-                if (strpos($timing['url'], 'checkout/cart') !== false) {
-                    $visitedCartSessions[$guid] = 1;
-                }
-            }
-
-            // Calculate conversion
-            foreach ($navigationTimings as $key => $timing) {
-                if (strpos($timing['url'], '/success') !== false) {
-                    $convertedSessions[$guid] = 1;
-                }
-            }
-        }
-
-        return [
-            'all_sessions'          => $sessions,
-            'bounced_sessions'      => $bouncedSessions,
-            'converted_sessions'    => $convertedSessions,
-            'visited_cart_sessions' => $visitedCartSessions
-        ];
-    }
-
-
     /**
-     * @Route("/diagrams/first_paint/distribution", name="diagrams_first_paint_distribution")
+     * @Route("/diagrams/estimate/revenue_calculator", name="diagrams_estimate_revenue_calculator")
      */
-    public function firstPaintDistribution()
+    public function revenueCalculator()
     {
         // Quick hack for out of memory problems
         ini_set('memory_limit', -1);
         set_time_limit(0);
 
-        $reduceAssumption = 600;
+        $conversionIds = $this->getConversionUrlIds();
 
-        $sessionsCount = 0;
-        $bouncesCount = 0;
+        $viewsCount     = 0;
+        $bouncesCount      = 0;
         $convertedSessions = 0;
 
-        $conditionString = 'psm=GOO-0816-09';
-        $conditionString = 'psm=';
+        $filterString = 'from=Classic';
 
-        $dateConditionStart = '2018-08-01';
-        $dateConditionEnd   = '2018-08-31';
+        $period = [
+            [
+                'from_date'   => '01/24/2019',
+                'to_date'     => '03/01/2019'
+            ]
+        ];
 
-        // Test periods
-        $periodChunks = $this->_gerPeriodDays($dateConditionStart, $dateConditionEnd);
+        $requirements = [
+            'periods'      => $period,
+//            'filters'     => [
+//                'device_type' => [
+//                    'search_value' => '2',
+//                    'condition'    => 'isNot'
+//                ]
+//            ],
+            'business_metrics' => [
+                'bounce_rate' => 1
+            ],
+            'technical_metrics' => [
+                'time_to_first_paint' => 1
+            ]
+        ];
 
-        $groupMultiplier = 200;
-        $upperLimit = 3600;
+        $collaboratorsAggregator = new CollaboratorsAggregator();
 
-        $firstPaintArr = [];
-        $allFirstPaintArr = [];
-        $bouncesGroup  = [];
-        $bouncesPercents = [];
+        $collaboratorsAggregator->fillRequirements($requirements);
 
-        // Init the groups/buckets
-        for($i = $groupMultiplier; $i <= 10000; $i += $groupMultiplier) {
-            $allFirstPaintArr[$i] = 0;
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->getDoctrine()
+        );
+
+        $res = $diagramOrchestrator->process();
+
+        $bucketizer = new Buckets(200, 4600);
+        $buckets = $bucketizer->bucketizePeriod($res[0], 'firstPaint');
+
+        $bounces  = [];
+
+        foreach ($buckets as $bucketSize => $bucket) {
+            $bounces[$bucketSize] = 0;
         }
 
-        for($i = $groupMultiplier; $i <= $upperLimit; $i += $groupMultiplier) {
-            $firstPaintArr[$i] = 0;
-            $allFirstPaintArr[$i] = 0;
-            if ($i >= 800 && $i <= 3600) {
-                $bouncesGroup[$i] = 0;
-            }
-        }
+        $bounceRatePercents = [];
 
-        foreach ($periodChunks as $day) {
-            $cache = new FilesystemCache();
+        $cache = new FilesystemAdapter('basicrum.revenue.estimator.cache');
 
-            $cacheKey = 'teadd2teru3e' . md5($day['start'] . $day['end']);
+        $dbUrlArr = explode('/', getenv('DATABASE_URL'));
 
-            if (true && $cache->has($cacheKey)) {
-                $dayReport = $cache->get($cacheKey);
-            } else {
-                $dayReport = $this->_getInMetricInPeriod($day['start'], $day['end'], $conditionString);
-                $cache->set($cacheKey, $dayReport);
-            }
+        $cachePrefix = end($dbUrlArr);
+
+        // Filtering
+        foreach ($buckets as $bucketSize => $bucket) {
+//            break;
+            foreach ($bucket as $key => $sample) {
+                $pvid = $sample['pageViewId'];
+
+                $cacheKey = $cachePrefix . 'query_param' . $pvid;
+                $queryParams = '';
+
+                if ($cache->hasItem($cacheKey)) {
+                    $queryParams = $cache->getItem($cacheKey)->get();
+                } else {
+                    $pvidQuery = $this->getDoctrine()
+                        ->getRepository(NavigationTimingsQueryParams::class)
+                        ->find($pvid);
 
 
-            $convertedSessions += count($dayReport['converted_sessions']);
-
-            foreach ($dayReport['all_sessions'] as $guid => $ttfp) {
-
-
-                $paintGroup = $groupMultiplier * (int) ($ttfp / $groupMultiplier);
-
-                if (10000 >= $paintGroup && $paintGroup > 0) {
-                    $allFirstPaintArr[$paintGroup]++;
-                }
-
-                if ($upperLimit >= $paintGroup && $paintGroup > 0) {
-
-                    if ($paintGroup >= 800 && $paintGroup  <= 3600) {
-                        $firstPaintArr[$paintGroup]++;
-                        $sessionsCount++;
-
-                        if (isset($dayReport['bounced_sessions'][$guid])) {
-                            $bouncesCount++;
-
-                            $bouncesGroup[$paintGroup]++;
-
-                        }
+                    if (!empty($pvidQuery)) {
+                        $queryParams = $pvidQuery->getQueryParams();
+                    } else {
+                        $queryParams = '';
                     }
+
+                    $cacheItem = $cache->getItem($cacheKey);
+                    $cacheItem->set($queryParams);
+
+                    $cache->save($cacheItem);
+                }
+
+
+
+//                var_dump($queryParams);
+
+                if (!empty($queryParams)) {
+                    if (strpos($queryParams, 'gclid=') === false)
+                    {
+                        unset($buckets[$bucketSize][$key]);
+                        continue;
+                    }
+
+//                    if (strpos($queryParams, $filterString) === false) {
+//                        unset($buckets[$bucketSize][$key]);
+//                        continue;
+//                    }
+                } else {
+                    unset($buckets[$bucketSize][$key]);
                 }
             }
         }
 
-        $xAxisLabels = [];
+        foreach ($buckets as $bucketSize => $bucket) {
+            foreach ($bucket as $key => $sample) {
+                $viewsCount++;
 
-        foreach($firstPaintArr as $paintGroup => $numberOfProbes) {
-            $time = ($paintGroup / 1000);
+                if ($sample['pageViewsCount'] == 1) {
+                    $bounces[$bucketSize]++;
+                    $bouncesCount++;
+                    continue;
+                }
 
-            $xAxisLabels[] = $time;
-
-            if ($numberOfProbes > 0) {
-                if ($paintGroup >= 800 && $paintGroup <= 3600) {
-                    $bouncesPercents[$paintGroup] = (int) number_format(($bouncesGroup[$paintGroup] / $numberOfProbes) * 100);
+                if ($this->hasConverted($sample, $conversionIds)) {
+                    $convertedSessions++;
                 }
             }
         }
+
+        foreach ($buckets as $bucketSize => $samples) {
+            $firstPaintArr[$bucketSize] = count($samples);
+        }
+
+        foreach ($buckets as $bucketSize => $bucket) {
+            if (count($bucket) === 0) {
+                $bounceRatePercents[$bucketSize] = 0;
+                continue;
+            }
+
+            $bounceRatePercents[$bucketSize] = (float) number_format(($bounces[$bucketSize] / count($bucket)) * 100, 2);
+        }
+
+        $xAxisLabels = [0 => '0 sec', 1000 => '1 sec', 2000 => '2 sec', 3000 => '3 sec', 4000 => '4 sec'];
 
         $assumptions = [200, 400, 600, 800, 1000];
 
-        $bounceRateAssumption = $this->_calculateEstimations($firstPaintArr, $bouncesPercents, $assumptions, $allFirstPaintArr);
+        $bounceRateAssumption = $this->_calculateEstimations($buckets, $bounceRatePercents, $assumptions);
+
+        $startDate = new \DateTime($period[0]['from_date']);
+        $endDate   = new \DateTime($period[0]['to_date']);
+
+        $formattedBounceRatePercents = [];
+
+        foreach ($bounceRatePercents as $key => $val ) {
+            $formattedBounceRatePercents[$key] = (int) number_format($val,0);
+        }
+
 
         return $this->render('diagrams/diagram_first_paint.html.twig',
             [
-                'count'             => $sessionsCount,
+                'count'             => $viewsCount,
                 'estimated_bounces' => $bounceRateAssumption,
-                'bounceRate'        => (int) number_format(($bouncesCount / $sessionsCount) * 100),
-                'conversionRate'    => (int) number_format(($convertedSessions / $sessionsCount) * 100),
+                'bounceRate'        => (int) number_format(($bouncesCount / $viewsCount) * 100),
+                'conversionRate'    => (int) number_format(($convertedSessions / $viewsCount) * 100),
                 'x1Values'          => json_encode(array_keys($firstPaintArr)),
                 'y1Values'          => json_encode(array_values($firstPaintArr)),
-                'x2Values'          => json_encode(array_keys($bouncesPercents)),
-                'y2Values'          => json_encode(array_values($bouncesPercents)),
-                'annotations'       => json_encode($bouncesPercents),
+                'x2Values'          => json_encode(array_keys($bounceRatePercents)),
+                'y2Values'          => json_encode(array_values($bounceRatePercents)),
+                'annotations'       => json_encode($formattedBounceRatePercents),
+                'x_axis_values'     => json_encode(array_keys($xAxisLabels)),
                 'x_axis_labels'     => json_encode(array_values($xAxisLabels)),
-                'startDate'         => $dateConditionStart,
-                'endDate'           => $dateConditionEnd
+                'startDate'         => $startDate->format('F jS, Y'),
+                'endDate'           => $endDate->format('F jS, Y')
             ]
         );
     }
 
-    private function _printSession($pageViews, $label)
+    /**
+     * @param array $sample
+     * @return bool
+     */
+    private function hasConverted(array $sample, array $conversionIds) : bool
     {
-        return;
-        echo '<pre>';
-        echo $label . ":" . "\n";
-        echo 'Guid: ' . $pageViews[0]->getGuid() . "\n";
+        $cache = new FilesystemAdapter('basicrum.revenue.estimator.cache');
 
-        foreach ($pageViews as $page) {
-            echo $page->getCreatedAt()->format('Y-m-d H:i:s') . " : " . $page->getUrl() . "\n";
+        $guid            = $sample['guid'];
+        $firstPageViewId = $sample['firstPageViewId'];
+
+        $dbUrlArr = explode('/', getenv('DATABASE_URL'));
+
+        $cacheKey = end($dbUrlArr) . $guid . $firstPageViewId;
+
+        if ($cache->hasItem($cacheKey)) {
+            $converted = $cache->getItem($cacheKey)->get();
+            return $converted == 1;
         }
-        echo '=================' . "\n";
-        echo ' ' . "\n";
-        echo '</pre>';
+
+
+        $repository = $this->getDoctrine()
+            ->getRepository(VisitsOverview::class);
+
+        $res = $repository
+            ->createQueryBuilder('vo')
+            ->where('vo.firstPageViewId = :firstPageViewId')
+            ->andWhere('vo.guid = :guid')
+            ->setParameter('firstPageViewId', $firstPageViewId)
+            ->setParameter('guid', $guid)
+            ->getQuery()
+            ->getResult();
+
+        $visit = $res[0];
+
+        $lastPageViewId = $visit->getLastPageViewId();
+
+        $repository = $this->getDoctrine()
+            ->getRepository(NavigationTimings::class);
+
+        $res = $repository
+            ->createQueryBuilder('nt')
+            ->where('nt.pageViewId >= :firstPageViewId')
+            ->andWhere('nt.pageViewId <= :lastPageViewId')
+            ->andWhere('nt.guid = :guid')
+            ->andWhere('nt.urlId IN (:conversion_url_ids)')
+            ->setParameter('firstPageViewId', $firstPageViewId)
+            ->setParameter('lastPageViewId', $lastPageViewId)
+            ->setParameter('guid', $guid)
+            ->setParameter('conversion_url_ids', implode(',', $conversionIds))
+            ->getQuery()
+            ->getResult();
+
+        $converted = !empty($res) ? 1 : 0;
+
+        $cacheItem = $cache->getItem($cacheKey);
+        $cacheItem->set($converted);
+
+        $cache->save($cacheItem);
+
+        return $converted == 1;
     }
 
-
-    private function _calculateEstimations(array $firstPaintArr, array $bouncesPercents, array $assumptions, $allFirstPaintArr)
+    /**
+     * @return array
+     */
+    private function getConversionUrlIds()
     {
-        //print_r($firstPaintArr);
+        $conversionUrl = 'checkout/cart';
+
+
+        $repository = $this->getDoctrine()
+            ->getRepository(NavigationTimingsUrls::class);
+
+        $res = $repository
+            ->createQueryBuilder('ntu')
+            ->where('ntu.url LIKE :url')
+            ->setParameter('url', '%' . $conversionUrl . '%')
+            ->getQuery()
+            ->getResult();
+
+        $ids = [];
+        foreach ($res as $url) {
+            $ids[] = $url->getId();
+        }
+
+
+        return $ids;
+    }
+
+    private function _calculateEstimations(array $firstPaintArr, array $bouncesPercents, array $assumptions)
+    {
 
         $bounces = [];
 
-        $minInterval = 800;
-        $maxInterval = 3600;
+        $minInterval = 400;
 
         foreach ($assumptions as $reduceAssumption) {
             // Calculate for reduce assumption
@@ -297,72 +321,31 @@ class DiagramsController extends AbstractController
             $assumedSessions = 0;
             $newFirsPaintArr = [];
 
-            foreach ($firstPaintArr as $paintGroup => $numberOfProbes) {
+            foreach ($firstPaintArr as $paintGroup => $probes) {
                 $newFirstPaint = $paintGroup - $reduceAssumption;
-                if ($minInterval > $newFirstPaint || $maxInterval < $newFirstPaint) {
-                    $newFirstPaint = $paintGroup;
+                if ($minInterval >= $newFirstPaint) {
+                    $newFirstPaint = $minInterval;
                 }
 
                 if (!isset($newFirsPaintArr[$newFirstPaint])) {
                     $newFirsPaintArr[$newFirstPaint] = 0;
                 }
 
-                $newFirsPaintArr[$newFirstPaint] += $numberOfProbes;
+                $newFirsPaintArr[$newFirstPaint] += count($probes);
             }
-
-
-            //add here the missing right side probes
-//            $keys = array_keys($newFirsPaintArr);
-//            $lastPaintGroup = $keys[count($keys) - 1];
-//
-//            foreach ($allFirstPaintArr as $paintGroup => $numberOfProbes) {
-//                if ($lastPaintGroup < $paintGroup && $paintGroup <= 3600) {
-//                    $newFirsPaintArr[$paintGroup] = $numberOfProbes;
-//                }
-//            }
-
 
             foreach ($bouncesPercents as $paintGroup => $percent) {
+
                 if (isset($newFirsPaintArr[$paintGroup])) {
-//                    var_dump($paintGroup);
                     $assumedSessions += $newFirsPaintArr[$paintGroup];
-                    $assumedBounces += $newFirsPaintArr[$paintGroup] * $percent / 100;
+                    $assumedBounces  += $newFirsPaintArr[$paintGroup] * $percent / 100;
                 }
             }
-
-//            echo '<pre>';
-//            print_r($newFirsPaintArr);
-//            echo '</pre>';
 
             $bounces[$reduceAssumption] = (int) number_format(($assumedBounces / $assumedSessions) * 100);
         }
 
         return $bounces;
-    }
-
-    private function _gerPeriodDays($startDate, $endDate)
-    {
-        $calendarDayFrom = $startDate;
-        $calendarDayTo = $endDate;
-
-        $period = new DatePeriod(
-            new DateTime($calendarDayFrom),
-            new DateInterval('P1D'),
-            new DateTime($calendarDayTo)
-        );
-
-        $betweenArr = [];
-
-        foreach ($period as $key => $value) {
-            $calendarDay = $value->format('Y-m-d');
-
-            $betweenArr[] = [
-                'start' => $calendarDay . ' 00:00:01',
-                'end'   => $calendarDay  . ' 23:59:59'
-            ];
-        }
-
-        return $betweenArr;
     }
 
     /**

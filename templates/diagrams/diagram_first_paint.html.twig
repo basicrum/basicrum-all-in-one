@@ -1,88 +1,11 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><h3>Paid Ads Traffic: First Paint vs. Bounce Rate</h3></li>
+        <li class="breadcrumb-item active" aria-current="page"><h3>Start Render vs. Bounce Rate</h3></li>
     </ol>
 </nav>
 <div>
-    {#<form class="form-horizontal" role="form">#}
-        {#<div class="diagram-filters">#}
-            {#<fieldset>#}
-                {#<legend>Diagram Settings</legend>#}
-                {#<div class="row">#}
-                    {#<div class="col-xs-12 col-sm-3">#}
-                        {#<div class="form-group">#}
-                            {#<label for="page-type">Reduce with (ms):</label>#}
-                            {#<input class="form-control form-control-sm" id="source" type="text" />#}
-                        {#</div>#}
-                    {#</div>#}
-                    {#<div class="col-xs-12 col-sm-3">#}
-                        {#<div class="form-group">#}
-                            {#<label for="source">Traffic Source:</label>#}
-                            {#<select class="form-control form-control-sm" id="source">#}
-                                {#<option selected="selected">All</option>#}
-                                {#<option >Organic</option>#}
-                                {#<option disabled>Email Campaign</option>#}
-                                {#<option disabled>AdSense</option>#}
-                                {#<option disabled>Direct</option>#}
-                            {#</select>#}
-                        {#</div>#}
-                    {#</div>#}
-                    {#<div class="col-xs-12 col-sm-3">#}
-                        {#<div class="form-group has-feedback">#}
-                            {#<label>Period:</label>#}
-                            {#<br />#}
-                            {#<div class="date-picker-wrapper float-left">#}
-                                {#<input class="form-control form-control-sm" type="text" id="from_date" name="from" value="04/24/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
-                            {#</div>#}
-                            {#-#}
-                            {#<div class="date-picker-wrapper float-right">#}
-                                {#<input class="form-control form-control-sm" type="text" id="to_date" name="to" value="05/17/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
-                            {#</div>#}
-                            {#<br />#}
-                            {#<label><input type="checkbox" checked /> Compare with previous period</label>#}
-                            {#<br />#}
-                            {#<div class="date-picker-wrapper float-left">#}
-                                {#<input class="form-control form-control-sm" type="text" id="to_date_prev" name="from" value="03/29/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
-                            {#</div>#}
-                            {#-#}
-                            {#<div class="date-picker-wrapper float-right">#}
-                                {#<input class="form-control form-control-sm" type="text" id="from_date_prev" name="to" value="04/23/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
-                            {#</div>#}
-                        {#</div>#}
-                    {#</div>#}
-                    {#<div class="col-xs-12 col-sm-3">#}
-                        {#<div class="form-group">#}
-                            {#<label>Business Metric:</label>#}
-                            {#<br />#}
-                            {#<label><input type="checkbox" name="bounce-rate" /> Bounce Rate</label>#}
-                            {#<br />#}
-                            {#<label><input type="checkbox" name="conversion-rate" /> Conversion Rate</label>#}
-                            {#<br />#}
-                        {#</div>#}
-                    {#</div>#}
-                {#</div>#}
-                {#<button type="submit" class="btn btn-primary btn-label-right float-right">#}
-                    {#Run <span><i class="fa fa-play-circle-o"></i></span>#}
-                {#</button>#}
-            {#</fieldset>#}
-        {#</div>#}
-    {#</form>#}
-    <script type="text/javascript">
-        $("#from_date, #to_date, #to_date_prev, #from_date_prev").datepicker();
-    </script>
-    <p style="font-size: 12px"><strong>Sessions:</strong> {{ count }}</p>
-    <p style="font-size: 12px"><strong>Bounce Rate:</strong> {{ bounceRate }}%</p>
-    <p style="font-size: 12px"><strong>Conversion Rate:</strong> {{ conversionRate }}%</p>
-    <p style="font-size: 12px"><strong>Period:</strong> {{ startDate }} - {{ endDate }}</p>
-
     <div class="row">
-        <div class="col-4">
-            <br />
-            <br />
+        <div class="col-6">
             <h5>Estimated improvement:</h5>
             <table id="estimated-improvement" class="table table-sm table-scroll">
                 <thead>
@@ -110,7 +33,7 @@
                         <div class="col-8">
                             <div class="form-group">
                                 <label for="page-type">Average Order Value:</label>
-                                <input value="61.31" class="form-control form-control-sm" id="average-order-value" type="text" />
+                                <input value="59.36" class="form-control form-control-sm" id="average-order-value" type="text" />
                             </div>
 
                         </div>
@@ -156,7 +79,19 @@
 
             </script>
         </div>
-        <div class="col-8">
+        <div class="col-6">
+            <h5>Details:</h5>
+            <p style="font-size: 12px"><strong>Period:</strong> {{ startDate }} - {{ endDate }}</p>
+            <p style="font-size: 12px"><strong>Platform:</strong> lostweekend.de</p>
+            <p style="font-size: 12px"><strong>Devices:</strong> All - (Desktop, Mobile and Tablet)</p>
+            <p style="font-size: 12px"><strong>Filtered by:</strong> Google Ads traffic</p>
+            <p style="font-size: 12px"><strong>Sessions:</strong> {{ count }}</p>
+            <p style="font-size: 12px"><strong>Bounce Rate:</strong> {{ bounceRate }}%</p>
+            <p style="font-size: 12px"><strong>Conversion Rate:</strong> {{ conversionRate }}%</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
             <div id="BounceRateChart"></div>
         </div>
     </div>
@@ -173,7 +108,7 @@
             x: x1,
             y: y1,
             type: 'bar',
-            name: 'First Paint'
+            name: 'Start Render'
         };
 
         var bounceRate = {
@@ -191,18 +126,18 @@
 
         var layout = {
             barmode: "overlay",
-            title: "Time To First Paint vs Bounce Rate",
+            title: "Start Render vs Bounce Rate",
             xaxis: {
                 rangemode: 'tozero',
-                title: 'First Paint (seconds)',
+                title: 'Start Render (seconds)',
                 ticks: 'outside',
                 tick0: 0,
-                dtick: 200,
+                dtick: 1000,
                 ticklen: 5,
                 tickwidth: 2,
                 tickcolor: '#000',
                 range: [0, 3600],
-                tickvals: x1,
+                tickvals: {{ x_axis_values|raw }},
                 ticktext: {{ x_axis_labels|raw }},
                 fixedrange: true
             },
@@ -275,42 +210,4 @@
 
         Plotly.newPlot('BounceRateChart', dataFirstPaintVsBounceRate, layout);
     </script>
-    {#<script>#}
-        {#var x1 = {{ xValues }};#}
-        {#var y1 = {{ yValues }};#}
-
-        {#var bounceAnnotations = [];#}
-
-        {#var timeToFirstPaint = {#}
-            {#x: x1,#}
-            {#y: y1,#}
-            {#type: 'bar',#}
-            {#name: 'Time To First Paint'#}
-        {#};#}
-
-
-        {#var layout = {#}
-            {#barmode: "overlay",#}
-            {#title: "Time To First Paint",#}
-            {#xaxis: {#}
-                {#rangemode: 'tozero',#}
-                {#title: 'First Paint',#}
-                {#autotick: false,#}
-                {#ticks: 'outside',#}
-                {#tick0: 0,#}
-                {#dtick: 100,#}
-                {#ticklen: 5,#}
-                {#tickwidth: 2,#}
-                {#tickcolor: '#000',#}
-                {#range: [0, 8000]#}
-            {#},#}
-            {#yaxis: {#}
-                {#title: 'Website Visits'#}
-            {#}#}
-        {#};#}
-
-        {#var dataFirstPaintVsBounceRate = [timeToFirstPaint];#}
-
-        {#Plotly.newPlot('BounceRateChart', dataFirstPaintVsBounceRate, layout);#}
-    {#</script>#}
 </div>

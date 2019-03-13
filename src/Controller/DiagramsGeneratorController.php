@@ -18,8 +18,6 @@ use App\BasicRum\DiagramBuilder;
 
 use App\BasicRum\Layers\Presentation;
 
-use DateTime;
-
 class DiagramsGeneratorController extends AbstractController
 {
 
