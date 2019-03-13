@@ -25,7 +25,9 @@ class Runner
     }
 
     private function getPrefetcCacheKey(\App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition) {
-        return 'prefetch_condition_query_data_layer_' .
+        $dbUrlArr = explode('/', getenv('DATABASE_URL'));
+
+        return end($dbUrlArr) . 'prefetch_condition_query_data_layer_' .
             md5($condition->getWhere() . print_r($condition->getParams(), true));
     }
 

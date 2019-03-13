@@ -32,6 +32,9 @@ class CacheCleanCommand extends Command
 
         $cacheAdapter = new FilesystemAdapter('basicrum.datalayer.runner.cache');
         $cacheAdapter->clear();
+
+        $cacheAdapter = new FilesystemAdapter('basicrum.revenue.estimator.cache');
+        $cacheAdapter->clear();
     }
 
 }

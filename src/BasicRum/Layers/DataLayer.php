@@ -54,8 +54,10 @@ class DataLayer
         while ($this->period->hasPeriods()) {
             $interval = $this->period->requestPeriodInterval();
 
+            $dbUrlArr = explode('/', getenv('DATABASE_URL'));
+
             /** todo: Think about adding a tag that at least can invalidate cache for certain day in interval */
-            $cacheKey = 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
+            $cacheKey = end($dbUrlArr) . 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
 
             if ($cache->hasItem($cacheKey)) {
                 $res[$interval->getStartInterval()] =  $cache->getItem($cacheKey)->get();
