@@ -31,7 +31,7 @@ class DeviceTypeTest extends CommonTestCase
 
         $deviceType = new DeviceType(
             'is',
-            'mobile'
+            '2'
         );
 
         $dataLayer = new DataLayer(
@@ -58,11 +58,11 @@ class DeviceTypeTest extends CommonTestCase
     public function testDeviceTypeDesktop()
     {
         $period = new Period();
-        $period->setPeriod('10/24/2018', '10/24/2018');
+        $period->setPeriod('10/25/2018', '10/25/2018');
 
         $deviceType = new DeviceType(
             'is',
-            'desktop'
+            '1'
         );
 
         $dataLayer = new DataLayer(
@@ -75,7 +75,7 @@ class DeviceTypeTest extends CommonTestCase
 
         $this->assertEquals(
             [
-                '2018-10-24 00:00:00' =>
+                '2018-10-25 00:00:00' =>
                     [
                         [
                             'pageViewId' => 2

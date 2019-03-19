@@ -2,13 +2,13 @@ App\Entity\NavigationTimings:
       pageview1:
             dnsDuration: 0
             connectDuration: 0
-            firstByte: 29
+            firstByte: 150
             redirectDuration: 29
             lastByteDuration: 40
             firstPaint: 344
             firstContentfulPaint: 0
             redirectsCount: 3
-            urlId: 1
+            urlId: 2
             userAgentId: 1
             deviceTypeId: 2
             osId: 2
@@ -17,3 +17,39 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-24 13:31:03'))>
             loadEventEnd: 139
+      pageview2:
+            dnsDuration: 0
+            connectDuration: 0
+            firstByte: 150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 344
+            firstContentfulPaint: 0
+            redirectsCount: 3
+            urlId: 2
+            userAgentId: 1
+            deviceTypeId: 1
+            osId: 1
+            processId: "56jyvc3l"
+            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-10-25 13:32:33'))>
+            loadEventEnd: 139
+      pageview3:
+            dnsDuration: 0
+            connectDuration: 0
+            firstByte: 2150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 134
+            firstContentfulPaint: 0
+            redirectsCount: 1
+            urlId: 1
+            userAgentId: 1
+            deviceTypeId: 2
+            osId: 2
+            processId: "56jyvdda"
+            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
+            loadEventEnd: 1393

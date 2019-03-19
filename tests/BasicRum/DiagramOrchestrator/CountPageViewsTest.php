@@ -24,7 +24,7 @@ class CountPageViewsTest extends CommonTestCase
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
-                    'search_value' => 'mobile'
+                    'search_value' => '2'
                 ]
             ],
             'periods' => [
