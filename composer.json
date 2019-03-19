@@ -26,6 +26,7 @@
         "symfony/yaml": "^4.1"
     },
     "require-dev": {
+        "hautelook/alice-bundle": "^2.3",
         "symfony/debug-pack": "*",
         "symfony/dotenv": "^4.1",
         "symfony/maker-bundle": "^1.5",

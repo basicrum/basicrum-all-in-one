@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
-use App\BasicRum\Filters\Primary\TimeToFirstByte;
 
 class FirstPaintFilterTest extends KernelTestCase
 {

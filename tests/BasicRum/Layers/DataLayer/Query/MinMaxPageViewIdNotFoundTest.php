@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
-use App\BasicRum\Filters\Secondary\DeviceType;
+use App\BasicRum\Filters\Primary\DeviceType;
 
 class MinMaxPageViewIdNotFound extends KernelTestCase
 {

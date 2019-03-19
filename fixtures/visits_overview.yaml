@@ -1,0 +1,9 @@
+App\Entity\VisitsOverview:
+  visit1:
+    guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901"
+    pageViewsCount: 1
+    firstPageViewId: 1
+    lastPageViewId: 1
+    visitDuration: 0
+    afterLastVisitDuration: 0
+    completed: 1

@@ -3,13 +3,16 @@
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
-use App\BasicRum\Filters\Secondary\DeviceType;
+use App\BasicRum\Filters\Primary\DeviceType;
 
 class DeviceTypeTest extends KernelTestCase
 {
+
+    use RefreshDatabaseTrait;
 
     protected function setUp()
     {

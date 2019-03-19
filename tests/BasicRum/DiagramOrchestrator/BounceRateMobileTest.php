@@ -2,6 +2,7 @@
 
 namespace  App\Tests\BasicRum\DiagramOrchestrator;
 
+use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use App\BasicRum\CollaboratorsAggregator;
@@ -9,6 +10,8 @@ use App\BasicRum\DiagramOrchestrator;
 
 class BounceRateMobileTest extends KernelTestCase
 {
+
+    use RefreshDatabaseTrait;
 
     protected function setUp()
     {
@@ -29,7 +32,7 @@ class BounceRateMobileTest extends KernelTestCase
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
-                    'search_value' => 'mobile'
+                    'search_value' => '2'
                 ]
             ],
             'periods' => [
