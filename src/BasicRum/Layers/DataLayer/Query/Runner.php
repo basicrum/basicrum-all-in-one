@@ -205,7 +205,9 @@ class Runner
                 }
 
                 //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
-                $ids = array_column($fetched, "id");
+                $fieldsArr = explode('.', $selectFields[0]);
+                $mainColumn = end($fieldsArr);
+                $ids = array_column($fetched, $mainColumn);
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
             } elseif ($prefetchCondition->getMainCondition() === 'isNot') {
 

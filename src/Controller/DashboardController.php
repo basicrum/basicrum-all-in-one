@@ -297,7 +297,7 @@ class DashboardController extends AbstractController
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
-                    'search_value' => '1'
+                    'search_value' => '2'
                 ],
 //                'os_name' => [
 //                    'condition'    => 'is',
@@ -319,8 +319,8 @@ class DashboardController extends AbstractController
             ],
             'periods' => [
                 [
-                    'from_date'   => '02/18/2019',
-                    'to_date'     => '02/18/2019'
+                    'from_date'   => '02/16/2019',
+                    'to_date'     => '02/16/2019'
                 ]
             ],
             'technical_metrics' => [
