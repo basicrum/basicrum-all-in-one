@@ -2,17 +2,14 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
+use App\Tests\BasicRum\CommonTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\DeviceType;
 
-class DeviceTypeTest extends KernelTestCase
+class DeviceTypeTest extends CommonTestCase
 {
-
-    use RefreshDatabaseTrait;
 
     protected function setUp()
     {

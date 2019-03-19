@@ -2,21 +2,13 @@
 
 namespace  App\Tests\BasicRum\DiagramOrchestrator;
 
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Tests\BasicRum\CommonTestCase;
 
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
-class BounceRateMobileTest extends KernelTestCase
+class BounceRateMobileTest extends CommonTestCase
 {
-
-    use RefreshDatabaseTrait;
-
-    protected function setUp()
-    {
-        static::bootKernel();
-    }
 
     /**
      * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine

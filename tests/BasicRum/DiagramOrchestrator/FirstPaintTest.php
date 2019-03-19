@@ -2,12 +2,12 @@
 
 namespace App\Tests\BasicRum\DiagramOrchestrator;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Tests\BasicRum\CommonTestCase;
 
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
-class FirstPaintTest extends KernelTestCase
+class FirstPaintTest extends CommonTestCase
 {
 
     protected function setUp()
@@ -29,7 +29,7 @@ class FirstPaintTest extends KernelTestCase
             'filters' => [
                 'device_type' => [
                     'condition'    => 'is',
-                    'search_value' => 'mobile'
+                    'search_value' => '2'
                 ]
             ],
             'periods' => [

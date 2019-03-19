@@ -2,19 +2,14 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Tests\BasicRum\CommonTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Secondary\Url;
 
-class UrlLikeTest extends KernelTestCase
+class UrlLikeTest extends CommonTestCase
 {
-
-    protected function setUp()
-    {
-        static::bootKernel();
-    }
 
     /**
      * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine

@@ -2,19 +2,15 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
+use App\Tests\BasicRum\CommonTestCase;
+
 use App\BasicRum\Filters\Primary\TimeToFirstPaint;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 
-class FirstPaintFilterTest extends KernelTestCase
+class FirstPaintFilterTest extends CommonTestCase
 {
-
-    protected function setUp()
-    {
-        static::bootKernel();
-    }
 
     /**
      * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
