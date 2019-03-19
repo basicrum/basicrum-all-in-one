@@ -27,6 +27,11 @@ class CacheCleanCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->clearCache();
+    }
+
+    public function clearCache()
+    {
         $cacheAdapter = new FilesystemAdapter('basicrum.report.cache');
         $cacheAdapter->clear();
 
