@@ -44,28 +44,22 @@ class Runner
 
         $limitFilters = $this->_processPrefetchFilters($this->planActions['where']['limitFilters']);
 
+        $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
+
+        foreach ($limitFilters as $filter) {
+            $queryBuilder->andWhere($filter);
+        }
+
         // Abort if we do not have limit result in day
         if(empty($limitFilters)) {
             return [];
         }
 
-        // Complex Select case
-        $complexSelectData = [];
-        $complexSelectFilters = [];
-
-        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\ComplexSelect $complexSelect */
-        foreach ($this->planActions['complex_selects'] as $complexSelect) {
-            $complexSelectData = $this->_processComplexSelect($complexSelect, $limitFilters);
-            if (!empty($complexSelectData)) {
-                $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($complexSelectData)) . ')';
-            }
-        }
+        list($complexSelectData, $complexSelectFilters) = $this->_processComplexSelect($limitFilters);
 
         $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters']);
 
-        $filters = array_merge($limitFilters, $filters, $complexSelectFilters);
-
-        $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
+        $filters = array_merge($filters, $complexSelectFilters);
 
         foreach ($filters as $filter) {
             $queryBuilder->andWhere($filter);
@@ -96,7 +90,7 @@ class Runner
 
         if (!empty($complexSelectData)) {
             foreach ($res as $key => $row) {
-                $res[$key] = array_merge($row, $complexSelectData[$row[$complexSelect->getPrimaryKeyFieldName()]]);
+                $res[$key] = array_merge($row, $complexSelectData[$row[$this->planActions['complex_selects'][0]->getPrimaryKeyFieldName()]]);
             }
         }
 
@@ -112,13 +106,24 @@ class Runner
     }
 
     /**
-     * @param Plan\ComplexSelect $complexSelect
      * @param $filters array
      * @return array
      */
-    private function _processComplexSelect(Plan\ComplexSelect $complexSelect, array $filters) : array
+    private function _processComplexSelect(array $filters) : array
     {
-        return $this->complexSelect->process($complexSelect, $filters);
+        // Complex Select case
+        $complexSelectFilters = [];
+        $complexSelectData    = [];
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\ComplexSelect $complexSelect */
+        foreach ($this->planActions['complex_selects'] as $complexSelect) {
+            $complexSelectData = $this->complexSelect->process($complexSelect, $filters);
+            if (!empty($complexSelectData)) {
+                $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($complexSelectData)) . ')';
+            }
+        }
+
+        return [$complexSelectData, $complexSelectFilters];
     }
 
     /**
