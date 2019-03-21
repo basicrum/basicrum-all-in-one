@@ -42,7 +42,12 @@ class Runner
     {
         $repository = $this->registry->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
 
-        $limitFilters = $this->_processPrefetchFilters($this->planActions['where']['limitFilters']);
+        $limitFilters = $this->_processPrefetchFilters($this->planActions['where']['limitFilters'], []);
+
+        // Abort if we do not have limit result in day
+        if(empty($limitFilters)) {
+            return [];
+        }
 
         $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
 
@@ -50,14 +55,13 @@ class Runner
             $queryBuilder->andWhere($filter);
         }
 
-        // Abort if we do not have limit result in day
-        if(empty($limitFilters)) {
-            return [];
-        }
-
+        /**
+         * @todo: send $limitFilters as param for secondary filters and decide how to proceed in
+         * App\BasicRum\Layers\DataLayer\Query\Runner\SecondaryFilter
+         */
         list($complexSelectData, $complexSelectFilters) = $this->_processComplexSelect($limitFilters);
 
-        $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters']);
+        $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters'], $limitFilters);
 
         $filters = array_merge($filters, $complexSelectFilters);
 
@@ -128,12 +132,13 @@ class Runner
 
     /**
      * @param array $filters
+     * @param array $limitFilters
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    private function _processPrefetchFilters(array $filters) : array
+    private function _processPrefetchFilters(array $filters, array $limitFilters) : array
     {
-        return $this->secondaryFilter->process($filters);
+        return $this->secondaryFilter->process($filters, $limitFilters);
     }
 
     /**

@@ -24,10 +24,11 @@ class SecondaryFilter
 
     /**
      * @param array $filters
+     * @param array $limitFilters
      * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function process(array $filters) : array
+    public function process(array $filters, array $limitFilters) : array
     {
         $res = [];
 
@@ -42,18 +43,9 @@ class SecondaryFilter
             $selectFields = $prefetchCondition->getPrefetchSelect()->getFields();
 
             $repository = $this->registry
-                ->getRepository($this->getEntityClassName($prefetchCondition->getPrimaryEntityName()));
+                ->getRepository($this->getEntityClassName($prefetchCondition->getSecondaryEntityName()));
 
-            if (in_array($prefetchCondition->getMainCondition(), ['is', 'isNot', 'contains'])) {
-                $repository = $this->registry
-                    ->getRepository($this->getEntityClassName($prefetchCondition->getSecondaryEntityName()));
-            }
-
-            $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getPrimaryEntityName());
-
-            if (in_array($prefetchCondition->getMainCondition(), ['is', 'isNot', 'contains'])) {
-                $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getSecondaryEntityName());
-            }
+            $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getSecondaryEntityName());
 
             $queryBuilder->where($where);
 
@@ -63,10 +55,11 @@ class SecondaryFilter
 
             $queryBuilder->select($selectFields);
 
-            if ($prefetchCondition->getMainCondition() === 'is' || $prefetchCondition->getMainCondition() === 'contains') {
+            $whiteListConditions = ['is', 'contains', 'isNot'];
 
+            if (in_array($prefetchCondition->getMainCondition(), $whiteListConditions)) {
                 if ($this->cacheAdapter->hasItem($cacheKey)) {
-                    $fetched =  $this->cacheAdapter->getItem($cacheKey)->get();
+                    $fetched = $this->cacheAdapter->getItem($cacheKey)->get();
                 } else {
                     $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
                     $cacheItem = $this->cacheAdapter->getItem($cacheKey);
@@ -74,7 +67,7 @@ class SecondaryFilter
                     $this->cacheAdapter->save($cacheItem);
                 }
 
-                if(empty($fetched)) {
+                if (empty($fetched)) {
                     continue;
                 }
 
@@ -82,32 +75,19 @@ class SecondaryFilter
                 $fieldsArr = explode('.', $selectFields[0]);
                 $mainColumn = end($fieldsArr);
                 $ids = array_column($fetched, $mainColumn);
-                $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  ' IN(' . implode(',', $ids) . ')';
-            } elseif ($prefetchCondition->getMainCondition() === 'isNot') {
 
-                if ($this->cacheAdapter->hasItem($cacheKey)) {
-                    $fetched =  $this->cacheAdapter->getItem($cacheKey)->get();
+                if ($prefetchCondition->getMainCondition() === 'isNot') {
+                    $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . 'NOT IN(' . implode(',', $ids) . ')';
                 } else {
-                    $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
-                    $cacheItem = $this->cacheAdapter->getItem($cacheKey);
-                    $cacheItem->set($fetched);
-                    $this->cacheAdapter->save($cacheItem);
+                    $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . ' IN(' . implode(',', $ids) . ')';
                 }
-
-                if(empty($fetched)) {
-                    continue;
-                }
-
-                //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
-                $ids = array_column($fetched, "id");
-                $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " .  'NOT IN(' . implode(',', $ids) . ')';
-            }
-            else {
+            } else {
                 // If not MIN or MAX then we need get the result in array
                 $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
                 if(empty($fetched)) {
                     continue;
                 }
+
                 $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $fetched;
             }
         }
