@@ -35,7 +35,7 @@ class SecondaryFilter
         // Concept for prefetch filter
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $prefetchCondition */
         foreach ($filters as $prefetchCondition) {
-            $cacheKey = $this->getPrefetchCacheKey($prefetchCondition->getPrefetchCondition());
+            $cacheKey = $this->getPrefetchCacheKey($prefetchCondition);
 
             $where = $prefetchCondition->getPrefetchCondition()->getWhere();
             $params = $prefetchCondition->getPrefetchCondition()->getParams();
@@ -55,55 +55,81 @@ class SecondaryFilter
 
             $queryBuilder->select($selectFields);
 
-            $whiteListConditions = ['is', 'contains', 'isNot'];
-
-            if (in_array($prefetchCondition->getMainCondition(), $whiteListConditions)) {
-                if ($this->cacheAdapter->hasItem($cacheKey)) {
-                    $fetched = $this->cacheAdapter->getItem($cacheKey)->get();
-                } else {
-                    $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
-                    $cacheItem = $this->cacheAdapter->getItem($cacheKey);
-                    $cacheItem->set($fetched);
-                    $this->cacheAdapter->save($cacheItem);
-                }
-
-                if (empty($fetched)) {
-                    continue;
-                }
-
-                //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
-                $fieldsArr = explode('.', $selectFields[0]);
-                $mainColumn = end($fieldsArr);
-                $ids = array_column($fetched, $mainColumn);
-
-                if ($prefetchCondition->getMainCondition() === 'isNot') {
-                    $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . 'NOT IN(' . implode(',', $ids) . ')';
-                } else {
-                    $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . ' IN(' . implode(',', $ids) . ')';
-                }
+            if ($this->cacheAdapter->hasItem($cacheKey)) {
+                $fetched = $this->cacheAdapter->getItem($cacheKey)->get();
             } else {
-                // If not MIN or MAX then we need get the result in array
-                $fetched = $queryBuilder->getQuery()->getSingleScalarResult();
-                if(empty($fetched)) {
+                $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+                $cacheItem = $this->cacheAdapter->getItem($cacheKey);
+                $cacheItem->set($fetched);
+                $this->cacheAdapter->save($cacheItem);
+            }
+
+            if (empty($fetched)) {
+                continue;
+            }
+
+            if ($this->isMinMaxQuery($selectFields)) {
+                $value = $this->getSingleRowValue($fetched);
+
+                if (empty($value)) {
                     continue;
                 }
 
-                $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $fetched;
+                if ('>=' === $prefetchCondition->getMainCondition() || '<=' === $prefetchCondition->getMainCondition()) {
+                    $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $value;
+                }
+                continue;
+            }
+
+            //@todo: Maybe better to use custom hydrator https://stackoverflow.com/a/27823082/1016533
+            $fieldsArr = explode('.', $selectFields[0]);
+            $mainColumn = end($fieldsArr);
+            $ids = array_column($fetched, $mainColumn);
+
+            if ($prefetchCondition->getMainCondition() === 'isNot') {
+                $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . 'NOT IN(' . implode(',', $ids) . ')';
+            } else {
+                $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . ' IN(' . implode(',', $ids) . ')';
             }
         }
 
         return $res;
     }
 
+    private function isSingleRowResult(array $data)
+    {
+        return count($data[0]) === 1;
+    }
+
+    private function getSingleRowValue(array $data)
+    {
+        return array_values($data[0])[0];
+    }
+
+    private function isMinMaxQuery(array $selectFields)
+    {
+        if (strpos(print_r($selectFields, true),'MAX(') !== false) {
+            return true;
+        }
+
+
+        if (strpos(print_r($selectFields, true),'MIN(') !== false) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
-     * @param \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition
+     * @param \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter
      * @return string
      */
-    private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition) {
+    private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter) {
         $dbUrlArr = explode('/', getenv('DATABASE_URL'));
 
         return end($dbUrlArr) . 'prefetch_condition_query_data_layer_' .
-            md5($condition->getWhere() . print_r($condition->getParams(), true));
+            md5(print_r($filter->getPrefetchSelect()->getFields(), true)) .
+            md5($filter->getPrefetchCondition()->getWhere() . print_r($filter->getPrefetchCondition()->getParams(), true));
     }
 
     /**
