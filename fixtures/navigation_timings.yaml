@@ -53,3 +53,21 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
             loadEventEnd: 1393
+      pageview4:
+            dnsDuration: 0
+            connectDuration: 0
+            firstByte: 2150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 134
+            firstContentfulPaint: 0
+            redirectsCount: 1
+            urlId: 2
+            userAgentId: 1
+            deviceTypeId: 2
+            osId: 2
+            processId: "56jyrvda"
+            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244400"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
+            loadEventEnd: 1344

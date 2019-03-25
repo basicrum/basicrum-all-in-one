@@ -319,8 +319,8 @@ class DashboardController extends AbstractController
             ],
             'periods' => [
                 [
-                    'from_date'   => '02/16/2019',
-                    'to_date'     => '02/16/2019'
+                    'from_date'   => '03/01/2019',
+                    'to_date'     => '03/01/2019'
                 ]
             ],
             'technical_metrics' => [

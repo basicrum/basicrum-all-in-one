@@ -53,6 +53,18 @@ class SecondaryFilter
                 $queryBuilder->setParameter($name, $value);
             }
 
+            if ($this->shouldLimitPrefetchCondition($prefetchCondition, $limitFilters)) {
+                foreach ($limitFilters as $limitFilter) {
+                    $transformed = str_replace(
+                        $prefetchCondition->getPrimaryEntityName(),
+                        $prefetchCondition->getSecondaryEntityName(),
+                        $limitFilter
+                    );
+
+                    $queryBuilder->andWhere($transformed);
+                }
+            }
+
             $queryBuilder->select($selectFields);
 
             if ($this->cacheAdapter->hasItem($cacheKey)) {
@@ -96,9 +108,30 @@ class SecondaryFilter
         return $res;
     }
 
-    private function isSingleRowResult(array $data)
+    /**
+     * @param \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter
+     * @param array $limitFilters
+     * @return bool
+     */
+    private function shouldLimitPrefetchCondition(
+        \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter,
+        array $limitFilters
+    )
     {
-        return count($data[0]) === 1;
+        if (empty($limitFilters)) {
+            return false;
+        }
+
+        $searchKey = $filter->getPrimaryEntityName() . '.' . $filter->getPrimarySearchFieldName();
+
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $limitFilter */
+        foreach ($limitFilters as $limitFilter) {
+            if (strpos($limitFilter, $searchKey) !== false) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function getSingleRowValue(array $data)

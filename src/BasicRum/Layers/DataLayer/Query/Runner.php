@@ -63,6 +63,10 @@ class Runner
 
         $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters'], $limitFilters);
 
+        if (empty($filters) && !empty($this->planActions['where']['secondaryFilters'])) {
+            return [];
+        }
+
         $filters = array_merge($filters, $complexSelectFilters);
 
         foreach ($filters as $filter) {
