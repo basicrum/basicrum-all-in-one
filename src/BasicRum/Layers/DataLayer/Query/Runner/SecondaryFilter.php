@@ -35,7 +35,7 @@ class SecondaryFilter
         // Concept for prefetch filter
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $prefetchCondition */
         foreach ($filters as $prefetchCondition) {
-            $cacheKey = $this->getPrefetchCacheKey($prefetchCondition);
+            $cacheKey = $this->getPrefetchCacheKey($prefetchCondition, $limitFilters);
 
             $where = $prefetchCondition->getPrefetchCondition()->getWhere();
             $params = $prefetchCondition->getPrefetchCondition()->getParams();
@@ -157,10 +157,11 @@ class SecondaryFilter
      * @param \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter
      * @return string
      */
-    private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter) {
+    private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter, array $limitFiltes) {
         $dbUrlArr = explode('/', getenv('DATABASE_URL'));
 
         return end($dbUrlArr) . 'prefetch_condition_query_data_layer_' .
+            md5(print_r($limitFiltes, true)) .
             md5(print_r($filter->getPrefetchSelect()->getFields(), true)) .
             md5($filter->getPrefetchCondition()->getWhere() . print_r($filter->getPrefetchCondition()->getParams(), true));
     }
