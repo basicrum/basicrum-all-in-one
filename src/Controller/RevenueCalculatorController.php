@@ -5,36 +5,21 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\BasicRum\WaterfallSvgRenderer;
 
-use App\BasicRum\ResourceTiming\Decompressor;
-use App\BasicRum\ResourceSize;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 use App\Entity\NavigationTimings;
-use App\Entity\ResourceTimings;
-use App\Entity\ResourceTimingsUrls;
-use App\Entity\NavigationTimingsUserAgents;
 
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
 use App\BasicRum\Buckets;
 
-use App\Entity\NavigationTimingsQueryParams;
 use App\Entity\NavigationTimingsUrls;
 use App\Entity\VisitsOverview;
 
-class DiagramsController extends AbstractController
+class RevenueCalculatorController extends AbstractController
 {
-
-    /**
-     * @Route("/diagrams/builder", name="diagrams_builder")
-     */
-    public function diagramsBuilder()
-    {
-        return $this->render('diagrams/diagram_builder.html.twig');
-    }
 
     /**
      * @Route("/diagrams/estimate/revenue_calculator", name="diagrams_estimate_revenue_calculator")
@@ -51,23 +36,27 @@ class DiagramsController extends AbstractController
         $bouncesCount      = 0;
         $convertedSessions = 0;
 
-        $filterString = 'from=Classic';
+        $filterString = 'gclid=';
 
         $period = [
             [
-                'from_date'   => '01/24/2019',
+                'from_date'   => '01/01/2019',
                 'to_date'     => '03/01/2019'
             ]
         ];
 
         $requirements = [
-            'periods'      => $period,
-//            'filters'     => [
-//                'device_type' => [
-//                    'search_value' => '2',
-//                    'condition'    => 'isNot'
-//                ]
-//            ],
+            'periods'     => $period,
+            'filters'     => [
+                'query_param' => [
+                    'search_value' => $filterString,
+                    'condition'    => 'contains'
+                ],
+                'device_type' => [
+                    'search_value' => '3',
+                    'condition'    => 'is'
+                ]
+            ],
             'business_metrics' => [
                 'bounce_rate' => 1
             ],
@@ -97,62 +86,6 @@ class DiagramsController extends AbstractController
         }
 
         $bounceRatePercents = [];
-
-        $cache = new FilesystemAdapter('basicrum.revenue.estimator.cache');
-
-        $dbUrlArr = explode('/', getenv('DATABASE_URL'));
-
-        $cachePrefix = end($dbUrlArr);
-
-        // Filtering
-        foreach ($buckets as $bucketSize => $bucket) {
-//            break;
-            foreach ($bucket as $key => $sample) {
-                $pvid = $sample['pageViewId'];
-
-                $cacheKey = $cachePrefix . 'query_param' . $pvid;
-                $queryParams = '';
-
-                if ($cache->hasItem($cacheKey)) {
-                    $queryParams = $cache->getItem($cacheKey)->get();
-                } else {
-                    $pvidQuery = $this->getDoctrine()
-                        ->getRepository(NavigationTimingsQueryParams::class)
-                        ->find($pvid);
-
-
-                    if (!empty($pvidQuery)) {
-                        $queryParams = $pvidQuery->getQueryParams();
-                    } else {
-                        $queryParams = '';
-                    }
-
-                    $cacheItem = $cache->getItem($cacheKey);
-                    $cacheItem->set($queryParams);
-
-                    $cache->save($cacheItem);
-                }
-
-
-
-//                var_dump($queryParams);
-
-                if (!empty($queryParams)) {
-                    if (strpos($queryParams, 'gclid=') === false)
-                    {
-                        unset($buckets[$bucketSize][$key]);
-                        continue;
-                    }
-
-//                    if (strpos($queryParams, $filterString) === false) {
-//                        unset($buckets[$bucketSize][$key]);
-//                        continue;
-//                    }
-                } else {
-                    unset($buckets[$bucketSize][$key]);
-                }
-            }
-        }
 
         foreach ($buckets as $bucketSize => $bucket) {
             foreach ($bucket as $key => $sample) {
@@ -346,107 +279,6 @@ class DiagramsController extends AbstractController
         }
 
         return $bounces;
-    }
-
-    /**
-     * @Route("/diagrams/beacon/draw", name="diagrams_beacon_draw")
-     */
-    public function beaconDraw()
-    {
-        $pageViewId = $_POST['page_view_id'];
-
-        /** @var NavigationTimings $navigationTiming */
-        $navigationTiming = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class)
-            ->findBy(['pageViewId' => $pageViewId]);
-
-
-        /** @var ResourceTimings $resourceTimings */
-        $resourceTimings = $this->getDoctrine()
-            ->getRepository(ResourceTimings::class)
-            ->findBy(['pageViewId' => $pageViewId]);
-
-        /** @var NavigationTimingsUserAgents $userAgent */
-        $userAgent = $this->getDoctrine()
-            ->getRepository(NavigationTimingsUserAgents::class)
-            ->findBy(['id' => $navigationTiming[0]->getUserAgentId()]);
-
-        $decompressor = new Decompressor();
-
-        $resourceTimingsDecompressed = [];
-
-        /** @var ResourceTimings $res */
-        foreach ($resourceTimings as $res) {
-            $resourceTimingsDecompressed = $decompressor->decompress($res->getResourceTimings());
-        }
-
-        $resourceTimingsData = [];
-
-        foreach ($resourceTimingsDecompressed as $res) {
-            // We do this in guly way but so far nice looking code is not a priority
-            /** @var \App\Entity\ResourceTimingsUrls $resourceTimingUrl */
-            $resourceTimingUrl = $this->getDoctrine()
-                ->getRepository(ResourceTimingsUrls::class)
-                ->findOneBy(['id' => $res['url_id']]);
-
-            $resourceTimingsData[] = [
-                'name'                  => $resourceTimingUrl->getUrl(),
-                'initiatorType'         => 1,
-                'startTime'             => $res['start'],
-                'redirectStart'         => 0,
-                'redirectEnd'           => 0,
-                'fetchStart'            => 0,
-                'domainLookupStart'     => 0,
-                'domainLookupEnd'       => 0,
-                'connectStart'          => 0,
-                'secureConnectionStart' => 0,
-                'connectEnd'            => 0,
-                'requestStart'          => 0,
-                'responseStart'         => 0,
-                'responseEnd'           => $res['start'] + $res['duration'],
-                'duration'              => $res['duration'],
-                'encodedBodySize'       => 5,
-                'transferSize'          => 11,
-                'decodedBodySize'       => 52
-            ];
-        }
-
-
-        $sizeDistribution = [];
-
-        if (!empty($resourceTimingsData)) {
-            $resourceSizesCalculator = new ResourceSize();
-            $sizeDistribution = $resourceSizesCalculator->calculateSizes($resourceTimingsData);
-        }
-
-        $timings = [
-            'nt_nav_st'      => 0,
-            'nt_first_paint' => $navigationTiming[0]->getFirstContentfulPaint(),
-            'nt_res_st'      => $navigationTiming[0]->getFirstByte(),
-            'restiming'      => $resourceTimingsData,
-            'url'            => 'https://www.darvart.de/'
-        ];
-
-        $renderer = new WaterfallSvgRenderer();
-
-        $response = new Response(
-            json_encode(
-                [
-                    'waterfall'             => $renderer->render($timings),
-                    'resource_distribution' =>
-                        [
-                            'labels' => array_keys($sizeDistribution),
-                            'values' => array_values($sizeDistribution)
-                        ],
-                    'user_agent'            => $userAgent[0]->getUserAgent(),
-                    'browser_name'          => $userAgent[0]->getBrowserName()
-                ]
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 
 }

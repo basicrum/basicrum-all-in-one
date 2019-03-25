@@ -59,7 +59,7 @@ class Buckets
         foreach ($samples as $sample) {
             $bucket = $this->bucketSize * (int) ($sample[$searchKey] / $this->bucketSize);
 
-            if (150 >= $bucket) {
+            if (100 >= $bucket) {
                 continue;
             }
 
