@@ -81,14 +81,17 @@ class Calculator
                     $visits[$currentGuid] = [
                         'guid'               => $currentGuid,
                         'pageViewsCount'     => 0,
-                        'firstPageViewId'    => $nav['pageViewId']
+                        'firstPageViewId'    => $nav['pageViewId'],
+                        'firstUrlId'         => $nav['urlId'],
+                        'lastUrlId'          => $nav['urlId'],
                     ];
                 } else {
                     $visits[$currentGuid] = [
                         'visitId'            => $notCompletedVisits[$currentGuid]['visitId'],
                         'guid'               => $currentGuid,
                         'pageViewsCount'     => $notCompletedVisits[$currentGuid]['pageViewsCount'],
-                        'firstPageViewId'    => $notCompletedVisits[$currentGuid]['firstPageViewId']
+                        'firstPageViewId'    => $notCompletedVisits[$currentGuid]['firstPageViewId'],
+                        'firstUrlId'         => $notCompletedVisits[$currentGuid]['firstUrlId']
                     ];
                 }
 
@@ -101,6 +104,7 @@ class Calculator
             $visits[$currentGuid]['lastPageViewId']         = $nav['pageViewId'];
             $visits[$currentGuid]['visitDuration']          = 0;
             $visits[$currentGuid]['afterLastVisitDuration'] = 0;
+            $visits[$currentGuid]['lastUrlId']              = $nav['urlId'];
         }
 
         // Add old visits that we out of scanned range
@@ -132,6 +136,8 @@ class Calculator
             $entity->setpageViewsCount($visit['pageViewsCount']);
             $entity->setFirstPageViewId($visit['firstPageViewId']);
             $entity->setLastPageViewId($visit['lastPageViewId']);
+            $entity->setFirstUrlId($visit['firstUrlId']);
+            $entity->setLastUrlId($visit['lastUrlId']);
             $entity->setAfterLastVisitDuration($visit['afterLastVisitDuration']);
 
             //Check if we need to close the visit
@@ -259,7 +265,7 @@ class Calculator
             ->where("nt.pageViewId >= '" . $startId . "' AND nt.pageViewId <= '" . $endId . "'")
             ->andWhere('nt.userAgentId NOT IN (:userAgentId)')
             ->setParameter('userAgentId', $this->_botUserAgentsIds())
-            ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId'])
+            ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
             ->orderBy('nt.guid, nt.pageViewId', 'ASC')
             ->getQuery();
 

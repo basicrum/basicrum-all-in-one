@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * VisitsOverview
  *
- * @ORM\Table(name="visits_overview", indexes={@ORM\Index(name="first_page_view_id", columns={"first_page_view_id"}), @ORM\Index(name="completed", columns={"completed"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="last_page_view_id", columns={"last_page_view_id"})})
+ * @ORM\Table(name="visits_overview", indexes={@ORM\Index(name="completed", columns={"completed"}), @ORM\Index(name="first_page_view_id", columns={"first_page_view_id"}), @ORM\Index(name="last_page_view_id", columns={"last_page_view_id"}), @ORM\Index(name="guid", columns={"guid"})})
  * @ORM\Entity
  */
 class VisitsOverview
@@ -62,6 +62,20 @@ class VisitsOverview
      * @ORM\Column(name="after_last_visit_duration", type="integer", nullable=false, options={"unsigned"=true})
      */
     private $afterLastVisitDuration;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="first_url_id", type="integer", nullable=false, options={"unsigned"=true})
+     */
+    private $firstUrlId;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="last_url_id", type="integer", nullable=false, options={"unsigned"=true})
+     */
+    private $lastUrlId;
 
     /**
      * @var bool
@@ -143,6 +157,30 @@ class VisitsOverview
     public function setAfterLastVisitDuration(int $afterLastVisitDuration): self
     {
         $this->afterLastVisitDuration = $afterLastVisitDuration;
+
+        return $this;
+    }
+
+    public function getFirstUrlId(): ?int
+    {
+        return $this->firstUrlId;
+    }
+
+    public function setFirstUrlId(int $firstUrlId): self
+    {
+        $this->firstUrlId = $firstUrlId;
+
+        return $this;
+    }
+
+    public function getLastUrlId(): ?int
+    {
+        return $this->lastUrlId;
+    }
+
+    public function setLastUrlId(int $lastUrlId): self
+    {
+        $this->lastUrlId = $lastUrlId;
 
         return $this;
     }
