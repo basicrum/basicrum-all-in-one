@@ -1,22 +1,20 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><h3>Performance Over Time</h3></li>
+        {#<li class="breadcrumb-item active" aria-current="page"><h3>Performance Over Time</h3></li>#}
     </ol>
 </nav>
 {% for key,diagram in diagrams %}
-<div id="diagramContainer{{ key }}" style="height: 300px"></div>
-<div id="bounceRateDiagramContainer{{ key }}" style="height: 300px"></div>
+    <div style="border: 1px solid rgba(0,0,0,.1);">
+        <h3 style="padding-left: 15px;">{{ diagram.section_title }}</h3>
+        <hr style="margin: 0" />
+    <div id="diagramContainer{{ key }}"></div>
+    </div>
 {% endfor %}
 <script type="text/javascript">
-    var basicRumPlotOverTime = function(key, data, layout_extra_shapes, title) {
+    var basicRumPlotOverTime = function(key, data, layout_extra_shapes, title, layout_overrides) {
         var layout = {
+            height: 330,
             title: title,
-            yaxis: {
-                range: [0, 3500],
-                tickvals: [1000, 2000, 3000],
-                ticktext: ["1 sec", "2 sec", "3 sec"],
-                fixedrange: true
-            },
             xaxis: {
                 showgrid: false,
                 fixedrange: true
@@ -33,9 +31,10 @@
                 bgcolor: '#E2E2E2',
                 bordercolor: '#FFFFFF',
                 borderwidth: 2
-            },
-            height: 400
+            }
         };
+
+        layout = Object.assign(layout, layout_overrides);
 
         if (layout_extra_shapes.length > 0) {
             layout.shapes = layout_extra_shapes;
@@ -45,10 +44,12 @@
     };
 
     {% for key,diagram in diagrams %}
-    basicRumPlotOverTime({{ key }}, {{ diagram.diagrams|raw }}, {{ diagram.layout_extra_shapes|raw }}, '{{ diagram.title }}');
+    basicRumPlotOverTime(
+        {{ key }},
+        {{ diagram.diagrams|raw }},
+        {{ diagram.layout_extra_shapes|raw }},
+        '{{ diagram.title }}',
+        {{ diagram.layout_overrides|raw }}
+    );
     {% endfor %}
-
-    {#{% for key,diagram in bounce_rate_diagrams %}#}
-    {#basicRumPlotBounceRateOverTime({{ key }}, {{ diagram|raw }}, 'Bounce Rate');#}
-    {#{% endfor %}#}
 </script>

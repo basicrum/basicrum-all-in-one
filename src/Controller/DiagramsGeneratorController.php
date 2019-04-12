@@ -125,12 +125,14 @@ class DiagramsGeneratorController extends AbstractController
 //            print_r($res);
 
             $pageDiagrams[] = [
+                'section_title'       => 'test',
                 'diagrams'            => json_encode($res['diagrams']),
                 'layout_extra_shapes' => json_encode($res['shapes']),
-                'title'               => $pageName . " - First Paint (median)"
+                'title'               => $pageName . " - First Paint (median)",
+                'layout_overrides'    => json_encode([])
             ];
 
-            $bounceRateDiagrams[] =json_encode($res['bounce_rate_diagrams']);
+            $bounceRateDiagrams[] = json_encode($res['bounce_rate_diagrams']);
         }
 
         return $this->render('diagrams/over_time.html.twig',
@@ -147,8 +149,8 @@ class DiagramsGeneratorController extends AbstractController
      */
     private function _pageOvertime(string $url)
     {
-        $today = new \DateTime();
-        $past  = new \DateTime('-3 months');
+        $past  = new \DateTime('04/07/2019');
+        $today = new \DateTime('04/12/2019');
 
         $bucketizer = new Buckets(1, 10000);
         $median = new Median();

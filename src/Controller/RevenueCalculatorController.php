@@ -52,10 +52,10 @@ class RevenueCalculatorController extends AbstractController
                     'search_value' => $filterString,
                     'condition'    => 'contains'
                 ],
-                'device_type' => [
-                    'search_value' => '3',
-                    'condition'    => 'is'
-                ]
+//                'device_type' => [
+//                    'search_value' => '3',
+//                    'condition'    => 'is'
+//                ]
             ],
             'business_metrics' => [
                 'bounce_rate' => 1
@@ -219,7 +219,7 @@ class RevenueCalculatorController extends AbstractController
      */
     private function getConversionUrlIds()
     {
-        $conversionUrl = 'checkout/cart';
+        $conversionUrl = 'checkout/onepage';
 
 
         $repository = $this->getDoctrine()

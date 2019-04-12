@@ -57,6 +57,18 @@ class Buckets
 
         // Fill buckets
         foreach ($samples as $sample) {
+            if (isset($sample['firstPaint'])) {
+                if (100 >= $sample['firstPaint']) {
+                    continue;
+                }
+            }
+
+            if (isset($sample['firstByte'])) {
+                if (100 >= $sample['firstByte']) {
+                    continue;
+                }
+            }
+
             $bucket = $this->bucketSize * (int) ($sample[$searchKey] / $this->bucketSize);
 
             if (100 >= $bucket) {

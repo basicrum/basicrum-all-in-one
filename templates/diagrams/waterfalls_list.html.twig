@@ -6,49 +6,102 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-12">
-        <div id="visits-per-device" style="width: 100%;"></div>
-
-        <script type="text/javascript">
-            var stacksDiv = document.getElementById("visits-per-device");
+    <script>
+        var drawDevicePerformance = function (diagramContainerId, deviceType, startDate, endDate) {
+            var diagramContainer = document.getElementById(diagramContainerId);
 
             var layout = {
-                title: 'Visits per device - last 8 weeks',
                 height: 300,
                 margin: {
-                    l: 40
-                }
+                    l: 35,
+                    r: 0,
+                    t: 0
+                },
+                xaxis : {
+                    fixedrange: true,
+                    dtick: '86400000.0'
+                },
+                yaxis : {
+                    fixedrange: true,
+                    range: [0, 3000],
+                    tickvals: [1000, 2000, 3000],
+                    ticktext: ["1 sec", "2 sec", "3 sec"]
+                },
+                legend: {
+                    x: 0,
+                    y: 1.2,
+                    traceorder: 'normal',
+                    font: {
+                        family: 'sans-serif',
+                        size: 12,
+                        color: '#000'
+                    },
+                    orientation: "h"
+                },
+                barmode: 'overlay',
+                bargap: 0
             };
 
             var postData = {
-                past_weeks : 8
+                device_type: deviceType,
+                start_date : startDate,
+                end_date   : endDate
             };
 
-            $.ajax('/dashboard/device/distribution',
+            $.ajax('{{ path('dashboard_device_performance') }}',
                 {
                     method: 'post',
                     data: postData,
                     success : function(response) {
-                        Plotly.newPlot(stacksDiv, response, layout, {displayModeBar: false});
+                        Plotly.newPlot(diagramContainer, response, layout, {displayModeBar: false});
 
                     }
                 }
             );
+        }
+    </script>
+    <div class="col-12">
+        <h4>Device Performance - April 2019</h4>
+        <hr />
+    </div>
+    <div class="col-4">
+        Mobile
+        <hr />
+        <div id="device-performance-mobile" style="width: 100%; height: 300px"></div>
+        <script>
+            drawDevicePerformance("device-performance-mobile", '1', 'implement later', 'implement later');
         </script>
     </div>
     <div class="col-4">
-        <label for="page_view_id">Page View ID:</label>
-        <input id="page_view_id" type="text" />
-        <button type="button" id="load_page_view">Load</button>
+        Desktop
+        <hr />
+        <div id="device-performance-desktop" style="width: 100%; height: 300px"></div>
+        <script>
+            drawDevicePerformance("device-performance-desktop", '2', 'implement later', 'implement later');
+        </script>
+    </div>
+    <div class="col-4">
+        Tablet
+        <hr />
+        <div id="device-performance-tablet" style="width: 100%; height: 300px"></div>
+        <script>
+            drawDevicePerformance("device-performance-tablet", '3', 'implement later', 'implement later');
+        </script>
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
         <br />
-        <p style="font-size: 12px" id="user-agent"></p>
+        <h4>Latest Page Visits</h4>
+        <hr />
         <table class="table table-sm table-scroll">
             <thead>
             <tr>
                 <th class="col-4" scope="col">View ID</th>
                 {#<th class="col-3" scope="col">Date</th>#}
-                <th class="col-4" scope="col">First Byte</th>
-                <th class="col-4" scope="col">First Paint</th>
+                <th class="col-3" scope="col">First Byte</th>
+                <th class="col-3" scope="col">First Paint</th>
+                <th class="col-2" scope="col">Device</th>
             </tr>
             </thead>
             <tbody>
@@ -56,14 +109,13 @@
                 <tr data-beacon-id="{{ page_view.getPageViewId() }}" class="beacon-row" id="row_{{ page_view.getPageViewId() }}">
                     <td class="col-4">{{ page_view.getPageViewId() }}</td>
                     {#<td class="col-3">{{ page_view.getCreatedAt()|date("m/d/Y H:i:s") }}</td>#}
-                    <td class="col-4">{{ page_view.getFirstByte() }} ms</td>
-                    <td class="col-4">{{ page_view.getFirstContentfulPaint() }} ms</td>
+                    <td class="col-3">{{ page_view.getFirstByte() }} ms</td>
+                    <td class="col-3">{{ page_view.getFirstContentfulPaint() }} ms</td>
+                    <td class="col-2">{{ device_mapping[page_view.deviceTypeId()] }}</td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-
-        <div id="resourcesSize" style="margin-top: 20px;"></div>
 
         <script type="text/javascript">
             var loadBeacon = function(pageViewId) {
@@ -74,38 +126,14 @@
 
                 //load from /diagrams/beacon/draw
                 $.ajax('/diagrams/beacon/draw',
-                        {
-                            method: 'post',
-                            data: data,
-                            success : function(response) {
-                                $('#user-agent').html(response.user_agent);
-                                $('#waterfall-view').html(response.waterfall);
-
-                                var data = [{
-                                    values: response.resource_distribution.values,
-                                    labels: response.resource_distribution.labels,
-                                    type: 'pie',
-                                    marker: {
-                                        colors: ["rgb(178, 234, 148)","rgb(130, 181, 252)","rgb(196, 154, 232)","rgb(255, 82, 62)","rgb(254, 197, 132)","rgb(196, 196, 196)"]
-                                    }
-                                }];
-
-                                var layout = {
-                                    height: 200,
-                                    width: 400,
-                                    margin: {
-                                        l: 10,
-                                        r: 10,
-                                        b: 20,
-                                        t: 28,
-                                        pad: 4
-                                    },
-                                    title: 'Resources Size distribution (%)'
-                                };
-
-                                Plotly.newPlot('resourcesSize', data, layout, {displayModeBar: false});
-                            }
+                    {
+                        method: 'post',
+                        data: data,
+                        success : function(response) {
+                            $('#user-agent').html(response.user_agent);
+                            $('#waterfall-view').html(response.waterfall);
                         }
+                    }
                 );
             };
 
@@ -125,9 +153,60 @@
             beaconRows.first().click();
         </script>
     </div>
-    <div class="col-8">
+    <div class="col-6">
+        <br />
+        <h4>Device distribution - April 2019</h4>
+        <hr />
+        <div id="visits-per-device" style="width: 100%;"></div>
+
+        <script type="text/javascript">
+            var stacksDiv = document.getElementById("visits-per-device");
+
+            var layout = {
+                height: 300,
+                margin: {
+                    l: 40,
+                    t: 0
+                },
+                xaxis : {
+                    fixedrange: true,
+                    dtick: '86400000.0'
+                },
+                yaxis : {
+                    fixedrange: true,
+
+                    tickvals: [0, 50, 100],
+                    ticktext: ["0 %", "50 %", "100%"]
+                }
+            };
+
+            $.ajax('/dashboard/device/distribution',
+                {
+                    method: 'post',
+                    success : function(response) {
+                        Plotly.newPlot(stacksDiv, response, layout, {displayModeBar: false});
+
+                    }
+                }
+            );
+        </script>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <h4>Waterfalls</h4>
+        <hr />
+        <label for="page_view_id">Page View ID:</label>
+        <input id="page_view_id" type="text" />
+        <button type="button" id="load_page_view">Load Waterfall</button>
+        <br />
+        <p style="font-size: 12px">
+            <strong>User Agent String:</strong><span id="user-agent"></span>
+        </p>
+        <hr />
         <div id="waterfall-container">
-            <p>Waterfall</p>
+
+            <p>Waterfall diagram</p>
             <div id="legend-holder">
                 <ul class="resource-legend">
                     {#<li class="legend-blocked" title="Time spent in a queue waiting for a network connection.">Blocked</li>#}

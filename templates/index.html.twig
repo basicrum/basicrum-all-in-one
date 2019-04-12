@@ -91,9 +91,11 @@
                         </a>
                         <ul id="diagrams" class="collapse">
                             <li><a class="ajax-link" href="{{ path('diagrams_generator_index') }}">Generator</a></li>
-                            <li><a class="ajax-link" href="{{ path('diagrams_generator_overtimeMedian') }}">Performance Over Time</a></li>
+                            <li><a class="ajax-link" href="{{ path('diagrams_generator_overtimeMedian') }}">All Pages</a></li>
+                            <li><a class="ajax-link" href="{{ path('landing_pages_overtimeMedian') }}?metric=time_to_first_paint">Landing Pages</a></li>
+                            {#<li><a class="ajax-link" href="{{ path('landing_pages_overtimeMedian') }}?metric=time_to_first_byte">LP First Byte</a></li>#}
                             {#<li><a class="ajax-link" href="/diagrams/release/compare">Release Compare</a></li>#}
-                            <li><a class="ajax-link" href="{{ path('diagrams_estimate_revenue_calculator') }}">Revenue Estimator (FP)</a></li>
+                            {#<li><a class="ajax-link" href="{{ path('diagrams_estimate_revenue_calculator') }}">Revenue Estimator (FP)</a></li>#}
                             {#<li><a class="ajax-link" href="/journey/list">Journeys</a></li>#}
                         </ul>
                     </li>
