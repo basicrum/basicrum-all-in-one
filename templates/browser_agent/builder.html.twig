@@ -5,53 +5,9 @@
     </ol>
 </nav>
 <div class="row">
-    <div class="col-1"></div>
-    <div class="col-8">
-        {#<form>#}
-            {#<div class="form-group">#}
-                {#<label for="exampleInputEmail1">Email address</label>#}
-                {#<input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">#}
-                {#<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
-            {#</div>#}
-            {#<div class="form-group">#}
-                {#<label for="exampleInputPassword1">Password</label>#}
-                {#<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">#}
-            {#</div>#}
-            {#<div class="form-check">#}
-                {#<input type="checkbox" class="form-check-input" id="exampleCheck1">#}
-                {#<label class="form-check-label" for="exampleCheck1">Check me out</label>#}
-            {#</div>#}
-            {#<button type="submit" class="btn btn-primary">Submit</button>#}
-        {#</form>#}
-
-
-            <form>
-                <div class="form-group">
-                    <label for="beacon_catcher_address">Beacon catcher address</label>
-                    <input type="email" class="form-control" id="beacon_catcher_address" placeholder="e.g. https://my.beacon-catcher.com">
-                </div>
-                <div class="form-group">
-                    <div>Boomerang Plugins</div>
-
-                    {% for name, label in boomerang_plugins %}
-                    <div class="form-check">
-                        <input name="{{ name }}" class="form-check-input" type="checkbox" id="{{ name }}_check">
-                        <label class="form-check-label" for="{{ name }}_check">
-                        {{ label }}
-                        </label>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div class="form-group row">
-                    <div class="col-sm-12">
-                        <button type="submit" class="btn btn-primary btn-label-right float-right">
-                            Build
-                            <span><i class="fa fa-gavel"></i></span></button>
-                    </div>
-                </div>
-            </form>
-    </div>
     <div class="col-3">
+        <h4>Builds:</h4>
+        <hr />
         <ul>
             <li><a href="#"># build 5 / 19.05.2018</a></li>
             <li><a href="#"># build 4 / 17.05.2018</a></li>
@@ -60,4 +16,49 @@
             <li><a href="#"># build 1 / 9.05.2018</a></li>
         </ul>
     </div>
+    <div class="col-9">
+        <h4>Build Boomerang:</h4>
+        <hr />
+        <form id="boomerang_builder" action="{{ path('browser_agent_generate') }}" type="post">
+            <div class="form-group">
+                <label>1) Specify beacon catcher endpoint/address:</label>
+                <input type="email" class="form-control" id="beacon_catcher_address" placeholder="e.g. https://www.example.com/beacon-catcher.php">
+            </div>
+            <div class="form-group">
+                <label>2) Include Boomerang Plugins:</label>
+                {% for name, label in boomerang_plugins %}
+                <div class="form-check">
+                    <input checked name="{{ name }}" class="form-check-input" type="checkbox" id="{{ name }}_check">
+                    <label class="form-check-label" for="{{ name }}_check">
+                    {{ label }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary btn-label-right float-right">
+                        Build
+                        <span><i class="fa fa-gavel"></i></span></button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+<script>
+    $('#boomerang_builder').submit(function( event ) {
+        event.preventDefault();
+
+        var data = $(this).serialize();
+
+        $.ajax($(this).attr('action'),
+            {
+                method: 'post',
+                data: data,
+                success : function(response) {
+                    alert(response);
+                }
+            }
+        );
+    })
+</script>

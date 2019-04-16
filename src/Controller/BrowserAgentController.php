@@ -15,14 +15,28 @@ class BrowserAgentController extends AbstractController
     public function index()
     {
         $boomerangPlugins = [
-            'navigation_timings'     => 'Navigation Timings',
-            'resource_timings'       => 'Resource Timings',
-            'first_contentful_paint' => 'First Contentful Paint',
-            'js_error_reporting'     => 'JS Error reporting',
-            'continuity'             => 'Continuity',
+            'navigation_timings'  => 'Navigation Timings',
+            'resource_timings'    => 'Resource Timings',
+            'paint_timings'       => 'Paint Timings',
+            'network_information' => 'First Contentful Paint'
         ];
 
-        return $this->render('browser_agent/builder.html.twig', ['boomerang_plugins' => $boomerangPlugins]);
+        return $this->render('browser_agent/builder.html.twig',
+            [
+                'boomerang_plugins' => $boomerangPlugins
+            ]
+        );
     }
 
+    /**
+     * @Route("/browser/agent/generate", name="browser_agent_generate")
+     */
+    public function generate()
+    {
+        $response = new Response(print_r($_POST, true));
+
+        //$response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }
