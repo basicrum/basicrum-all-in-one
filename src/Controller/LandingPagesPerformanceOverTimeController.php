@@ -59,8 +59,6 @@ class LandingPagesPerformanceOverTimeController extends AbstractController
 
                 $pageTitle = '';
 
-                $maxYaxis = 2000;
-
                 if ($metric === 'time_to_first_byte') {
                     $pageTitle = $pageName;
                     $metricName = 'First Byte';
@@ -69,10 +67,12 @@ class LandingPagesPerformanceOverTimeController extends AbstractController
                 if ($metric === 'time_to_first_paint') {
                     $pageTitle = '';
                     $metricName = 'First Paint';
-                    $maxYaxis = 3000;
                 }
 
                 $res = $this->_pageOvertime($url, $metric);
+
+                $maxYaxis = $res['ymax'] + 1000;
+                $maxYaxis = 1000 * ((int) ($maxYaxis / 1000));
 
                 $pageDiagrams[] = [
                     'section_title'       => $pageTitle,
@@ -83,8 +83,8 @@ class LandingPagesPerformanceOverTimeController extends AbstractController
                         [
                             'yaxis' => [
                                 'range' => [0, $maxYaxis],
-                                'tickvals' => [1000, 2000, 3000],
-                                'ticktext' =>  ["1 sec", "2 sec", "3 sec"],
+                                'tickvals' => [1000, 2000, 3000, 4000, 5000],
+                                'ticktext' =>  ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"],
                                 'fixedrange' => true
                             ]
                         ]
@@ -188,6 +188,7 @@ class LandingPagesPerformanceOverTimeController extends AbstractController
             }
         }
 
+        $maxYValues = [];
 
         foreach ($diagramsByType as $device => $data) {
             if ($metric === 'time_to_first_byte') {
@@ -200,10 +201,14 @@ class LandingPagesPerformanceOverTimeController extends AbstractController
 
             $name = ucfirst($device);
 
+            $yValues = array_values($data);
+
+            $maxYValues[] = max($yValues);
+
             $diagrams[] = [
                 'name' => $name,
                 'x'    => array_keys($data),
-                'y'    => array_values($data)
+                'y'    => array_values($yValues)
             ];
         }
 
@@ -286,7 +291,8 @@ class LandingPagesPerformanceOverTimeController extends AbstractController
         return [
             'diagrams' => $diagrams,
             'shapes'   => $shapes,
-            'bounce_rate_diagrams' => $bounceRateDiagrams
+            'bounce_rate_diagrams' => $bounceRateDiagrams,
+            'ymax' => max($maxYValues)
         ];
     }
 

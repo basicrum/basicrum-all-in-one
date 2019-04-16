@@ -122,14 +122,24 @@ class DiagramsGeneratorController extends AbstractController
         foreach ($pages as $pageName => $url) {
             $res = $this->_pageOvertime($url);
 
-//            print_r($res);
+            $maxYaxis = $res['ymax'] + 1000;
+            $maxYaxis = 1000 * ((int) ($maxYaxis / 1000));
 
             $pageDiagrams[] = [
-                'section_title'       => 'test',
+                'section_title'       => 'All Pages',
                 'diagrams'            => json_encode($res['diagrams']),
                 'layout_extra_shapes' => json_encode($res['shapes']),
                 'title'               => $pageName . " - First Paint (median)",
-                'layout_overrides'    => json_encode([])
+                'layout_overrides'    => json_encode(
+                    [
+                        'yaxis' => [
+                            'range' => [0, $maxYaxis],
+                            'tickvals' => [1000, 2000, 3000, 4000, 5000],
+                            'ticktext' =>  ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"],
+                            'fixedrange' => true
+                        ]
+                    ]
+                )
             ];
 
             $bounceRateDiagrams[] = json_encode($res['bounce_rate_diagrams']);
@@ -216,6 +226,8 @@ class DiagramsGeneratorController extends AbstractController
             }
         }
 
+        $maxYValues = [];
+
         foreach ($diagramsByType as $device => $data) {
             $diagrams[] = [
                 'name' => $device,
@@ -223,6 +235,10 @@ class DiagramsGeneratorController extends AbstractController
                 'x'    => array_keys($data),
                 'y'    => array_values($data)
             ];
+
+            $yValues = array_values($data);
+
+            $maxYValues[] = max($yValues);
         }
 
         $repository = $this->getDoctrine()
@@ -277,7 +293,8 @@ class DiagramsGeneratorController extends AbstractController
         return [
             'diagrams' => $diagrams,
             'shapes'   => $shapes,
-            'bounce_rate_diagrams' => $bounceRateDiagrams
+            'bounce_rate_diagrams' => $bounceRateDiagrams,
+            'ymax' => max($maxYValues)
         ];
     }
 
