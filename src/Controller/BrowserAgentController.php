@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use PHPUnit\Runner\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+use App\BasicRum\Boomerang\Builder;
 
 class BrowserAgentController extends AbstractController
 {
@@ -14,16 +17,11 @@ class BrowserAgentController extends AbstractController
      */
     public function index()
     {
-        $boomerangPlugins = [
-            'navigation_timings'  => 'Navigation Timings',
-            'resource_timings'    => 'Resource Timings',
-            'paint_timings'       => 'Paint Timings',
-            'network_information' => 'First Contentful Paint'
-        ];
+        $builder = new Builder();
 
         return $this->render('browser_agent/builder.html.twig',
             [
-                'boomerang_plugins' => $boomerangPlugins
+                'boomerang_plugins' => $builder->getAvailablePlugins()
             ]
         );
     }
@@ -33,9 +31,26 @@ class BrowserAgentController extends AbstractController
      */
     public function generate()
     {
-        $response = new Response(print_r($_POST, true));
+        $builder = new Builder();
 
-        //$response->headers->set('Content-Type', 'application/json');
+        try {
+            $result = $builder->build($_POST);
+            $response = new Response(
+                json_encode([
+                    'error' => ''
+                    ]
+                )
+            );
+        } catch (\Exception $e) {
+            $response = new Response(
+                json_encode([
+                        'error' => $e->getMessage()
+                    ]
+                )
+            );
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
 
         return $response;
     }
