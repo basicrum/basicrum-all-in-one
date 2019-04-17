@@ -5,10 +5,10 @@
     </ol>
 </nav>
 <div class="row">
-    <div class="col-3">
+    <div class="col-3" id="builds-list-container">
         {{ buildsListHtml|raw }}
     </div>
-    <div class="col-6">
+    <div class="col-6" id="builds-builder-container">
         {{ builderHtml|raw }}
     </div>
 </div>
@@ -24,7 +24,14 @@
                 data: data,
                 success : function(response) {
                     if (response.error.length === 0) {
-                        alert(response.build_id);
+                        $.ajax('{{ path('browser_agent_builds_list') }}',
+                            {
+                                method: 'post',
+                                success: function (response) {
+                                    $('#builds-list-container').html(response);
+                                }
+                            }
+                        );
                     }
 
                     if (response.error.length > 0) {
