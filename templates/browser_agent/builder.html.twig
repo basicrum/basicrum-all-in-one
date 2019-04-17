@@ -59,6 +59,10 @@
                 method: 'post',
                 data: data,
                 success : function(response) {
+                    if (response.error.length === 0) {
+                        alert(response.build_id);
+                    }
+
                     if (response.error.length > 0) {
                         alert(response.error);
                     }

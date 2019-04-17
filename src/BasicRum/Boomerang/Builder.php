@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Boomerang;
 
+use App\Entity\BoomerangBuilds;
+
 class Builder
 {
     /**
@@ -43,7 +45,7 @@ class Builder
             'docs_link'   => '',
             'file_name'   => 'google-analytics-customised.js'
         ],
-        'guid' => [
+        'session_cookie' => [
             'label'       => 'GUID (Session Cookie)',
             'description' => '',
             'docs_link'   => '',
@@ -70,16 +72,24 @@ class Builder
 
     /**
      * @param array $buildParams
-     * @return bool
+     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+     * @return int
      * @throws \Exception
      */
-    public function build(array $buildParams)
+    public function build(
+        array $buildParams,
+        \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+    )
     {
         $beaconPushUrl = !empty($buildParams['beacon_catcher_address']) ? $buildParams['beacon_catcher_address'] : '';
         $boomerangPlugins = !empty($buildParams['plugins']) ? array_keys($buildParams['plugins']) : [];
 
         if (empty($beaconPushUrl)) {
             throw new \Exception('Failed - Beacon url not specified!');
+        }
+
+        if (filter_var($beaconPushUrl, FILTER_VALIDATE_URL) === FALSE) {
+            throw new \Exception('Failed - Not valid beacon url!');
         }
 
         if (empty($boomerangPlugins)) {
@@ -110,13 +120,31 @@ EOT;
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
         curl_setopt($ch, CURLOPT_POSTFIELDS, 'output_info=compiled_code&output_format=text&compilation_level=WHITESPACE_ONLY&js_code=' . rawurlencode($script));
-        $build = curl_exec($ch);
+        $buildResult = curl_exec($ch);
 
         curl_close($ch);
 
-        //@todo: save the build
+        if (empty($buildResult)) {
+            throw new \Exception('Build compile process failed!');
+        }
 
-        return $build;
+        $version = $this->getVersion($boomerangPlugins);
+
+        //Add version to boomerang
+        $buildResult = str_replace('%boomerang_version%', $version, $buildResult);
+
+        $build = new BoomerangBuilds();
+
+        $build->setBuildResult($buildResult);
+        $build->setBuildParams(json_encode($buildParams));
+        $build->setBoomerangVersion($version);
+        $build->setCreatedAt(new \DateTime('now'));
+
+        $em = $doctrine->getManager();
+        $em->persist($build);
+        $em->flush();
+
+        return $build->getId();
     }
 
     /**
@@ -133,6 +161,27 @@ EOT;
         }
 
         return file_get_contents($path);
+    }
+
+    /**
+     * @param array $plugins
+     * @return string
+     */
+    private function getVersion(array $plugins)
+    {
+        $version = '';
+
+        foreach ($plugins as $plugin) {
+            $parts = explode('_', $plugin);
+            foreach ($parts as $part) {
+                $version .= $part[0];
+            }
+            $version .= '|';
+        }
+
+        $version .= (string) time();
+
+        return $version;
     }
 
 }

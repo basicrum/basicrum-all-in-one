@@ -34,10 +34,11 @@ class BrowserAgentController extends AbstractController
         $builder = new Builder();
 
         try {
-            $result = $builder->build($_POST);
+            $result = $builder->build($_POST, $this->getDoctrine());
             $response = new Response(
                 json_encode([
-                    'error' => ''
+                        'error'    => '',
+                        'build_id' => $result
                     ]
                 )
             );
