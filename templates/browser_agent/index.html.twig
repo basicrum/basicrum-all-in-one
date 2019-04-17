@@ -8,8 +8,27 @@
     <div class="col-3" id="builds-list-container">
         {{ buildsListHtml|raw }}
     </div>
-    <div class="col-6" id="builds-builder-container">
+    <div style="display: none" class="col-6" id="builds-builder-container">
         {{ builderHtml|raw }}
+    </div>
+    <div class="col-9">
+        <h4>Build: 8 - 04/17/2019</h4>
+        <hr />
+        <div class="card">
+            <div class="card-body">
+                <button class="btn btn-primary" style="width:100%"><i class="fa fa-download"></i> Download</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+
+<pre><code>
+&lt;script&gt;
+{{ iframeIncludeSnippet|raw }}
+&lt;/script&gt;
+</code></pre>
+            </div>
+        </div>
     </div>
 </div>
 <script>
