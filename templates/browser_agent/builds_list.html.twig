@@ -1,0 +1,13 @@
+<h4>Builds:</h4>
+<hr />
+<div class="list-group">
+    {% if builds is empty %}
+    <div class="list-group-item list-group-item-action list-group-item-warning">No builds yet :(</div>
+    {% else %}
+        {% for build in builds %}
+        <a class="list-group-item list-group-item-action list-group-item-light" href="#">
+            {{ build.getId() }} - {{ build.getCreatedAt()|date("m/d/Y") }}
+        </a>
+        {% endfor %}
+    {% endif %}
+</div>

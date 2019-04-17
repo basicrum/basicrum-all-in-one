@@ -71,6 +71,22 @@ class Builder
     }
 
     /**
+     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+     * @return array
+     */
+    public function getAllBuilds(
+        \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+    )
+    {
+        $builds = $doctrine
+            ->getManager()
+            ->getRepository(BoomerangBuilds::class)
+            ->findAll();
+
+        return array_reverse($builds);
+    }
+
+    /**
      * @param array $buildParams
      * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
      * @return int
@@ -88,7 +104,7 @@ class Builder
             throw new \Exception('Failed - Beacon url not specified!');
         }
 
-        if (filter_var($beaconPushUrl, FILTER_VALIDATE_URL) === FALSE) {
+        if (filter_var($beaconPushUrl, FILTER_VALIDATE_URL) === false) {
             throw new \Exception('Failed - Not valid beacon url!');
         }
 

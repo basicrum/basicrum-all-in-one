@@ -19,9 +19,24 @@ class BrowserAgentController extends AbstractController
     {
         $builder = new Builder();
 
-        return $this->render('browser_agent/builder.html.twig',
+        $buildsListHtml = $this->get('twig')->render(
+            'browser_agent/builds_list.html.twig',
+            [
+                'builds' => $builder->getAllBuilds($this->getDoctrine())
+            ]
+        );
+
+        $builderHtml = $this->get('twig')->render(
+            'browser_agent/builder.html.twig',
             [
                 'boomerang_plugins' => $builder->getAvailablePlugins()
+            ]
+        );
+
+        return $this->render('browser_agent/index.html.twig',
+            [
+                'buildsListHtml'  => $buildsListHtml,
+                'builderHtml'     => $builderHtml
             ]
         );
     }
