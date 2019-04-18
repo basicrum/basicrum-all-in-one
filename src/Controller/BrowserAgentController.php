@@ -37,11 +37,16 @@ class BrowserAgentController extends AbstractController
             'browser_agent/include_snippets/iframe.html.twig'
         );
 
+        $mainDocumentIncludeSnippet = $this->get('twig')->render(
+            'browser_agent/include_snippets/main_document.html.twig'
+        );
+
         return $this->render('browser_agent/index.html.twig',
             [
-                'buildsListHtml'       => $buildsListHtml,
-                'builderHtml'          => $builderHtml,
-                'iframeIncludeSnippet' => $iframeIncludeSnippet
+                'buildsListHtml'             => $buildsListHtml,
+                'builderHtml'                => $builderHtml,
+                'iframeIncludeSnippet'       => $iframeIncludeSnippet,
+                'mainDocumentIncludeSnippet' => $mainDocumentIncludeSnippet
             ]
         );
     }

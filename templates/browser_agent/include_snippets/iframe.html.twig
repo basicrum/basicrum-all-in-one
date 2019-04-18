@@ -40,10 +40,10 @@
             this.domain = dom;
         }
         js.id = "boomr-if-as";
-        js.src = 'http://your-cdn.host.com/path/to/boomerang-<version>.js';
+        js.src = 'http://your-cdn.host.com/path/to/boomerang-&lt;version&gt;.js';
         BOOMR_lstart = new Date().getTime();
         this.body.appendChild(js);
     };
-    doc.write('<bo' + 'dy onload="document._l();">');
+    doc.write('&lt;bo' + 'dy onload="document._l();"&gt;');
     doc.close();
 })();

@@ -6,7 +6,7 @@
     {% else %}
         {% for build in builds %}
         <a class="list-group-item list-group-item-action list-group-item-light" href="#">
-            {{ build.getId() }} - {{ build.getCreatedAt()|date("m/d/Y") }}
+            <span class="badge badge-info">{{ build.getId() }}</span> {{ build.getCreatedAt()|date("m/d/Y") }}
         </a>
         {% endfor %}
     {% endif %}

@@ -8,30 +8,58 @@
     <div class="col-3" id="builds-list-container">
         {{ buildsListHtml|raw }}
     </div>
-    <div style="display: none" class="col-6" id="builds-builder-container">
+    <div class="col-6" id="builds-builder-container">
         {{ builderHtml|raw }}
     </div>
-    <div class="col-9">
-        <h4>Build: 8 - 04/17/2019</h4>
+    <div style="display: none" class="col-9" id="builds-build-view-container">
+        <h4>Build: 8 - 04/17/2019<button id="new-build-button" class="btn btn-secondary float-right"><i class="fa fa-fast-backward"></i> New Build</button></h4>
         <hr />
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-body">
-                <button class="btn btn-primary" style="width:100%"><i class="fa fa-download"></i> Download</button>
+                <button class="btn btn-success" style="width:100%"><i class="fa fa-download"></i> Download</button>
             </div>
         </div>
-        <div class="card">
+        <div class="card  mb-3">
+            <div class="card-header">
+                Include Instructions
+            </div>
             <div class="card-body">
-
-<pre><code>
-&lt;script&gt;
+                <p>There are 2 recommended snippets for including Boomerang JS performance tracking snippet. Both of them do not
+                    block other resources but the one including Boomerang JS via <strong>Iframe</strong> also do not block the <strong>onload</strong> browser event.
+                    Link to <a href="https://github.com/akamai/boomerang/blob/master/README.md" target="_blank">official documentation</a>.
+                </p>
+                <h5>1) Via Iframe</h5>
+                <hr />
+<pre><code>&lt;script&gt;
 {{ iframeIncludeSnippet|raw }}
 &lt;/script&gt;
 </code></pre>
+                <hr />
+                <h5>2) Adding to the main document</h5>
+                <hr />
+<pre><code>&lt;script&gt;
+{{ mainDocumentIncludeSnippet|raw }}
+&lt;/script&gt;
+</code></pre>
+                <hr />
             </div>
         </div>
     </div>
 </div>
 <script>
+    var resetBuildForm = function() {
+        $('#boomerang_builder .form-check-input').each(function () {
+            $(this).prop('checked', true);
+        });
+        $('#beacon_catcher_address').val('');
+    };
+
+    $('#new-build-button').click(function (event) {
+        resetBuildForm();
+        $("#builds-builder-container").show();
+        $("#builds-build-view-container").hide();
+    });
+
     $('#boomerang_builder').submit(function( event ) {
         event.preventDefault();
 
@@ -48,6 +76,8 @@
                                 method: 'post',
                                 success: function (response) {
                                     $('#builds-list-container').html(response);
+                                    $("#builds-builder-container").hide();
+                                    $("#builds-build-view-container").show();
                                 }
                             }
                         );
