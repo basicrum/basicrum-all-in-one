@@ -6,7 +6,7 @@
     {% else %}
         {% for build in builds %}
         <a class="build-show-link list-group-item list-group-item-action list-group-item-light" href="{{ path('browser_agent_builds_show', {build_id : build.getId()}) }}">
-            <span class="badge badge-info">{{ build.getId() }}</span> {{ build.getCreatedAt()|date("m/d/Y") }}
+            <span class="badge badge-info">{{ build.getId() }}</span> {{ build.getCreatedAt()|date('F d, Y') }}
         </a>
         {% endfor %}
     {% endif %}

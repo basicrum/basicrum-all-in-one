@@ -111,11 +111,14 @@ class BrowserAgentController extends AbstractController
             $builder->getBuildInfo($buildId, $this->getDoctrine())
         );
 
+        $build = $builder->getBuild($buildId, $this->getDoctrine());
+
         $response = new Response(
             json_encode(
                 [
-                    'info'     => $infoBlockHtml,
-                    'build_id' => $buildId
+                    'info'       => $infoBlockHtml,
+                    'build_id'   => $buildId,
+                    'build_date' => $build->getCreatedAt()->format('F d, Y')
                 ]
             )
         );

@@ -12,7 +12,9 @@
         {{ builderHtml|raw }}
     </div>
     <div style="display: none" class="col-9" id="builds-build-view-container">
-        <h4>Build: 8 - 04/17/2019<button id="new-build-button" class="btn btn-secondary float-right"><i class="fa fa-fast-backward"></i> New Build</button></h4>
+        <h4>
+            Build: <span class="badge badge-info"></span> - <span class="build-date"></span>
+            <button id="new-build-button" class="btn btn-secondary float-right"><i class="fa fa-fast-backward"></i> New Build</button></h4>
         <hr />
         <div class="card mb-3">
             <div class="card-body">
@@ -70,6 +72,9 @@
                         $("#builds-builder-container").hide();
                         $("#builds-build-view-container").show();
                     }
+
+                    $('#builds-build-view-container .badge-info').html(response.build_id);
+                    $('#builds-build-view-container .build-date').html(response.build_date);
 
                     $('#build_download_button')
                         .attr('onclick', "window.location = '{{ path('browser_agent_download')}}?build_id=" + response.build_id + "'");
