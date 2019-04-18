@@ -106,10 +106,23 @@ class BrowserAgentController extends AbstractController
 
         $buildId = $_GET['build_id'];
 
-        return $this->render(
+        $infoBlockHtml = $this->get('twig')->render(
             'browser_agent/build_info.html.twig',
             $builder->getBuildInfo($buildId, $this->getDoctrine())
         );
+
+        $response = new Response(
+            json_encode(
+                [
+                    'info'     => $infoBlockHtml,
+                    'build_id' => $buildId
+                ]
+            )
+        );
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**

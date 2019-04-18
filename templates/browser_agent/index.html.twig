@@ -16,7 +16,7 @@
         <hr />
         <div class="card mb-3">
             <div class="card-body">
-                <button class="btn btn-success" style="width:100%"><i class="fa fa-download"></i> Download</button>
+                <button id="build_download_button" class="btn btn-success" style="width:100%"><i class="fa fa-download"></i> Download</button>
             </div>
         </div>
         <div class="card  mb-3">
@@ -65,13 +65,15 @@
             {
                 method: 'get',
                 success : function(response) {
-                    $('#build-info-content').html(response);
+                    $('#build-info-content').html(response.info);
                     if (!$("#builds-build-view-container").is(":visible")) {
                         $("#builds-builder-container").hide();
                         $("#builds-build-view-container").show();
                     }
-                }
 
+                    $('#build_download_button')
+                        .attr('onclick', "window.location = '{{ path('browser_agent_download')}}?build_id=" + response.build_id + "'");
+                }
             }
         );
     };
