@@ -21,6 +21,12 @@
         </div>
         <div class="card  mb-3">
             <div class="card-header">
+                Build Info
+            </div>
+            <div class="card-body" id="build-info-content"></div>
+        </div>
+        <div class="card  mb-3">
+            <div class="card-header">
                 Include Instructions
             </div>
             <div class="card-body">
@@ -54,11 +60,38 @@
         $('#beacon_catcher_address').val('');
     };
 
+    var showReleaseInfo = function(url) {
+        $.ajax(url,
+            {
+                method: 'get',
+                success : function(response) {
+                    $('#build-info-content').html(response);
+                    if (!$("#builds-build-view-container").is(":visible")) {
+                        $("#builds-builder-container").hide();
+                        $("#builds-build-view-container").show();
+                    }
+                }
+
+            }
+        );
+    };
+
     $('#new-build-button').click(function (event) {
         resetBuildForm();
         $("#builds-builder-container").show();
         $("#builds-build-view-container").hide();
     });
+
+    var bindReleaseInfoLinks = function() {
+        $('.build-show-link').click(function (event) {
+            event.preventDefault();
+            var url = $(this).attr('href');
+
+            showReleaseInfo(url);
+        });
+    };
+
+    bindReleaseInfoLinks();
 
     $('#boomerang_builder').submit(function( event ) {
         event.preventDefault();
@@ -76,11 +109,13 @@
                                 method: 'post',
                                 success: function (response) {
                                     $('#builds-list-container').html(response);
-                                    $("#builds-builder-container").hide();
-                                    $("#builds-build-view-container").show();
+                                    bindReleaseInfoLinks();
                                 }
                             }
                         );
+
+                        var releaseUrl = '{{ path('browser_agent_builds_show')}}?build_id=' + response.build_id;
+                        showReleaseInfo(releaseUrl);
                     }
 
                     if (response.error.length > 0) {
@@ -89,5 +124,5 @@
                 }
             }
         );
-    })
+    });
 </script>

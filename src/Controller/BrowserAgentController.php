@@ -96,4 +96,19 @@ class BrowserAgentController extends AbstractController
         );
     }
 
+    /**
+     * @Route("/browser/agent/builds_show", name="browser_agent_builds_show")
+     */
+    public function showBuild()
+    {
+        $builder = new Builder();
+
+        $buildId = $_GET['build_id'];
+
+        return $this->render(
+            'browser_agent/build_info.html.twig',
+            $builder->getBuildInfo($buildId, $this->getDoctrine())
+        );
+    }
+
 }

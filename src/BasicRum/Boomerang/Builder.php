@@ -200,4 +200,31 @@ EOT;
         return $version;
     }
 
+    public function getBuildInfo(
+        $buildId,
+        \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+
+    ) : array
+    {
+        /** @var \App\Entity\BoomerangBuilds $build */
+        $build = $doctrine
+            ->getManager()
+            ->getRepository(BoomerangBuilds::class)
+            ->find($buildId);
+
+        $buildPlugins = [];
+
+        $buildParams = json_decode($build->getBuildParams(), true);
+
+        foreach ($buildParams['plugins'] as $plugin => $val) {
+            $buildPlugins[$plugin] = $this->plugins[$plugin];
+        }
+
+        return [
+            'boomerang_version'      => $build->getBoomerangVersion(),
+            'boomerang_plugins'      => $buildPlugins,
+            'beacon_catcher_address' => $buildParams['beacon_catcher_address']
+        ];
+    }
+
 }

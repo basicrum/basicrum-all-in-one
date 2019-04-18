@@ -1,0 +1,22 @@
+<form id="boomerang_builder" action="#" type="post">
+    <div class="form-group">
+        <label>Version:</label>
+        <input value="{{ boomerang_version }}" type="text" disabled name="beacon_catcher_version" class="form-control" id="beacon_catcher_version">
+    </div>
+    <div class="form-group">
+        <label>Beacon catcher endpoint/address:</label>
+        <input value="{{ beacon_catcher_address }}" type="text" disabled name="beacon_catcher_address" class="form-control" id="beacon_catcher_address">
+    </div>
+    <div class="form-group">
+        <label>Included Boomerang Plugins:</label>
+        {% for key, plugin in boomerang_plugins %}
+        <div class="form-check">
+            <input disabled checked name="plugins[{{ key }}]" class="form-check-input" type="checkbox" id="{{ key }}_check">
+            <label class="form-check-label" for="{{ key }}_check">
+            {{ plugin.label }}
+            </label>
+            <span class="float-right docs-link"><a target="_blank" href="{{ plugin.docs_link }}">Read Docs</a></span>
+        </div>
+        {% endfor %}
+    </div>
+</form>
