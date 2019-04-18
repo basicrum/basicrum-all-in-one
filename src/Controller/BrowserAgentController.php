@@ -5,6 +5,7 @@ namespace App\Controller;
 use PHPUnit\Runner\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use App\BasicRum\Boomerang\Builder;
@@ -109,6 +110,33 @@ class BrowserAgentController extends AbstractController
             'browser_agent/build_info.html.twig',
             $builder->getBuildInfo($buildId, $this->getDoctrine())
         );
+    }
+
+    /**
+     * @Route("/browser/agent/download", name="browser_agent_download")
+     */
+    public function download()
+    {
+        $buildId = $_GET['build_id'];
+
+        $builder = new Builder();
+
+        $build = $builder->getBuild($buildId, $this->getDoctrine());
+
+        $boomerangVersion = $build->getBoomerangVersion();
+        $fileName = str_replace('|', '-', $boomerangVersion);
+        $fileName .= '-boomerang.js';
+
+        $response = new Response($build->getBuildResult());
+
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fileName
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
     }
 
 }

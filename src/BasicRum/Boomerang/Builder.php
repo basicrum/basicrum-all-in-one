@@ -200,6 +200,11 @@ EOT;
         return $version;
     }
 
+    /**
+     * @param $buildId
+     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+     * @return array
+     */
     public function getBuildInfo(
         $buildId,
         \Doctrine\Common\Persistence\ManagerRegistry $doctrine
@@ -225,6 +230,26 @@ EOT;
             'boomerang_plugins'      => $buildPlugins,
             'beacon_catcher_address' => $buildParams['beacon_catcher_address']
         ];
+    }
+
+    /**
+     * @param $buildId
+     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+     * @return BoomerangBuilds
+     */
+    public function getBuild(
+        $buildId,
+        \Doctrine\Common\Persistence\ManagerRegistry $doctrine
+
+    ) : BoomerangBuilds
+    {
+        /** @var \App\Entity\BoomerangBuilds $build */
+        $build = $doctrine
+            ->getManager()
+            ->getRepository(BoomerangBuilds::class)
+            ->find($buildId);
+
+        return $build;
     }
 
 }
