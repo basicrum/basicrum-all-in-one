@@ -32,7 +32,10 @@ class ReleasesController extends AbstractController
     public function new(Request $request): Response
     {
         $release = new Releases();
-        $form = $this->createForm(ReleasesType::class, $release);
+        $form = $this->createForm(ReleasesType::class, $release, [
+            'action' => $this->generateUrl('releases_new'),
+            'method' => 'POST'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -40,7 +43,7 @@ class ReleasesController extends AbstractController
             $em->persist($release);
             $em->flush();
 
-            return $this->redirectToRoute('releases_index');
+            return $this->redirect('/index#/releases/');
         }
 
         return $this->render('releases/new.html.twig', [
@@ -62,13 +65,16 @@ class ReleasesController extends AbstractController
      */
     public function edit(Request $request, Releases $release): Response
     {
-        $form = $this->createForm(ReleasesType::class, $release);
+        $form = $this->createForm(ReleasesType::class, $release, [
+            'action' => $this->generateUrl('releases_edit', ['id' => $release->getId()]),
+            'method' => 'POST'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('releases_edit', ['id' => $release->getId()]);
+            return $this->redirect('/index#/releases/');
         }
 
         return $this->render('releases/edit.html.twig', [
@@ -88,6 +94,6 @@ class ReleasesController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('releases_index');
+        return $this->redirect('/index#/releases/');
     }
 }

@@ -115,7 +115,7 @@
                     box.find('[id^=map-]').resize();
                 }, timeout + 50);
             });
-        $('#side-menu').on('click','a', function(e){
+        $(document).on('click','a', function(e){
             if ($(this).hasClass('ajax-link')) {
                 e.preventDefault();
                 if ($(this).hasClass('add-full')) {
@@ -129,6 +129,22 @@
                 LoadAjaxContent(url);
             }
         });
+
+        $(document).on('click','button', function(e){
+            if ($(this).hasClass('ajax-btn')) {
+                e.preventDefault();
+                if ($(this).hasClass('add-full')) {
+                    $('#content').addClass('full-content');
+                }
+                else {
+                    $('#content').removeClass('full-content');
+                }
+                var url = $(this).data('link');
+                window.location.hash = url;
+                LoadAjaxContent(url);
+            }
+        });
+
     });
 }(jQuery));
 

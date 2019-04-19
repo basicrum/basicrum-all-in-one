@@ -1,37 +1,43 @@
-{% extends 'base.html.twig' %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Releases</li>
+    </ol>
+</nav>
 
-{% block title %}Releases index{% endblock %}
-
-{% block body %}
-    <h1>Releases index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for release in releases %}
-            <tr>
-                <td>{{ release.id }}</td>
-                <td>{{ release.date ? release.date|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ release.description }}</td>
-                <td>
-                    <a href="{{ path('releases_show', {'id': release.id}) }}">show</a>
-                    <a href="{{ path('releases_edit', {'id': release.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('releases_new') }}">Create new</a>
-{% endblock %}
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Date</th>
+            <th scope="col">Description</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for release in releases %}
+        <tr>
+            <td scope="row"><span class="badge badge-dark badge-pill">{{ release.id }}</span></td>
+            <td>{{ release.date ? release.date|date('F d, Y') : '' }}</td>
+            <td>{{ release.description }}</td>
+            <td>
+                <button
+                        data-link="{{ path('releases_show', {'id': release.id}) }}"
+                        class="ajax-btn btn btn-primary">
+                        <i class="fa fa-eye"> Show</i>
+                </button>
+                <button
+                        data-link="{{ path('releases_edit', {'id': release.id}) }}"
+                        class="ajax-btn btn btn-primary">
+                            <i class="fa fa-edit"> Edit</i>
+                </button>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="4">no records found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<hr />
+<button data-link="{{ path('releases_new') }}" class="ajax-btn btn btn-primary float-right">Add Release</button>
