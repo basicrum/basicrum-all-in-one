@@ -32,7 +32,10 @@ class PageTypeConfigController extends AbstractController
     public function new(Request $request): Response
     {
         $pageTypeConfig = new PageTypeConfig();
-        $form = $this->createForm(PageTypeConfigType::class, $pageTypeConfig);
+        $form = $this->createForm(PageTypeConfigType::class, $pageTypeConfig, [
+            'action' => $this->generateUrl('page_type_config_new'),
+            'method' => 'POST'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -40,7 +43,7 @@ class PageTypeConfigController extends AbstractController
             $em->persist($pageTypeConfig);
             $em->flush();
 
-            return $this->redirectToRoute('page_type_config_index');
+            return $this->redirect('/index#/page/type/config/');
         }
 
         return $this->render('page_type_config/new.html.twig', [
@@ -62,13 +65,16 @@ class PageTypeConfigController extends AbstractController
      */
     public function edit(Request $request, PageTypeConfig $pageTypeConfig): Response
     {
-        $form = $this->createForm(PageTypeConfigType::class, $pageTypeConfig);
+        $form = $this->createForm(PageTypeConfigType::class, $pageTypeConfig, [
+            'action' => $this->generateUrl('page_type_config_edit', ['id' => $pageTypeConfig->getId()]),
+            'method' => 'POST'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('page_type_config_edit', ['id' => $pageTypeConfig->getId()]);
+            return $this->redirect('/index#/page/type/config/');
         }
 
         return $this->render('page_type_config/edit.html.twig', [
@@ -88,6 +94,6 @@ class PageTypeConfigController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('page_type_config_index');
+        return $this->redirect('/index#/page/type/config/');
     }
 }

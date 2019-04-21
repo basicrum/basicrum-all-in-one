@@ -1,39 +1,44 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}PageTypeConfig index{% endblock %}
-
-{% block body %}
-    <h1>PageTypeConfig index</h1>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>PageTypeName</th>
-                <th>ConditionValue</th>
-                <th>ConditionTerm</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for page_type_config in page_type_configs %}
-            <tr>
-                <td>{{ page_type_config.id }}</td>
-                <td>{{ page_type_config.pageTypeName }}</td>
-                <td>{{ page_type_config.conditionValue }}</td>
-                <td>{{ page_type_config.conditionTerm }}</td>
-                <td>
-                    <a href="{{ path('page_type_config_show', {'id': page_type_config.id}) }}">show</a>
-                    <a href="{{ path('page_type_config_edit', {'id': page_type_config.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('page_type_config_new') }}">Create new</a>
-{% endblock %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">Page Types</li>
+    </ol>
+</nav>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Condition</th>
+            <th>Term</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for page_type_config in page_type_configs %}
+        <tr>
+            <td scope="row"><span class="badge badge-dark badge-pill">{{ page_type_config.id }}</span></td>
+            <td>{{ page_type_config.pageTypeName }}</td>
+            <td>{{ page_type_config.conditionValue }}</td>
+            <td>{{ page_type_config.conditionTerm }}</td>
+            <td>
+                <button
+                        data-link="{{ path('page_type_config_show', {'id': page_type_config.id}) }}"
+                        class="ajax-btn btn btn-primary">
+                    <i class="fa fa-eye"> Show</i>
+                </button>
+                <button
+                        data-link="{{ path('page_type_config_edit', {'id': page_type_config.id}) }}"
+                        class="ajax-btn btn btn-primary">
+                    <i class="fa fa-edit"> Edit</i>
+                </button>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">no records found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<hr />
+<button data-link="{{ path('page_type_config_new') }}" class="ajax-btn btn btn-primary float-right">Add Page Type</button>

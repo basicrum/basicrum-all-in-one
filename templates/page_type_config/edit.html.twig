@@ -1,13 +1,14 @@
-{% extends 'base.html.twig' %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="ajax-link" href="{{ path('page_type_config_index') }}">Page Types</a></li>
+        <li class="breadcrumb-item">Edit Page Type <span class="badge badge-dark badge-pill">{{ page_type_config.id }}</span></li>
+    </ol>
+</nav>
 
-{% block title %}Edit PageTypeConfig{% endblock %}
+{{ include('page_type_config/_form.html.twig', {'button_label': 'Update'}) }}
 
-{% block body %}
-    <h1>Edit PageTypeConfig</h1>
+<button data-link="{{ path('page_type_config_index') }}" class="ajax-btn btn btn-secondary float-left">
+    <i class="fa fa-backward"></i> Back
+</button>
 
-    {{ include('page_type_config/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('page_type_config_index') }}">back to list</a>
-
-    {{ include('page_type_config/_delete_form.html.twig') }}
-{% endblock %}
+{{ include('page_type_config/_delete_form.html.twig') }}

@@ -1,11 +1,12 @@
-{% extends 'base.html.twig' %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a class="ajax-link" href="{{ path('page_type_config_index') }}">Page Types</a></li>
+        <li class="breadcrumb-item">Create Page Type</li>
+    </ol>
+</nav>
 
-{% block title %}New PageTypeConfig{% endblock %}
+{{ include('page_type_config/_form.html.twig') }}
 
-{% block body %}
-    <h1>Create new PageTypeConfig</h1>
-
-    {{ include('page_type_config/_form.html.twig') }}
-
-    <a href="{{ path('page_type_config_index') }}">back to list</a>
-{% endblock %}
+<button data-link="{{ path('page_type_config_index') }}" class="ajax-btn btn btn-secondary">
+    <i class="fa fa-backward"></i> Back
+</button>
