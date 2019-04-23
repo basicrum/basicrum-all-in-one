@@ -3,6 +3,115 @@
         <li class="breadcrumb-item">Dashboard</li>
     </ol>
 </nav>
+
+<div class="row">
+    <script>
+        var bounceRate = function (diagramContainerId, deviceType, startDate, endDate) {
+            var diagramContainer = document.getElementById(diagramContainerId);
+
+            var layout = {
+                margin: {
+                    l: 40,
+                    r: 40,
+                    t: 0,
+                    b: 40
+                },
+                legend: {
+                    x: 0,
+                    y: 1.2,
+                    traceorder: 'normal',
+                    font: {
+                        family: 'sans-serif',
+                        size: 12,
+                        color: '#000'
+                    },
+                    orientation: "h"
+                },
+                yaxis2: {
+                    // title: 'yaxis2 title',
+                    // titlefont: {color: 'rgb(148, 103, 189)'},
+                    // tickfont: {color: 'rgb(148, 103, 189)'},
+                    overlaying: 'y',
+                    side: 'right',
+                    showgrid: false,
+                    tickvals: [25, 50, 75, 100],
+                    ticktext: ['25 %', '50 %', '75 %', '100 %']
+                }
+            };
+
+            var postData = {};
+
+            $.ajax('{{ path('dashboard_kpi_bounce_rate') }}',
+                {
+                    method: 'post',
+                    data: postData,
+                    success : function(response) {
+                        layout.xaxis = response.xaxis
+
+                        Plotly.newPlot(diagramContainer, response.diagrams, layout, {displayModeBar: false});
+
+                    }
+                }
+            );
+        }
+    </script>
+    <div class="col-6">
+        Bounce Rate vs. Start Render
+        <hr />
+        <div id="bounce_rate_vs_start_render" style="width: 100%; height: 300px"></div>
+        <script>
+            bounceRate("bounce_rate_vs_start_render", '1');
+        </script>
+    </div>
+    <div class="col-6">
+        Device distribution - April 2019
+        <hr />
+        <div id="visits-per-device" style="width: 100%;"></div>
+
+        <script type="text/javascript">
+            var stacksDiv = document.getElementById("visits-per-device");
+
+            var layout = {
+                height: 330,
+                margin: {
+                    l: 40,
+                    t: 0
+                },
+                legend: {
+                    x: 0,
+                    y: 1.2,
+                    traceorder: 'normal',
+                    font: {
+                        family: 'sans-serif',
+                        size: 12,
+                        color: '#000'
+                    },
+                    orientation: "h"
+                },
+                xaxis : {
+                    fixedrange: true,
+                    dtick: '86400000.0'
+                },
+                yaxis : {
+                    fixedrange: true,
+
+                    tickvals: [0, 50, 100],
+                    ticktext: ["0 %", "50 %", "100%"]
+                }
+            };
+
+            $.ajax('/dashboard/device/distribution',
+                {
+                    method: 'post',
+                    success : function(response) {
+                        Plotly.newPlot(stacksDiv, response, layout, {displayModeBar: false});
+
+                    }
+                }
+            );
+        </script>
+    </div>
+</div>
 <div class="row">
     <script>
         var drawDevicePerformance = function (diagramContainerId, deviceType, startDate, endDate) {
@@ -153,41 +262,6 @@
     </div>
     <div class="col-6">
         <br />
-        <h4>Device distribution - April 2019</h4>
-        <hr />
-        <div id="visits-per-device" style="width: 100%;"></div>
-
-        <script type="text/javascript">
-            var stacksDiv = document.getElementById("visits-per-device");
-
-            var layout = {
-                height: 300,
-                margin: {
-                    l: 40,
-                    t: 0
-                },
-                xaxis : {
-                    fixedrange: true,
-                    dtick: '86400000.0'
-                },
-                yaxis : {
-                    fixedrange: true,
-
-                    tickvals: [0, 50, 100],
-                    ticktext: ["0 %", "50 %", "100%"]
-                }
-            };
-
-            $.ajax('/dashboard/device/distribution',
-                {
-                    method: 'post',
-                    success : function(response) {
-                        Plotly.newPlot(stacksDiv, response, layout, {displayModeBar: false});
-
-                    }
-                }
-            );
-        </script>
     </div>
 </div>
 <div class="row">

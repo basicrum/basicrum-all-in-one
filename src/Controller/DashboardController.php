@@ -240,8 +240,6 @@ class DashboardController extends AbstractController
             }
         }
 
-        //print_r($bouncedPageViews);
-
         $repository = $this->getDoctrine()
             ->getRepository(NavigationTimings::class);
 
@@ -367,6 +365,136 @@ class DashboardController extends AbstractController
         ];
 
         $response = new Response(json_encode($deviceDiagrams));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/dashboard/kpi_bounce_rate", name="dashboard_kpi_bounce_rate")
+     */
+    public function kpiBounceRate()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+
+        $viewsCount     = 0;
+        $bouncesCount   = 0;
+
+        $requirements = [
+            'periods' => [
+                [
+                    'from_date'   => $this->pastDate,
+                    'to_date'     => $this->todayDate
+                ]
+            ],
+            'business_metrics' => [
+                'bounce_rate' => 1
+            ],
+            'technical_metrics' => [
+                'time_to_first_paint' => 1
+            ]
+        ];
+
+        $collaboratorsAggregator = new CollaboratorsAggregator();
+
+        $collaboratorsAggregator->fillRequirements($requirements);
+
+        $diagramOrchestrator = new DiagramOrchestrator(
+            $collaboratorsAggregator->getCollaborators(),
+            $this->getDoctrine()
+        );
+
+        $res = $diagramOrchestrator->process();
+
+        $bucketizer = new Buckets(200, 5000);
+        $buckets = $bucketizer->bucketizePeriod($res[0], 'firstPaint');
+
+        $bounces  = [];
+
+        foreach ($buckets as $bucketSize => $bucket) {
+            $bounces[$bucketSize] = 0;
+        }
+
+        $bounceRatePercents = [];
+
+        foreach ($buckets as $bucketSize => $bucket) {
+            foreach ($bucket as $key => $sample) {
+                $viewsCount++;
+
+                if ($sample['pageViewsCount'] == 1) {
+                    $bounces[$bucketSize]++;
+                    $bouncesCount++;
+                    continue;
+                }
+            }
+        }
+
+        $firstPaintArr = [];
+
+        foreach ($buckets as $bucketSize => $samples) {
+            $firstPaintArr[$bucketSize] = count($samples);
+        }
+
+        foreach ($buckets as $bucketSize => $bucket) {
+            if (count($bucket) === 0) {
+                $bounceRatePercents[$bucketSize] = 0;
+                continue;
+            }
+
+            $bounceRatePercents[$bucketSize] = (float) number_format(($bounces[$bucketSize] / count($bucket)) * 100, 2);
+        }
+
+        $xAxisLabels = [
+            0 => '0 sec',
+            1000 => '1 sec',
+            2000 => '2 sec',
+            3000 => '3 sec',
+            4000 => '4 sec',
+            5000 => '5 sec',
+            6000 => '6 sec',
+            7000 => '7 sec',
+            8000 => '8 sec',
+        ];
+
+        $xAxis = [
+            'tickvals' => array_keys($xAxisLabels),
+            'ticktext' => array_values($xAxisLabels)
+        ];
+
+        $formattedBounceRatePercents = [];
+
+        foreach ($bounceRatePercents as $key => $val ) {
+            $formattedBounceRatePercents[$key] = (int) number_format($val,0);
+        }
+
+        $diagrams = [
+            [
+                'name'       => 'First Paint',
+                'x'          => array_keys($firstPaintArr),
+                'y'          => array_values($firstPaintArr),
+                'type'       => 'line',
+                'marker'       => [
+                    'color'      => '#c141cd'
+                ]
+            ],
+            [
+                'name'       => 'Bounce Rate',
+                'x'          => array_keys($formattedBounceRatePercents),
+                'y'          => array_values($formattedBounceRatePercents),
+                'type'       => 'line',
+                'yaxis'      => 'y2'
+            ]
+        ];
+
+        $response = new Response(json_encode([
+                    'diagrams' => $diagrams,
+                    'xaxis'    => $xAxis
+                ]
+            )
+        );
 
         $response->headers->set('Content-Type', 'application/json');
 
