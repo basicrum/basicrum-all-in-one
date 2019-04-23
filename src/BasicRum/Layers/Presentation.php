@@ -7,6 +7,7 @@ namespace App\BasicRum\Layers;
 use App\BasicRum\CollaboratorsAggregator;
 
 use App\Entity\OperatingSystems;
+use App\Entity\PageTypeConfig;
 
 class Presentation
 {
@@ -22,7 +23,7 @@ class Presentation
     /**
      * @return array
      */
-    public function getTechnicalMetricsSelectValues()
+    public function getTechnicalMetricsSelectValues() : array
     {
         $metrics = $this->collaboratorsAggregator
             ->getTechnicalMetrics()
@@ -45,11 +46,12 @@ class Presentation
     }
 
     /**
+     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
      * @return array
      */
-    public function getOperatingSystemSelectValues(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
+    public function getOperatingSystemSelectValues(\Doctrine\Common\Persistence\ManagerRegistry $doctrine) : array
     {
-        $repository = $registry
+        $repository = $doctrine
             ->getRepository(OperatingSystems::class);
 
         $query = $repository->createQueryBuilder('r')
@@ -70,14 +72,22 @@ class Presentation
         return $pairs;
     }
 
+
     /**
-     * @param array $samples
-     * @param array $requirements
+     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
      * @return array
      */
-    public function generateDiagramData(array $samples, array $requirements)
+    public function getPageTypes(\Doctrine\Common\Persistence\ManagerRegistry $doctrine) : array
     {
-        return [];
+        $repository = $doctrine
+            ->getRepository(PageTypeConfig::class);
+
+        $query = $repository->createQueryBuilder('ptc')
+            ->getQuery();
+
+        $query->getResult();
+
+        return $query->getResult();
     }
 
 }

@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use App\Entity\Releases;
+use App\Entity\PageTypeConfig;
 
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
@@ -31,7 +32,8 @@ class DiagramsGeneratorController extends AbstractController
         return $this->render('diagrams_generator/form.html.twig',
             [
                 'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
-                'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine())
+                'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
+                'page_types'         => $presentation->getPageTypes($this->getDoctrine())
             ]
         );
     }
@@ -61,6 +63,27 @@ class DiagramsGeneratorController extends AbstractController
             }
 
             $requirements[$keyO] = $data;
+        }
+
+
+        /**
+         * If "page_type" presented then unset "url" and "query_param".
+         */
+        if ( !empty($requirements['filters']['page_type']) ) {
+            $pageTypeId = $requirements['filters']['page_type'];
+
+            $repository = $this->getDoctrine()->getRepository(PageTypeConfig::class);
+
+            /** @var PageTypeConfig $pageType */
+            $pageType = $repository->find($pageTypeId);
+
+            $requirements['filters']['url'] = [
+                'condition'    => $pageType->getConditionValue(),
+                'search_value' => $pageType->getConditionTerm()
+            ];
+
+            unset($requirements['filters']['page_type']);
+            unset($requirements['filters']['query_param']);
         }
 
         $collaboratorsAggregator->fillRequirements($requirements);

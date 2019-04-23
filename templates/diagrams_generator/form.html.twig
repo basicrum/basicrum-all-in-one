@@ -80,47 +80,60 @@
                                     </select>
                                 </div>
                             </div>
-                            <label for="filters_url_search_value">Url:</label>
-                            <div class="row">
-                                <div class="col-4">
-                                    <select name="filters[url][condition]" class="form-control form-control-sm" id="filters_url_condition">
-                                        <option value="is">is</option>
-                                        <option selected value="contains">contains</option>
-                                        <option value="starts_with">starts with</option>
-                                        <option value="ends_on">ends on</option>
-                                    </select>
+                            <fieldset class="border p-2 mt-1">
+                                <legend class="w-auto mb-0">Url Filters:</legend>
+                                <label for="filters_url_search_value">Url:</label>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <select name="filters[url][condition]" class="form-control form-control-sm" id="filters_url_condition">
+                                            <option value="is">is</option>
+                                            <option selected value="contains">contains</option>
+                                            <option value="starts_with">starts with</option>
+                                            <option value="ends_on">ends on</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-8">
+                                        <input name="filters[url][search_value]" type="text" class="form-control form-control-sm" id="filters_url_search_value" />
+                                    </div>
                                 </div>
-                                <div class="col-8">
-                                    <input name="filters[url][search_value]" type="text" class="form-control form-control-sm" id="filters_url_search_value" />
+                                <label for="filters_query_param_value">Url Parameters:</label>
+                                <div class="row">
+                                    <div class="col-4">
+                                        <select name="filters[query_param][condition]" class="form-control form-control-sm" id="filters_query_param_condition">
+                                            <option value="is">is</option>
+                                            <option selected value="contains">contains</option>
+                                            <option value="starts_with">starts with</option>
+                                            <option value="ends_on">ends on</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-8">
+                                        <input name="filters[query_param][search_value]" type="text" class="form-control form-control-sm" id="filters_query_param_value" />
+                                    </div>
                                 </div>
-                            </div>
-                            <label for="filters_query_param_value">Url Parameters:</label>
-                            <div class="row">
-                                <div class="col-4">
-                                    <select name="filters[query_param][condition]" class="form-control form-control-sm" id="filters_query_param_condition">
-                                        <option value="is">is</option>
-                                        <option selected value="contains">contains</option>
-                                        <option value="starts_with">starts with</option>
-                                        <option value="ends_on">ends on</option>
-                                    </select>
+                                {% if page_types is not empty %}
+                                <label for="filters_page_type">Page Type:</label>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <select name="filters[page_type]" class="form-control form-control-sm" id="filters_page_type">
+                                            <option value="" selected="selected">---</option>
+                                            {% for page in page_types %}
+                                                <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-8">
-                                    <input name="filters[query_param][search_value]" type="text" class="form-control form-control-sm" id="filters_query_param_value" />
-                                </div>
-                            </div>
-                            {#<label for="filters_page_type">Page Type:</label>#}
-                            {#<div class="row">#}
-                                {#<div class="col-12">#}
-                                    {#<select name="filters[page_type][search_value]" class="form-control form-control-sm" id="filters_page_type">#}
-                                        {#<option value="">All</option>#}
-                                        {#<option value="" selected="selected">---</option>#}
-                                        {#{% for page in page_types %}#}
-                                            {#<option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>#}
-                                        {#{% endfor %}#}
-                                    {#</select>#}
-                                    {#<input type="hidden" name="filters[page_type][condition]" value="contains" />#}
-                                {#</div>#}
-                            {#</div>#}
+                                <script>
+                                    $('#filters_page_type').change(function () {
+                                        var pageTypeConditionalInputs = $('#filters_url_condition, #filters_url_search_value, #filters_query_param_condition, #filters_query_param_value');
+                                        if( $(this).val().length > 0 ) {
+                                            $(pageTypeConditionalInputs).prop('disabled', true);
+                                        } else {
+                                            $(pageTypeConditionalInputs).prop('disabled', false);
+                                        }
+                                    })
+                                </script>
+                                {% endif %}
+                            </fieldset>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-3">
