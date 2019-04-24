@@ -11,7 +11,7 @@ class DiagramBuilder
 {
     private $oneLevelDiagramsLayout = [
         'barmode' => 'overlay',
-        'title'   => 'Time To First Paint vs Bounce Rate',
+        //'title'   => 'Time To First Paint vs Bounce Rate',
         'xaxis'=> [
             'rangemode' => 'tozero',
             'title' => '',
@@ -26,7 +26,7 @@ class DiagramBuilder
             'fixedrange' => true
         ],
         'yaxis' => [
-            'title' => 'Website Visits',
+            'title' => 'Visits',
             'fixedrange' => true
         ],
         'legend' => [
@@ -39,12 +39,18 @@ class DiagramBuilder
             'bgcolor' => '#E2E2E2',
             'bordercolor' => '#FFFFFF',
             'borderwidth' => 2
+        ],
+        'height' => 430,
+        'margin' => [
+            'l' => 55,
+            'r' => 30,
+            't' => 40,
+            'b' => 40
         ]
     ];
 
     private $twoLevelDiagramsLayout = [
         'barmode' => 'overlay',
-        'title'   => 'Time To First Paint vs Bounce Rate',
         'xaxis'=> [
             'rangemode' => 'tozero',
             'title' => '',
@@ -59,7 +65,7 @@ class DiagramBuilder
             'fixedrange' => true
         ],
         'yaxis' => [
-            'title' => 'Website Visits',
+            'title' => 'Visits',
             'domain' => [0, 0.2],
             'fixedrange' => true
         ],
@@ -139,7 +145,7 @@ class DiagramBuilder
             $probesCount += $sampleDiagramValues[$bucketSize];
         }
 
-        $this->twoLevelDiagramsLayout['xaxis']['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' seconds';
+        //$this->twoLevelDiagramsLayout['xaxis']['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' seconds';
 
         $samplesDiagram = [
             'x' => array_keys($sampleDiagramValues),
@@ -158,11 +164,11 @@ class DiagramBuilder
 
                 $bounceRate = 'Bounce rate: ' . $this->getBounceRate($buckets, $probesCount);
 
-                $this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
+                //$this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
             }
         }
 
-        $this->oneLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' distribution';
+        //$this->oneLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' distribution';
         $layout = $this->attachSecondsToTimeLine($this->oneLevelDiagramsLayout, $buckets);
 
         if (count($diagrams) > 1) {
@@ -179,10 +185,10 @@ class DiagramBuilder
                     'y0' => 0,
                     'x1' => $medianVal,
                     'yref'=> 'paper',
-                    'y1' => 0.9,
+                    'y1' => 1,
                     'line' => [
                         'color' => 'red',
-                        'width' => 1.5,
+                        'width' => 2.5,
                         'dash'  => 'dot'
                     ]
                 ]
@@ -190,7 +196,7 @@ class DiagramBuilder
         }
 
         return [
-            'text'                => 'Probes Count: ' . $probesCount . '<br />' . $bounceRate,
+            'text'                => $probesCount,
             'diagrams'            => $diagrams,
             'layout_extra_shapes' => [],
             'layout'              => $layout

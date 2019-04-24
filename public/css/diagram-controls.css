@@ -1,4 +1,16 @@
-.diagram-filters .form-control {
+#diagram_generator {
+    position: absolute;
+    z-index: 9999;
+}
+
+.diagram-controls {
+    height: 72px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,.1);
+    background: #fff;
+}
+
+.diagram-controls .form-control {
     height: 26px;
     padding: 2px 12px;
     -webkit-border-radius: 3px;
@@ -20,4 +32,8 @@
 
 .date-picker-wrapper input[type=text] {
     height: 31px;
+}
+
+.controls-aware-diagram-container {
+    padding-top: 80px;
 }

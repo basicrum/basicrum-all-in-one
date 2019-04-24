@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page"><h3>Generate Diagram</h3></li>
+        <li class="breadcrumb-item active">Generator</li>
     </ol>
 </nav>
 <div>
     <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
-        <div class="diagram-filters">
+        <div class="bg-light diagram-controls pl-2 pr-2">
             <fieldset>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-2">
                         <div class="form-group">
                             <label for="technical_metrics">Perf. Metric:</label>
                             <select name="technical_metrics" class="form-control form-control-sm" id="technical_metrics">
@@ -196,7 +196,7 @@
                             {#</div>#}
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-3">
+                    <div class="col-xs-12 col-sm-2">
                         <div class="form-group">
                             <label>Visualization:</label>
                             {#<br />#}
@@ -214,18 +214,75 @@
                             {#<br />#}
                         </div>
                     </div>
+                    <div class="col-xs-12 col-sm-2">
+                        <button type="submit" class="btn btn-primary btn-label-right mt-4 w-100">
+                            Generate <span><i class="fa fa-play-circle-o"></i></span>
+                        </button>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-label-right float-right">
-                    Run <span><i class="fa fa-play-circle-o"></i></span>
-                </button>
             </fieldset>
         </div>
+        <button type="button" class="p-0 w-25 mx-auto d-block btn btn-info more-diagram-controls"><i class="fa fa-angle-down"></i><i class="fa fa-angle-up" style="display: none"></i> <span class="more-less-text">More controls</span> <i class="fa fa-angle-down"></i><i class="fa fa-angle-up" style="display: none"></i></button>
+        <script>
+            $('.more-diagram-controls').click(function () {
+                if ( 'hidden' === $('.diagram-controls').css('overflow') ) {
+                    $('.diagram-controls').css('overflow', 'visible');
+                    $('.diagram-controls').css('height', 'auto');
+                    $('.diagram-controls').css('opacity', '0.9');
+                    $(this).children('.fa-angle-down').hide();
+                    $(this).children('.fa-angle-up').show();
+                    $(this).children('.more-less-text').text('Less controls');
+                } else {
+                    $('.diagram-controls').css('overflow', 'hidden');
+                    $('.diagram-controls').css('height', '72px');
+                    $('.diagram-controls').css('opacity', '1');
+                    $(this).children('.fa-angle-down').show();
+                    $(this).children('.fa-angle-up').hide();
+                    $(this).children('.more-less-text').text('More controls');
+                }
+            })
+        </script>
     </form>
     <script type="text/javascript">
         $(".calendar-date-picker").datepicker();
     </script>
-    <p id="callbackText"></p>
-    <div id="diagramContainer"></div>
+    <div class="controls-aware-diagram-container">
+        <div id="diagramContainer"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-3">
+        <div class="card bg-light text-dark">
+            <div class="card-body">
+                Page views <br />
+                <strong id="callbackText">17387</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card bg-light text-dark under-construction">
+            <div class="card-body">
+                Sessions <br />
+                <strong>2383</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card bg-light text-dark under-construction">
+            <div class="card-body">
+                Bounce rate <br />
+                <strong>73, 91 %</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-3">
+        <div class="card bg-light text-dark under-construction">
+            <div class="card-body">
+                Percentage of traffic <br />
+                <strong>41, 13 %</strong>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
     var basicRumPlot = function(diagrams, layout_extra_shapes, layout) {
@@ -240,10 +297,9 @@
 <script type="text/javascript">
     var diagramGeneratorForm = $('#diagram_generator');
 
-    diagramGeneratorForm.on('submit', function(e) {
-        e.preventDefault();
+    var generateDiagram = function (form) {
         var dataString = $(diagramGeneratorForm).serialize();
-        var formAction = $(this).attr('action');
+        var formAction = $(form).attr('action');
         $.ajax({
             type: "POST",
             url: formAction,
@@ -257,5 +313,12 @@
                 alert('error');
             }
         });
+    };
+
+    diagramGeneratorForm.on('submit', function(e) {
+        e.preventDefault();
+        generateDiagram(this);
     });
+
+    generateDiagram(diagramGeneratorForm);
 </script>
