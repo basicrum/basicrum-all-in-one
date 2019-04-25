@@ -148,4 +148,20 @@
     });
 }(jQuery));
 
+function moreControls() {
+    $('.diagram-controls').css('overflow', 'visible');
+    $('.diagram-controls').css('height', 'auto');
+    $('.diagram-controls').css('opacity', '0.9');
+    $(this).children('.fa-angle-down').hide();
+    $(this).children('.fa-angle-up').show();
+    $(this).children('.more-less-text').text('Less controls');
+}
 
+function lessControls() {
+    $('.diagram-controls').css('overflow', 'hidden');
+    $('.diagram-controls').css('height', '72px');
+    $('.diagram-controls').css('opacity', '1');
+    $(this).children('.fa-angle-down').show();
+    $(this).children('.fa-angle-up').hide();
+    $(this).children('.more-less-text').text('More controls');
+}

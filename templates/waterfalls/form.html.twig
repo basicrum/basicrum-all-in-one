@@ -1,44 +1,44 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item active">Generator</li>
+        <li class="breadcrumb-item active">Waterfalls</li>
     </ol>
 </nav>
 <div>
-    <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
+    <form id="waterfall-table-form" class="form-horizontal" role="form" action="{{ path('waterfalls_list') }}">
         <div class="bg-light diagram-controls pl-2 pr-2">
             <fieldset>
                 <div class="row">
-                    <div class="col-xs-12 col-sm-2">
-                        <div class="form-group">
-                            <label for="technical_metrics">Perf. Metric:</label>
-                            <select name="technical_metrics" class="form-control form-control-sm" id="technical_metrics">
+                    <div class="col-xs-12 col-sm-2 under-construction">
+                        {#<div class="form-group">#}
+                            {#<label for="technical_metrics">Perf. Metric:</label>#}
+                            {#<select name="technical_metrics" class="form-control form-control-sm" id="technical_metrics">#}
                                 {#<option value="" selected="selected">---</option>#}
-                                {% for metric in navigation_timings %}
-                                <option value="{{ metric.key }}|1">{{ metric.label }}</option>
-                                {% endfor %}
-                            </select>
-                            <label for="visualize_bucket">Bucket Size:</label>
-                            <select name="visualize[bucket]" class="form-control form-control-sm" id="visualize_bucket">
-                                <option value="100">0.1 sec</option>
-                                <option selected="selected" value="200">0.2 sec</option>
-                                <option value="300">0.3 sec</option>
-                                <option value="400">0.4 sec</option>
-                                <option value="500">0.5 sec</option>
-                            </select>
+                                {#{% for metric in navigation_timings %}#}
+                                    {#<option value="{{ metric.key }}|1">{{ metric.label }}</option>#}
+                                {#{% endfor %}#}
+                            {#</select>#}
+                            {#<label for="visualize_bucket">Bucket Size:</label>#}
+                            {#<select name="visualize[bucket]" class="form-control form-control-sm" id="visualize_bucket">#}
+                                {#<option value="100">0.1 sec</option>#}
+                                {#<option selected="selected" value="200">0.2 sec</option>#}
+                                {#<option value="300">0.3 sec</option>#}
+                                {#<option value="400">0.4 sec</option>#}
+                                {#<option value="500">0.5 sec</option>#}
+                            {#</select>#}
                             {#<label for="visualize_time_range">Range:</label>#}
                             {#<select name="visualize[time_range]" class="form-control form-control-sm" id="visualize_time_range">#}
-                                {#<option value="1000">1 sec</option>#}
-                                {#<option value="2000">2 sec</option>#}
-                                {#<option value="3000">3 sec</option>#}
-                                {#<option value="4000">4 sec</option>#}
-                                {#<option selected value="5000">5 sec</option>#}
-                                {#<option value="6000">6 sec</option>#}
-                                {#<option value="7000">7 sec</option>#}
-                                {#<option value="8000">8 sec</option>#}
-                                {#<option value="9000">9 sec</option>#}
-                                {#<option value="10000">10 sec</option>#}
+                            {#<option value="1000">1 sec</option>#}
+                            {#<option value="2000">2 sec</option>#}
+                            {#<option value="3000">3 sec</option>#}
+                            {#<option value="4000">4 sec</option>#}
+                            {#<option selected value="5000">5 sec</option>#}
+                            {#<option value="6000">6 sec</option>#}
+                            {#<option value="7000">7 sec</option>#}
+                            {#<option value="8000">8 sec</option>#}
+                            {#<option value="9000">9 sec</option>#}
+                            {#<option value="10000">10 sec</option>#}
                             {#</select>#}
-                        </div>
+                        {#</div>#}
                     </div>
                     <div class="col-xs-12 col-sm-3">
                         <div class="form-group">
@@ -111,27 +111,27 @@
                                     </div>
                                 </div>
                                 {% if page_types is not empty %}
-                                <label for="filters_page_type">Page Type:</label>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <select name="filters[page_type]" class="form-control form-control-sm" id="filters_page_type">
-                                            <option value="" selected="selected">---</option>
-                                            {% for page in page_types %}
-                                                <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
-                                            {% endfor %}
-                                        </select>
+                                    <label for="filters_page_type">Page Type:</label>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <select name="filters[page_type]" class="form-control form-control-sm" id="filters_page_type">
+                                                <option value="" selected="selected">---</option>
+                                                {% for page in page_types %}
+                                                    <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <script>
-                                    $('#filters_page_type').change(function () {
-                                        var pageTypeConditionalInputs = $('#filters_url_condition, #filters_url_search_value, #filters_query_param_condition, #filters_query_param_value');
-                                        if( $(this).val().length > 0 ) {
-                                            $(pageTypeConditionalInputs).prop('disabled', true);
-                                        } else {
-                                            $(pageTypeConditionalInputs).prop('disabled', false);
-                                        }
-                                    })
-                                </script>
+                                    <script>
+                                        $('#filters_page_type').change(function () {
+                                            var pageTypeConditionalInputs = $('#filters_url_condition, #filters_url_search_value, #filters_query_param_condition, #filters_query_param_value');
+                                            if( $(this).val().length > 0 ) {
+                                                $(pageTypeConditionalInputs).prop('disabled', true);
+                                            } else {
+                                                $(pageTypeConditionalInputs).prop('disabled', false);
+                                            }
+                                        })
+                                    </script>
                                 {% endif %}
                             </fieldset>
                         </div>
@@ -153,65 +153,54 @@
                             {#<label><input type="checkbox" checked /> Compare with other periods</label>#}
                             {#<br />#}
                             {#<div class="date-picker-wrapper float-left">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_1" name="periods[1][current_period_from_date]" value="10/16/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_1" name="periods[1][current_period_from_date]" value="10/16/2018">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#-#}
                             {#<div class="date-picker-wrapper float-right">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_1" name="periods[1][current_period_to_date]" value="10/17/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_1" name="periods[1][current_period_to_date]" value="10/17/2018">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#<br />#}
                             {#<br />#}
                             {#<div class="date-picker-wrapper float-left">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_2" name="periods[2][current_period_from_date]" value="09/30/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_2" name="periods[2][current_period_from_date]" value="09/30/2018">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#-#}
                             {#<div class="date-picker-wrapper float-right">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_2" name="periods[2][current_period_to_date]" value="09/30/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_2" name="periods[2][current_period_to_date]" value="09/30/2018">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#<br />#}
                             {#<br />#}
                             {#<div class="date-picker-wrapper float-left">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_3" name="periods[3][current_period_from_date]" value="12/09/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_3" name="periods[3][current_period_from_date]" value="12/09/2018">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#-#}
                             {#<div class="date-picker-wrapper float-right">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_3" name="periods[3][current_period_to_date]" value="12/09/2018">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_3" name="periods[3][current_period_to_date]" value="12/09/2018">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#<br />#}
                             {#<br />#}
                             {#<div class="date-picker-wrapper float-left">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_4" name="periods[4][current_period_from_date]" value="01/04/2019">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_from_date_4" name="periods[4][current_period_from_date]" value="01/04/2019">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                             {#-#}
                             {#<div class="date-picker-wrapper float-right">#}
-                                {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_4" name="periods[4][current_period_to_date]" value="01/20/2019">#}
-                                {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
+                            {#<input class="form-control form-control-sm calendar-date-picker" type="text" id="previous_period_to_date_4" name="periods[4][current_period_to_date]" value="01/20/2019">#}
+                            {#<span class="fa fa-calendar txt-danger form-control-feedback"></span>#}
                             {#</div>#}
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-2">
                         <div class="form-group">
-                            <label>Visualization:</label>
-                            {#<br />#}
-                            {#<label><input checked type="checkbox" value="1" name="decorators[density]" /> Density</label>#}
+                            <label></label>
                             <br />
-                            <label><input type="checkbox" value="1" name="decorators[show_median]" /> Show Median</label>
-                            <br />
-                        </div>
-                        <div class="form-group">
-                            <label>Business Metrics:</label>
-                            <br />
-                            <label><input type="checkbox" value="1" name="business_metrics[bounce_rate]" /> Bounce Rate</label>
-                            {#<br />#}
-                            {#<label><input type="checkbox" value="1" name="business_metrics[conversion_rate]" /> Conversion Rate</label>#}
-                            {#<br />#}
+                            <label><input type="checkbox" value="1" name="business_metrics[bounce_rate]" /> Landing Page</label>
                         </div>
                     </div>
                     <div class="col-xs-12 col-sm-2">
@@ -236,73 +225,27 @@
     <script type="text/javascript">
         $(".calendar-date-picker").datepicker();
     </script>
-    <div class="controls-aware-diagram-container">
-        <div id="diagramContainer"></div>
+    <div class="views-table-container">
+
     </div>
 </div>
-<div class="row">
-    <div class="col-3">
-        <div class="card bg-light text-dark">
-            <div class="card-body">
-                Page views <br />
-                <strong id="callbackText">17387</strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="card bg-light text-dark under-construction">
-            <div class="card-body">
-                Sessions <br />
-                <strong>2383</strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="card bg-light text-dark under-construction">
-            <div class="card-body">
-                Bounce rate <br />
-                <strong>73, 91 %</strong>
-            </div>
-        </div>
-    </div>
-    <div class="col-3">
-        <div class="card bg-light text-dark under-construction">
-            <div class="card-body">
-                Percentage of traffic <br />
-                <strong>41, 13 %</strong>
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-    var basicRumPlot = function(diagrams, layout_extra_shapes, layout) {
-        if (layout_extra_shapes.length > 0) {
-            layout.shapes = layout_extra_shapes;
-        }
-
-        Plotly.newPlot('diagramContainer', diagrams, layout, {displayModeBar: false});
-    };
-</script>
 
 <script type="text/javascript">
-    var diagramGeneratorForm = $('#diagram_generator');
+    var waterfallTableForm = $('#waterfall-table-form');
 
-    var generateDiagram = function (form) {
+    var fetchWaterfallPageViews = function(form) {
         var submitBtn = $("button[type=submit]", form);
         $(submitBtn).attr("disabled", true);
-
-        var dataString = $(diagramGeneratorForm).serialize();
+        var dataString = $(form).serialize();
         var formAction = $(form).attr('action');
         $.ajax({
             type: "POST",
             url: formAction,
             data: dataString,
-            dataType: "json",
             success: function(data) {
                 $(submitBtn).attr("disabled", false);
                 lessControls();
-                document.getElementById('callbackText').innerHTML = data.text;
-                basicRumPlot(data.diagrams, data.layout_extra_shapes, data.layout);
+                $('.views-table-container').html(data);
             },
             error: function() {
                 $(submitBtn).attr("disabled", false);
@@ -311,10 +254,11 @@
         });
     };
 
-    diagramGeneratorForm.on('submit', function(e) {
-        e.preventDefault();
-        generateDiagram(this);
+    $(waterfallTableForm).submit(function (event) {
+        event.preventDefault();
+        fetchWaterfallPageViews(this);
     });
 
-    generateDiagram(diagramGeneratorForm);
+    fetchWaterfallPageViews(waterfallTableForm);
+
 </script>

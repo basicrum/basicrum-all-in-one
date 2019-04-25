@@ -99,12 +99,12 @@
                             {#<li><a class="ajax-link" href="/journey/list">Journeys</a></li>#}
                         </ul>
                     </li>
-                    {#<li class="nav-item">#}
-                        {#<a class="nav-link ajax-link" href="/diagrams/waterfalls/list">#}
-                            {#<i class="fa fa-align-left"></i>#}
-                            {#Page Analyzer#}
-                        {#</a>#}
-                    {#</li>#}
+                    <li class="nav-item">
+                        <a class="nav-link ajax-link" href="{{ path('waterfalls_index') }}">
+                            <i class="fa fa-align-left"></i>
+                            Waterfalls
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a href="#configure" class="nav-link" data-toggle="collapse" role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="fa fa-cog"></i>
@@ -144,6 +144,6 @@
     <script src="{{ asset('plugins/bootstrap.4.1.1/bootstrap.min.js') }}"></script>
     <script src="{{ asset('plugins/plotly/plotly.1.43.2.min.js') }}"></script>
     <!-- All functions for this theme + document.ready processing -->
-    <script src="{{ asset('js/devoops.js') }}"></script>
+    <script src="{{ asset('js/basicrum.js') }}"></script>
     </body>
 </html>

@@ -1,4 +1,4 @@
-#diagram_generator {
+#diagram_generator, #waterfall-table-form {
     position: absolute;
     z-index: 9999;
 }
@@ -36,4 +36,8 @@
 
 .controls-aware-diagram-container {
     padding-top: 80px;
+}
+
+.views-table-container {
+    padding-top: 100px;
 }

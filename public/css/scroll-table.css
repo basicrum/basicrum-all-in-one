@@ -7,6 +7,7 @@
 .table-scroll tbody {
     height: 180px;
     overflow-y: auto;
+    overflow-x: hidden;
     width: 100%;
 }
 
