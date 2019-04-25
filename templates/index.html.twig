@@ -28,24 +28,56 @@
                     <img src="{{ asset('img/project/lost-weekend.jpg') }}" width="40" height="40" /> lostweekend.de
                 </div>
                 <div id="top-panel" class="col-xs-6 col-sm-6">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 top-panel-right">
-                                <ul class="nav navbar-nav pull-right panel-menu">
-                                    <li>
-                                        <a href="#" class="dropdown-toggle account" data-toggle="dropdown">
-                                            <div class="avatar">
-                                                <img src="{{ asset('img/avatar.jpg') }}" class="img-circle" alt="avatar" />
-                                            </div>
-                                            <div class="user-mini pull-right">
-                                                <span class="welcome">Welcome,</span>
-                                                <span>Perf. Developer</span>
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                    <div class="mt-2 pull-right btn-group">
+                        <button type="button" class="btn btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Feedback <i class="fa fa-comment-o"></i>
+                        </button>
+                        <div class="p-2 dropdown-menu dropdown-menu-right">
+                            <form action="{{ path('feedback_send') }}" id="feedback-form" type="post" style="width: 250px">
+                                <div class="form-group">
+                                    <input name="nickname" type="text" class="form-control" placeholder="Nickname">
+                                </div>
+                                <div class="form-group">
+                                    <textarea name="message" style="height: 150px" class="form-control" placeholder="Message"></textarea>
+                                </div>
+
+                                <label>* Content of the page will be send as well</label>
+                                <button type="submit" class="btn btn-primary float-right">Send</button>
+                            </form>
                         </div>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function(event) {
+
+                                $('#feedback-form').submit(function (event) {
+                                    event.preventDefault();
+
+                                    var submitBtn = $("button[type=submit]", this);
+                                    $(submitBtn).attr("disabled", true);
+                                    var data = $(this).serializeArray();
+                                    var formAction = $(this).attr('action');
+
+                                    data.push(
+                                        {
+                                            name: 'html',
+                                            value: document.documentElement.innerHTML
+                                        }
+                                    );
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: formAction,
+                                        data: data,
+                                        success: function(data) {
+                                            alert(data);
+                                        },
+                                        error: function() {
+                                            alert('error');
+                                        }
+                                    });
+                                })
+
+                            });
+                        </script>
                     </div>
                 </div>
             </div>
