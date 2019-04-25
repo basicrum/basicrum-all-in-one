@@ -183,7 +183,7 @@ class DiagramsGeneratorController extends AbstractController
     private function _pageOvertime(string $url)
     {
         $past  = new \DateTime('04/07/2019');
-        $today = new \DateTime('04/12/2019');
+        $today = new \DateTime('04/25/2019');
 
         $bucketizer = new Buckets(1, 10000);
         $median = new Median();
