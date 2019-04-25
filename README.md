@@ -3,6 +3,8 @@
 
 Backoffice of Basic RUM. A system written on Symfony 4 that aims to help performance enthusiasts look at performance metrics and identify performance bottlenecks. Hooray!
 
+![alt Basic RUM dashboard](https://user-images.githubusercontent.com/1024001/56588192-2daffa80-65e3-11e9-9246-cf9ddefbcb03.png)
+
 ## Key features:
  - Performance over time by Mobile, Tablet and Desktop devices.
  - Diagram Generator by metrics like **time to first paing**, **time to first byte**, **document ready** and etc.
