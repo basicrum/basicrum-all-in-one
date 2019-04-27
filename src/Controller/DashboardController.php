@@ -465,10 +465,16 @@ class DashboardController extends AbstractController
         ];
 
         $formattedBounceRatePercents = [];
+        $annotations = [];
 
         foreach ($bounceRatePercents as $key => $val ) {
             $formattedBounceRatePercents[$key] = (int) number_format($val,0);
+
+            if (0 == ($key % 1000)) {
+                $annotations[$key] = (int) number_format($val,0);
+            }
         }
+
 
         $diagrams = [
             [
@@ -491,7 +497,8 @@ class DashboardController extends AbstractController
 
         $response = new Response(json_encode([
                     'diagrams' => $diagrams,
-                    'xaxis'    => $xAxis
+                    'xaxis'    => $xAxis,
+                    'annotations' => $annotations
                 ]
             )
         );

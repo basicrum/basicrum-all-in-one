@@ -28,14 +28,15 @@
                     orientation: "h"
                 },
                 yaxis2: {
+                    range: [50, 85],
                     // title: 'yaxis2 title',
                     // titlefont: {color: 'rgb(148, 103, 189)'},
                     // tickfont: {color: 'rgb(148, 103, 189)'},
                     overlaying: 'y',
                     side: 'right',
                     showgrid: false,
-                    tickvals: [25, 50, 75, 100],
-                    ticktext: ['25 %', '50 %', '75 %', '100 %']
+                    tickvals: [25, 50, 60, 70, 80, 100],
+                    ticktext: ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %']
                 }
             };
 
@@ -46,7 +47,31 @@
                     method: 'post',
                     data: postData,
                     success : function(response) {
-                        layout.xaxis = response.xaxis
+                        layout.xaxis = response.xaxis;
+
+                        if (response.annotations !== undefined) {
+                            var bounceAnnotations = response.annotations;
+
+                            layout.annotations = [];
+
+                            for(key in bounceAnnotations) {
+                                layout.annotations.push({
+                                    xref: 'x',
+                                    yref: 'y2',
+                                    x: key,
+                                    y: bounceAnnotations[key],
+                                    xanchor: 'center',
+                                    yanchor: 'bottom',
+                                    text: bounceAnnotations[key] + '%',
+                                    showarrow: false,
+                                    font: {
+                                        family: 'Arial',
+                                        size: 10,
+                                        color: 'black'
+                                    }
+                                });
+                            }
+                        }
 
                         Plotly.newPlot(diagramContainer, response.diagrams, layout, {displayModeBar: false});
 
