@@ -62,17 +62,14 @@
         </script>
     </div>
     <div class="col-9">
-        &nbsp;
-        <hr />
-        <p style="font-size: 12px">
-            <strong>User Agent String:</strong><span id="user-agent"></span>
-        </p>
+        &nbsp;Waterfall diagram
+        {#<p style="font-size: 12px">#}
+            {#<strong>User Agent String:</strong><span id="user-agent"></span>#}
+        {#</p>#}
         <hr />
         <div id="waterfall-container">
-
-            <p>Waterfall diagram</p>
-            <div id="legend-holder">
-                <ul class="resource-legend">
+            {#<div id="legend-holder">#}
+                {#<ul class="resource-legend">#}
                     {#<li class="legend-blocked" title="Time spent in a queue waiting for a network connection.">Blocked</li>#}
                     {#<li class="legend-dns" title="DNS resolution time.">DNS</li>#}
                     {#<li class="legend-connect" title="Time required to create TCP connection.">Connect</li>#}
@@ -82,9 +79,9 @@
                     {#<li class="legend-receive" title="Time required to read entire response from the server (or cache).">#}
                     {#Receive#}
                     {#</li>#}
-                    <li class="legend-receive" title="Duration">Duration</li>
-                </ul>
-            </div>
+                    {#<li class="legend-receive" title="Duration">Duration</li>#}
+                {#</ul>#}
+            {#</div>#}
 
             <div id="waterfall-view"></div>
         </div>
