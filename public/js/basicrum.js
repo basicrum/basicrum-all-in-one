@@ -42,7 +42,7 @@
         });
         var ajax_url = location.hash.replace(/^#/, '');
         if (ajax_url.length < 1) {
-            ajax_url = 'ajax/dashboard';
+            ajax_url = '/dashboard';
         }
         LoadAjaxContent(ajax_url);
         var item = $('.main-menu li a[href$="' + ajax_url + '"]');
