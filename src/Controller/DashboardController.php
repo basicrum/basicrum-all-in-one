@@ -19,7 +19,7 @@ class DashboardController extends AbstractController
 {
 
     private $pastDate   = '04/07/2019';
-    private $todayDate  = '04/25/2019';
+    private $todayDate  = '04/28/2019';
 
     /**
      * @Route("/dashboard", name="dashboard")
