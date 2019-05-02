@@ -9,7 +9,7 @@
 //  Function for load content from url and put in $('.ajax-content') block
 //
 
-(function ($) {
+(function ($, window) {
     function LoadAjaxContent(url){
         $('.preloader').show();
 
@@ -146,7 +146,40 @@
         });
 
     });
-}(jQuery));
+
+    // Taken from this GIST: https://gist.github.com/sstephenson/739659
+    var detectBackOrForward = function(onBack, onForward) {
+        var hashHistory = [window.location.hash];
+        var historyLength = window.history.length;
+
+        return function() {
+            var hash = window.location.hash, length = window.history.length;
+            if (hashHistory.length && historyLength == length) {
+                if (hashHistory[hashHistory.length - 2] == hash) {
+                    hashHistory = hashHistory.slice(0, -1);
+                    onBack();
+                } else {
+                    hashHistory.push(hash);
+                    onForward();
+                }
+            } else {
+                hashHistory.push(hash);
+                historyLength = length;
+            }
+        }
+    };
+
+    window.addEventListener("hashchange", detectBackOrForward(
+        function() {
+            var ajax_url = location.hash.replace(/^#/, '');
+            LoadAjaxContent(ajax_url);
+        },
+        function() {
+            var ajax_url = location.hash.replace(/^#/, '');
+            LoadAjaxContent(ajax_url);
+        }
+    ));
+}(jQuery, window));
 
 function moreControls() {
     var controls = $('.diagram-controls');
