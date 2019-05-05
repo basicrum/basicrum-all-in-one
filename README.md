@@ -9,7 +9,7 @@ Backoffice of Basic RUM. A system written on Symfony 4 that aims to help perform
 The instruction below are applicable only for development but still incomplete for production. This installation will be automatically initialized with demo database.
 ```
  git clone git@github.com:basicrum/backoffice.git
- cd backoffice
+ cd backoffice/docker
  docker-compose up -d
  docker exec basicrum_bo_php composer update symfony/flex --no-plugins --no-scripts && composer install --optimize-autoloader --no-interaction
 ```
