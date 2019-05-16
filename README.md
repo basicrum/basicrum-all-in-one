@@ -5,6 +5,18 @@ Backoffice of Basic RUM. A system written on Symfony 4 that aims to help perform
 
 ![alt Basic RUM dashboard](https://user-images.githubusercontent.com/1024001/56588192-2daffa80-65e3-11e9-9246-cf9ddefbcb03.png)
 
+## Installation:
+The instruction below are applicable only for development but still incomplete for production. This installation will be automatically initialized with demo database.
+```
+ git clone git@github.com:basicrum/backoffice.git
+ cd backoffice/docker
+ docker-compose up -d
+ docker exec basicrum_bo_php composer update symfony/flex --no-plugins --no-scripts && composer install --optimize-autoloader --no-interaction
+```
+Linux:  Load http://127.0.0.1:8086 in your browser
+
+Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker ip here):8086
+
 ## Key features:
  - Performance over time by Mobile, Tablet and Desktop devices.
  - Diagram Generator by metrics like **time to first paing**, **time to first byte**, **document ready** and etc.
