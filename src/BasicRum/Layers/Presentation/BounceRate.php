@@ -42,13 +42,13 @@ class BounceRate
         $bounceRate = [
             'x' => array_keys($bounceRatePercents),
             'y' => array_values($bounceRatePercents),
-            'type' => 'scatter',
+            'type' => 'line',
             'name' => 'Bounce Rate',
             'marker' => [
                 'color' => 'rgb(255, 127, 14)'
             ],
-            'xaxis' => 'x2',
-            'yaxis' => 'y2'
+//            'xaxis' => 'x2',
+            'yaxis' => 'y2',
         ];
 
         return $bounceRate;

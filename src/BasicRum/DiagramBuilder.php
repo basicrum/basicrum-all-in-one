@@ -27,7 +27,7 @@ class DiagramBuilder
         ],
         'yaxis' => [
             'title' => 'Visits',
-            'fixedrange' => true
+            'fixedrange' => true,
         ],
         'legend' => [
             'traceorder' => 'normal',
@@ -66,8 +66,8 @@ class DiagramBuilder
         ],
         'yaxis' => [
             'title' => 'Visits',
-            'domain' => [0, 0.2],
-            'fixedrange' => true
+//            'domain' => [0, 0.2],
+            'fixedrange' => true,
         ],
         'xaxis2' => [
             'anchor' => 'y2',
@@ -89,7 +89,7 @@ class DiagramBuilder
             'fixedrange' => true
         ],
         'yaxis2' => [
-            'domain' => [0.3, 1],
+//            'domain' => [0.3, 1],
             'fixedrange' => true
         ],
          'annotations' => [],
@@ -157,22 +157,59 @@ class DiagramBuilder
 
         $diagrams[] = $samplesDiagram;
 
-        foreach ($collaboratorsAggregator->getBusinessMetrics()->getRequirements() as $businessMetric) {
-            if (strpos(get_class($businessMetric), 'BounceRate') !== false) {
-                $bounceRateDiagramBuilder = new Presentation\BounceRate();
-                $diagrams[] = $bounceRateDiagramBuilder->generate($buckets);
-
-                $bounceRate = 'Bounce rate: ' . $this->getBounceRate($buckets, $probesCount);
-
-                //$this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
-            }
-        }
 
         //$this->oneLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' distribution';
         $layout = $this->attachSecondsToTimeLine($this->oneLevelDiagramsLayout, $buckets);
 
         if (count($diagrams) > 1) {
             $layout = $this->attachSecondsToTimeLine($this->twoLevelDiagramsLayout, $buckets);
+        }
+
+        foreach ($collaboratorsAggregator->getBusinessMetrics()->getRequirements() as $businessMetric) {
+            if (strpos(get_class($businessMetric), 'BounceRate') !== false) {
+                $bounceRateDiagramBuilder = new Presentation\BounceRate();
+
+                $bounceRateDiagram = $bounceRateDiagramBuilder->generate($buckets);
+
+                $diagrams[] = $bounceRateDiagramBuilder->generate($buckets);
+
+                //$bounceRate = 'Bounce rate: ' . $this->getBounceRate($buckets, $probesCount);
+
+                $layout['yaxis2'] = [
+                    'overlaying' => 'y',
+                    'side'       => 'right',
+                    'showgrid'  => false,
+                    'tickvals'   =>  [25, 50, 60, 70, 80, 100],
+                    'ticktext'   => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
+                    'range'      => [50, 85],
+                    'fixedrange' => true
+                ];
+
+                foreach ($bounceRateDiagram['x'] as $key => $v) {
+                    // Add annotation only on every second
+                    if ($v % 1000 != 0) {
+                        continue;
+                    }
+
+                    $layout['annotations'][] = [
+                        'xref'      => 'x',
+                        'yref'      => 'y2',
+                        'x'         =>  $v,
+                        'y'         => $bounceRateDiagram['y'][$key],
+                        'xanchor'   => 'center',
+                        'yanchor'   => 'bottom',
+                        'text'      => $bounceRateDiagram['y'][$key] . '%',
+                        'showarrow' => false,
+                        'font' => [
+                            'family' => 'Arial',
+                            'size'   => 12,
+                            'color'  => 'black'
+                        ]
+                    ];
+                }
+
+                //$this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
+            }
         }
 
         if (isset($_POST['decorators']['show_median'])) {
