@@ -149,6 +149,103 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-lg-6 col-sm-12">
+        Desktop OS distribution - April 2019
+        <hr />
+        <div id="visits-desktop-per-os" style="width: 100%;"></div>
+
+        <script type="text/javascript">
+            var stacksDesktopOsDiv = document.getElementById("visits-desktop-per-os");
+
+            var layout = {
+                height: 330,
+                margin: {
+                    l: 40,
+                    t: 0
+                },
+                legend: {
+                    x: 0,
+                    y: 1.2,
+                    traceorder: 'normal',
+                    font: {
+                        family: 'sans-serif',
+                        size: 12,
+                        color: '#000'
+                    },
+                    orientation: "h"
+                },
+                xaxis : {
+                    fixedrange: true,
+                    dtick: '86400000.0'
+                },
+                yaxis : {
+                    fixedrange: true,
+
+                    tickvals: [0, 50, 100],
+                    ticktext: ["0 %", "50 %", "100%"]
+                }
+            };
+
+            $.ajax('/diagrams_generator/device/desktop_os_distribution',
+                {
+                    method: 'post',
+                    success : function(response) {
+                        Plotly.newPlot(stacksDesktopOsDiv, response, layout, {displayModeBar: false});
+                    }
+                }
+            );
+        </script>
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        Mobile OS distribution - April 2019
+        <hr />
+        <div id="visits-per-os" style="width: 100%;"></div>
+
+        <script type="text/javascript">
+            var stacksOsDiv = document.getElementById("visits-per-os");
+
+            var layout = {
+                height: 330,
+                margin: {
+                    l: 40,
+                    t: 0
+                },
+                legend: {
+                    x: 0,
+                    y: 1.2,
+                    traceorder: 'normal',
+                    font: {
+                        family: 'sans-serif',
+                        size: 12,
+                        color: '#000'
+                    },
+                    orientation: "h"
+                },
+                xaxis : {
+                    fixedrange: true,
+                    dtick: '86400000.0'
+                },
+                yaxis : {
+                    fixedrange: true,
+
+                    tickvals: [0, 50, 100],
+                    ticktext: ["0 %", "50 %", "100%"]
+                }
+            };
+
+            $.ajax('/diagrams_generator/device/mobile_os_distribution',
+                {
+                    method: 'post',
+                    success : function(response) {
+                        Plotly.newPlot(stacksOsDiv, response, layout, {displayModeBar: false});
+
+                    }
+                }
+            );
+        </script>
+    </div>
+</div>
+<div class="row">
     <script>
         var drawDevicePerformance = function (diagramContainerId, deviceType, startDate, endDate) {
             var diagramContainer = document.getElementById(diagramContainerId);

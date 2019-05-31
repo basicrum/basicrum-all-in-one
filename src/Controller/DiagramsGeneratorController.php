@@ -321,4 +321,234 @@ class DiagramsGeneratorController extends AbstractController
         ];
     }
 
+    /**
+     * @Route("/diagrams_generator/device/mobile_os_distribution", name="dashboard_mobile_os_distribution")
+     */
+    public function deviceOsDistribution()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+
+        $colors = [
+            'Android' => 'rgb(31, 119, 180)',
+            'iOS'     => 'rgb(255, 127, 14)',
+            'Windows' => 'rgb(44, 160, 44)',
+        ];
+
+        $oss = [
+            'Android' => '1',
+            'iOS'     => '2',
+            'Windows' => '3',
+        ];
+
+
+        $past   = '04/07/2019';
+        $today  = '04/28/2019';
+
+        $period = [
+            [
+                'from_date' => $past,
+                'to_date'   => $today
+            ]
+        ];
+
+        $osSamples = [];
+        $daysCount     = [];
+
+        $device = '1';
+
+        //Domain logic
+
+        foreach ($oss as $osName => $osKey) {
+            $requirements = [
+                'periods'     => $period,
+                'filters'     => [
+                    'device_type' => [
+                        'search_value' => (string) $device,
+                        'condition'    => 'is'
+                    ],
+                    'operating_system' => [
+                        'search_value' => (string) $osKey,
+                        'condition'    => 'is'
+                    ]
+                ],
+                'business_metrics' => [
+                    'page_views_count' => 1
+                ]
+            ];
+
+            $collaboratorsAggregator = new CollaboratorsAggregator();
+            $collaboratorsAggregator->fillRequirements($requirements);
+
+
+            $diagramOrchestrator = new DiagramOrchestrator(
+                $collaboratorsAggregator->getCollaborators(),
+                $this->getDoctrine()
+            );
+
+            $res = $diagramOrchestrator->process();
+
+            $data = [];
+
+            foreach ($res[0]  as $day => $samplesCount) {
+                $data[$day] = $samplesCount[0]['count'];
+
+                // Summing total visits per day. Used later for calculating percentage
+                $daysCount[$day] = isset($daysCount[$day]) ? $daysCount[$day] + $data[$day] : $data[$day];
+            }
+
+            $osSamples[$osName] = $data;
+        }
+
+
+
+        foreach ($osSamples as $osName => $data) {
+            foreach ($data as $day => $c) {
+                if ($daysCount[$day] == 0) {
+                    $deviceSamples[$osName][$day] = '0.00';
+                    continue;
+                }
+
+                $osSamples[$osName][$day] = number_format(($c / $daysCount[$day]) * 100, 2);
+            }
+        }
+
+        // Presentation logic
+        $osDiagrams = [];
+
+        foreach ($osSamples as $osName => $data) {
+            $osDiagrams[] = [
+                'x'          => array_keys($data),
+                'y'          => array_values($data),
+                'name'       => $osName,
+                'stackgroup' => 'device',
+                'line'       => [
+                    'color'  => $colors[$osName]
+                ]
+            ];
+        }
+
+        $response = new Response(json_encode($osDiagrams));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/diagrams_generator/device/desktop_os_distribution", name="dashboard_desktop_os_distribution")
+     */
+    public function desktopOsDistribution()
+    {
+        // Quick hack for out of memory problems
+        ini_set('memory_limit', '-1');
+        set_time_limit(0);
+
+        $colors = [
+            'Linux'   => 'rgb(31, 119, 180)',
+            'Mac OS'  => 'rgb(255, 127, 14)',
+            'Windows' => 'rgb(44, 160, 44)',
+        ];
+
+        $oss = [
+            'Linux'   => '7',
+            'Mac OS'  => '5',
+            'Windows' => '3',
+        ];
+
+
+        $past   = '04/07/2019';
+        $today  = '04/28/2019';
+
+        $period = [
+            [
+                'from_date' => $past,
+                'to_date'   => $today
+            ]
+        ];
+
+        $osSamples = [];
+        $daysCount     = [];
+
+        $device = '2';
+
+        //Domain logic
+
+        foreach ($oss as $osName => $osKey) {
+            $requirements = [
+                'periods'     => $period,
+                'filters'     => [
+                    'device_type' => [
+                        'search_value' => (string) $device,
+                        'condition'    => 'is'
+                    ],
+                    'operating_system' => [
+                        'search_value' => (string) $osKey,
+                        'condition'    => 'is'
+                    ]
+                ],
+                'business_metrics' => [
+                    'page_views_count' => 1
+                ]
+            ];
+
+            $collaboratorsAggregator = new CollaboratorsAggregator();
+            $collaboratorsAggregator->fillRequirements($requirements);
+
+
+            $diagramOrchestrator = new DiagramOrchestrator(
+                $collaboratorsAggregator->getCollaborators(),
+                $this->getDoctrine()
+            );
+
+            $res = $diagramOrchestrator->process();
+
+            $data = [];
+
+            foreach ($res[0]  as $day => $samplesCount) {
+                $data[$day] = $samplesCount[0]['count'];
+
+                // Summing total visits per day. Used later for calculating percentage
+                $daysCount[$day] = isset($daysCount[$day]) ? $daysCount[$day] + $data[$day] : $data[$day];
+            }
+
+            $osSamples[$osName] = $data;
+        }
+
+
+
+        foreach ($osSamples as $osName => $data) {
+            foreach ($data as $day => $c) {
+                if ($daysCount[$day] == 0) {
+                    $deviceSamples[$osName][$day] = '0.00';
+                    continue;
+                }
+
+                $osSamples[$osName][$day] = number_format(($c / $daysCount[$day]) * 100, 2);
+            }
+        }
+
+        // Presentation logic
+        $osDiagrams = [];
+
+        foreach ($osSamples as $osName => $data) {
+            $osDiagrams[] = [
+                'x'          => array_keys($data),
+                'y'          => array_values($data),
+                'name'       => $osName,
+                'stackgroup' => 'device',
+                'line'       => [
+                    'color'  => $colors[$osName]
+                ]
+            ];
+        }
+
+        $response = new Response(json_encode($osDiagrams));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
 }
