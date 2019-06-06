@@ -73,7 +73,7 @@ class NavigationTimings
     /**
      * @var bool
      *
-     * @ORM\Column(name="redirects_count", type="boolean", nullable=false)
+     * @ORM\Column(name="redirects_count", type="smallint", nullable=false)
      */
     private $redirectsCount;
 
@@ -229,12 +229,12 @@ class NavigationTimings
         return $this;
     }
 
-    public function getRedirectsCount(): ?bool
+    public function getRedirectsCount(): ?int
     {
         return $this->redirectsCount;
     }
 
-    public function setRedirectsCount(bool $redirectsCount): self
+    public function setRedirectsCount(int $redirectsCount): self
     {
         $this->redirectsCount = $redirectsCount;
 

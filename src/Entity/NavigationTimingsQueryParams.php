@@ -33,6 +33,13 @@ class NavigationTimingsQueryParams
         return $this->pageViewId;
     }
 
+    public function setPageViewId(int $pageViewId): self
+    {
+        $this->pageViewId = $pageViewId;
+
+        return $this;
+    }
+
     public function getQueryParams(): ?string
     {
         return $this->queryParams;

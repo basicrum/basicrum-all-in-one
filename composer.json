@@ -24,7 +24,8 @@
         "symfony/validator": "^4.1",
         "symfony/web-link": "^4.1",
         "symfony/webpack-encore-pack": "*",
-        "symfony/yaml": "^4.1"
+        "symfony/yaml": "^4.1",
+        "whichbrowser/parser": "^2.0"
     },
     "require-dev": {
         "hautelook/alice-bundle": "^2.3",

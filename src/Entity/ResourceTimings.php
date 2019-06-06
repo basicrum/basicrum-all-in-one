@@ -33,6 +33,13 @@ class ResourceTimings
         return $this->pageViewId;
     }
 
+    public function setPageViewId(int $pageViewId): self
+    {
+        $this->pageViewId = $pageViewId;
+
+        return $this;
+    }
+
     public function getResourceTimings(): ?string
     {
         return $this->resourceTimings;
