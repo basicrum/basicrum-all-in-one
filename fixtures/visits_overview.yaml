@@ -6,4 +6,6 @@ App\Entity\VisitsOverview:
     lastPageViewId: 1
     visitDuration: 0
     afterLastVisitDuration: 0
+    first_url_id: 1
+    last_url_id: 1
     completed: 1
