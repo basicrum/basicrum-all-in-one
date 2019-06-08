@@ -47,6 +47,13 @@ services:
     networks:
       - basicrum_bo_network
 
+  composer:
+    image: composer
+    volumes:
+      - ./../:/usr/src/app
+    working_dir: /usr/src/app
+    user: "1000:1000"
+
 networks:
   basicrum_bo_network:
     driver: bridge
