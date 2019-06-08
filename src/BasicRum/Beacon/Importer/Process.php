@@ -24,7 +24,7 @@ class Process
     {
         $batchImporter = new Process\Writer\Batch($this->registry);
 
-        $beacons = $reader->read($beaconsCount);
+        $beacons = $reader->read();
 
         $beaconWorker = new Process\Beacon();
 

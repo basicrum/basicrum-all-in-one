@@ -2,12 +2,12 @@
 
 namespace App\Tests\BasicRum\DiagramOrchestrator;
 
-use App\Tests\BasicRum\CommonTestCase;
+use App\Tests\BasicRum\FixturesTestCase;
 
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
-class CountPageViewsTest extends CommonTestCase
+class CountPageViewsTest extends FixturesTestCase
 {
 
     /**

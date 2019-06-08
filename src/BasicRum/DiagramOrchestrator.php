@@ -48,7 +48,7 @@ class DiagramOrchestrator
 
         $periods = $this->collaborators['periods']->getRequirements();
 
-        $requirements =                 array_merge(
+        $requirements = array_merge(
             $this->collaborators['filters']->getRequirements(),
             $this->collaborators['technical_metrics']->getRequirements(),
             $this->collaborators['business_metrics']->getRequirements()

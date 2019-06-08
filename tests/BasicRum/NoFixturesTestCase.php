@@ -2,14 +2,11 @@
 
 namespace App\Tests\BasicRum;
 
-use Hautelook\AliceBundle\PhpUnit\RefreshDatabaseTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use App\Command\CacheCleanCommand;
 
-class CommonTestCase extends KernelTestCase
+class NoFixturesTestCase extends KernelTestCase
 {
-
-    use RefreshDatabaseTrait;
 
     protected function setUp()
     {

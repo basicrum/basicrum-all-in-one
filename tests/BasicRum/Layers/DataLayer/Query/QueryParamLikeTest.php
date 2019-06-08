@@ -2,13 +2,13 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\Tests\BasicRum\CommonTestCase;
+use App\Tests\BasicRum\FixturesTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Secondary\QueryParam;
 
-class QueryParamLikeTest extends CommonTestCase
+class QueryParamLikeTest extends FixturesTestCase
 {
 
     /**

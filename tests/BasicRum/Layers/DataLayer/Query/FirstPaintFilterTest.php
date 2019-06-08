@@ -2,14 +2,14 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\Tests\BasicRum\CommonTestCase;
+use App\Tests\BasicRum\FixturesTestCase;
 
 use App\BasicRum\Filters\Primary\TimeToFirstPaint;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 
-class FirstPaintFilterTest extends CommonTestCase
+class FirstPaintFilterTest extends FixturesTestCase
 {
 
     /**
