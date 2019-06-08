@@ -22,12 +22,21 @@ class Hydrator
         $userAgent->setUserAgent($userAgentString);
         $userAgent->setDeviceModel($result->device->getModel());
         $userAgent->setDeviceManufacturer($result->device->getManufacturer());
-        $userAgent->setBrowserName($result->browser->getName());
+        $userAgent->setBrowserName($this->browserName($result));
         $userAgent->setBrowserVersion($result->browser->getVersion());
         $userAgent->setOsName($result->os->getName());
         $userAgent->setOsVersion($result->os->getVersion());
 
         return $userAgent;
+    }
+
+    /**
+     * @param \WhichBrowser\Parser $result
+     * @return mixed
+     */
+    private function browserName(\WhichBrowser\Parser $result)
+    {
+        return $result->browser->toArray()['name'];
     }
 
 }
