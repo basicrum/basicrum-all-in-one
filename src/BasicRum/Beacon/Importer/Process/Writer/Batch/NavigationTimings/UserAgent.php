@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
 
 use WhichBrowser\Parser;
-use \App\Entity\NavigationTimingsUserAgents;
 
 class UserAgent
 {
@@ -22,6 +21,9 @@ class UserAgent
     /** @var UserAgent\OperatingSystem */
     private $_osModel;
 
+    /** @var UserAgent\Hydrator */
+    private $_hydrator;
+
     /** @var int */
     private $_pairsCount = 0;
 
@@ -37,6 +39,8 @@ class UserAgent
         $this->_deviceTypeModel->initDbRecords($registry);
 
         $this->_osModel = new UserAgent\OperatingSystem($registry);
+
+        $this->_hydrator = new UserAgent\Hydrator();
 
         $this->_pairsCount = count($this->_userAgentsPairs);
     }
@@ -66,26 +70,17 @@ class UserAgent
 
                 $result = new Parser($userAgentString);
 
+                $userAgent = $this->_hydrator->hydrate($result, $userAgentString);
+
                 $deviceType = !empty($result->device->type) ? $result->device->type : 'unknown';
                 $deviceTypeId = $this->_deviceTypeModel->getDeviceTypeIdByCode($deviceType);
 
                 $osId = $this->_osModel->getOsIdByName($result->os->getName());
 
-                $userAgent = new NavigationTimingsUserAgents();
-
-                $userAgent->setUserAgent($userAgentString);
                 $userAgent->setDeviceType($deviceType);
-                $userAgent->setDeviceModel($result->device->getModel());
-                $userAgent->setDeviceManufacturer($result->device->getManufacturer());
-                $userAgent->setBrowserName($result->browser->getName());
-                $userAgent->setBrowserVersion($result->browser->getVersion());
-                $userAgent->setOsName($result->os->getName());
-                $userAgent->setOsVersion($result->os->getVersion());
                 $userAgent->setDeviceTypeId($deviceTypeId);
                 $userAgent->setOsId($osId);
                 $userAgent->setCreatedAt(new \DateTime());
-
-                $this->registry->getManager()->persist($userAgent);
 
                 // Speculatively append to current user agent pairs
                 $this->_userAgentsPairs[$userAgentString] = [
