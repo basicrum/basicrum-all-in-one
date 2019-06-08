@@ -51,7 +51,7 @@ class SimpleImportTest extends NoFixturesTestCase
             ));
 
         $process = new Process($this->_getDoctrine());
-        $c = $process->runImport($reader);
+        $c = $process->runImport($reader, 1);
 
         $requirementsArr = [
             'periods' => [

@@ -7,10 +7,13 @@ namespace App\BasicRum\Beacon\Importer\Process\Writer;
 class Batch
 {
 
+    /** @var int */
     private $_batchSize;
 
+    /** @var Batch\NavigationTimings */
     private $_navigationTimings;
 
+    /** @var Batch\ResourceTimings */
     private $_resourceTimings;
 
     /**
