@@ -12,11 +12,14 @@ class File
     /** @var string */
     private $storageDirectory = '';
 
+    CONST RAW_STORAGE_DIR            = 'var/beacons/raw';
+
+    CONST BEFORE_ARCHIVE_STORAGE_DIR = 'var/beacons/before_archive_raw';
+
     public function __construct()
     {
         $projectPath = explode('/src/BasicRum',__DIR__)[0];
-        $storageDir  = 'var/beacons/raw';
-        $this->storageDirectory = $projectPath . '/' . $storageDir;
+        $this->storageDirectory = $projectPath . '/' . self::RAW_STORAGE_DIR;
     }
 
     /**
@@ -63,7 +66,20 @@ class File
             return $element1[0] - $element2[0];
         });
 
+        $this->moveBeacons($beaconFiles);
+
         return $data;
+    }
+
+    /**
+     * @param array $beaconFiles
+     */
+    private function moveBeacons(array $beaconFiles) : void
+    {
+        foreach ($beaconFiles as $filePath) {
+            $newPath = str_replace(self::RAW_STORAGE_DIR, self::BEFORE_ARCHIVE_STORAGE_DIR, $filePath);
+            rename($filePath, $newPath);
+        }
     }
 
 }
