@@ -8,7 +8,7 @@ interface StorageInterface
     /**
      * @param string $beacon
      */
-    public function storeBeacon($beacon);
+    public function storeBeacon(string $beacon);
 
 
     /**

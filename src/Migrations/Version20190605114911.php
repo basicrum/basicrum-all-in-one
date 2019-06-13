@@ -22,7 +22,6 @@ final class Version20190605114911 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE beacons (id INT AUTO_INCREMENT NOT NULL, beacon_data TEXT NOT NULL, created_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE releases (id INT UNSIGNED AUTO_INCREMENT NOT NULL, date DATETIME NOT NULL, description TEXT DEFAULT NULL, INDEX date (date), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE visits_overview (visit_id INT UNSIGNED AUTO_INCREMENT NOT NULL, guid CHAR(128) DEFAULT NULL, page_views_count INT UNSIGNED NOT NULL, first_page_view_id INT UNSIGNED NOT NULL, last_page_view_id INT UNSIGNED DEFAULT NULL, visit_duration INT UNSIGNED DEFAULT NULL, after_last_visit_duration INT UNSIGNED NOT NULL, first_url_id INT UNSIGNED NOT NULL, last_url_id INT UNSIGNED NOT NULL, completed TINYINT(1) NOT NULL, INDEX completed (completed), INDEX first_page_view_id (first_page_view_id), INDEX last_page_view_id (last_page_view_id), INDEX guid (guid), PRIMARY KEY(visit_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE feedback (id INT UNSIGNED AUTO_INCREMENT NOT NULL, message TEXT NOT NULL, created_at DATETIME NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
@@ -43,7 +42,6 @@ final class Version20190605114911 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE beacons');
         $this->addSql('DROP TABLE releases');
         $this->addSql('DROP TABLE visits_overview');
         $this->addSql('DROP TABLE feedback');
