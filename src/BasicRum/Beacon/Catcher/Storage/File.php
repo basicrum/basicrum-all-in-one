@@ -45,7 +45,25 @@ class File
      */
     public function fetchBeacons()
     {
-        return [];
+        $beaconFiles = glob($this->storageDirectory . '/*.json');
+
+        $data = [];
+
+        foreach ($beaconFiles as $filePath) {
+            $parts = explode('-', $filePath);
+
+            $data[] = [
+                0 => array_slice($parts, -2, 1)[0],
+                1 => file_get_contents($filePath)
+            ];
+        }
+
+        // Sort the array
+        usort($data, function($element1, $element2) {
+            return $element1[0] - $element2[0];
+        });
+
+        return $data;
     }
 
 }

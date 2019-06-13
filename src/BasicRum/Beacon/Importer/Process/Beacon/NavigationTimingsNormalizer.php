@@ -79,8 +79,8 @@ class NavigationTimingsNormalizer
             $entries['process_id'] = $navigationTiming['pid'];
         }
 
-        if (!empty($navigationTiming['date'])) {
-            $entries['created_at'] = new \DateTime($navigationTiming['date']);
+        if (!empty($navigationTiming['created_at'])) {
+            $entries['created_at'] = new \DateTime($navigationTiming['created_at']);
         }
 
         if (!empty($navigationTiming['guid'])) {

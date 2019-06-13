@@ -37,17 +37,9 @@ class ImportBeaconsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $beaconFiles = glob(__DIR__ . '/../../var/beacons/*');
-
-        foreach ($beaconFiles as $filePath) {
-            $output->writeln('<info>' . $filePath . '</info>');
-            $output->writeln('<info>Memory usage: ' . memory_get_usage() . '</info>');
-
-
-            $reader = new Process\Reader\MonolithCatcher($filePath);
-            $process = new Process($this->registry);
-            $c = $process->runImport($reader);
-        }
+        $reader = new Process\Reader\MonolithCatcher();
+        $process = new Process($this->registry);
+        $c = $process->runImport($reader);
 
         echo 0;
     }

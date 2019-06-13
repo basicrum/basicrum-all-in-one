@@ -31,11 +31,9 @@ class Beacon
                 continue;
             }
 
-            $date = trim($beacon[0], "'");
+            $beacons[$key] = json_decode($beacon[1], true);
 
-            $beacons[$key] = json_decode(trim(ltrim($beacon[1], "'"), "'\n"), true);
-
-            $beacons[$key]['date'] = $date;
+            $date = $beacons[$key]['created_at'];
 
             $pageViewKey = $this->_getPageViewKey($beacons[$key]);
 
