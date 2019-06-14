@@ -5,21 +5,30 @@ namespace App\BasicRum\Beacon\Catcher\Storage;
 
 require_once __DIR__ . '/StorageInterface.php';
 
+use \ZipArchive;
+
 class File
     implements StorageInterface
 {
 
     /** @var string */
-    private $storageDirectory = '';
+    private $rootStorageDirectory             = '';
 
-    CONST RAW_STORAGE_DIR            = 'var/beacons/raw';
+    /** @var string */
+    CONST ROOT_STORAGE_DIR                    = 'var/beacons';
 
-    CONST BEFORE_ARCHIVE_STORAGE_DIR = 'var/beacons/before_archive_raw';
+    /** @var string */
+    CONST RELATIVE_RAW_STORAGE_DIR            = 'raw';
+
+    /** @var string */
+    CONST RELATIVE_BEFORE_ARCHIVE_STORAGE_DIR = 'before_archive_raw';
+
+    /** @var string */
+    CONST RELATIVE_ARCHIVE_STORAGE_DIR        = 'archive';
 
     public function __construct()
     {
-        $projectPath = explode('/src/BasicRum',__DIR__)[0];
-        $this->storageDirectory = $projectPath . '/' . self::RAW_STORAGE_DIR;
+        $this->rootStorageDirectory = $this->getProjectPath() . '/' . self::ROOT_STORAGE_DIR;
     }
 
     /**
@@ -36,11 +45,12 @@ class File
      */
     private function generateFileName(string $beacon) : string
     {
+        // @todo: Check if this could lead to vulnerability because we get user input and we use this input in order to write on FS
         $origin = !empty($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : 'unknown';
         $parsed = parse_url($origin);
         $suffix = str_replace('.', '_', $parsed['host']);
 
-        return $this->storageDirectory . '/' . $suffix . '_' . md5($beacon) . '-' . mktime() . '-' . rand(1, 99999) . '.json';
+        return $this->getRawBeaconsDir() . '/' . $suffix . '_' . md5($beacon) . '-' . mktime() . '-' . rand(1, 99999) . '.json';
     }
 
     /**
@@ -48,7 +58,9 @@ class File
      */
     public function fetchBeacons()
     {
-        $beaconFiles = glob($this->storageDirectory . '/*.json');
+        $this->archiveBeacons();
+
+        $beaconFiles = glob($this->getRawBeaconsDir() . '/*.json');
 
         $data = [];
 
@@ -77,8 +89,63 @@ class File
     private function moveBeacons(array $beaconFiles) : void
     {
         foreach ($beaconFiles as $filePath) {
-            $newPath = str_replace(self::RAW_STORAGE_DIR, self::BEFORE_ARCHIVE_STORAGE_DIR, $filePath);
+            $newPath = str_replace(self::RELATIVE_RAW_STORAGE_DIR, self::RELATIVE_BEFORE_ARCHIVE_STORAGE_DIR, $filePath);
             rename($filePath, $newPath);
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getProjectPath() : string
+    {
+        return explode('/src/BasicRum',__DIR__)[0];
+    }
+
+    /**
+     * @return string
+     */
+    private function getBeforeArchiveTemporaryDir() : string
+    {
+        return $this->rootStorageDirectory . '/' . self::RELATIVE_BEFORE_ARCHIVE_STORAGE_DIR;
+    }
+
+    /**
+     * @return string
+     */
+    private function getRawBeaconsDir() : string
+    {
+        return $this->rootStorageDirectory . '/' . self::RELATIVE_RAW_STORAGE_DIR;
+    }
+
+    /**
+     * @return string
+     */
+    private function getArchiveDir()
+    {
+        return $this->rootStorageDirectory . '/' . self::RELATIVE_ARCHIVE_STORAGE_DIR;
+    }
+
+
+    public function archiveBeacons() : void
+    {
+        $zip = new ZipArchive;
+
+        $zipFileName = mktime() . '.zip';
+
+        if ($zip->open($this->getArchiveDir() . '/' . $zipFileName, ZipArchive::CREATE) === TRUE)
+        {
+            $beaconFiles = glob($this->getBeforeArchiveTemporaryDir() . '/*.json');
+
+            foreach ($beaconFiles as $filePath) {
+                $zip->addFile($filePath, basename($filePath));
+            }
+
+            $zip->close();
+
+            foreach ($beaconFiles as $filePath) {
+                unlink($filePath);
+            }
         }
     }
 
