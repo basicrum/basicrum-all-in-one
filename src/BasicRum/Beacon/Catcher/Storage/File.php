@@ -149,4 +149,12 @@ class File
         }
     }
 
+    public function initFolders() : void
+    {
+        mkdir($this->rootStorageDirectory);
+        mkdir($this->getRawBeaconsDir());
+        mkdir($this->getBeforeArchiveTemporaryDir());
+        mkdir($this->getArchiveDir());
+    }
+
 }
