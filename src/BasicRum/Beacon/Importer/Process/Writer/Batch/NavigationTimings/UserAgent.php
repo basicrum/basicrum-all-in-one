@@ -82,6 +82,8 @@ class UserAgent
                 $userAgent->setOsId($osId);
                 $userAgent->setCreatedAt(new \DateTime());
 
+                $this->registry->getManager()->persist($userAgent);
+
                 // Speculatively append to current user agent pairs
                 $this->_userAgentsPairs[$userAgentString] = [
                     'id'             => $this->_pairsCount,
