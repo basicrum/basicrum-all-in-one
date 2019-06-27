@@ -151,7 +151,7 @@ class Beacon
 
 
         if (empty($data['pid'])) {
-            $data['pid'] = 'missing_pid';
+            $data['pid'] = 'missing';
         }
 
         if (empty($data['u'])) {
