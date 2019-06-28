@@ -36,7 +36,7 @@ class Hydrator
      */
     private function browserName(\WhichBrowser\Parser $result)
     {
-        return $result->browser->toArray()['name'];
+        return isset($result->browser->toArray()['name']) ? $result->browser->toArray()['name'] : $result->browser->getName();
     }
 
 }
