@@ -54,14 +54,14 @@ class ResourceTimings
 
         $batchUrlsParis = $this->_prepareUrlIds($batchUrls);
 
-        $batchInsertArray = [];
-
         $mustFlush = false;
 
         foreach ($resourcesBatch as $key => $viewResources) {
             $mustFlush = true;
 
             $pageViewId = $key + $lastPageViewIdStartOffset;
+
+            //var_dump($pageViewId);
 
             $startTime = 0;
 
@@ -105,6 +105,8 @@ class ResourceTimings
             }
 
             $resTiming = new \App\Entity\ResourceTimings();
+
+            var_dump($pageViewId);
 
             $resTiming->setPageViewId($pageViewId);
             $resTiming->setResourceTimings(implode(';',$resources));

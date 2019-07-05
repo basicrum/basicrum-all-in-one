@@ -17,7 +17,7 @@ class ResourceTimings
      *
      * @ORM\Column(name="page_view_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue(strategy="NONE")
      */
     private $pageViewId;
 
