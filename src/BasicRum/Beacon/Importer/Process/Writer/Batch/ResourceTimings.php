@@ -105,9 +105,7 @@ class ResourceTimings
             }
 
             $resTiming = new \App\Entity\ResourceTimings();
-
-            var_dump($pageViewId);
-
+            
             $resTiming->setPageViewId($pageViewId);
             $resTiming->setResourceTimings(implode(';',$resources));
 
