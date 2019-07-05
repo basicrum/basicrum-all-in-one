@@ -98,8 +98,13 @@ class WaterfallsController extends AbstractController
 
         $res = $diagramOrchestrator->process();
 
-        $reversedDays = array_reverse($res[0]);
+        foreach ($res[0] as $key => $day) {
+            if(empty($day)) {
+                unset($res[0][$key]);
+            }
+        }
 
+        $reversedDays = array_reverse($res[0]);
 
         $pageViews = [];
 
@@ -110,9 +115,7 @@ class WaterfallsController extends AbstractController
 
         foreach ($reversedDays as $day => $views) {
             foreach ($views as $view) {
-
                 $pageViews[] = $repository->find($view['pageViewId']);
-
                 $counter++;
                 if ($counter === 400) {
                     break;
