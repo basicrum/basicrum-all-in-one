@@ -57,6 +57,8 @@ class NavigationTimings
             // For testing purposes
             unset($batch[$key]['restiming']);
             unset($batch[$key]['query_params']);
+            unset($batch[$key]['query_params']);
+            unset($batch[$key]['beacon_string']);
 
             $batch[$key]['url_id'] = $urls[$key];
         }

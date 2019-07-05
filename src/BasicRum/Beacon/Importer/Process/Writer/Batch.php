@@ -16,6 +16,9 @@ class Batch
     /** @var Batch\ResourceTimings */
     private $_resourceTimings;
 
+    /** @var Batch\Beacons */
+    private $_beacons;
+
     /**
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
      * @param int $batchSize
@@ -30,6 +33,8 @@ class Batch
         $this->_navigationTimings = new Batch\NavigationTimings($registry);
 
         $this->_resourceTimings   = new Batch\ResourceTimings($registry);
+
+        $this->_beacons   = new Batch\Beacons($registry);
     }
 
     /**
@@ -69,6 +74,7 @@ class Batch
 
         $this->_navigationTimings->batchInsert($views);
         $this->_resourceTimings->batchInsert($views, $lastPageViewId);
+        $this->_beacons->batchInsert($views, $lastPageViewId);
     }
 
 }

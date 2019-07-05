@@ -56,6 +56,8 @@ class Beacon
             $data[$key]['restiming']  = !empty($beacons[$key]['restiming']) ?
                 json_decode($beacons[$key]['restiming'], true)
                 : [];
+
+            $data[$key]['beacon_string'] = $beacon[1];
         }
 
         return $data;
@@ -128,14 +130,6 @@ class Beacon
             ];
         }
 
-        return $this->pageViewUniqueKeys;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPageViewStartEndTimes()
-    {
         return $this->pageViewUniqueKeys;
     }
 
