@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace App\BasicRum\Stats;
 
 use App\Entity\NavigationTimings;
-use App\Entity\ResourceTimings;
 use App\Entity\NavigationTimingsUserAgents;
-use App\Entity\ResourceTimingsAttributes;
 
-use App\BasicRum\ResourceTiming\Decompressor;
+use App\BasicRum\Beacon\RumData\ResourceTiming;
 
+use App\Entity\LastBlockingResources;
 
 class LastBlockingResourceCalculator
 {
@@ -32,100 +31,76 @@ class LastBlockingResourceCalculator
     {
         $lastPageViewId = $this->_getPreviousLastScannedPageViewId();
 
-        $badBeacons = 0;
-
-        $searchNames = [];
-
-        /**
-         *
-         * // 0 => HEAD, 1 => BODY
-         * ResourceTimingCompression.SPECIAL_DATA_SCRIPT_LOCAT_ATTR = 0x4;
-         *
-         * We may have information if the resource is in head or body tag
-         *
-         */
-        $searchNames['jquery-ui.css'] = 1;
-        $searchNames['1.css'] = 1;
-        $searchNames['jquery-1.11.0.min.js'] = 1;
-        $searchNames['respond.src.js'] = 1;
-        $searchNames['script.js'] = 1;
-        $searchNames['checkout.js'] = 1;
-        $searchNames['script.js'] = 1;
-        $searchNames['jquery-ui.js'] = 1;
-        //$searchNames['dropin.min.js'] = 1;
-
         $navTimingsRes = $this->_getNavTimingsInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
 
-        $decompressor = new Decompressor();
+        $resourceTiming = new ResourceTiming();
+
+        $lastBlockingResources = [];
 
         foreach ($navTimingsRes as $nav) {
             $pageViewId = $nav['pageViewId'];
 
+            $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->registry);
 
-
-            /** @var ResourceTimings $resourceTimings */
-            $resourceTimings = $this->registry
-                ->getRepository(ResourceTimings::class)
-                ->findBy(['pageViewId' => $pageViewId]);
-
-
-            $resourceTimingsDecompressed = [];
-
-            /** @var ResourceTimings $res */
-            foreach ($resourceTimings as $res) {
-                $resourceTimingsDecompressed = $decompressor->decompress($res->getResourceTimings());
-            }
-
-            $resourceTimingsData = [];
-
-            $tmpName = '';
+            $finalName  = '';
             $tmpEndTime = 0;
-            $tmpUrlId   = 0;
 
-            foreach ($resourceTimingsDecompressed as $res) {
-                /** @var \App\Entity\ResourceTimingsAttributes $resourceTimingUrl */
-                $resourceTimingUrl = $this->registry
-                    ->getRepository(ResourceTimingsAttributes::class)
-                    ->findOneBy(['id' => $res['url_id']]);
-
-                $name = basename($resourceTimingUrl->getUrl());
-
-                if (strpos($name, '.js') !== false || strpos($name, '.css') !== false) {
-
-                    if (isset($searchNames[$name])) {
-                        if (($res['start'] + $res['duration']) > $tmpEndTime) {
-                            $tmpName = $name;
-                            $tmpEndTime = $res['start'] + $res['duration'];
-                            $tmpUrlId = $res['url_id'];
-                        }
-                    }
+            foreach ($this->_getBlockingResources($resourceTimingsData) as $resource) {
+                if (($resource['startTime'] + $resource['duration']) > $tmpEndTime) {
+                    $finalName = $resource['name'];
+                    $tmpEndTime = $resource['startTime'] + $resource['duration'];
                 }
             }
 
-            if (!empty($tmpName)) {
-                if ($nav['firstPaint'] > 0 && $tmpEndTime > $nav['firstPaint']) {
-                    $resourceTimingsData[] = [
-                        'page_view_id'          => $pageViewId,
-                        'resource_url_id'       => $tmpUrlId,
-                        'name'                  => $tmpName,
-                        'responseEnd'           => $tmpEndTime,
-                        'firstPaint'            => $nav['firstPaint']
-                    ];
-
-                    $badBeacons++;
-
-                    print_r($resourceTimingsData);
+            if (!empty($finalName)) {
+                if ($tmpEndTime > 65535) {
+                    $tmpEndTime = 65535;
                 }
 
-
+                $lastBlockingResources[] = [
+                    'page_view_id'          => $pageViewId,
+                    'url'                   => $finalName,
+                    'time'                  => $tmpEndTime,
+                    'first_paint'           => $nav['firstPaint']
+                ];
             }
-
 
         }
+        
+        $this->_saveBlockingResources($lastBlockingResources);
 
-        var_dump($badBeacons);
+        return count($lastBlockingResources);
+    }
 
-        return count($navTimingsRes);
+    /**
+     * @param array $resources
+     * @return array
+     */
+    private function _getBlockingResources(array $resources) : array
+    {
+        $blocking = [];
+
+        foreach ($resources as $resource) {
+            $name = basename($resource['name']);
+
+            if (strpos($name, '.js') !== false) {
+                if (!isset($resource['scriptBody']) || !isset($resource['scriptDefer']) || !isset($resource['scriptAsync'])) {
+                    continue;
+                }
+
+                if ($resource['scriptBody'] === true || $resource['scriptDefer'] === true || $resource['scriptAsync'] === true) {
+                    continue;
+                }
+
+                $blocking[] = $resource;
+            }
+
+            if (strpos($name, '.css') !== false) {
+                $blocking[] = $resource;
+            }
+        }
+
+        return $blocking;
     }
 
     /**
@@ -133,63 +108,30 @@ class LastBlockingResourceCalculator
      */
     private function _getPreviousLastScannedPageViewId()
     {
-        return 100;
-
         $repository = $this->registry
-            ->getRepository(VisitsOverview::class);
+            ->getRepository(LastBlockingResources::class);
 
-        $pageViewId = (int) $repository->createQueryBuilder('vo')
-            ->select('MAX(vo.lastPageViewId)')
+        $pageViewId = (int) $repository->createQueryBuilder('lbr')
+            ->select('MAX(lbr.pageViewId)')
             ->getQuery()
             ->getSingleScalarResult();
 
         return $pageViewId === 0 ? 0 : $pageViewId;
     }
 
-    private function _saveVisits(array $visits)
+    private function _saveBlockingResources(array $resources)
     {
-        $lastScannedDate = $this->_getPreviousLastScannedDate();
+        $cnt = 0;
 
-        $cnt = 1;
-
-        foreach ($visits as $visit) {
+        foreach ($resources as $resource) {
             $cnt++;
 
-            if (isset($visit['visitId'])) {
-                $entity = $this->registry->getRepository(VisitsOverview::class)
-                    ->find($visit['visitId']);
-            } else {
-                $entity = new VisitsOverview();
-                $entity->setCompleted(false);
-            }
+            $entity = new LastBlockingResources();
 
-            $entity->setGuid($visit['guid']);
-            $entity->setpageViewsCount($visit['pageViewsCount']);
-            $entity->setFirstPageViewId($visit['firstPageViewId']);
-            $entity->setLastPageViewId($visit['lastPageViewId']);
-            $entity->setFirstUrlId($visit['firstUrlId']);
-            $entity->setLastUrlId($visit['lastUrlId']);
-            $entity->setAfterLastVisitDuration($visit['afterLastVisitDuration']);
-
-            //Check if we need to close the visit
-
-//            var_dump($lastScannedDate);
-            if (isset($visit['visitId']) && $lastScannedDate !== false) {
-                $completed = $this->_isVisitCompleted($entity, $lastScannedDate);
-                $entity->setCompleted($completed);
-
-                if ($completed) {
-                    $entity->setVisitDuration(
-                        $this->_calculatePageViewsDurationDuration($visit['firstPageViewId'], $visit['lastPageViewId'])
-                    );
-
-                    $entity->setAfterLastVisitDuration(
-                        $this->_calculateAfterLastVisitDuration(
-                            $visit
-                        )
-                    );
-                }
-            }
+            $entity->setPageViewId($resource['page_view_id']);
+            $entity->setTime($resource['time']);
+            $entity->setUrl($resource['url']);
+            $entity->setFirstPaint($resource['first_paint']);
 
             $this->registry->getManager()->persist($entity);
 
