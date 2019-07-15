@@ -66,7 +66,7 @@ class LastBlockingResourceCalculator
             }
 
         }
-        
+
         $this->_saveBlockingResources($lastBlockingResources);
 
         return count($lastBlockingResources);
