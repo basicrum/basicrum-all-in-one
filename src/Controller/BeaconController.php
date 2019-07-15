@@ -8,15 +8,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\BasicRum\WaterfallSvgRenderer;
-use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 
 use App\BasicRum\ResourceSize;
 
 use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUserAgents;
 
-use App\Entity\Beacons;
-
+use App\BasicRum\Beacon\RumData\ResourceTiming;
 
 class BeaconController extends AbstractController
 {
@@ -26,42 +24,23 @@ class BeaconController extends AbstractController
      */
     public function draw()
     {
-        $pageViewId = 195074;
+        $pageViewId = (int) $_POST['page_view_id'];
 
         /** @var NavigationTimings $navigationTiming */
         $navigationTiming = $this->getDoctrine()
             ->getRepository(NavigationTimings::class)
             ->findBy(['pageViewId' => $pageViewId]);
 
-
-        /** @var Beacons $beacon */
-        $beacon = $this->getDoctrine()
-            ->getRepository(Beacons::class)
-            ->findOneBy(['pageViewId' => $pageViewId]);
-
         /** @var NavigationTimingsUserAgents $userAgent */
         $userAgent = $this->getDoctrine()
             ->getRepository(NavigationTimingsUserAgents::class)
             ->findBy(['id' => $navigationTiming[0]->getUserAgentId()]);
 
-        $beaconData = json_decode($beacon->getBeacon(), true);
-
-        $resourceTimingsData = [];
-
-        if (!empty($beaconData['restiming'])) {
-
-            $resourceTimingCompressed = json_decode($beaconData['restiming'], true);
-
-            $decompressor = new ResourceTimingDecompressor_v_0_3_4();
-
-            $resourceTimingsData = $decompressor->decompressResources($resourceTimingCompressed);
-
-            usort($resourceTimingsData, function($a, $b) {
-                return $a['startTime'] - $b['startTime'];
-            });
-        }
-
         $sizeDistribution = [];
+
+        $resourceTiming = new ResourceTiming();
+
+        $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->getDoctrine());
 
         if (!empty($resourceTimingsData)) {
             $resourceSizesCalculator = new ResourceSize();
