@@ -58,8 +58,6 @@ class File
      */
     public function fetchBeacons()
     {
-        $this->archiveBeacons();
-
         $beaconFiles = glob($this->getRawBeaconsDir() . '/*.json');
 
         $data = [];

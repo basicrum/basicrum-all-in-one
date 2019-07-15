@@ -134,8 +134,7 @@ class ResourceTimingDecompressor_v_0_3_4
 
                 // end-node
                 foreach ($timings as $resourceData) {
-
-                    if (count($resourceData) > 0 && $resourceData[0] === self::SPECIAL_DATA_PREFIX) {
+                    if (is_array($resourceData) && count($resourceData) > 0 && $resourceData[0] === self::SPECIAL_DATA_PREFIX) {
                         // dimensions or sizes for this resource
                         continue;
                     }

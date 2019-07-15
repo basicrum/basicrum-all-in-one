@@ -52,11 +52,6 @@ class Beacon
 
             $data[$key] = $this->navigationTimingsNormalizer->normalize($beacons[$key]);
 
-            // Attach Resources
-            $data[$key]['restiming']  = !empty($beacons[$key]['restiming']) ?
-                json_decode($beacons[$key]['restiming'], true)
-                : [];
-
             $data[$key]['beacon_string'] = $beacon[1];
         }
 

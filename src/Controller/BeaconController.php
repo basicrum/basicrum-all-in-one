@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\BasicRum\WaterfallSvgRenderer;
+use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 
-use App\BasicRum\ResourceTiming\Decompressor;
 use App\BasicRum\ResourceSize;
 
 use App\Entity\NavigationTimings;
-use App\Entity\ResourceTimings;
-use App\Entity\ResourceTimingsUrls;
 use App\Entity\NavigationTimingsUserAgents;
+
+use App\Entity\Beacons;
 
 
 class BeaconController extends AbstractController
@@ -24,7 +26,7 @@ class BeaconController extends AbstractController
      */
     public function draw()
     {
-        $pageViewId = $_POST['page_view_id'];
+        $pageViewId = 195074;
 
         /** @var NavigationTimings $navigationTiming */
         $navigationTiming = $this->getDoctrine()
@@ -32,56 +34,32 @@ class BeaconController extends AbstractController
             ->findBy(['pageViewId' => $pageViewId]);
 
 
-        /** @var ResourceTimings $resourceTimings */
-        $resourceTimings = $this->getDoctrine()
-            ->getRepository(ResourceTimings::class)
-            ->findBy(['pageViewId' => $pageViewId]);
+        /** @var Beacons $beacon */
+        $beacon = $this->getDoctrine()
+            ->getRepository(Beacons::class)
+            ->findOneBy(['pageViewId' => $pageViewId]);
 
         /** @var NavigationTimingsUserAgents $userAgent */
         $userAgent = $this->getDoctrine()
             ->getRepository(NavigationTimingsUserAgents::class)
             ->findBy(['id' => $navigationTiming[0]->getUserAgentId()]);
 
-        $decompressor = new Decompressor();
-
-        $resourceTimingsDecompressed = [];
-
-        /** @var ResourceTimings $res */
-        foreach ($resourceTimings as $res) {
-            $resourceTimingsDecompressed = $decompressor->decompress($res->getResourceTimings());
-        }
+        $beaconData = json_decode($beacon->getBeacon(), true);
 
         $resourceTimingsData = [];
 
-        foreach ($resourceTimingsDecompressed as $res) {
-            // We do this in guly way but so far nice looking code is not a priority
-            /** @var \App\Entity\ResourceTimingsUrls $resourceTimingUrl */
-            $resourceTimingUrl = $this->getDoctrine()
-                ->getRepository(ResourceTimingsUrls::class)
-                ->findOneBy(['id' => $res['url_id']]);
+        if (!empty($beaconData['restiming'])) {
 
-            $resourceTimingsData[] = [
-                'name'                  => $resourceTimingUrl->getUrl(),
-                'initiatorType'         => 1,
-                'startTime'             => $res['start'],
-                'redirectStart'         => 0,
-                'redirectEnd'           => 0,
-                'fetchStart'            => 0,
-                'domainLookupStart'     => 0,
-                'domainLookupEnd'       => 0,
-                'connectStart'          => 0,
-                'secureConnectionStart' => 0,
-                'connectEnd'            => 0,
-                'requestStart'          => 0,
-                'responseStart'         => 0,
-                'responseEnd'           => $res['start'] + $res['duration'],
-                'duration'              => $res['duration'],
-                'encodedBodySize'       => 5,
-                'transferSize'          => 11,
-                'decodedBodySize'       => 52
-            ];
+            $resourceTimingCompressed = json_decode($beaconData['restiming'], true);
+
+            $decompressor = new ResourceTimingDecompressor_v_0_3_4();
+
+            $resourceTimingsData = $decompressor->decompressResources($resourceTimingCompressed);
+
+            usort($resourceTimingsData, function($a, $b) {
+                return $a['startTime'] - $b['startTime'];
+            });
         }
-
 
         $sizeDistribution = [];
 
@@ -94,8 +72,7 @@ class BeaconController extends AbstractController
             'nt_nav_st'      => 0,
             'nt_first_paint' => $navigationTiming[0]->getFirstContentfulPaint(),
             'nt_res_st'      => $navigationTiming[0]->getFirstByte(),
-            'restiming'      => $resourceTimingsData,
-            'url'            => 'https://www.darvart.de/'
+            'restiming'      => $resourceTimingsData
         ];
 
         $renderer = new WaterfallSvgRenderer();

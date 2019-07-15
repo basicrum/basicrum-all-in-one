@@ -13,9 +13,6 @@ class Batch
     /** @var Batch\NavigationTimings */
     private $_navigationTimings;
 
-    /** @var Batch\ResourceTimings */
-    private $_resourceTimings;
-
     /** @var Batch\Beacons */
     private $_beacons;
 
@@ -31,8 +28,6 @@ class Batch
         $this->_batchSize  = $batchSize;
 
         $this->_navigationTimings = new Batch\NavigationTimings($registry);
-
-        $this->_resourceTimings   = new Batch\ResourceTimings($registry);
 
         $this->_beacons   = new Batch\Beacons($registry);
     }
@@ -73,7 +68,6 @@ class Batch
         $lastPageViewId = $this->_navigationTimings->getLastId();
 
         $this->_navigationTimings->batchInsert($views);
-        $this->_resourceTimings->batchInsert($views, $lastPageViewId);
         $this->_beacons->batchInsert($views, $lastPageViewId);
     }
 

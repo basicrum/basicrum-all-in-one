@@ -14,8 +14,6 @@ class Truncate
         $tables = [
             'navigation_timings',
             'navigation_timings_urls',
-            'resource_timings',
-            'resource_timings_urls',
             'navigation_timings_user_agents',
             'operating_systems',
             'device_types',

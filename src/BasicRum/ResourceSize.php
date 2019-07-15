@@ -20,6 +20,8 @@ class ResourceSize
 
         foreach ($resourceTimings as $resource)
         {
+            // We do not need this feature right now
+            break;
             if ('html' === $resource['initiatorType']) {
                 $html = $resource['encodedBodySize'];
             }
