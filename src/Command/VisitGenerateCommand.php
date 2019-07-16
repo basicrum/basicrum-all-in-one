@@ -8,12 +8,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use App\BasicRum\Stats\LastBlockingResourceCalculator;
+use App\BasicRum\Visit\Calculator;
 
-class BlockingResourcesCommand extends Command
+class VisitGenerateCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:calculate-last-blocking-resource';
+    protected static $defaultName = 'basicrum:visit:generate';
 
     /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
@@ -37,7 +37,7 @@ class BlockingResourcesCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $calculator = new LastBlockingResourceCalculator($this->registry);
+        $calculator = new Calculator($this->registry);
         $c = $calculator->calculate();
 
         echo $c;

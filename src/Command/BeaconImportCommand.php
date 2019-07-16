@@ -8,13 +8,22 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use App\BasicRum\Beacon\Catcher\Storage\File;
+use App\BasicRum\Beacon\Importer\Process;
 
-class InitBeaconsFolders extends Command
+class BeaconImportCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:init-beacons-folders';
+    protected static $defaultName = 'basicrum:beacon:import';
 
+    /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
+    private $registry;
+
+    public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
+    {
+        $this->registry = $registry;
+
+        parent::__construct();
+    }
 
     protected function configure()
     {
@@ -28,9 +37,10 @@ class InitBeaconsFolders extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = new File();
+        $reader = new Process\Reader\MonolithCatcher();
+        $process = new Process($this->registry);
 
-        $file->initFolders();
+        echo $process->runImport($reader);
     }
 
 }

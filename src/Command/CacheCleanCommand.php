@@ -13,7 +13,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 class CacheCleanCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:cache-clean';
+    protected static $defaultName = 'basicrum:cache:clean';
 
     protected function configure()
     {

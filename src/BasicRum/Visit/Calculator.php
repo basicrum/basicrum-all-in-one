@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\BounceRate;
+namespace App\BasicRum\Visit;
 
 use App\Entity\NavigationTimings;
 use App\Entity\VisitsOverview;

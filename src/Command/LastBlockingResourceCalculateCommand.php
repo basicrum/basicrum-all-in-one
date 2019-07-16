@@ -8,12 +8,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use App\BasicRum\Beacon\Importer\Process;
+use App\BasicRum\Stats\LastBlockingResourceCalculator;
 
-class ImportBeaconsCommand extends Command
+class LastBlockingResourceCalculateCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:import-beacons';
+    protected static $defaultName = 'basicrum:last-blocking-resource:calculate';
 
     /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
@@ -37,10 +37,10 @@ class ImportBeaconsCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $reader = new Process\Reader\MonolithCatcher();
-        $process = new Process($this->registry);
+        $calculator = new LastBlockingResourceCalculator($this->registry);
+        $c = $calculator->calculate();
 
-        echo $process->runImport($reader);
+        echo $c;
     }
 
 }
