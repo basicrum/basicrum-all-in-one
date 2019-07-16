@@ -1,0 +1,11 @@
+App\Entity\LastBlockingResources:
+  blockingResource1:
+    pageViewId: 1
+    time: 344
+    url: whatever
+    firstPaint: 0
+  blockingResource2:
+    pageViewId: 2
+    time: 566
+    url: whatever
+    firstPaint: 807

@@ -59,7 +59,7 @@ class Runner
          * @todo: send $limitFilters as param for secondary filters and decide how to proceed in
          * App\BasicRum\Layers\DataLayer\Query\Runner\SecondaryFilter
          */
-        list($complexSelectData, $complexSelectFilters) = $this->_processComplexSelect($limitFilters);
+        list($complexSelectsResults, $complexSelectFilters) = $this->_processComplexSelect($limitFilters);
 
         $filters = $this->_processPrefetchFilters($this->planActions['where']['secondaryFilters'], $limitFilters);
 
@@ -96,9 +96,11 @@ class Runner
 
         $res = $queryBuilder->getQuery()->getResult();
 
-        if (!empty($complexSelectData)) {
-            foreach ($res as $key => $row) {
-                $res[$key] = array_merge($row, $complexSelectData[$row[$this->planActions['complex_selects'][0]->getPrimaryKeyFieldName()]]);
+        if (!empty($complexSelectsResults)) {
+            foreach ($complexSelectsResults as $complexSelectKey => $complexSelectData) {
+                foreach ($res as $key => $row) {
+                    $res[$key] = array_merge($row, $complexSelectData[$row[$this->planActions['complex_selects'][$complexSelectKey]->getPrimaryKeyFieldName()]]);
+                }
             }
         }
 
@@ -125,9 +127,11 @@ class Runner
 
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\ComplexSelect $complexSelect */
         foreach ($this->planActions['complex_selects'] as $complexSelect) {
-            $complexSelectData = $this->complexSelect->process($complexSelect, $filters);
+            $complexSelectData[] = $this->complexSelect->process($complexSelect, $filters);
             if (!empty($complexSelectData)) {
-                $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($complexSelectData)) . ')';
+                foreach ($complexSelectData as $data) {
+                    $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($data)) . ')';
+                }
             }
         }
 

@@ -126,10 +126,9 @@ class DiagramBuilder
         $humanReadableTechnicalMetrics = [
             'loadEventEnd' => 'Document Ready',
             'firstPaint'   => 'Time To First Paint',
-            'firstByte'    => 'Time To First Byte'
+            'firstByte'    => 'Time To First Byte',
+            'time'         => 'Time'
         ];
-
-        $bounceRate = '';
 
         $probesCount = 0;
 

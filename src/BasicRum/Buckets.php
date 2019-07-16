@@ -57,6 +57,9 @@ class Buckets
 
         // Fill buckets
         foreach ($samples as $sample) {
+            if (!isset($sample[$searchKey])) {
+                continue;
+            }
             if (isset($sample['firstPaint'])) {
                 if (100 >= $sample['firstPaint']) {
                     continue;

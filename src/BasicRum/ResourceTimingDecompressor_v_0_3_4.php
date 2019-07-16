@@ -716,7 +716,22 @@ class ResourceTimingDecompressor_v_0_3_4
      */
     private function reverseHostname($url)
     {
+        return $url;
+
         $urlParts = parse_url($url);
+
+        /**
+         * In case for urls that start with "blob:" or other edge cases when host can't be found
+         */
+        if (!isset($urlParts['host'])) {
+            $realUrlParts = parse_url($urlParts['path']);
+            $realHost = $urlParts['scheme'] . strrev($realUrlParts['host']);
+
+            var_dump(str_replace($realUrlParts['host'], $realHost, $url));
+
+            return str_replace($realUrlParts['host'], $realHost, $url);
+        }
+
 
         return str_replace($urlParts['host'], strrev($urlParts['host']), $url);
     }

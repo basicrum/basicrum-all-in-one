@@ -9,9 +9,10 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     /** @var array */
     private $technicalMetricsClassMap = [
-        'time_to_first_paint' => TimeToFirstPaint::class,
-        'document_ready'      => DocumentReady::class,
-        'time_to_first_byte'  => TimeToFirstByte::class,
+        'time_to_first_paint'     => TimeToFirstPaint::class,
+        'document_ready'          => DocumentReady::class,
+        'time_to_first_byte'      => TimeToFirstByte::class,
+        'last_blocking_resource'  => LastBlockingResource::class,
     ];
 
     private $technicalMetrics = [];
