@@ -26,9 +26,16 @@ class File
     /** @var string */
     CONST RELATIVE_ARCHIVE_STORAGE_DIR        = 'archive';
 
+    /** @var File\Time */
+    private $time;
+
+    private $sort;
+
     public function __construct()
     {
         $this->rootStorageDirectory = $this->getProjectPath() . '/' . self::ROOT_STORAGE_DIR;
+        $this->time = new File\Time();
+        $this->sort = new File\Sort();
     }
 
     /**
@@ -50,7 +57,7 @@ class File
         $parsed = parse_url($origin);
         $suffix = str_replace('.', '_', $parsed['host']);
 
-        return $this->getRawBeaconsDir() . '/' . $suffix . '_' . md5($beacon) . '-' . mktime() . '-' . rand(1, 99999) . '.json';
+        return $this->getRawBeaconsDir() . '/' . $suffix . '_' . md5($beacon) . '-' . time() . '-' . rand(1, 99999) . '.json';
     }
 
     /**
@@ -63,18 +70,13 @@ class File
         $data = [];
 
         foreach ($beaconFiles as $filePath) {
-            $parts = explode('-', $filePath);
-
             $data[] = [
-                0 => array_slice($parts, -2, 1)[0],
+                0 => $this->time->getCreatedAtFromPath($filePath),
                 1 => file_get_contents($filePath)
             ];
         }
 
-        // Sort the array
-        usort($data, function($element1, $element2) {
-            return $element1[0] - $element2[0];
-        });
+        $this->sort->sortBeacons($data);
 
         $this->moveBeacons($beaconFiles);
 
@@ -129,7 +131,7 @@ class File
     {
         $zip = new ZipArchive;
 
-        $zipFileName = mktime() . '.zip';
+        $zipFileName = time() . '.zip';
 
         if ($zip->open($this->getArchiveDir() . '/' . $zipFileName, ZipArchive::CREATE) === TRUE)
         {
