@@ -13,7 +13,7 @@ use App\BasicRum\Beacon\Catcher\Storage\File;
 class BeaconInitFolders extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacon:init--folders';
+    protected static $defaultName = 'basicrum:beacon:init-folders';
 
 
     protected function configure()
