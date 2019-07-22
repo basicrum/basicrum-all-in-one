@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 class BeaconTransferFromRemoteCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacons:transfer-from-remote';
+    protected static $defaultName = 'basicrum:beacon:transfer-from-remote';
 
     protected function configure()
     {
