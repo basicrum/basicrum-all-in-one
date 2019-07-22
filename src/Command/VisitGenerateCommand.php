@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use App\BasicRum\Visit\Calculator;
+use App\BasicRum\Visit\Persist;
 
 class VisitGenerateCommand extends Command
 {
@@ -38,9 +39,12 @@ class VisitGenerateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $calculator = new Calculator($this->registry);
-        $c = $calculator->calculate();
+        $visits = $calculator->calculate();
 
-        echo $c;
+        $persist = new Persist($this->registry);
+        $persist->saveVisits($visits);
+
+        echo 0;
     }
 
 }

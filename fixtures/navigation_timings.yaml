@@ -31,7 +31,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 1
             osId: 1
             processId: "56jyvc3l"
-            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901"
+            guid: "test-2-closed-sessions"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-25 13:32:33'))>
             loadEventEnd: 139
@@ -49,7 +49,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyvdda"
-            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901"
+            guid: "test-2-closed-sessions"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
             loadEventEnd: 1393
@@ -70,4 +70,58 @@ App\Entity\NavigationTimings:
             guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244400"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
+            loadEventEnd: 1344
+      pageview5:
+            dnsDuration: 0
+            connectDuration: 0
+            firstByte: 2150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 134
+            firstContentfulPaint: 0
+            redirectsCount: 1
+            urlId: 2
+            userAgentId: 1
+            deviceTypeId: 2
+            osId: 2
+            processId: "56jyr1da"
+            guid: "test-unrealistic-visit-duration"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
+            loadEventEnd: 1344
+      pageview6:
+            dnsDuration: 0
+            connectDuration: 0
+            firstByte: 2150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 134
+            firstContentfulPaint: 0
+            redirectsCount: 1
+            urlId: 2
+            userAgentId: 1
+            deviceTypeId: 2
+            osId: 2
+            processId: "56jyrdda"
+            guid: "test-unrealistic-visit-duration"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-11-01 14:33:44'))>
+            loadEventEnd: 1344
+      pageview7:
+            dnsDuration: 0
+            connectDuration: 0
+            firstByte: 2150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 134
+            firstContentfulPaint: 0
+            redirectsCount: 1
+            urlId: 2
+            userAgentId: 1
+            deviceTypeId: 2
+            osId: 2
+            processId: "5fjyrvda"
+            guid: "test-unrealistic-visit-duration"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-11-06 14:33:44'))>
             loadEventEnd: 1344
