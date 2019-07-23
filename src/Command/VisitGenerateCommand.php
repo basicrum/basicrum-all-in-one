@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use App\BasicRum\Visit\Calculator;
-use App\BasicRum\Visit\Persist;
+use App\BasicRum\Visit\Data\Persist;
 
 class VisitGenerateCommand extends Command
 {

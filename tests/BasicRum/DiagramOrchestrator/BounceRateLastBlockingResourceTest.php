@@ -56,7 +56,7 @@ class BounceRateLastBlockingResourceTest extends FixturesTestCase
                                 'firstPageViewId' => 1,
                                 'time'            => 344,
                                 'pageViewsCount'  => 1,
-                                'guid'            => 'ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901'
+                                'guid'            => 'first-closed-session'
                             ]
                         ]
                 ]

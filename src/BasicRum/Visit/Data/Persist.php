@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Visit;
+namespace App\BasicRum\Visit\Data;
 
 use App\Entity\VisitsOverview;
 

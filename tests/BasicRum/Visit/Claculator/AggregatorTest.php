@@ -2,17 +2,22 @@
 
 namespace App\Tests\BasicRum\Visit\Calculator;
 
-use App\Tests\BasicRum\FixturesTestCase;
+use PHPUnit\Framework\TestCase;
 
 use App\BasicRum\Visit\Calculator\Aggregator;
 
 
-class AggregatorTest extends FixturesTestCase
+class AggregatorTest extends TestCase
 {
 
-    protected function setUp()
+    private function _getAggregator()
     {
-        static::bootKernel();
+        $fetchMock = $this
+            ->getMockBuilder(\App\BasicRum\Visit\Data\Fetch::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        return new Aggregator(30, $fetchMock);
     }
 
     /**
@@ -21,7 +26,7 @@ class AggregatorTest extends FixturesTestCase
      */
     public function testAggregatorSameGuidTwoSeparateVisits()
     {
-        $calculator = new Aggregator(30);
+        $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
@@ -39,10 +44,10 @@ class AggregatorTest extends FixturesTestCase
         ];
 
         foreach ($pageViews as $view) {
-            $calculator->addPageView($view);
+            $aggregator->addPageView($view);
         }
 
-        $res = $calculator->generateVisits([]);
+        $res = $aggregator->generateVisits([]);
 
         $this->assertEquals(
             [
@@ -67,7 +72,7 @@ class AggregatorTest extends FixturesTestCase
                     'firstUrlId'             => 1,
                     'lastUrlId'              => 1,
                     'visitDuration'          => 0,
-                    'afterLastVisitDuration' => 0,
+                    'afterLastVisitDuration' => 259200,
                     'completed'              => false
                 ],
             ],
@@ -81,7 +86,7 @@ class AggregatorTest extends FixturesTestCase
      */
     public function testAggregatorSameGuidTwoSeparateVisitsAttachPreviouslyNotClosed()
     {
-        $calculator = new Aggregator(30);
+        $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
@@ -99,10 +104,10 @@ class AggregatorTest extends FixturesTestCase
         ];
 
         foreach ($pageViews as $view) {
-            $calculator->addPageView($view);
+            $aggregator->addPageView($view);
         }
 
-        $calculator->addPageView(
+        $aggregator->addPageView(
             [
                 'guid'       => 'test-2-closed-sessions',
                 'createdAt'  => new \DateTime('2018-10-25 13:27:00'),
@@ -124,7 +129,7 @@ class AggregatorTest extends FixturesTestCase
             ]
         ];
 
-        $res = $calculator->generateVisits($notCompletedVisits);
+        $res = $aggregator->generateVisits($notCompletedVisits);
 
         $this->assertEquals(
             [
@@ -151,7 +156,7 @@ class AggregatorTest extends FixturesTestCase
                     'lastUrlId'              => 1,
                     'completed'              => false,
                     'visitDuration'          => 0,
-                    'afterLastVisitDuration' => 0,
+                    'afterLastVisitDuration' => 259200,
                 ],
             ],
             $res
@@ -164,7 +169,7 @@ class AggregatorTest extends FixturesTestCase
      */
     public function testCloseMoreThanOneChunkWithSameGuidWhenFirstAndLastScanPageViewAreOutsideExpireRange()
     {
-        $calculator = new Aggregator(30);
+        $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
@@ -194,12 +199,12 @@ class AggregatorTest extends FixturesTestCase
         ];
 
         foreach ($pageViews as $view) {
-            $calculator->addPageView($view);
+            $aggregator->addPageView($view);
         }
 
         $notCompletedVisits = [];
 
-        $res = $calculator->generateVisits($notCompletedVisits);
+        $res = $aggregator->generateVisits($notCompletedVisits);
 
         $this->assertEquals(
             [
@@ -226,7 +231,7 @@ class AggregatorTest extends FixturesTestCase
                     'lastUrlId'              => 1,
                     'completed'              => true,
                     'visitDuration'          => 0,
-                    'afterLastVisitDuration' => 0,
+                    'afterLastVisitDuration' => 18000,
 
                 ],
                 [
@@ -252,7 +257,7 @@ class AggregatorTest extends FixturesTestCase
      */
     public function testCloseOnlyOneChunkWithSameGuidWhenFirstAndLastScanPageViewAreInDurationRange()
     {
-        $calculator = new Aggregator(30);
+        $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
@@ -282,12 +287,12 @@ class AggregatorTest extends FixturesTestCase
         ];
 
         foreach ($pageViews as $view) {
-            $calculator->addPageView($view);
+            $aggregator->addPageView($view);
         }
 
         $notCompletedVisits = [];
 
-        $res = $calculator->generateVisits($notCompletedVisits);
+        $res = $aggregator->generateVisits($notCompletedVisits);
 
         $this->assertEquals(
             [
@@ -314,7 +319,7 @@ class AggregatorTest extends FixturesTestCase
                     'lastUrlId'              => 1,
                     'completed'              => false,
                     'visitDuration'          => 0,
-                    'afterLastVisitDuration' => 0,
+                    'afterLastVisitDuration' => 18000,
 
                 ],
                 [
@@ -328,6 +333,92 @@ class AggregatorTest extends FixturesTestCase
                     'completed'              => false,
                     'visitDuration'          => 0,
                     'afterLastVisitDuration' => 0,
+                ],
+            ],
+            $res
+        );
+    }
+
+    /**
+     * @group visit_aggregator
+     * @throws \Exception
+     */
+    public function testAfterLastVisitDurationCalculatedAgainstPreviouslyCompletedVisit()
+    {
+        $fetchMock = $this
+            ->getMockBuilder(\App\BasicRum\Visit\Data\Fetch::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['fetchPreviousSessionPageView'])
+            ->getMock();
+
+        $counter = 0;
+
+        $fetchMock
+            ->expects($this->atLeastOnce())
+            ->method('fetchPreviousSessionPageView')
+            ->will($this->returnCallback(function () use (&$counter) {
+                $counter++;
+                if ($counter == 1) {
+                    return [
+                            'guid'       => 'first-closed-session',
+                            'createdAt'  => new \DateTime('2018-10-24 13:32:33'),
+                            'pageViewId' => 1,
+                            'urlId'      => 1
+                        ];
+                }
+                return [];
+            }));
+
+
+        $aggregator = new Aggregator(30, $fetchMock);
+
+        $pageViews = [
+            [
+                'guid'       => 'first-closed-session',
+                'createdAt'  => new \DateTime('2018-10-25 13:32:33'),
+                'pageViewId' => 2,
+                'urlId'      => 1
+            ],
+            [
+                'guid'       => 'last-in-duration-range',
+                'createdAt'  => new \DateTime('2018-10-25 18:40:33'),
+                'pageViewId' => 3,
+                'urlId'      => 1
+            ],
+        ];
+
+        foreach ($pageViews as $view) {
+            $aggregator->addPageView($view);
+        }
+
+        $res = $aggregator->generateVisits([]);
+
+        $this->assertEquals(
+            [
+                [
+                    'visitId'                => false,
+                    'guid'                   => 'first-closed-session',
+                    'pageViewsCount'         => 1,
+                    'firstPageViewId'        => 2,
+                    'lastPageViewId'         => 2,
+                    'firstUrlId'             => 1,
+                    'lastUrlId'              => 1,
+                    'completed'              => true,
+                    'visitDuration'          => 0,
+                    'afterLastVisitDuration' => 86400,
+
+                ],
+                [
+                    'visitId'                => false,
+                    'guid'                   => 'last-in-duration-range',
+                    'pageViewsCount'         => 1,
+                    'firstPageViewId'        => 3,
+                    'lastPageViewId'         => 3,
+                    'firstUrlId'             => 1,
+                    'lastUrlId'              => 1,
+                    'completed'              => false,
+                    'visitDuration'          => 0,
+                    'afterLastVisitDuration' => 0
                 ],
             ],
             $res

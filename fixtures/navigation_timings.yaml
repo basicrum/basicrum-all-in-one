@@ -13,7 +13,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyvc3l"
-            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244901"
+            guid: "first-closed-session"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-24 13:31:03'))>
             loadEventEnd: 139
@@ -74,6 +74,24 @@ App\Entity\NavigationTimings:
       pageview5:
             dnsDuration: 0
             connectDuration: 0
+            firstByte: 150
+            redirectDuration: 29
+            lastByteDuration: 40
+            firstPaint: 344
+            firstContentfulPaint: 0
+            redirectsCount: 3
+            urlId: 2
+            userAgentId: 1
+            deviceTypeId: 2
+            osId: 2
+            processId: "56jfc3l"
+            guid: "first-closed-session"
+            stayOnPageTime: 24
+            createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
+            loadEventEnd: 139
+      pageview6:
+            dnsDuration: 0
+            connectDuration: 0
             firstByte: 2150
             redirectDuration: 29
             lastByteDuration: 40
@@ -89,7 +107,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
-      pageview6:
+      pageview7:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
@@ -107,7 +125,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-11-01 14:33:44'))>
             loadEventEnd: 1344
-      pageview7:
+      pageview8:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
