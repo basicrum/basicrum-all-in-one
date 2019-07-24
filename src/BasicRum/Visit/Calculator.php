@@ -46,13 +46,13 @@ class Calculator
 
         foreach ($notCompletedVisits as $notCompletedVisit)
         {
-            $views = $this->fetch->fetchNavTimingsInRangeForSession(
+            $notCompletedViews = $this->fetch->fetchNavTimingsInRangeForSession(
                 $notCompletedVisit['firstPageViewId'],
                 $notCompletedVisit['lastPageViewId'],
                 $notCompletedVisit['guid']
             );
 
-            foreach ($views as $view) {
+            foreach ($notCompletedViews as $view) {
                 $this->aggregator->addPageView($view);
             }
         }

@@ -92,16 +92,12 @@ class Aggregator
                     );
                 }
 
-                $afterLastVisitDuration = 0;
-
-                //if ($completed) {
-                    $afterLastVisitDuration = $this->_calculateAfterLastVisitDuration(
-                        $firstChunkKey === $currentChunkKey,
-                        $currentChunkKey,
-                        $chunks,
-                        $views
-                    );
-                //}
+                $afterLastVisitDuration = $this->_calculateAfterLastVisitDuration(
+                    $firstChunkKey === $currentChunkKey,
+                    $currentChunkKey,
+                    $chunks,
+                    $views
+                );
 
                 $visitDuration = $this->duration->calculatePageViewsDurationDuration(
                     $views[$beginId],
