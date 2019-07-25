@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Date;
 
-use DateTime;
-use DatePeriod;
-use DateInterval;
+use \DateTime;
+use \DatePeriod;
+use \DateInterval;
 
 class DayInterval
 {
