@@ -5,11 +5,37 @@
 /*-------------------------------------------
 	Main scripts used by theme
 ---------------------------------------------*/
-//
-//  Function for load content from url and put in $('.ajax-content') block
-//
-
 (function ($, window) {
+    var trigger = $('.hamburger'),
+        overlay = $('.overlay'),
+        isClosed = false;
+
+    trigger.click(function () {
+        hamburger_cross();
+    });
+
+    function hamburger_cross() {
+
+        if (isClosed == true) {
+            overlay.hide();
+            trigger.removeClass('is-open');
+            trigger.addClass('is-closed');
+            isClosed = false;
+        } else {
+            overlay.show();
+            trigger.removeClass('is-closed');
+            trigger.addClass('is-open');
+            isClosed = true;
+        }
+    }
+
+    $('[data-toggle="offcanvas"]').click(function () {
+        $('#wrapper').toggleClass('toggled');
+    });
+
+    //
+    //  Function for load content from url and put in $('.ajax-content') block
+    //
     function LoadAjaxContent(url){
         $('.preloader').show();
 
@@ -20,6 +46,14 @@
             if (xhrOrig.readyState == 4 && xhrOrig.status == 200) {
                 $('#ajax-content').html(xhrOrig.responseText);
                 $('.preloader').hide();
+
+                //Attach breadcrumbs
+                var ajaxBreadcrumbs = $('#ajax-content nav[aria-label=breadcrumb]');
+                var navBreadcrumbs  = $('header nav[aria-label=breadcrumb]');
+
+                if (ajaxBreadcrumbs !== undefined && navBreadcrumbs !== undefined) {
+                    navBreadcrumbs.html(ajaxBreadcrumbs.html());
+                }
             }
         });
 
@@ -36,10 +70,6 @@
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
     $(document).ready(function () {
-        $('body').on('click', '.show-sidebar', function (e) {
-            e.preventDefault();
-            $('div#main').toggleClass('sidebar-show');
-        });
         var ajax_url = location.hash.replace(/^#/, '');
         if (ajax_url.length < 1) {
             ajax_url = '/dashboard';
@@ -126,6 +156,8 @@
                 }
                 var url = $(this).attr('href');
                 window.location.hash = url;
+                hamburger_cross();
+                $('#wrapper').removeClass('toggled');
                 LoadAjaxContent(url);
             }
         });
@@ -141,6 +173,8 @@
                 }
                 var url = $(this).data('link');
                 window.location.hash = url;
+                hamburger_cross();
+                $('#wrapper').removeClass('toggled');
                 LoadAjaxContent(url);
             }
         });
