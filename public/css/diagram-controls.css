@@ -1,13 +1,6 @@
-#diagram_generator, #waterfall-table-form {
-    position: absolute;
-    z-index: 9999;
-}
-
 .diagram-controls {
-    height: 72px;
+    height: 68px;
     overflow: hidden;
-    border: 1px solid rgba(0,0,0,.1);
-    background: #fff;
 }
 
 .diagram-controls .form-control {
@@ -35,9 +28,9 @@
 }
 
 .controls-aware-diagram-container {
-    padding-top: 80px;
+    padding-top: 10px;
 }
 
 .views-table-container {
-    padding-top: 100px;
+    padding-top: 30px;
 }
