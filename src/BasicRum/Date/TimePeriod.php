@@ -70,7 +70,7 @@ class TimePeriod
      */
     private function _prepareIntervalValue(DateTime $date)
     {
-        return $date->format('Y-m-d')  . self::TAIL_TIME;
+        return $date->format('m/d/Y');
     }
 
     /**
