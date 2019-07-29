@@ -19,10 +19,6 @@ html { height: 100%;}
     transition: all 0.5s ease;
 }
 
-#wrapper.toggled {
-    /*padding-left: 220px;*/
-}
-
 #sidebar-wrapper {
     position: absolute;
     z-index: 1000;
@@ -50,11 +46,6 @@ html { height: 100%;}
 
 #page-content-wrapper {
     width: 100%;
-}
-
-#wrapper.toggled #page-content-wrapper {
-    /*position: absolute;*/
-    /*margin-right: -220px;*/
 }
 
 /*-------------------------------*/
@@ -234,21 +225,4 @@ html { height: 100%;}
     position: absolute;
     top: 0;
     right: 10px;
-}
-
-/*-------------------------------*/
-/*            Overlay            */
-/*-------------------------------*/
-
-.overlay {
-    position: fixed;
-    display: none;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(250,250,250,.8);
-    z-index: 500;
 }
