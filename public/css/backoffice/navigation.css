@@ -23,6 +23,7 @@ html { height: 100%;}
     position: absolute;
     z-index: 1000;
     left: 220px;
+    top: 62px;
     border-right: 10px solid #065cb1;
     width: 0;
     height: 100%;
@@ -133,7 +134,7 @@ html { height: 100%;}
 .hamburger:active {
     outline: none;
 }
-.hamburger.is-closed:before {
+.hamburger:before {
     content: '';
     display: block;
     width: 100px;
@@ -145,7 +146,7 @@ html { height: 100%;}
     -webkit-transform: translate3d(0,0,0);
     -webkit-transition: all .35s ease-in-out;
 }
-.hamburger.is-closed:hover:before {
+.hamburger:hover:before {
     opacity: 1;
     display: block;
     -webkit-transform: translate3d(-100px,0,0);
@@ -163,45 +164,46 @@ html { height: 100%;}
     background-color: #fcfcfc;
 }
 
-.hamburger.is-closed .hamb-top {
+.hamburger .hamb-top {
     top: 5px;
     -webkit-transition: all .35s ease-in-out;
 }
-.hamburger.is-closed .hamb-middle {
+.hamburger .hamb-middle {
     top: 50%;
     margin-top: -2px;
 }
-.hamburger.is-closed .hamb-bottom {
+.hamburger .hamb-bottom {
     bottom: 5px;
     -webkit-transition: all .35s ease-in-out;
 }
 
-.hamburger.is-closed:hover .hamb-top {
+.hamburger:hover .hamb-top {
     top: 0;
     -webkit-transition: all .35s ease-in-out;
 }
 
-.hamburger.is-closed:hover .hamb-bottom {
+.hamburger:hover .hamb-bottom {
     bottom: 0;
     -webkit-transition: all .35s ease-in-out;
 }
 
-.hamburger.is-open .hamb-top,
-.hamburger.is-open .hamb-bottom {
+.toggled .hamburger .hamb-top,
+.toggled .hamburger .hamb-bottom {
     top: 50%;
     margin-top: -2px;
 }
-.hamburger.is-open .hamb-top {
+
+.toggled .hamburger .hamb-top {
     -webkit-transform: rotate(45deg);
     -webkit-transition: -webkit-transform .2s cubic-bezier(.73,1,.28,.08);
 }
 
-.hamburger.is-open .hamb-middle { display: none; }
-.hamburger.is-open .hamb-bottom {
+.toggled .hamburger .hamb-middle { display: none; }
+.toggled .hamburger .hamb-bottom {
     -webkit-transform: rotate(-45deg);
     -webkit-transition: -webkit-transform .2s cubic-bezier(.73,1,.28,.08);
 }
-.hamburger.is-open:before {
+.toggled .hamburger:before {
     content: '';
     display: block;
     width: 100px;
@@ -214,7 +216,7 @@ html { height: 100%;}
     -webkit-transition: all .35s ease-in-out;
 }
 
-.hamburger.is-open:hover:before {
+.toggled .hamburger:hover:before {
     opacity: 1;
     display: block;
     -webkit-transform: translate3d(-100px,0,0);
