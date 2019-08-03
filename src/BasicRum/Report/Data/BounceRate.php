@@ -39,19 +39,7 @@ class BounceRate
             $bounceRatePercents[$bucketSize] = number_format(($bounces[$bucketSize] / count($bucket)) * 100, 2);
         }
 
-        $bounceRate = [
-            'x' => array_keys($bounceRatePercents),
-            'y' => array_values($bounceRatePercents),
-            'type' => 'line',
-            'name' => 'Bounce Rate',
-            'marker' => [
-                'color' => 'rgb(255, 127, 14)'
-            ],
-//            'xaxis' => 'x2',
-            'yaxis' => 'y2',
-        ];
-
-        return $bounceRate;
+        return $bounceRatePercents;
     }
 
 }

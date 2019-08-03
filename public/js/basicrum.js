@@ -7,7 +7,7 @@
         w.BASIC_RUM_APP = {};
     }
 
-    BASIC_RUM_APP = w.BASIC_RUM_APP;
+    var BASIC_RUM_APP = w.BASIC_RUM_APP;
 
     if (!BASIC_RUM_APP.plugins) {
         BASIC_RUM_APP.plugins = {};
