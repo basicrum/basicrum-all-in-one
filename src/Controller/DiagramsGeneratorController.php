@@ -8,16 +8,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use App\Entity\Releases;
 use App\Entity\PageTypeConfig;
 
-use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
-use App\BasicRum\Buckets;
-use App\BasicRum\Statistics\Median;
+
 use App\BasicRum\DiagramBuilder;
 
 use App\BasicRum\Layers\Presentation;
+
+use App\BasicRum\Date\TimePeriod;
 
 class DiagramsGeneratorController extends AbstractController
 {
@@ -29,11 +28,15 @@ class DiagramsGeneratorController extends AbstractController
     {
         $presentation = new Presentation();
 
+        $timePeriod = new TimePeriod();
+        $period = $timePeriod->getPastDaysFromNow(30);
+
         return $this->render('diagrams_generator/form.html.twig',
             [
                 'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
                 'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
-                'page_types'         => $presentation->getPageTypes($this->getDoctrine())
+                'page_types'         => $presentation->getPageTypes($this->getDoctrine()),
+                'period'             => $period
             ]
         );
     }
@@ -47,24 +50,24 @@ class DiagramsGeneratorController extends AbstractController
         ini_set('memory_limit', '-1');
         set_time_limit(0);
 
-        $collaboratorsAggregator = new CollaboratorsAggregator();
-
         $requirements = [];
 
+        $requirements['global'] = $_POST['global'];
+        $requirements['segments'] = [];
         /**
-         * Ugly filtering of post data in order to map form data correctly to dataLayer API
+         * Ugly filtering of post data in order to map form data correctly to diagram APIs
          */
-        foreach ($_POST as $keyO => $data) {
-            if (is_string($data) && strpos($data, '|') !== false) {
-                $e = explode('|', $data);
-                $requirements[$keyO] = [$e[0] => $e[1]];
+        foreach ($_POST['segments'] as $keyO => $data) {
+            //var_dump($data['data_requirements']['technical_metrics']);
+            $requirements['segments'][$keyO] = $data;
+
+            if (is_string($data['data_requirements']['technical_metrics']) && strpos($data['data_requirements']['technical_metrics'], '|') !== false) {
+                $e = explode('|', $data['data_requirements']['technical_metrics']);
+                $requirements['segments'][$keyO]['data_requirements']['technical_metrics'] = [$e[0] => $e[1]];
 
                 continue;
             }
-
-            $requirements[$keyO] = $data;
         }
-
 
         /**
          * If "page_type" presented then unset "url" and "query_param".
@@ -86,465 +89,20 @@ class DiagramsGeneratorController extends AbstractController
             unset($requirements['filters']['query_param']);
         }
 
-        $collaboratorsAggregator->fillRequirements($requirements);
-
         $diagramOrchestrator = new DiagramOrchestrator(
-            $collaboratorsAggregator->getCollaborators(),
+            $requirements,
             $this->getDoctrine()
         );
 
-        $res = $diagramOrchestrator->process();
+        $diagramBuilder = new DiagramBuilder();
 
-        $usedTechnicalMetrics = $collaboratorsAggregator->getTechnicalMetrics()->getRequirements();
-        $technicalMetricName = reset($usedTechnicalMetrics)->getSelectDataFieldName();
-
-        $upperLimit = 5000;
-
-        if ($technicalMetricName === 'loadEventEnd') {
-            $upperLimit = 12000;
-        }
-
-        $bucketSize = (int) $requirements['visualize']['bucket'];
-
-        $bucketizer = new Buckets($bucketSize, $upperLimit);
-        $buckets = $bucketizer->bucketizePeriod($res[0], $technicalMetricName);
-
-        $builder = new DiagramBuilder();
+        $data = $diagramBuilder->build($diagramOrchestrator, $requirements);
 
         $response = new Response(
             json_encode(
-                $builder->build($buckets, $collaboratorsAggregator)
+                $data
             )
         );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/diagrams_generator/overtimeMedian", name="diagrams_generator_overtimeMedian")
-     */
-    public function overtimeView()
-    {
-        // Quick hack for out of memory problems
-        ini_set('memory_limit', '-1');
-        set_time_limit(0);
-        ini_set('display_errors', '1');
-
-        $pages = [
-            'All Pages'      => '',
-//            'Cart'     => '/checkout/cart',
-//            'Product'  => '/catalog/product/view/id/',
-//            'Checkout' => '/checkout/onepage'
-        ];
-
-        $pageDiagrams       = [];
-        $bounceRateDiagrams = [];
-
-        foreach ($pages as $pageName => $url) {
-            $res = $this->_pageOvertime($url);
-
-            $maxYaxis = $res['ymax'] + 1000;
-            $maxYaxis = 1000 * ((int) ($maxYaxis / 1000));
-
-            $pageDiagrams[] = [
-                'section_title'       => 'All Pages',
-                'diagrams'            => json_encode($res['diagrams']),
-                'layout_extra_shapes' => json_encode($res['shapes']),
-                'title'               => $pageName . " - First Paint (median)",
-                'layout_overrides'    => json_encode(
-                    [
-                        'yaxis' => [
-                            'range' => [0, $maxYaxis],
-                            'tickvals' => [1000, 2000, 3000, 4000, 5000],
-                            'ticktext' =>  ["1 sec", "2 sec", "3 sec", "4 sec", "5 sec"],
-                            'fixedrange' => true
-                        ]
-                    ]
-                )
-            ];
-
-            $bounceRateDiagrams[] = json_encode($res['bounce_rate_diagrams']);
-        }
-
-        return $this->render('diagrams/over_time.html.twig',
-            [
-                'diagrams'             => $pageDiagrams,
-                'bounce_rate_diagrams' => $bounceRateDiagrams
-            ]
-        );
-    }
-
-    /**
-     * @param string $url
-     * @return array
-     */
-    private function _pageOvertime(string $url)
-    {
-        $past  = new \DateTime('04/07/2019');
-        $today = new \DateTime('04/28/2019');
-
-        $bucketizer = new Buckets(1, 10000);
-        $median = new Median();
-
-        $deviceTypes = [
-            2 => 'Desktop',
-            3 => 'Tablet',
-            1 => 'Mobile'
-        ];
-
-        $diagramsByType = [];
-
-        foreach ($deviceTypes as $deviceType) {
-            $diagramsByType[$deviceType] = [];
-        }
-
-        $bounceRateDiagrams = [];
-
-        foreach ($deviceTypes as $deviceId => $device) {
-            $requirementsArr = [
-                'filters' => [
-                    'device_type' => [
-                        'condition'    => 'is',
-                        'search_value' =>  (string) $deviceId
-                    ]
-                ],
-                'periods' => [
-                    [
-                        'from_date' => $past->format('Y-m-d'),
-                        'to_date'   => $today->format('Y-m-d')
-                    ]
-                ],
-                'technical_metrics' => [
-                    'time_to_first_paint' => 1
-                ],
-//                'business_metrics'  => [
-//                    'bounce_rate'       => 1
-//                ]
-            ];
-
-            $collaboratorsAggregator = new CollaboratorsAggregator();
-
-            $collaboratorsAggregator->fillRequirements($requirementsArr);
-
-            $diagramOrchestrator = new DiagramOrchestrator(
-                $collaboratorsAggregator->getCollaborators(),
-                $this->getDoctrine()
-            );
-
-            $res = $diagramOrchestrator->process();
-
-            foreach ($res as $daySamples) {
-                foreach ($daySamples as $day => $samples) {
-                    $buckets = $bucketizer->bucketize($samples, 'firstPaint');
-                    $sampleDiagramValues = [];
-
-                    foreach ($buckets as $bucketSize => $bucket) {
-                        $sampleDiagramValues[$bucketSize] = count($bucket);
-                    }
-
-                    $diagramsByType[$device][$day] = $median->calculateMedian($sampleDiagramValues);
-                }
-            }
-        }
-
-        $maxYValues = [];
-
-        foreach ($diagramsByType as $device => $data) {
-            $diagrams[] = [
-                'name' => $device,
-                'type' => 'line',
-                'x'    => array_keys($data),
-                'y'    => array_values($data)
-            ];
-
-            $yValues = array_values($data);
-
-            $maxYValues[] = max($yValues);
-        }
-
-        $repository = $this->getDoctrine()
-            ->getRepository(Releases::class);
-
-        $start = $past;
-        $end   = $today;
-
-        $query = $repository->createQueryBuilder('r')
-            ->where('r.date BETWEEN :start AND :end')
-            ->setParameter('start', $start->format('Y-m-d'))
-            ->setParameter('end', $end->format('Y-m-d'))
-            ->getQuery();
-
-        $releases = $query->getResult();
-
-        $shapes = [];
-
-        // Defaults
-        $releaseAnnotations = [
-            'x'    => [],
-            'y'    => [],
-            'text' => [],
-            'mode' => 'markers',
-            'hoverinfo' => 'text',
-            'showlegend' => false
-        ];
-
-        /** @var \App\Entity\Releases $release  */
-        foreach ($releases as $release) {
-            $releaseDates[] = $release->getDate();
-            $shapes[] = [
-                'type' => 'line',
-                'x0'   => $release->getDate()->format('Y-m-d'),
-                'y0'   => -0.5,
-                'x1'   => $release->getDate()->format('Y-m-d'),
-                'y1'   => 3000,
-                'line' => [
-                    'color' => '#ccc',
-                    'width' =>  2,
-                    'dash'  =>  'dot'
-                ]
-            ];
-
-            $releaseAnnotations['x'][]    = $release->getDate()->format('Y-m-d');
-            $releaseAnnotations['y'][]    = 3000;
-            $releaseAnnotations['text'][] = $release->getDescription();
-        }
-
-        $diagrams[] = $releaseAnnotations;
-
-        return [
-            'diagrams' => $diagrams,
-            'shapes'   => $shapes,
-            'bounce_rate_diagrams' => $bounceRateDiagrams,
-            'ymax' => max($maxYValues)
-        ];
-    }
-
-    /**
-     * @Route("/diagrams_generator/device/mobile_os_distribution", name="dashboard_mobile_os_distribution")
-     */
-    public function deviceOsDistribution()
-    {
-        // Quick hack for out of memory problems
-        ini_set('memory_limit', '-1');
-        set_time_limit(0);
-
-        $colors = [
-            'Android' => 'rgb(31, 119, 180)',
-            'iOS'     => 'rgb(255, 127, 14)',
-            'Windows' => 'rgb(44, 160, 44)',
-        ];
-
-        $oss = [
-            'Android' => '1',
-            'iOS'     => '2',
-            'Windows' => '3',
-        ];
-
-
-        $past   = '04/07/2019';
-        $today  = '04/28/2019';
-
-        $period = [
-            [
-                'from_date' => $past,
-                'to_date'   => $today
-            ]
-        ];
-
-        $osSamples = [];
-        $daysCount     = [];
-
-        $device = '1';
-
-        //Domain logic
-
-        foreach ($oss as $osName => $osKey) {
-            $requirements = [
-                'periods'     => $period,
-                'filters'     => [
-                    'device_type' => [
-                        'search_value' => (string) $device,
-                        'condition'    => 'is'
-                    ],
-                    'operating_system' => [
-                        'search_value' => (string) $osKey,
-                        'condition'    => 'is'
-                    ]
-                ],
-                'business_metrics' => [
-                    'page_views_count' => 1
-                ]
-            ];
-
-            $collaboratorsAggregator = new CollaboratorsAggregator();
-            $collaboratorsAggregator->fillRequirements($requirements);
-
-
-            $diagramOrchestrator = new DiagramOrchestrator(
-                $collaboratorsAggregator->getCollaborators(),
-                $this->getDoctrine()
-            );
-
-            $res = $diagramOrchestrator->process();
-
-            $data = [];
-
-            foreach ($res[0]  as $day => $samplesCount) {
-                $data[$day] = $samplesCount[0]['count'];
-
-                // Summing total visits per day. Used later for calculating percentage
-                $daysCount[$day] = isset($daysCount[$day]) ? $daysCount[$day] + $data[$day] : $data[$day];
-            }
-
-            $osSamples[$osName] = $data;
-        }
-
-
-
-        foreach ($osSamples as $osName => $data) {
-            foreach ($data as $day => $c) {
-                if ($daysCount[$day] == 0) {
-                    $deviceSamples[$osName][$day] = '0.00';
-                    continue;
-                }
-
-                $osSamples[$osName][$day] = number_format(($c / $daysCount[$day]) * 100, 2);
-            }
-        }
-
-        // Presentation logic
-        $osDiagrams = [];
-
-        foreach ($osSamples as $osName => $data) {
-            $osDiagrams[] = [
-                'x'          => array_keys($data),
-                'y'          => array_values($data),
-                'name'       => $osName,
-                'stackgroup' => 'device',
-                'line'       => [
-                    'color'  => $colors[$osName]
-                ]
-            ];
-        }
-
-        $response = new Response(json_encode($osDiagrams));
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/diagrams_generator/device/desktop_os_distribution", name="dashboard_desktop_os_distribution")
-     */
-    public function desktopOsDistribution()
-    {
-        // Quick hack for out of memory problems
-        ini_set('memory_limit', '-1');
-        set_time_limit(0);
-
-        $colors = [
-            'Linux'   => 'rgb(31, 119, 180)',
-            'Mac OS'  => 'rgb(255, 127, 14)',
-            'Windows' => 'rgb(44, 160, 44)',
-        ];
-
-        $oss = [
-            'Linux'   => '7',
-            'Mac OS'  => '5',
-            'Windows' => '3',
-        ];
-
-
-        $past   = '04/07/2019';
-        $today  = '04/28/2019';
-
-        $period = [
-            [
-                'from_date' => $past,
-                'to_date'   => $today
-            ]
-        ];
-
-        $osSamples = [];
-        $daysCount     = [];
-
-        $device = '2';
-
-        //Domain logic
-
-        foreach ($oss as $osName => $osKey) {
-            $requirements = [
-                'periods'     => $period,
-                'filters'     => [
-                    'device_type' => [
-                        'search_value' => (string) $device,
-                        'condition'    => 'is'
-                    ],
-                    'operating_system' => [
-                        'search_value' => (string) $osKey,
-                        'condition'    => 'is'
-                    ]
-                ],
-                'business_metrics' => [
-                    'page_views_count' => 1
-                ]
-            ];
-
-            $collaboratorsAggregator = new CollaboratorsAggregator();
-            $collaboratorsAggregator->fillRequirements($requirements);
-
-
-            $diagramOrchestrator = new DiagramOrchestrator(
-                $collaboratorsAggregator->getCollaborators(),
-                $this->getDoctrine()
-            );
-
-            $res = $diagramOrchestrator->process();
-
-            $data = [];
-
-            foreach ($res[0]  as $day => $samplesCount) {
-                $data[$day] = $samplesCount[0]['count'];
-
-                // Summing total visits per day. Used later for calculating percentage
-                $daysCount[$day] = isset($daysCount[$day]) ? $daysCount[$day] + $data[$day] : $data[$day];
-            }
-
-            $osSamples[$osName] = $data;
-        }
-
-
-
-        foreach ($osSamples as $osName => $data) {
-            foreach ($data as $day => $c) {
-                if ($daysCount[$day] == 0) {
-                    $deviceSamples[$osName][$day] = '0.00';
-                    continue;
-                }
-
-                $osSamples[$osName][$day] = number_format(($c / $daysCount[$day]) * 100, 2);
-            }
-        }
-
-        // Presentation logic
-        $osDiagrams = [];
-
-        foreach ($osSamples as $osName => $data) {
-            $osDiagrams[] = [
-                'x'          => array_keys($data),
-                'y'          => array_values($data),
-                'name'       => $osName,
-                'stackgroup' => 'device',
-                'line'       => [
-                    'color'  => $colors[$osName]
-                ]
-            ];
-        }
-
-        $response = new Response(json_encode($osDiagrams));
 
         $response->headers->set('Content-Type', 'application/json');
 

@@ -4,7 +4,6 @@ namespace App\Tests\BasicRum\DiagramOrchestrator;
 
 use App\Tests\BasicRum\FixturesTestCase;
 
-use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 
 class CountPageViewsTest extends FixturesTestCase
@@ -20,30 +19,42 @@ class CountPageViewsTest extends FixturesTestCase
 
     public function testCountPageViews()
     {
-        $requirementsArr = [
-            'filters' => [
-                'device_type' => [
-                    'condition'    => 'is',
-                    'search_value' => '2'
+        $input = [
+            'global' => [
+                'presentation' => [
+                    'render_type' => 'plane'
+                ],
+                'data_requirements' => [
+                    'period' => [
+                        'type'  => 'fixed',
+                        'start' => '10/24/2018',
+                        'end'   => '10/24/2018'
+                    ],
+                    'filters' => [
+                        'device_type' => [
+                            'condition'    => 'is',
+                            'search_value' => '2'
+                        ]
+                    ]
                 ]
             ],
-            'periods' => [
-                [
-                    'from_date' => '10/24/2018',
-                    'to_date'   => '10/24/2018'
+            'segments' => [
+                1 => [
+                    'presentation' => [
+                        'name' => 'Page Views',
+                        'color' => '#ff0000'
+                    ],
+                    'data_requirements' => [
+                        'business_metrics' => [
+                            'page_views_count' => 1
+                        ]
+                    ]
                 ]
-            ],
-            'business_metrics'  => [
-                'page_views_count' => 1,
             ]
         ];
 
-        $collaboratorsAggregator = new CollaboratorsAggregator();
-
-        $collaboratorsAggregator->fillRequirements($requirementsArr);
-
         $diagramOrchestrator = new DiagramOrchestrator(
-            $collaboratorsAggregator->getCollaborators(),
+            $input,
             $this->_getDoctrine()
         );
 
@@ -51,7 +62,7 @@ class CountPageViewsTest extends FixturesTestCase
 
         $this->assertEquals(
             [
-                [
+                1 => [
                     '2018-10-24 00:00:00' =>
                         [
                             [

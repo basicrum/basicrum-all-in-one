@@ -27,7 +27,10 @@ class Beacon
         $data = [];
 
         foreach ($beacons as $key => $beacon) {
-            if (false === $beacon || strpos($beacon[1], 'user_agent') === false || strpos($beacon[1], '"user_agent":""') !== false) {
+            if (false === $beacon
+                || strpos($beacon[1], 'user_agent') === false
+                || strpos($beacon[1], '"user_agent":""') !== false
+            ) {
                 continue;
             }
 

@@ -20,7 +20,7 @@ class Process
         $this->registry->getManager()->getConnection()->getConfiguration()->setSQLLogger(null);
     }
 
-    public function runImport(Process\Reader\MonolithCatcher $reader, $batchSize = 200)
+    public function runImport(/**Process\Reader\MonolithCatcher*/ $reader, $batchSize = 200)
     {
         $batchImporter = new Process\Writer\Batch($this->registry);
 

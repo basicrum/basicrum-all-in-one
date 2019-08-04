@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Layers\Presentation;
+namespace App\BasicRum\Report\Data;
 
 class BounceRate
 {

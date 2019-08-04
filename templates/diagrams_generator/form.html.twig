@@ -4,27 +4,30 @@
     </ol>
 </nav>
 <div>
-    <form id="diagram_generator" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
+    <form id="diagram_generator" method="post" class="form-horizontal" role="form" action="{{ path('diagrams_generator_generate') }}">
+        <input type="hidden" name="global[presentation][render_type]" value="plane" />
+        <input type="hidden" name="segments[1][presentation][name]" value="Test" />
+        <input type="hidden" name="segments[1][presentation][color]" value="#aa0000" />
         <div class="bg-light diagram-controls pl-2 pr-2">
             <fieldset>
                 <div class="row">
                     <div class="col-xs-12 col-sm-2">
                         <div class="form-group">
                             <label for="technical_metrics">Perf. Metric:</label>
-                            <select name="technical_metrics" class="form-control form-control-sm" id="technical_metrics">
+                            <select name="segments[1][data_requirements][technical_metrics]" class="form-control form-control-sm" id="technical_metrics">
                                 {#<option value="" selected="selected">---</option>#}
                                 {% for metric in navigation_timings %}
                                 <option value="{{ metric.key }}|1">{{ metric.label }}</option>
                                 {% endfor %}
                             </select>
-                            <label for="visualize_bucket">Bucket Size:</label>
-                            <select name="visualize[bucket]" class="form-control form-control-sm" id="visualize_bucket">
-                                <option value="100">0.1 sec</option>
-                                <option selected="selected" value="200">0.2 sec</option>
-                                <option value="300">0.3 sec</option>
-                                <option value="400">0.4 sec</option>
-                                <option value="500">0.5 sec</option>
-                            </select>
+                            {#<label for="visualize_bucket">Bucket Size:</label>#}
+                            {#<select name="visualize[bucket]" class="form-control form-control-sm" id="visualize_bucket">#}
+                                {#<option value="100">0.1 sec</option>#}
+                                {#<option selected="selected" value="200">0.2 sec</option>#}
+                                {#<option value="300">0.3 sec</option>#}
+                                {#<option value="400">0.4 sec</option>#}
+                                {#<option value="500">0.5 sec</option>#}
+                            {#</select>#}
                             {#<label for="visualize_time_range">Range:</label>#}
                             {#<select name="visualize[time_range]" class="form-control form-control-sm" id="visualize_time_range">#}
                                 {#<option value="1000">1 sec</option>#}
@@ -45,8 +48,8 @@
                             <div class="row">
                                 <div class="col-4">
                                     <label for="filters_device_type">Device:</label>
-                                    <input type="hidden" name="filters[device_type][condition]" value="is" />
-                                    <select name="filters[device_type][search_value]" class="form-control form-control-sm" id="filters_device_type">
+                                    <input type="hidden" name="global[data_requirements][filters][device_type][condition]" value="is" />
+                                    <select name="global[data_requirements][filters][device_type][search_value]" class="form-control form-control-sm" id="filters_device_type">
                                         <option selected value="">All</option>
                                         <option value="1">Mobile</option>
                                         <option value="3">Tablet</option>
@@ -57,8 +60,8 @@
                                 </div>
                                 <div class="col-4">
                                     <label for="filters_operating_system">OS:</label>
-                                    <input type="hidden" name="filters[operating_system][condition]" value="is" />
-                                    <select name="filters[operating_system][search_value]" class="form-control form-control-sm" id="filters_operating_system">
+                                    <input type="hidden" name="global[data_requirements][filters][operating_system][condition]" value="is" />
+                                    <select name="global[data_requirements][filters][operating_system][search_value]" class="form-control form-control-sm" id="filters_operating_system">
                                         <option selected value="">All</option>
                                         {% for os in operating_systems %}
                                             <option value="{{ os.key }}">{{ os.label }}</option>
@@ -67,8 +70,8 @@
                                 </div>
                                 <div class="col-4">
                                     <label for="filters_browser_name">Browser:</label>
-                                    <input type="hidden" name="filters[browser_name][condition]" value="is" />
-                                    <select name="filters[browser_name][search_value]" class="form-control form-control-sm" id="filters_browser_name">
+                                    <input type="hidden" name="global[data_requirements][filters][browser_name][condition]" value="is" />
+                                    <select name="global[data_requirements][filters][browser_name][search_value]" class="form-control form-control-sm" id="filters_browser_name">
                                         <option selected value="">All</option>
                                         <option value="Chrome">Chrome</option>
                                         <option value="Firefox">Firefox</option>
@@ -85,7 +88,7 @@
                                 <label for="filters_url_search_value">Url:</label>
                                 <div class="row">
                                     <div class="col-4">
-                                        <select name="filters[url][condition]" class="form-control form-control-sm" id="filters_url_condition">
+                                        <select name="global[data_requirements][filters][url][condition]" class="form-control form-control-sm" id="filters_url_condition">
                                             <option value="is">is</option>
                                             <option selected value="contains">contains</option>
                                             <option value="starts_with">starts with</option>
@@ -93,13 +96,13 @@
                                         </select>
                                     </div>
                                     <div class="col-8">
-                                        <input name="filters[url][search_value]" type="text" class="form-control form-control-sm" id="filters_url_search_value" />
+                                        <input name="global[data_requirements][filters][url][search_value]" type="text" class="form-control form-control-sm" id="filters_url_search_value" />
                                     </div>
                                 </div>
                                 <label for="filters_query_param_value">Url Parameters:</label>
                                 <div class="row">
                                     <div class="col-4">
-                                        <select name="filters[query_param][condition]" class="form-control form-control-sm" id="filters_query_param_condition">
+                                        <select name="global[data_requirements][filters][query_param][condition]" class="form-control form-control-sm" id="filters_query_param_condition">
                                             <option value="is">is</option>
                                             <option selected value="contains">contains</option>
                                             <option value="starts_with">starts with</option>
@@ -107,14 +110,14 @@
                                         </select>
                                     </div>
                                     <div class="col-8">
-                                        <input name="filters[query_param][search_value]" type="text" class="form-control form-control-sm" id="filters_query_param_value" />
+                                        <input name="global[data_requirements][filters][query_param][search_value]" type="text" class="form-control form-control-sm" id="filters_query_param_value" />
                                     </div>
                                 </div>
                                 {% if page_types is not empty %}
                                 <label for="filters_page_type">Page Type:</label>
                                 <div class="row">
                                     <div class="col-12">
-                                        <select name="filters[page_type]" class="form-control form-control-sm" id="filters_page_type">
+                                        <select name="global[data_requirements][filters][page_type]" class="form-control form-control-sm" id="filters_page_type">
                                             <option value="" selected="selected">---</option>
                                             {% for page in page_types %}
                                                 <option value="{{ page.getId() }}">{{ page.getPageTypeName() }}</option>
@@ -141,12 +144,12 @@
                             <label>Periods:</label>
                             <br />
                             <div class="date-picker-wrapper float-left">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="periods[0][from_date]" value="04/07/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_from_date_0" name="global[data_requirements][periods][0][from_date]" value="{{ period.getStart() }}">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             -
                             <div class="date-picker-wrapper float-right">
-                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="periods[0][to_date]" value="04/28/2019">
+                                <input class="form-control form-control-sm calendar-date-picker" type="text" id="current_period_to_date_0" name="global[data_requirements][periods][0][to_date]" value="{{ period.getEnd() }}">
                                 <span class="fa fa-calendar txt-danger form-control-feedback"></span>
                             </div>
                             {#<br />#}
@@ -274,15 +277,6 @@
         </div>
     </div>
 </div>
-<script type="text/javascript">
-    var basicRumPlot = function(diagrams, layout_extra_shapes, layout) {
-        if (layout_extra_shapes.length > 0) {
-            layout.shapes = layout_extra_shapes;
-        }
-
-        Plotly.newPlot('diagramContainer', diagrams, layout, {displayModeBar: false});
-    };
-</script>
 
 <script type="text/javascript">
     var diagramGeneratorForm = $('#diagram_generator');
@@ -298,11 +292,10 @@
             url: formAction,
             data: dataString,
             dataType: "json",
-            success: function(data) {
+            success: function(response) {
                 $(submitBtn).attr("disabled", false);
                 lessControls();
-                document.getElementById('callbackText').innerHTML = data.text;
-                basicRumPlot(data.diagrams, data.layout_extra_shapes, data.layout);
+                Plotly.newPlot('diagramContainer', response.diagrams, response.layout, {displayModeBar: false});
             },
             error: function() {
                 $(submitBtn).attr("disabled", false);

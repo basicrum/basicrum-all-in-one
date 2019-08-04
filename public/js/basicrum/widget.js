@@ -10,8 +10,8 @@
                 var diagramContainerId = widgets[i].getAttribute('id');
 
                 impl.fetchData(
-                    function (stacksDiv, response) {
-                        Plotly.newPlot(stacksDiv, response.diagrams, response.layout, {displayModeBar: false});
+                    function (diagramContainer, response) {
+                        Plotly.newPlot(diagramContainer, response.diagrams, response.layout, {displayModeBar: false});
                     },
                     window[paramsVarName],
                     diagramContainerId
@@ -19,14 +19,12 @@
             }
         },
         fetchData: function (callback, params, diagramContainerId) {
-            var layout = {};
-
             $.ajax('/widget/generate_diagram',
                 {
                     method: 'post',
                     data: params,
                     success : function(response) {
-                        callback(diagramContainerId, response, layout)
+                        callback(diagramContainerId, response)
                     }
                 }
             );

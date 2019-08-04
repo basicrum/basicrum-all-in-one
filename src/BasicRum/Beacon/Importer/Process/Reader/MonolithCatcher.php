@@ -18,7 +18,7 @@ class MonolithCatcher
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function read()
     {
