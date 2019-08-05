@@ -11,7 +11,7 @@
 
                 impl.fetchData(
                     function (diagramContainer, response) {
-                        Plotly.newPlot(diagramContainer, response.diagrams, response.layout, {displayModeBar: false});
+                        Plotly.newPlot(diagramContainer, response.diagrams, response.layout, {displayModeBar: false, responsive: true});
                     },
                     window[paramsVarName],
                     diagramContainerId

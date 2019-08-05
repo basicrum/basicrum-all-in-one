@@ -97,7 +97,7 @@
             <header>
                 <div class="container-fluid">
                     <div class="row" id="header">
-                        <div class="col-xs-6 col-sm-6">
+                        <div class="col-xs-4 col-sm-4">
                             <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
                                 <span class="hamb-top"></span>
                                 <span class="hamb-middle"></span>
@@ -107,57 +107,24 @@
 
                             </nav>
                         </div>
-                        <div id="top-panel" class="col-xs-6 col-sm-6">
-                            <div class="mt-2 mb-2 pull-right btn-group">
-                                <button type="button" class="btn btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Feedback <i class="fa fa-comment-o"></i>
-                                </button>
-                                <div class="p-2 dropdown-menu dropdown-menu-right">
-                                    <form action="{{ path('feedback_send') }}" id="feedback-form" type="post" style="width: 250px">
-                                        <div class="form-group">
-                                            <input name="nickname" type="text" class="form-control" placeholder="Nickname">
-                                        </div>
-                                        <div class="form-group">
-                                            <textarea name="message" style="height: 150px" class="form-control" placeholder="Message"></textarea>
-                                        </div>
-
-                                        <label>* Content of the page will be send as well</label>
-                                        <button type="submit" class="btn btn-primary float-right">Send</button>
-                                    </form>
+                        <div class="col-xs-4 col-sm-4">
+                            {% if global_notification == 'dev' %}
+                                <div style="font-size: 0.8rem" class="alert alert-warning p-1 mb-0" role="alert">
+                                    <i class="fa fa-exclamation"></i> Development version! Contains test data for period ({{ start_test_data }} - {{ end_test_data }}).
                                 </div>
-                                <script>
-                                    document.addEventListener("DOMContentLoaded", function(event) {
+                            {% endif %}
 
-                                        $('#feedback-form').submit(function (event) {
-                                            event.preventDefault();
-
-                                            var submitBtn = $("button[type=submit]", this);
-                                            $(submitBtn).attr("disabled", true);
-                                            var data = $(this).serializeArray();
-                                            var formAction = $(this).attr('action');
-
-                                            data.push(
-                                                {
-                                                    name: 'html',
-                                                    value: document.documentElement.innerHTML
-                                                }
-                                            );
-
-                                            $.ajax({
-                                                type: "POST",
-                                                url: formAction,
-                                                data: data,
-                                                success: function(data) {
-                                                    alert(data);
-                                                },
-                                                error: function() {
-                                                    alert('error');
-                                                }
-                                            });
-                                        })
-
-                                    });
-                                </script>
+                            {% if global_notification == 'demo' %}
+                                <div style="font-size: 0.8rem" class="alert alert-warning p-1 mb-0" role="alert">
+                                    <i class="fa fa-exclamation"></i> Demo version! Contains test data for period ({{ start_test_data }} - {{ end_test_data }}).
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div id="top-panel" class="col-xs-4 col-sm-4">
+                            <div class="mt-2 mb-2 pull-right btn-group">
+                                <a style="color: #fff" class="btn" target="_blank" href="https://github.com/basicrum/backoffice">
+                                    <i class="fa fa-comment-o"></i> Feedback on GitHub <i class="fa fa-github"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -168,7 +135,7 @@
             <div class="container-fluid" id="main">
                 <div class="row">
                     <!--Start Content-->
-                    <div id="content" class="col-xs-12 col-sm-12">
+                    <div id="content" class="col-12">
                         <div class="preloader">
                             <img src="{{ asset('img/devoops_getdata.gif') }}" class="devoops-getdata" alt="preloader"/>
                         </div>
@@ -187,7 +154,7 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('plugins/poper/popper.min.js') }}"></script>
     <script src="{{ asset('plugins/bootstrap.4.1.1/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('plugins/plotly/plotly.1.43.2.min.js') }}"></script>
+    <script src="{{ asset('plugins/plotly/plotly-1.49.1.min.js') }}"></script>
     <!-- All functions for this theme + document.ready processing -->
     <script src="{{ asset('js/basicrum.js') }}"></script>
     <script src="{{ asset('js/basicrum/content_loader.js') }}"></script>
