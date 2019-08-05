@@ -11,7 +11,9 @@
             $('.preloader').show();
 
             var xhrOrig = new XMLHttpRequest();
-            xhrOrig.open('GET', ajaxUrl, true);
+            xhrOrig.open('POST', ajaxUrl, true);
+            xhrOrig.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+
 
             xhrOrig.addEventListener("readystatechange", function () {
                 if (xhrOrig.readyState == 4 && xhrOrig.status == 200) {
@@ -30,7 +32,9 @@
                 }
             });
 
-            xhrOrig.send();
+            var data = 'BUMP_NOW_DATE='+ window['BUMP_NOW_DATE'];
+
+            xhrOrig.send(encodeURI(data));
         }
     };
 

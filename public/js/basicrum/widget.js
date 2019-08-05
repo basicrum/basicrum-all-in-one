@@ -17,6 +17,8 @@
                     params.global.data_requirements.period.end   = 'now';
                 }
 
+                params.BUMP_NOW_DATE = window['BUMP_NOW_DATE'];
+
                 var diagramContainerId = widgets[i].getAttribute('id');
 
                 impl.fetchData(

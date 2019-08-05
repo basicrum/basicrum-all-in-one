@@ -19,6 +19,8 @@ class IndexController extends AbstractController
         $startTestData = '';
         $endTestData = '';
 
+        $bumpNowDate = '';
+
         if( '' !== $globalNotification ) {
             /** @var NavigationTimings $lastNavigationTiming */
             $lastNavigationTiming = $this->getDoctrine()
@@ -32,6 +34,9 @@ class IndexController extends AbstractController
                 ->getOneOrNullResult();
 
             $endTestData = $lastNavigationTiming->getCreatedAt()->format('F j, Y');
+
+            $bumpNowDate = $lastNavigationTiming->getCreatedAt()->format('Y-m-d');
+            $bumpNowDate .= ' 00:00:00';
 
             /** @var NavigationTimings $lastNavigationTiming */
             $firstNavigationTiming = $this->getDoctrine()
@@ -52,7 +57,8 @@ class IndexController extends AbstractController
             [
                 'global_notification' => $globalNotification,
                 'start_test_data'     => $startTestData,
-                'end_test_data'       => $endTestData
+                'end_test_data'       => $endTestData,
+                'bump_now_date'       => $bumpNowDate
             ]
         );
     }
