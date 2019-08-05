@@ -31,6 +31,8 @@ class Layout
     {
         return [
             'height' => 280,
+            'plot_bgcolor' => "#fcfcfc",
+            'paper_bgcolor' => "#fcfcfc",
             'margin' => $this->margin->getMargin(),
             'xaxis' => [
                 'fixedrange' => true
