@@ -27,8 +27,6 @@ services:
       MYSQL_DATABASE: basicrum_demo
       MYSQL_USER: roottest
       MYSQL_PASSWORD: roottest
-    volumes:
-      - ./db/data/basicrum_demo_2019-04-28.sql.gz:/docker-entrypoint-initdb.d/basicrum_demo_2019-04-28.sql.gz
     networks:
       - basicrum_bo_network
     ports:
