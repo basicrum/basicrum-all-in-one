@@ -3,15 +3,22 @@
 
 Backoffice of Basic RUM. A system written on Symfony 4 that aims to help performance enthusiasts look at performance metrics and identify performance bottlenecks. Hooray!
 
-![alt Basic RUM dashboard](https://user-images.githubusercontent.com/1024001/56588192-2daffa80-65e3-11e9-9246-cf9ddefbcb03.png)
+![alt Basic RUM dashboard](https://user-images.githubusercontent.com/1024001/62764696-cb461180-ba8e-11e9-9faa-f4beb0c0ee56.jpeg)
 
 ## Installation:
 The instruction below are applicable only for development but still incomplete for production. This installation will be automatically initialized with demo database.
 ```
- git clone git@github.com:basicrum/backoffice.git
- cd backoffice/docker
- docker-compose up -d
- docker exec basicrum_bo_php composer update symfony/flex --no-plugins --no-scripts && composer install --optimize-autoloader --no-interaction
+git clone git@github.com:basicrum/backoffice.git
+cd backoffice
+docker-compose -f docker/docker-compose.yml build --no-cache
+docker-compose -f docker/docker-compose.yml up -d
+docker exec basicrum_bo_php composer update symfony/flex --no-plugins --no-scripts
+curl https://www.revampix.com/basic_rum/test_data/may-july-2019.sql.gz -o may-july-2019.sql.gz
+gunzip -k may-july-2019.sql.gz
+cat may-july-2019.sql | docker exec -i basicrum_bo_mysql sh -c 'mysql -uroot -prootsecret'
+docker exec -it basicrum_bo_php php bin/console c:c
+docker exec -it basicrum_bo_php php bin/console basicrum:cache:clean
+rm may-july-2019.sql.gz
 ```
 Linux:  Load http://127.0.0.1:8086 in your browser
 
@@ -27,13 +34,13 @@ Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker 
  - and more...
 
 ## Performance over time:
-![alt Perofrmance over time by devices](https://user-images.githubusercontent.com/1024001/56199386-1dc17500-603d-11e9-9127-ae4b29f4edc7.png)
+![alt Perofrmance over time by devices](https://user-images.githubusercontent.com/1024001/62764918-4d363a80-ba8f-11e9-81d1-8392165c4cad.png)
 
 ## Diagram Generator
-![alt Diagram Generator - Time To First Paint](https://user-images.githubusercontent.com/1024001/56456455-07812500-636d-11e9-8264-08fe39347047.png)
+![alt Diagram Generator - Time To First Paint](https://user-images.githubusercontent.com/1024001/62765008-7f479c80-ba8f-11e9-8eb6-ccd50b9fbf3e.png)
 
 ## Waterfall visualization
-![alt Page Resouces waterfall diagram](https://user-images.githubusercontent.com/1024001/56456506-dc4b0580-636d-11e9-9702-99174e8449d0.png)
+![alt Page Resouces waterfall diagram](https://user-images.githubusercontent.com/1024001/62765059-9f775b80-ba8f-11e9-92cc-bc693b2806cc.png)
 
 ## Boomerang JS - Agent Builder
-![alt Boomerang JS - Agent Builder](https://user-images.githubusercontent.com/1024001/56383429-0d1a2600-621a-11e9-985c-765f1ee3609d.png)
+![alt Boomerang JS - Agent Builder](https://user-images.githubusercontent.com/1024001/62765086-b61db280-ba8f-11e9-93fb-8cc200276c0f.png)
