@@ -33,9 +33,14 @@ class IndexController extends AbstractController
                 ->getQuery()
                 ->getOneOrNullResult();
 
-            $endTestData = $lastNavigationTiming->getCreatedAt()->format('F j, Y');
+            if ( is_null($lastNavigationTiming) ) {
+                $lastNavigationTiming = new \DateTime();
+                $endTestData = $lastNavigationTiming->format('F j, Y');
+            } else {
+                $endTestData = $lastNavigationTiming->getCreatedAt()->format('F j, Y');
+            }
 
-            $bumpNowDate = $lastNavigationTiming->getCreatedAt()->format('Y-m-d');
+            $bumpNowDate = $endTestData;
             $bumpNowDate .= ' 00:00:00';
 
             /** @var NavigationTimings $lastNavigationTiming */
@@ -49,7 +54,12 @@ class IndexController extends AbstractController
                 ->getQuery()
                 ->getOneOrNullResult();
 
-            $startTestData = $firstNavigationTiming->getCreatedAt()->format('F j, Y');
+            if ( is_null($firstNavigationTiming) ) {
+                $firstNavigationTiming = new \DateTime();
+                $startTestData = $firstNavigationTiming->format('F j, Y');
+            } else {
+                $startTestData = $firstNavigationTiming->getCreatedAt()->format('F j, Y');
+            }
         }
 
         return $this->render(
