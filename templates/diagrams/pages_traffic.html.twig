@@ -50,10 +50,19 @@
                                 device_type: {
                                     search_value: 1,
                                     condition: 'is'
+                                },
+                                url: {
+                                    search_value: '{{ url }}',
+                                    condition: 'is'
                                 }
                             },
                             technical_metrics: {
                                 '{{ code }}': 1
+                            },
+                            business_metrics: {
+                                {% if business_metric is not empty %}
+                                '{{ business_metric }}': 1
+                                {% endif %}
                             }
                         }
                     },
@@ -68,11 +77,21 @@
                                 device_type: {
                                     search_value: 2,
                                     condition: 'is'
+                                },
+                                url: {
+                                    search_value: '{{ url }}',
+                                    condition: 'is'
                                 }
                             },
                             technical_metrics: {
                                 '{{ code }}': 1
+                            },
+                            business_metrics: {
+                                {% if business_metric is not empty %}
+                                '{{ business_metric }}': 1
+                                {% endif %}
                             }
+
                         }
                     },
                     3: {
@@ -86,10 +105,19 @@
                                 device_type: {
                                     search_value: 3,
                                     condition: 'is'
+                                },
+                                url: {
+                                    search_value: '{{ url }}',
+                                    condition: 'is'
                                 }
                             },
                             technical_metrics: {
                                 '{{ code }}': 1
+                            },
+                            business_metrics: {
+                                {% if business_metric is not empty %}
+                                '{{ business_metric }}': 1
+                                {% endif %}
                             }
                         }
                     }

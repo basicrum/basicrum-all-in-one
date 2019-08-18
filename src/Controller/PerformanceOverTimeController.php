@@ -11,6 +11,9 @@ use App\Entity\VisitsOverview;
 use App\Entity\NavigationTimingsUrls;
 use App\Entity\NavigationTimings;
 
+use App\BasicRum\Date\TimePeriod;
+use App\BasicRum\Date\DayInterval;
+
 class PerformanceOverTimeController extends AbstractController
 {
 
@@ -27,7 +30,13 @@ class PerformanceOverTimeController extends AbstractController
      */
     public function landingPagesOvertime()
     {
-        $res = $this->_getTopLandingPages(10, 1, 8551494);
+        $timePeriod = new TimePeriod();
+        $period = $timePeriod->getPastDaysFromNow(30);
+
+        $dayInterval = new DayInterval();
+        $interval = $dayInterval->generateDayIntervals($period->getStart(), $period->getEnd());
+
+        $res = $this->_getTopLandingPages(10, $interval);
 
         $urls = [];
 
@@ -47,9 +56,10 @@ class PerformanceOverTimeController extends AbstractController
 
         return $this->render('diagrams/pages_traffic.html.twig',
             [
-                'urls'    => $urls,
-                'metrics' => $metrics,
-                'title'   => 'Performance - Landing Pages'
+                'urls'            => $urls,
+                'metrics'         => $metrics,
+                'business_metric' => 'bounce_rate',
+                'title'           => 'Performance - Landing Pages'
             ]
         );
     }
@@ -59,7 +69,13 @@ class PerformanceOverTimeController extends AbstractController
      */
     public function popularPagesOvertime()
     {
-        $res = $this->_getPopularPages(10, 1, 8551494);
+        $timePeriod = new TimePeriod();
+        $period = $timePeriod->getPastDaysFromNow(30);
+
+        $dayInterval = new DayInterval();
+        $interval = $dayInterval->generateDayIntervals($period->getStart(), $period->getEnd());
+
+        $res = $this->_getPopularPages(10, $interval);
 
         $urls = [];
 
@@ -79,21 +95,63 @@ class PerformanceOverTimeController extends AbstractController
 
         return $this->render('diagrams/pages_traffic.html.twig',
             [
-                'urls'    => $urls,
-                'metrics' => $metrics,
-                'title'   => 'Performance - Popular Pages'
+                'urls'            => $urls,
+                'metrics'         => $metrics,
+                'business_metric' => '',
+                'title'           => 'Performance - Popular Pages'
             ]
         );
     }
 
     /**
      * @param int $count
-     * @param int $minId
-     * @param int $maxId
+     * @param array $interval
      * @return array
      */
-    private function _getTopLandingPages(int $count, int $minId, int $maxId)
+    private function _getTopLandingPages(int $count, array $interval)
     {
+        $begin = current($interval)['start'];
+        $end = end($interval)['end'];
+
+        $minId = 0;
+        $maxId = 0;
+
+        /** @var NavigationTimings $lastNavigationTiming */
+        $lastNavigationTiming = $this->getDoctrine()
+            ->getManager()
+            ->createQueryBuilder()
+            ->select('e')
+            ->where("e.createdAt BETWEEN :begin AND :end")
+            ->setParameter('begin', $begin)
+            ->setParameter('end', $end)
+            ->from(NavigationTimings::class, 'e')
+            ->orderBy('e.pageViewId', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!is_null($lastNavigationTiming) ) {
+            $maxId = $lastNavigationTiming->getPageViewId();
+        }
+
+        /** @var NavigationTimings $lastNavigationTiming */
+        $firstNavigationTiming = $this->getDoctrine()
+            ->getManager()
+            ->createQueryBuilder()
+            ->select('e')
+            ->where("e.createdAt BETWEEN :begin AND :end")
+            ->setParameter('begin', $begin)
+            ->setParameter('end', $end)
+            ->from(NavigationTimings::class, 'e')
+            ->orderBy('e.pageViewId', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if (!is_null($firstNavigationTiming) ) {
+            $minId = $firstNavigationTiming->getPageViewId();
+        }
+
         $repository = $this->getDoctrine()->getRepository(VisitsOverview::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
@@ -119,16 +177,26 @@ class PerformanceOverTimeController extends AbstractController
         return $popularLandingPages;
     }
 
-    private function _getPopularPages(int $count, int $minId, int $maxId)
+    /**
+     * @param int $count
+     * @param array $interval
+     * @return array
+     */
+    private function _getPopularPages(int $count, array $interval)
     {
         $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');
 
+        $begin = current($interval)['start'];
+        $end = end($interval)['end'];
+
         $queryBuilder
             ->select(['count(nt.urlId) as visitsCount', 'nt.urlId'])
-            ->where("nt.pageViewId BETWEEN " . $minId . " AND " . $maxId)
+            ->where("nt.createdAt BETWEEN :begin AND :end")
+            ->setParameter('begin', $begin)
+            ->setParameter('end', $end)
             ->groupBy('nt.urlId')
             ->orderBy('count(nt.urlId)', 'DESC')
             ->setMaxResults($count)

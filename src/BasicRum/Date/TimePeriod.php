@@ -11,8 +11,6 @@ use \DateTime;
 class TimePeriod
 {
 
-    const TAIL_TIME = ' 00:00:00';
-
     /**
      * @param int $days
      * @return Interval
