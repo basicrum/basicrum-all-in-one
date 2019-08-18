@@ -19,6 +19,8 @@ class WidgetController extends AbstractController
      */
     public function generateDiagram()
     {
+        ini_set('memory_limit', '-1');
+
         $diagramOrchestrator = new DiagramOrchestrator(
             $_POST,
             $this->getDoctrine()
