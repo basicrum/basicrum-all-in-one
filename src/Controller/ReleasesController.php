@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReleasesController extends AbstractController
 {
     /**
-     * @Route("/", name="releases_index", methods="GET")
+     * @Route("/", name="releases_index", methods="GET|POST")
      */
     public function index(): Response
     {
@@ -53,7 +53,7 @@ class ReleasesController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="releases_show", methods="GET")
+     * @Route("/{id}", name="releases_show", methods="GET|POST")
      */
     public function show(Releases $release): Response
     {

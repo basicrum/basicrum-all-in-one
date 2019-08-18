@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PageTypeConfigController extends AbstractController
 {
     /**
-     * @Route("/", name="page_type_config_index", methods="GET")
+     * @Route("/", name="page_type_config_index", methods="GET|POST")
      */
     public function index(): Response
     {
@@ -53,7 +53,7 @@ class PageTypeConfigController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="page_type_config_show", methods="GET")
+     * @Route("/{id}", name="page_type_config_show", methods="GET|POST")
      */
     public function show(PageTypeConfig $pageTypeConfig): Response
     {
