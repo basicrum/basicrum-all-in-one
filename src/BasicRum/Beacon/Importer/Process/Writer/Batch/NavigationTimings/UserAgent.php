@@ -6,6 +6,8 @@ namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
 
 use WhichBrowser\Parser;
 
+use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
+
 class UserAgent
 {
 
@@ -56,7 +58,9 @@ class UserAgent
     {
         $pairs = [];
 
-        $mustFlush = false;
+        $insertData = [];
+
+        $createdAt = date("Y-m-d H:i:s");
 
         foreach ($data as $key => $row) {
             $userAgentString = $row['user_agent'];
@@ -64,30 +68,27 @@ class UserAgent
             if (isset($this->_userAgentsPairs[$userAgentString])) {
                 $pairs[$key] = $this->_userAgentsPairs[$userAgentString];
             } else {
-                $mustFlush = true;
-
                 $this->_pairsCount++;
 
                 $result = new Parser($userAgentString);
 
-                $userAgent = $this->_hydrator->hydrate($result, $userAgentString);
+                $userAgentData = $this->_hydrator->hydrate($result, $userAgentString);
 
-                $deviceType = !empty($result->device->type) ? $result->device->type : 'unknown';
-                $deviceTypeId = $this->_deviceTypeModel->getDeviceTypeIdByCode($deviceType);
+                $userAgentData['device_type'] = !empty($result->device->type) ? $result->device->type : 'unknown';
+                $userAgentData['device_type_id'] = $this->_deviceTypeModel->getDeviceTypeIdByCode($userAgentData['device_type']);
 
                 $osId = $this->_osModel->getOsIdByName($result->os->getName());
 
-                $userAgent->setDeviceType($deviceType);
-                $userAgent->setDeviceTypeId($deviceTypeId);
-                $userAgent->setOsId($osId);
-                $userAgent->setCreatedAt(new \DateTime());
 
-                $this->registry->getManager()->persist($userAgent);
+                $userAgentData['os_id'] = $osId;
+                $userAgentData['created_at'] = $createdAt;
+
+                $insertData[] = $userAgentData;
 
                 // Speculatively append to current user agent pairs
                 $this->_userAgentsPairs[$userAgentString] = [
                     'id'             => $this->_pairsCount,
-                    'device_type_id' => $deviceTypeId,
+                    'device_type_id' => $userAgentData['device_type_id'],
                     'os_id'          => $osId
 
                 ];
@@ -96,9 +97,14 @@ class UserAgent
             }
         }
 
-        if ($mustFlush) {
-            $this->registry->getManager()->flush();
-            $this->registry->getManager()->clear();
+        if (!empty($insertData)) {
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_user_agents');
+
+            $fieldsArr =  array_keys($insertData[0]);
+
+            $bulkInsert->setColumns($fieldsArr);
+            $bulkInsert->setValues($insertData);
+            $bulkInsert->execute();
         }
 
         return $pairs;

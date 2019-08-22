@@ -10,10 +10,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use App\BasicRum\Beacon\Importer\Process;
 
-class BeaconImportCommand extends Command
+use App\BasicRum\Beacon\Catcher\Storage\File;
+
+class BeaconImportFromBeaconCatcherCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacon:import';
+    protected static $defaultName = 'basicrum:beacon:import-from-beacon-catcher';
 
     /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
@@ -25,11 +27,6 @@ class BeaconImportCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
-    {
-        // ...
-    }
-
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
@@ -37,10 +34,21 @@ class BeaconImportCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $reader = new Process\Reader\MonolithCatcher();
-        $process = new Process($this->registry);
+        $storage = new File();
 
-        echo $process->runImport($reader);
+        $bundleFiles = $storage->getBundleFilePaths();
+
+        foreach ($bundleFiles as $file) {
+            $reader = new Process\Reader\CatcherService($file);
+            $process = new Process($this->registry);
+
+            $output->writeln('Importing bundle: ' . $file);
+
+            $count = $process->runImport($reader);
+
+            $output->writeln('Beacons imported: ' . $count);
+        }
+
     }
 
 }

@@ -80,7 +80,11 @@ class NavigationTimingsNormalizer
         }
 
         if (!empty($navigationTiming['created_at'])) {
-            $entries['created_at'] = new \DateTime($navigationTiming['created_at']);
+            $entries['created_at'] = $navigationTiming['created_at'];
+        }
+
+        if (empty($navigationTiming['stay_on_page_time'])) {
+            $entries['stay_on_page_time'] = 0;
         }
 
         if (!empty($navigationTiming['guid'])) {

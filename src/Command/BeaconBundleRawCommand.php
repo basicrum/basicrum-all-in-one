@@ -8,15 +8,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Symfony\Component\Console\Input\InputOption;
-
 use App\BasicRum\Beacon\Importer\Process;
 
-
-class BeaconImportFromBeaconCatcherCommand extends Command
+class BeaconBundleRawCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacon:import-from-beacon-catcher';
+    protected static $defaultName = 'basicrum:beacon:bundle-raw';
 
     /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
@@ -30,14 +27,7 @@ class BeaconImportFromBeaconCatcherCommand extends Command
 
     protected function configure()
     {
-        $this
-            // ...
-            ->addOption(
-                'json-bundle-path',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Path to beacons JSON bundle.'
-            );
+        // ...
     }
 
     /**
@@ -47,9 +37,7 @@ class BeaconImportFromBeaconCatcherCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $jsonBundlePath = $input->getOption('json-bundle-path');
-
-        $reader = new Process\Reader\CatcherService($jsonBundlePath);
+        $reader = new Process\Reader\MonolithCatcher();
         $process = new Process($this->registry);
 
         echo $process->runImport($reader);

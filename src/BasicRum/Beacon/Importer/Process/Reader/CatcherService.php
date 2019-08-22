@@ -43,9 +43,6 @@ class CatcherService
 
         foreach ($beacons as $bundleEntry) {
             $beaconData = json_decode($bundleEntry['beacon_data'], true);
-            $beaconData['created_at'] = $bundleEntry['created_at'];
-
-
             $data[] = [
                 0 => $this->time->getCreatedAtFromPath($bundleEntry['id']),
                 1 => json_encode($beaconData)
@@ -63,7 +60,7 @@ class CatcherService
      */
     private function _obfuscateBeacon(array $beaconData) : array
     {
-        $replaceUrl = 'www.basicrum.com';
+        $replaceUrl = '.basicrum.com';
         $searchHost = '';
 
         if (!empty($beaconData['u'])) {
@@ -73,7 +70,10 @@ class CatcherService
                 return $beaconData;
             }
 
-            $searchHost = $realUrlParts['host'];
+            $hostParts = explode('.', $realUrlParts['host']);
+            unset($hostParts[0]);
+
+            $searchHost = '.' . implode('.', $hostParts);
 
 
             $beaconData['u'] = str_replace($searchHost, $replaceUrl, $beaconData['u']);
@@ -86,7 +86,11 @@ class CatcherService
                 return $beaconData;
             }
 
-            $searchHost = $realUrlParts['host'];
+            $hostParts = explode('.', $realUrlParts['host']);
+            unset($hostParts[0]);
+
+            $searchHost = '.' . implode('.', $hostParts);
+
             $beaconData['pgu'] = str_replace($searchHost, $replaceUrl, $beaconData['pgu']);
         }
 

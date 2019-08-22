@@ -10,10 +10,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use App\BasicRum\Beacon\Catcher\Storage\File;
 
-class BeaconArchiveCommand extends Command
+class BeaconArchiveBundleCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacon:archive';
+    protected static $defaultName = 'basicrum:beacon:archive-bundle';
 
 
     protected function configure()
@@ -30,7 +30,7 @@ class BeaconArchiveCommand extends Command
     {
         $file = new File();
 
-        $file->archiveBeacons();
+        $file->archiveBundles();
     }
 
 }

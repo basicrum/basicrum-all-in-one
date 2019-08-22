@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
 
-use \App\Entity\NavigationTimingsQueryParams;
+use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
 class QueryParams
 {
@@ -28,25 +28,27 @@ class QueryParams
     {
         $lastPageViewIdStartOffset = $lastPageViewId + 1;
 
-        $mustFlush = false;
+        $insertData = [];
 
         foreach ($batch as $key => $row) {
             if (!empty($row['query_params'])) {
-                $mustFlush = true;
-
                 $pageViewId = $key + $lastPageViewIdStartOffset;
 
-                $queryParams = new NavigationTimingsQueryParams();
-                $queryParams->setPageViewId($pageViewId);
-                $queryParams->setQueryParams($row['query_params']);
-
-                $this->registry->getManager()->persist($queryParams);
+                $insertData[] = [
+                    'page_view_id' => $pageViewId,
+                    'query_params' => $row['query_params']
+                ];
             }
         }
 
-        if ($mustFlush) {
-            $this->registry->getManager()->flush();
-            $this->registry->getManager()->clear();
+        if ($insertData) {
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_query_params');
+
+            $fieldsArr =  array_keys($insertData[0]);
+
+            $bulkInsert->setColumns($fieldsArr);
+            $bulkInsert->setValues($insertData);
+            $bulkInsert->execute();
         }
     }
 

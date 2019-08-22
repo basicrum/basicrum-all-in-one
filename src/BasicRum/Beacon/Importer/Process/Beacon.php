@@ -36,6 +36,11 @@ class Beacon
 
             $beacons[$key] = json_decode($beacon[1], true);
 
+            // Legacy when we didn't have created_at in beacon data
+            if (!isset($beacons[$key]['created_at'])) {
+                $beacons[$key]['created_at'] = date("Y-m-d H:i:s", $beacon[0]);
+            }
+
             $date = $beacons[$key]['created_at'];
 
             $pageViewKey = $this->_getPageViewKey($beacons[$key]);

@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\UserAgent;
 
-use \App\Entity\NavigationTimingsUserAgents;
-
 class Hydrator
 {
 
     /**
      * @param \WhichBrowser\Parser $result
      * @param $userAgentString
-     * @return NavigationTimingsUserAgents
+     * @return array
      * @throws \Exception
      */
-    public function hydrate(\WhichBrowser\Parser $result, $userAgentString)
+    public function hydrate(\WhichBrowser\Parser $result, $userAgentString) : array
     {
-        $userAgent = new NavigationTimingsUserAgents();
+        $userAgent = [];
 
-        $userAgent->setUserAgent($userAgentString);
-        $userAgent->setDeviceModel($result->device->getModel());
-        $userAgent->setDeviceManufacturer($result->device->getManufacturer());
-        $userAgent->setBrowserName($this->browserName($result));
-        $userAgent->setBrowserVersion($result->browser->getVersion());
-        $userAgent->setOsName($result->os->getName());
-        $userAgent->setOsVersion($result->os->getVersion());
+        $userAgent['user_agent'] = $userAgentString;
+        $userAgent['device_model'] = $result->device->getModel();
+        $userAgent['device_manufacturer'] = $result->device->getManufacturer();
+        $userAgent['browser_name'] = $this->browserName($result);
+        $userAgent['browser_version'] = $result->browser->getVersion();
+        $userAgent['os_name'] = $result->os->getName();
+        $userAgent['os_version'] = $result->os->getVersion();
 
         return $userAgent;
     }
