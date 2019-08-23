@@ -8,43 +8,56 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
+use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class BeaconTransferFromRemoteCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacon:transfer-from-remote';
+    protected static $defaultName = 'basicrum:beacon:bundle-remote';
 
-    protected function configure()
+    /** @var HttpClientInterface */
+    private $httpClient;
+
+    public function __construct(HttpClientInterface $httpClient)
     {
-        $this
-            // ...
-            ->addOption(
-                'json-bundle-path',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Path to beacons JSON bundle.'
-            );
+        $this->httpClient = $httpClient;;
+
+        parent::__construct();
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $jsonBundlePath = $input->getOption('json-bundle-path');
+        $catcherEndpoint =  getenv('CATCHER_ENDPOINT', true);
+        $catcherEndpoint .= '?origin=' . getenv('MONITORED_ORIGIN');
 
-        $content = file_get_contents($jsonBundlePath);
-        $beacons = json_decode($content, true);
+        $response = $this->httpClient->request('GET', $catcherEndpoint);
 
-        foreach ($beacons as $beacon) {
-            $beaconData = json_decode($beacon['beacon_data'], true);
-            $beaconData['created_at'] = $beacon['created_at'];
+        if (200 == $response->getStatusCode()) {
+            $name = time() . '.json';
+            $storage = new File();
 
-            file_put_contents('/usr/src/app/var/beacons/raw/' . $beacon['id'] . '-' . rand(1, 99999) . '.json', json_encode($beaconData));
+            $storage->persistBundle($name, $response->getContent());
+
+            $output->writeln('<info>Bundle file: ' . $name . '</info>');
+
+            return 0;
         }
+
+        $output->writeln('<error>Problem with fetching beacons</error>');
+        $output->writeln('<error>Endpoint responded with code: ' . $response->getStatusCode() . '</error>');
+
+        return 0;
     }
 
 }

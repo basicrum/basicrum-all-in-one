@@ -17,6 +17,7 @@ class DayInterval
      * @param string $fromDate
      * @param string $toDate
      * @return array
+     * @throws \Exception
      */
     public function generateDayIntervals(string $fromDate, string $toDate)
     {

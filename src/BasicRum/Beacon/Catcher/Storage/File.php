@@ -3,12 +3,10 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Catcher\Storage;
 
-require_once __DIR__ . '/StorageInterface.php';
-
-use \ZipArchive;
+use App\BasicRum\Beacon\Catcher\Storage\File\Time;
+use App\BasicRum\Beacon\Catcher\Storage\File\Sort;
 
 class File
-    implements StorageInterface
 {
 
     /** @var string */
@@ -21,7 +19,7 @@ class File
     CONST RELATIVE_RAW_STORAGE_DIR            = 'raw';
 
     /** @var string */
-    CONST RELATIVE_BEFORE_ARCHIVE_STORAGE_DIR = 'before_archive_raw';
+    CONST RELATIVE_BUNDLES_STORAGE_DIR        = 'bundles';
 
     /** @var string */
     CONST RELATIVE_ARCHIVE_STORAGE_DIR        = 'archive';
@@ -34,8 +32,8 @@ class File
     public function __construct()
     {
         $this->rootStorageDirectory = $this->getProjectPath() . '/' . self::ROOT_STORAGE_DIR;
-        $this->time = new File\Time();
-        $this->sort = new File\Sort();
+        $this->time = new Time();
+        $this->sort = new Sort();
     }
 
     /**
@@ -60,38 +58,24 @@ class File
         return $this->getRawBeaconsDir() . '/' . $suffix . '_' . md5($beacon) . '-' . time() . '-' . rand(1, 99999) . '.json';
     }
 
-    /**
-     * @return array
-     */
-    public function fetchBeacons()
+
+    public function generateBundleFromRawBeacons() : void
     {
         $beaconFiles = glob($this->getRawBeaconsDir() . '/*.json');
 
-        $data = [];
+        $entries = [];
 
         foreach ($beaconFiles as $filePath) {
-            $data[] = [
-                0 => $this->time->getCreatedAtFromPath($filePath),
-                1 => file_get_contents($filePath)
+
+            $entries[] = [
+                'id'          => basename($filePath),
+                'beacon_data' => file_get_contents($filePath)
             ];
         }
 
-        $this->sort->sortBeacons($data);
+        $name = time() . '.json';
 
-        $this->moveBeacons($beaconFiles);
-
-        return $data;
-    }
-
-    /**
-     * @param array $beaconFiles
-     */
-    private function moveBeacons(array $beaconFiles) : void
-    {
-        foreach ($beaconFiles as $filePath) {
-            $newPath = str_replace(self::RELATIVE_RAW_STORAGE_DIR, self::RELATIVE_BEFORE_ARCHIVE_STORAGE_DIR, $filePath);
-            rename($filePath, $newPath);
-        }
+        $this->persistBundle($name, json_encode($entries));
     }
 
     /**
@@ -100,14 +84,6 @@ class File
     private function getProjectPath() : string
     {
         return explode('/src/BasicRum',__DIR__)[0];
-    }
-
-    /**
-     * @return string
-     */
-    private function getBeforeArchiveTemporaryDir() : string
-    {
-        return $this->rootStorageDirectory . '/' . self::RELATIVE_BEFORE_ARCHIVE_STORAGE_DIR;
     }
 
     /**
@@ -126,35 +102,70 @@ class File
         return $this->rootStorageDirectory . '/' . self::RELATIVE_ARCHIVE_STORAGE_DIR;
     }
 
-
-    public function archiveBeacons() : void
+    /**
+     * @return string
+     */
+    private function getBundlesDir()
     {
-        $zip = new ZipArchive;
+        return $this->rootStorageDirectory . '/' . self::RELATIVE_BUNDLES_STORAGE_DIR;
+    }
 
-        $zipFileName = time() . '.zip';
+    public function archiveBundles() : void
+    {
+        foreach ($this->getBundleFilePaths() as $filePath) {
+            $baseName = basename($filePath);
 
-        if ($zip->open($this->getArchiveDir() . '/' . $zipFileName, ZipArchive::CREATE) === TRUE)
-        {
-            $beaconFiles = glob($this->getBeforeArchiveTemporaryDir() . '/*.json');
+            $zip = new \ZipArchive();
 
-            foreach ($beaconFiles as $filePath) {
+            $zipFileName = $baseName . '.zip';
+
+            if ($zip->open($this->getArchiveDir() . '/' . $zipFileName, \ZipArchive::CREATE) === TRUE)
+            {
                 $zip->addFile($filePath, basename($filePath));
-            }
-
-            $zip->close();
-
-            foreach ($beaconFiles as $filePath) {
+                $zip->close();
                 unlink($filePath);
             }
         }
+
     }
 
-    public function initFolders() : void
+    /**
+     * @param string $name
+     * @param string $content
+     */
+    public function persistBundle(string $name, string $content) : void
     {
-        mkdir($this->rootStorageDirectory);
-        mkdir($this->getRawBeaconsDir());
-        mkdir($this->getBeforeArchiveTemporaryDir());
-        mkdir($this->getArchiveDir());
+        $path = $this->getBundlesDir() . '/' . $name;
+        file_put_contents($path, $content);
+    }
+
+    /**
+     * @return array
+     */
+    public function getBundleFilePaths() : array
+    {
+        return glob($this->getBundlesDir() . '/*.json');
+    }
+
+    /**
+     * @return array
+     */
+    public function initFolders() : array
+    {
+        $folders = [
+            $this->rootStorageDirectory,
+            $this->getRawBeaconsDir(),
+            $this->getArchiveDir(),
+            $this->getBundlesDir()
+        ];
+
+        $res = [];
+
+        foreach ($folders as $folder) {
+            $res[$folder] = mkdir($folder);
+        }
+
+        return $res;
     }
 
 }

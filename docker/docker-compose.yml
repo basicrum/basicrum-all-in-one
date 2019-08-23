@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 
 #ideas taken from https://knplabs.com/en/blog/how-to-dockerise-a-symfony-4-project
 
@@ -8,15 +8,30 @@ services:
       context: symfony_app
       dockerfile: Dockerfile
     container_name: basicrum_bo_php
+    environment:
+      - CATCHER_ENDPOINT=http://test11:test22@172.27.0.1/excavator/digger.php
+      - MONITORED_ORIGIN=www.darvart.de
     volumes:
       - ./../:/usr/src/app
       - ./symfony_app/.env:/usr/src/app/.env
-    depends_on:
-      - db
     links:
       - db
     networks:
       - basicrum_bo_network
+
+  symfony_app_init:
+    build:
+      context: symfony_app
+      dockerfile: Dockerfile
+    container_name: symfony_app_init
+    volumes:
+      - ./../:/usr/src/app
+      - ./symfony_app/.env:/usr/src/app/.env
+    links:
+      - db
+    networks:
+      - basicrum_bo_network
+    command: "sh /usr/src/app/init.sh"
 
   db:
     image: mysql:8.0.15
@@ -44,13 +59,6 @@ services:
       - symfony_app
     networks:
       - basicrum_bo_network
-
-  composer:
-    image: composer
-    volumes:
-      - ./../:/usr/src/app
-    working_dir: /usr/src/app
-    user: "1000:1000"
 
 networks:
   basicrum_bo_network:

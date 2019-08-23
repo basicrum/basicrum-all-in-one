@@ -1,8 +1,12 @@
 <?php
 declare(strict_types=1);
 
+require __DIR__.'/../../vendor/autoload.php';
+
+$debugMode = isset($_GET['debug_mode']);
+
 // Hacking quickly to handle Cross Origin Requests
-// Better if we implemente this in NIGIX level
+// Better if we implement this in NIGIX level
 $origin = !empty($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '*';
 $originHeader = 'Access-Control-Allow-Origin: ' . $origin;
 
@@ -27,9 +31,9 @@ use App\BasicRum\Beacon\Catcher\Storage\File;
  *
  * So far we will use this solution instead of doing with webserver approach
  */
-fastcgi_finish_request();
-
-include __DIR__ . "/../../src/BasicRum/Beacon/Catcher/Storage/File.php";
+if (!$debugMode) {
+    fastcgi_finish_request();
+}
 
 $storage = new File();
 

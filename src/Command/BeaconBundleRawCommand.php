@@ -8,7 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use App\BasicRum\Beacon\Importer\Process;
+use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class BeaconBundleRawCommand extends Command
 {
@@ -37,10 +37,9 @@ class BeaconBundleRawCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $reader = new Process\Reader\MonolithCatcher();
-        $process = new Process($this->registry);
+        $storage = new File();
 
-        echo $process->runImport($reader);
+        $storage->generateBundleFromRawBeacons();
     }
 
 }

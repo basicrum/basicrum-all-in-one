@@ -12,10 +12,10 @@ use App\BasicRum\Beacon\Importer\Process;
 
 use App\BasicRum\Beacon\Catcher\Storage\File;
 
-class BeaconImportFromBeaconCatcherCommand extends Command
+class BeaconImportBundleCommand extends Command
 {
     // the name of the command (the part after "bin/console")
-    protected static $defaultName = 'basicrum:beacon:import-from-beacon-catcher';
+    protected static $defaultName = 'basicrum:beacon:import-bundle';
 
     /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
@@ -30,7 +30,7 @@ class BeaconImportFromBeaconCatcherCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -49,6 +49,7 @@ class BeaconImportFromBeaconCatcherCommand extends Command
             $output->writeln('Beacons imported: ' . $count);
         }
 
+        return 0;
     }
 
 }
