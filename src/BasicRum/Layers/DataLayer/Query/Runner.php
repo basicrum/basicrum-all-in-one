@@ -92,9 +92,8 @@ class Runner
 
         $queryBuilder->select($selects);
 
-//        var_dump($queryBuilder->getQuery()->getSQL());
 
-        $res = $queryBuilder->getQuery()->getResult();
+        $res = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
 
         if (!empty($complexSelectsResults)) {
             foreach ($complexSelectsResults as $complexSelectKey => $complexSelectData) {

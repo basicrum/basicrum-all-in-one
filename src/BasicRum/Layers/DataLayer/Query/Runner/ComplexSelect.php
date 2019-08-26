@@ -47,7 +47,7 @@ class ComplexSelect
 
         $queryBuilder->select($selects);
 
-        $res = $queryBuilder->getQuery()->getResult();
+        $res = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
 
         $data = [];
 
