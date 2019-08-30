@@ -101,16 +101,16 @@ class SimpleImportTest extends NoFixturesTestCase
                     '2019-03-31 00:00:00' =>
                         [
                             [
-                                'pageViewId'      => 1,
-                                'firstPaint'      => 1802
+                                'page_view_id'     => 1,
+                                'first_paint'      => 1802
                             ],
                             [
-                                'pageViewId'      => 2,
-                                'firstPaint'      => 1281
+                                'page_view_id'     => 2,
+                                'first_paint'      => 1281
                             ],
                             [
-                                'pageViewId'      => 3,
-                                'firstPaint'      => 1068
+                                'page_view_id'     => 3,
+                                'first_paint'      => 1068
                             ],
                         ]
                 ]

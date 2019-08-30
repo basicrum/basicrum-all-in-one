@@ -7,11 +7,11 @@ namespace App\BasicRum\Layers\DataLayer\Query\Plan;
 class SecondaryFilter
 {
 
-    private $primaryEntityName;
+    private $primaryTableName;
 
     private $primarySearchFieldName;
 
-    private $secondaryEntityName;
+    private $secondaryTableName;
 
     private $prefetchCondition;
 
@@ -20,17 +20,17 @@ class SecondaryFilter
     private $mainCondition;
 
     public function __construct(
-        string $primaryEntityName,
+        string $primaryTableName,
         string $primarySearchFieldName,
-        string $secondaryEntityName,
+        string $secondaryTableName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
     )
     {
-        $this->primaryEntityName      = $primaryEntityName;
+        $this->primaryTableName      = $primaryTableName;
         $this->primarySearchFieldName = $primarySearchFieldName;
-        $this->secondaryEntityName    = $secondaryEntityName;
+        $this->secondaryTableName    = $secondaryTableName;
         $this->prefetchCondition      = $prefetchCondition;
         $this->prefetchSelect         = $prefetchSelect;
         $this->mainCondition          = $mainCondition;
@@ -39,9 +39,9 @@ class SecondaryFilter
     /**
      * @return string
      */
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return $this->primaryEntityName;
+        return $this->primaryTableName;
     }
 
     /**
@@ -55,9 +55,9 @@ class SecondaryFilter
     /**
      * @return string
      */
-    public function getSecondaryEntityName() : string
+    public function getSecondaryTableName() : string
     {
-        return $this->secondaryEntityName;
+        return $this->secondaryTableName;
     }
 
     /**

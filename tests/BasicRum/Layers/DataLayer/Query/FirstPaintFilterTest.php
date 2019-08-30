@@ -20,6 +20,9 @@ class FirstPaintFilterTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstPaintEqualsTo()
     {
         $period = new Period();
@@ -43,7 +46,7 @@ class FirstPaintFilterTest extends FixturesTestCase
                 '2018-10-24 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 1
+                            'page_view_id' => 1
                         ]
                     ]
             ],
@@ -51,6 +54,9 @@ class FirstPaintFilterTest extends FixturesTestCase
         );
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstPaintNotFound()
     {
         $period = new Period();

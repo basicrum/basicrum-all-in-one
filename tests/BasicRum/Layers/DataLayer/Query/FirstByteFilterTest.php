@@ -19,6 +19,9 @@ class FirstByteFilterTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testBytePaintEqualsTo()
     {
         $period = new Period();
@@ -42,7 +45,7 @@ class FirstByteFilterTest extends FixturesTestCase
                 '2018-10-24 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 1
+                            'page_view_id' => 1
                         ]
                     ]
             ],
@@ -50,6 +53,9 @@ class FirstByteFilterTest extends FixturesTestCase
         );
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstByteNotFound()
     {
         $period = new Period();

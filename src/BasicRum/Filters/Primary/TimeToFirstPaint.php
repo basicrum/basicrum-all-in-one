@@ -8,14 +8,14 @@ class TimeToFirstPaint
     extends AbstractFilter
 {
 
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimarySearchFieldName() : string
     {
-        return 'firstPaint';
+        return 'first_paint';
     }
 
 }

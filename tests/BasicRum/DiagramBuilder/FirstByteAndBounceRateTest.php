@@ -81,20 +81,20 @@ class FirstByteAndBounceRateTest extends TestCase
                         '2019-07-01 00:00:00' => [],
                         '2019-07-02 00:00:00' => [
                             [
-                                'pageViewId'      => 1,
-                                'firstByte'       => 450
+                                'page_view_id'      => 1,
+                                'first_byte'       => 450
                             ],
                             [
-                                'pageViewId'      => 2,
-                                'firstByte'       => 995
+                                'page_view_id'      => 2,
+                                'first_byte'       => 995
                             ],
                             [
-                                'pageViewId'      => 4,
-                                'firstByte'       => 450
+                                'page_view_id'      => 4,
+                                'first_byte'       => 450
                             ],
                             [
-                                'pageViewId'      => 5,
-                                'firstByte'       => 450
+                                'page_view_id'      => 5,
+                                'first_byte'       => 450
                             ],
                         ]
                     ],
@@ -102,31 +102,31 @@ class FirstByteAndBounceRateTest extends TestCase
                         '2019-07-01 00:00:00' => [],
                         '2019-07-02 00:00:00' => [
                             [
-                                'pageViewId'      => 1,
-                                'firstByte'       => 450,
-                                'pageViewsCount'  => 1,
-                                'firstPageViewId' => 1,
+                                'page_view_id'      => 1,
+                                'first_byte'       => 450,
+                                'page_views_count'  => 1,
+                                'first_page_view_Id' => 1,
                                 'guid'            => 'guid_1'
                             ],
                             [
-                                'pageViewId'      => 2,
-                                'firstByte'       => 995,
-                                'pageViewsCount'  => 1,
-                                'firstPageViewId' => 2,
+                                'page_view_id'      => 2,
+                                'first_byte'       => 995,
+                                'page_views_count'  => 1,
+                                'first_page_view_Id' => 2,
                                 'guid'            => 'guid_2'
                             ],
                             [
-                                'pageViewId'      => 4,
-                                'firstByte'       => 450,
-                                'pageViewsCount'  => 2,
-                                'firstPageViewId' => 3,
+                                'page_view_id'      => 4,
+                                'first_byte'       => 450,
+                                'page_views_count'  => 2,
+                                'first_page_view_Id' => 3,
                                 'guid'            => 'guid_3'
                             ],
                             [
-                                'pageViewId'      => 5,
-                                'firstByte'       => 450,
-                                'pageViewsCount'  => 1,
-                                'firstPageViewId' => 1,
+                                'page_view_id'      => 5,
+                                'first_byte'       => 450,
+                                'page_views_count'  => 1,
+                                'first_page_view_Id' => 1,
                                 'guid'            => 'guid_4'
                             ],
                         ]

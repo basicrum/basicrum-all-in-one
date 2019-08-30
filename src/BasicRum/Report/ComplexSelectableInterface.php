@@ -7,13 +7,13 @@ namespace App\BasicRum\Report;
 interface ComplexSelectableInterface
 {
 
-    public function getSecondarySelectEntityName() : string;
+    public function getSecondarySelectTableName() : string;
 
     public function getSecondarySelectDataFieldNames() : array;
 
     public function getSecondaryKeyFieldName() : string;
 
-    public function getPrimarySelectEntityName() : string;
+    public function getPrimarySelectTableName() : string;
 
     public function getPrimaryKeyFieldName() : string;
 

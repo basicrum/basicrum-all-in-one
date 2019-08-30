@@ -8,7 +8,7 @@ class Plan
 {
 
     /** @var string */
-    private $mainEntityName;
+    private $mainTableName;
 
     /** @var array */
     private $secondaryFilters = [];
@@ -23,15 +23,18 @@ class Plan
     private $complexSelects   = [];
 
     /** @var array */
+    private $partialQuery;
+
+    /** @var array */
     private $limiterFilters   = [];
 
     /**
      * Plan constructor.
-     * @param string $mainEntityName
+     * @param string $mainTableName
      */
-    public function __construct(string $mainEntityName)
+    public function __construct(string $mainTableName)
     {
-        $this->mainEntityName = $mainEntityName;
+        $this->mainTableName = $mainTableName;
     }
 
     /**
@@ -45,26 +48,38 @@ class Plan
         return $this;
     }
 
+
     /**
-     * @param string $primarySelectEntityName
+     * @param Statistical\PartialQueryInterface $partialQuery
+     * @return Plan
+     */
+    public function addPartialQuery(Statistical\PartialQueryInterface $partialQuery) : self
+    {
+        $this->partialQuery = $partialQuery;
+
+        return $this;
+    }
+
+    /**
+     * @param string $primarySelectTableName
      * @param string $primaryKeyFieldName
-     * @param string $secondarySelectEntityName
+     * @param string $secondarySelectTableName
      * @param string $secondaryKeyFieldName
      * @param array $secondarySelectDataFieldNames
      * @return Plan
      */
     public function addComplexSelect(
-        string $primarySelectEntityName,
+        string $primarySelectTableName,
         string $primaryKeyFieldName,
-        string $secondarySelectEntityName,
+        string $secondarySelectTableName,
         string $secondaryKeyFieldName,
         array $secondarySelectDataFieldNames
     ) : self
     {
         $this->complexSelects[] = new Plan\ComplexSelect(
-            $primarySelectEntityName,
+            $primarySelectTableName,
             $primaryKeyFieldName,
-            $secondarySelectEntityName,
+            $secondarySelectTableName,
             $secondaryKeyFieldName,
             $secondarySelectDataFieldNames
         );
@@ -73,27 +88,27 @@ class Plan
     }
 
     /**
-     * @param string $primaryEntityName
+     * @param string $primaryTableName
      * @param string $primarySearchFieldName
-     * @param string $secondaryEntityName
+     * @param string $secondaryTableName
      * @param ConditionInterface $prefetchCondition
      * @param SelectInterface $prefetchSelect
      * @param string $mainCondition
      * @return Plan
      */
     public function addLimiterFilter(
-        string $primaryEntityName,
+        string $primaryTableName,
         string $primarySearchFieldName,
-        string $secondaryEntityName,
+        string $secondaryTableName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
     ) : self
     {
         $this->limiterFilters[] = new Plan\SecondaryFilter(
-            $primaryEntityName,
+            $primaryTableName,
             $primarySearchFieldName,
-            $secondaryEntityName,
+            $secondaryTableName,
             $prefetchCondition,
             $prefetchSelect,
             $mainCondition
@@ -103,27 +118,27 @@ class Plan
     }
 
     /**
-     * @param string $primaryEntityName
+     * @param string $primaryTableName
      * @param string $primarySearchFieldName
-     * @param string $secondaryEntityName
+     * @param string $secondaryTableName
      * @param ConditionInterface $prefetchCondition
      * @param SelectInterface $prefetchSelect
      * @param string $mainCondition
      * @return Plan
      */
     public function addSecondaryFilter(
-        string $primaryEntityName,
+        string $primaryTableName,
         string $primarySearchFieldName,
-        string $secondaryEntityName,
+        string $secondaryTableName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $prefetchCondition,
         \App\BasicRum\Layers\DataLayer\Query\SelectInterface $prefetchSelect,
         string $mainCondition
     ) : self
     {
         $this->secondaryFilters[] = new Plan\SecondaryFilter(
-                $primaryEntityName,
+                $primaryTableName,
                 $primarySearchFieldName,
-                $secondaryEntityName,
+                $secondaryTableName,
                 $prefetchCondition,
                 $prefetchSelect,
                 $mainCondition
@@ -133,19 +148,19 @@ class Plan
     }
 
     /**
-     * @param string $primaryEntityName
+     * @param string $primaryTableName
      * @param string $primarySearchFieldName
      * @param string $mainCondition
      * @return Plan
      */
     public function addPrimaryFilter(
-        string $primaryEntityName,
+        string $primaryTableName,
         string $primarySearchFieldName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition
     ) : self
     {
         $this->primaryFilters[] = new Plan\PrimaryFilter(
-                $primaryEntityName,
+                $primaryTableName,
                 $primarySearchFieldName,
                 $condition
             );
@@ -159,9 +174,10 @@ class Plan
     public function releasePlan() : array
     {
         return [
-            'main_entity_name' => $this->mainEntityName,
-            'selects'         => $this->selects,
-            'complex_selects' => $this->complexSelects,
+            'main_table_name' => $this->mainTableName,
+            'selects'          => $this->selects,
+            'complex_selects'  => $this->complexSelects,
+            'partial_queries'  => $this->complexSelects,
             'where'  => [
                 'primaryFilters'   => $this->primaryFilters,
                 'secondaryFilters' => $this->secondaryFilters,

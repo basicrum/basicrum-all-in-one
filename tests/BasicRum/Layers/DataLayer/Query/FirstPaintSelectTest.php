@@ -21,6 +21,9 @@ class FirstPaintSelectTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstPaintEqualsTo()
     {
         $period = new Period();
@@ -46,8 +49,8 @@ class FirstPaintSelectTest extends FixturesTestCase
                 '2018-10-24 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 1,
-                            'firstPaint' => 344
+                            'page_view_id' => 1,
+                            'first_paint' => 344
                         ]
                     ]
             ],

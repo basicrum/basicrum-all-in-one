@@ -8,13 +8,13 @@ class ComplexSelect
 {
 
     /** @var string */
-    private $primarySelectEntityName;
+    private $primarySelectTableName;
 
     /** @var string */
     private $primaryKeyFieldName;
 
     /** @var string */
-    private $secondarySelectEntityName;
+    private $secondarySelectTableName;
 
     /** @var string */
     private $secondaryKeyFieldName;
@@ -23,16 +23,16 @@ class ComplexSelect
     private $secondarySelectDataFieldNames;
 
     public function __construct(
-        string $primarySelectEntityName,
+        string $primarySelectTableName,
         string $primaryKeyFieldName,
-        string $secondarySelectEntityName,
+        string $secondarySelectTableName,
         string $secondaryKeyFieldName,
         array $secondarySelectDataFieldNames
     )
     {
-        $this->primarySelectEntityName       = $primarySelectEntityName;
+        $this->primarySelectTableName       = $primarySelectTableName;
         $this->primaryKeyFieldName           = $primaryKeyFieldName;
-        $this->secondarySelectEntityName     = $secondarySelectEntityName;
+        $this->secondarySelectTableName     = $secondarySelectTableName;
         $this->secondaryKeyFieldName         = $secondaryKeyFieldName;
         $this->secondarySelectDataFieldNames = $secondarySelectDataFieldNames;
     }
@@ -40,9 +40,9 @@ class ComplexSelect
     /**
      * @return string
      */
-    public function getPrimarySelectEntityName() : string
+    public function getPrimarySelectTableName() : string
     {
-        return $this->primarySelectEntityName;
+        return $this->primarySelectTableName;
     }
 
     /**
@@ -56,9 +56,9 @@ class ComplexSelect
     /**
      * @return string
      */
-    public function getSecondarySelectEntityName() : string
+    public function getSecondarySelectTableName() : string
     {
-        return $this->secondarySelectEntityName;
+        return $this->secondarySelectTableName;
     }
 
     /**

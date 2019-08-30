@@ -13,15 +13,12 @@ class PageViewsCount
      */
     public function getSelectDataFieldName() : string
     {
-        return 'pageViewId';
+        return 'page_view_id';
     }
 
-    /**
-     * @return string
-     */
-    public function getSelectEntityName() : string
+    public function getSelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
 }

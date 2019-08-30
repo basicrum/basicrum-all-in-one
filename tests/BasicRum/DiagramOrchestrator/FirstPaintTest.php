@@ -71,8 +71,8 @@ class FirstPaintTest extends FixturesTestCase
                     '2018-10-24 00:00:00' =>
                         [
                             [
-                                'pageViewId' => 1,
-                                'firstPaint' => 344
+                                'page_view_id' => 1,
+                                'first_paint'  => 344
                             ]
                         ]
                 ]

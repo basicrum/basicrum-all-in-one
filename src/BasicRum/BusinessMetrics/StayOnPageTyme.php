@@ -10,12 +10,12 @@ class StayOnPageTyme
 
     public function getSelectDataFieldName(): string
     {
-        return 'stayOnPageTime';
+        return 'stay_on_page_time';
     }
 
-    public function getSelectEntityName() : string
+    public function getSelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
 }

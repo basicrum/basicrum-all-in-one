@@ -10,12 +10,12 @@ class DocumentReady
 
     public function getSelectDataFieldName(): string
     {
-        return 'loadEventEnd';
+        return 'load_event_end';
     }
 
-    public function getSelectEntityName() : string
+    public function getSelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
 }

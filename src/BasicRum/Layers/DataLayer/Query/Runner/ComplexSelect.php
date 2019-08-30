@@ -22,32 +22,35 @@ class ComplexSelect
         $this->cacheAdapter = $cacheAdapter;
     }
 
-    public function process($complexSelect, array $filters) : array
+    public function process(\App\BasicRum\Layers\DataLayer\Query\Plan\ComplexSelect $complexSelect, array $filters) : array
     {
-        $repository = $this->registry
-            ->getRepository($this->getEntityClassName($complexSelect->getSecondarySelectEntityName()));
-
-        $queryBuilder = $repository->createQueryBuilder($complexSelect->getSecondarySelectEntityName());
+        $whereArr = [];
 
         $selects = [];
 
-        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\Select $select */
         foreach ($complexSelect->getSecondarySelectDataFieldNames() as $field) {
-            $selects[] = $complexSelect->getSecondarySelectEntityName() . '.' . $field;
+            $selects[] = $complexSelect->getSecondarySelectTableName() . '.' . $field;
         }
 
         foreach ($filters as $filter) {
             $corrected = str_replace(
-                $complexSelect->getPrimarySelectEntityName() . '.' . $complexSelect->getPrimaryKeyFieldName(),
-                $complexSelect->getSecondarySelectEntityName()  . '.' . $complexSelect->getSecondaryKeyFieldName(),
+                $complexSelect->getPrimarySelectTableName() . '.' . $complexSelect->getPrimaryKeyFieldName(),
+                $complexSelect->getSecondarySelectTableName()  . '.' . $complexSelect->getSecondaryKeyFieldName(),
                 $filter
             );
-            $queryBuilder->andWhere($corrected);
+
+            $whereArr[] = $corrected;
         }
 
-        $queryBuilder->select($selects);
+        //Playing a bit with generating low level query
+        $connection = $this->registry->getConnection();
 
-        $res = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+        $sql = 'SELECT ' . implode(',', $selects). ' ';
+        $sql .= 'FROM ' . $complexSelect->getSecondarySelectTableName() . ' ';
+        $sql .= 'WHERE ' . implode(' AND ', $whereArr);
+
+
+        $res = $connection->fetchAll($sql);
 
         $data = [];
 
@@ -59,13 +62,5 @@ class ComplexSelect
         return $data;
     }
 
-    /**
-     * @param string $className
-     * @return string
-     */
-    public function getEntityClassName(string $className) : string
-    {
-        return '\App\Entity\\' . $className;
-    }
 
 }

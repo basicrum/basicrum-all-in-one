@@ -19,6 +19,9 @@ class UrlLikeTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testUrlLikeFound()
     {
         $period = new Period();
@@ -42,7 +45,7 @@ class UrlLikeTest extends FixturesTestCase
                 '2018-10-28 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 3,
+                            'page_view_id' => 3,
 
                         ]
                     ]

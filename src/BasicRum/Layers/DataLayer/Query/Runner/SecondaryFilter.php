@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\Runner;
 
+use Doctrine\DBAL\Schema\Identifier;
+
 class SecondaryFilter
 {
 
@@ -35,42 +37,45 @@ class SecondaryFilter
         // Concept for prefetch filter
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $prefetchCondition */
         foreach ($filters as $prefetchCondition) {
+            $whereArr = [];
+
             $cacheKey = $this->getPrefetchCacheKey($prefetchCondition, $limitFilters);
 
-            $where = $prefetchCondition->getPrefetchCondition()->getWhere();
+            $whereArr[] = $prefetchCondition->getPrefetchCondition()->getWhere();
             $params = $prefetchCondition->getPrefetchCondition()->getParams();
 
             $selectFields = $prefetchCondition->getPrefetchSelect()->getFields();
 
-            $repository = $this->registry
-                ->getRepository($this->getEntityClassName($prefetchCondition->getSecondaryEntityName()));
-
-            $queryBuilder = $repository->createQueryBuilder($prefetchCondition->getSecondaryEntityName());
-
-            $queryBuilder->where($where);
-
-            foreach ($params as $name => $value) {
-                $queryBuilder->setParameter($name, $value);
-            }
-
             if ($this->shouldLimitPrefetchCondition($prefetchCondition, $limitFilters)) {
                 foreach ($limitFilters as $limitFilter) {
                     $transformed = str_replace(
-                        $prefetchCondition->getPrimaryEntityName(),
-                        $prefetchCondition->getSecondaryEntityName(),
+                        $prefetchCondition->getPrimaryTableName(),
+                        $prefetchCondition->getSecondaryTableName(),
                         $limitFilter
                     );
 
-                    $queryBuilder->andWhere($transformed);
+                    $whereArr[] = $transformed;
                 }
             }
-
-            $queryBuilder->select($selectFields);
 
             if ($this->cacheAdapter->hasItem($cacheKey)) {
                 $fetched = $this->cacheAdapter->getItem($cacheKey)->get();
             } else {
-                $fetched = $queryBuilder->getQuery()->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+                //Playing a bit with generating low level query
+                $connection = $this->registry->getConnection();
+
+                $sql = 'SELECT ' . implode(',', $selectFields). ' ';
+                $sql .= 'FROM ' . $prefetchCondition->getSecondaryTableName() . ' ';
+                $sql .= 'WHERE ' . implode(' AND ', $whereArr);
+
+
+                foreach ($params as $search => $replace) {
+                   $r = '\'' . $replace . '\'';
+                   $sql = str_replace(  ':' . $search, $r, $sql);
+                }
+
+                $fetched = $connection->fetchAll($sql);
+
                 $cacheItem = $this->cacheAdapter->getItem($cacheKey);
                 $cacheItem->set($fetched);
                 $this->cacheAdapter->save($cacheItem);
@@ -88,7 +93,7 @@ class SecondaryFilter
                 }
 
                 if ('>=' === $prefetchCondition->getMainCondition() || '<=' === $prefetchCondition->getMainCondition()) {
-                    $res[] = $prefetchCondition->getPrimaryEntityName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $value;
+                    $res[] = $prefetchCondition->getPrimaryTableName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $value;
                 }
                 continue;
             }
@@ -99,9 +104,9 @@ class SecondaryFilter
             $ids = array_column($fetched, $mainColumn);
 
             if ($prefetchCondition->getMainCondition() === 'isNot') {
-                $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . 'NOT IN(' . implode(',', $ids) . ')';
+                $res[] = $prefetchCondition->getPrimaryTableName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . 'NOT IN(' . implode(',', $ids) . ')';
             } else {
-                $res[] = $prefetchCondition->getPrimaryEntityName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . ' IN(' . implode(',', $ids) . ')';
+                $res[] = $prefetchCondition->getPrimaryTableName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . ' IN(' . implode(',', $ids) . ')';
             }
         }
 
@@ -122,7 +127,7 @@ class SecondaryFilter
             return false;
         }
 
-        $searchKey = $filter->getPrimaryEntityName() . '.' . $filter->getPrimarySearchFieldName();
+        $searchKey = $filter->getPrimaryTableName() . '.' . $filter->getPrimarySearchFieldName();
 
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $limitFilter */
         foreach ($limitFilters as $limitFilter) {

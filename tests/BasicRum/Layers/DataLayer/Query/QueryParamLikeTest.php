@@ -19,6 +19,9 @@ class QueryParamLikeTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testQueryParamLikeFound()
     {
         $period = new Period();
@@ -42,7 +45,7 @@ class QueryParamLikeTest extends FixturesTestCase
                 '2018-10-28 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 3,
+                            'page_view_id' => 3,
 
                         ]
                     ]
@@ -51,6 +54,9 @@ class QueryParamLikeTest extends FixturesTestCase
         );
     }
 
+    /**
+     * @group data_query
+     */
     public function testQueryParamLikeNotFound()
     {
         $period = new Period();

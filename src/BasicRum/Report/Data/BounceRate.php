@@ -24,7 +24,7 @@ class BounceRate
         foreach ($buckets as $bucketSize => $bucket) {
             foreach ($bucket as $sample) {
 
-                if ($sample['pageViewsCount'] == 1) {
+                if ($sample['page_views_count'] == 1) {
                     $bounces[$bucketSize]++;
                 }
             }

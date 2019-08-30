@@ -19,6 +19,9 @@ class MinMaxPageViewIdNotFound extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testPageViewIdNotInRange()
     {
         $period = new Period();

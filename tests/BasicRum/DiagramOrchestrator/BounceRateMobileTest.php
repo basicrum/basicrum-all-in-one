@@ -82,12 +82,12 @@ class BounceRateMobileTest extends FixturesTestCase
                     '2018-10-24 00:00:00' =>
                         [
                             [
-                                'pageViewId'      => 1,
-                                'firstPageViewId' => 1,
-                                'firstPaint'      => 344,
-                                'pageViewsCount'  => 1,
-                                'guid'            => 'first-closed-session',
-                                'stayOnPageTime'  => 24
+                                'page_view_id'       => '1',
+                                'first_page_view_id' => '1',
+                                'first_paint'        => '344',
+                                'page_views_count'   => '1',
+                                'guid'               => 'first-closed-session',
+                                'stay_on_page_time'  => '24'
                             ]
                         ]
                 ],
@@ -95,12 +95,12 @@ class BounceRateMobileTest extends FixturesTestCase
                     '2018-10-24 00:00:00' =>
                         [
                             [
-                                'pageViewId'      => 1,
-                                'firstPageViewId' => 1,
-                                'firstPaint'      => 344,
-                                'pageViewsCount'  => 1,
-                                'guid'            => 'first-closed-session',
-                                'stayOnPageTime'  => 24
+                                'page_view_id'       => '1',
+                                'first_page_view_id' => '1',
+                                'first_paint'        => '344',
+                                'page_views_count'   => '1',
+                                'guid'               => 'first-closed-session',
+                                'stay_on_page_time'  => '24'
                             ]
                         ]
                 ]

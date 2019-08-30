@@ -24,6 +24,9 @@ class DeviceTypeTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testDeviceTypeMobile()
     {
         $period = new Period();
@@ -47,7 +50,7 @@ class DeviceTypeTest extends FixturesTestCase
                 '2018-10-24 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 1
+                            'page_view_id' => 1
                         ]
                     ]
             ],
@@ -55,6 +58,9 @@ class DeviceTypeTest extends FixturesTestCase
         );
     }
 
+    /**
+     * @group data_query
+     */
     public function testDeviceTypeDesktop()
     {
         $period = new Period();
@@ -78,7 +84,7 @@ class DeviceTypeTest extends FixturesTestCase
                 '2018-10-25 00:00:00' =>
                     [
                         [
-                            'pageViewId' => 2
+                            'page_view_id' => 2
                         ]
                     ]
             ],

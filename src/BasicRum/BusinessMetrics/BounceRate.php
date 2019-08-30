@@ -11,30 +11,30 @@ class BounceRate
     public function getSecondarySelectDataFieldNames() : array
     {
         return [
-            'pageViewsCount',
-            'firstPageViewId',
+            'page_views_count',
+            'first_page_view_id',
             'guid'
         ];
     }
 
-    public function getSecondarySelectEntityName() : string
+    public function getSecondarySelectTableName() : string
     {
-        return 'VisitsOverview';
+        return 'visits_overview';
     }
 
     public function getSecondaryKeyFieldName() : string
     {
-        return 'firstPageViewId';
+        return 'first_page_view_id';
     }
 
-    public function getPrimarySelectEntityName() : string
+    public function getPrimarySelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimaryKeyFieldName() : string
     {
-        return 'pageViewId';
+        return 'page_view_id';
     }
 
 }

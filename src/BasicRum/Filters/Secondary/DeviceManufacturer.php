@@ -8,9 +8,9 @@ class DeviceManufacturer
     extends AbstractFilter
 {
 
-    public function getSecondaryEntityName() : string
+    public function getSecondaryTableName() : string
     {
-        return 'NavigationTimingsUserAgents';
+        return 'navigation_timings_user_agents';
     }
 
     public function getSecondaryKeyFieldName() : string
@@ -20,17 +20,17 @@ class DeviceManufacturer
 
     public function getSecondarySearchFieldName() : string
     {
-        return 'deviceManufacturer';
+        return 'device_manufacturer';
     }
 
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimarySearchFieldName() : string
     {
-        return 'userAgentId';
+        return 'user_agent_id';
     }
 
 }

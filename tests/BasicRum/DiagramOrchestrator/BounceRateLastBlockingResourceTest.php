@@ -75,11 +75,11 @@ class BounceRateLastBlockingResourceTest extends FixturesTestCase
                     '2018-10-24 00:00:00' =>
                         [
                             [
-                                'pageViewId'      => 1,
-                                'firstPageViewId' => 1,
-                                'time'            => 344,
-                                'pageViewsCount'  => 1,
-                                'guid'            => 'first-closed-session'
+                                'page_view_id'       => '1',
+                                'first_page_view_id' => '1',
+                                'time'               => '344',
+                                'page_views_count'   => '1',
+                                'guid'               => 'first-closed-session'
                             ]
                         ]
                 ],
@@ -87,11 +87,11 @@ class BounceRateLastBlockingResourceTest extends FixturesTestCase
                     '2018-10-24 00:00:00' =>
                         [
                             [
-                                'pageViewId'      => 1,
-                                'firstPageViewId' => 1,
-                                'time'            => 344,
-                                'pageViewsCount'  => 1,
-                                'guid'            => 'first-closed-session'
+                                'page_view_id'       => '1',
+                                'first_page_view_id' => '1',
+                                'time'               => '344',
+                                'page_views_count'   => '1',
+                                'guid'               => 'first-closed-session'
                             ]
                         ]
                 ]

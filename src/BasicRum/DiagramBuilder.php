@@ -10,9 +10,9 @@ class DiagramBuilder
 {
 
     private $_metricsCodeNameMapping = [
-        'time_to_first_byte'     => 'firstByte',
-        'time_to_first_paint'    => 'firstPaint',
-        'document_ready'         => 'loadEventEnd',
+        'time_to_first_byte'     => 'first_byte',
+        'time_to_first_paint'    => 'first_paint',
+        'document_ready'         => 'load_event_end',
         //Too generic value. Probably in the future we need to prefix all values with entity name
         'last_blocking_resource' => 'time'
     ];
