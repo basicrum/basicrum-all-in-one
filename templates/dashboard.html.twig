@@ -1,0 +1,506 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col">
+        {% include 'widgets/time_picker.html.twig.php' %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-sm-12">
+        Bounce Rate vs. Start Render
+        <hr />
+        <script>
+            var widgetParams1 = {
+                title: 'Bounce Rate vs. Start Render',
+                global: {
+                    presentation: {
+                        'render_type': 'plane'
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Bounce Rate',
+                            color: '#1F77B4'
+                        },
+                        group_data: 'bounce_rate',
+                        data_requirements: {
+                            business_metrics: {
+                                bounce_rate: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'First Paint',
+                            color: '#ff6023'
+                        },
+                        group_data: 'bounce_rate',
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="test-diagram-container1" class="widget-data-container" data-params-name-var="widgetParams1"></div>
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        Device distribution
+        <hr />
+
+        <script>
+            var widgetParams2 = {
+                title: 'Device Distribution',
+                global: {
+                    presentation: {
+                        'render_type': 'distribution'
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Desktop',
+                            color: '#1F77B4'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 2,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'Tablet',
+                            color: '#ff6023'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 3,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    3: {
+                        presentation: {
+                            name: 'Mobile',
+                            color: '#2CA02C',
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 1,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    4: {
+                        presentation: {
+                            name: 'Bot',
+                            color: '#000000'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 4,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+
+        <div id="test-diagram-container2" class="widget-data-container" data-params-name-var="widgetParams2"></div>
+    </div>
+</div>
+<br />
+<br />
+<div class="row">
+    <div class="col-lg-6 col-sm-12">
+        Desktop OS distribution
+        <hr />
+
+        <script>
+            var widgetParams3 = {
+                title: 'Desktop OS distribution',
+                global: {
+                    presentation: {
+                        'render_type': 'distribution'
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                        filters: {
+                            device_type: {
+                                search_value: 2,
+                                condition: 'is'
+                            }
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Windows',
+                            color: '#1F77B4'
+                        },
+                        data_requirements: {
+                            filters: {
+                                operating_system: {
+                                    search_value: 1,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'Linux',
+                            color: '#ff6023'
+                        },
+                        data_requirements: {
+                            filters: {
+                                operating_system: {
+                                    search_value: 8,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    3: {
+                        presentation: {
+                            name: 'Mac OS',
+                            color: '#2CA02C',
+                        },
+                        data_requirements: {
+                            filters: {
+                                operating_system: {
+                                    search_value: 7,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+
+        <div id="test-diagram-container3" class="widget-data-container" data-params-name-var="widgetParams3"></div>
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        Mobile OS distribution
+        <hr />
+        <script>
+            var widgetParams4 = {
+                title: 'Mobile OS distribution',
+                global: {
+                    presentation: {
+                        'render_type': 'distribution'
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                        filters: {
+                            device_type: {
+                                search_value: 1,
+                                condition: 'is'
+                            }
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Windows',
+                            color: '#1F77B4'
+                        },
+                        data_requirements: {
+                            filters: {
+                                operating_system: {
+                                    search_value: 1,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'Android',
+                            color: '#ff6023'
+                        },
+                        data_requirements: {
+                            filters: {
+                                operating_system: {
+                                    search_value: 2,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    },
+                    3: {
+                        presentation: {
+                            name: 'iOS',
+                            color: '#2CA02C',
+                        },
+                        data_requirements: {
+                            filters: {
+                                operating_system: {
+                                    search_value: 3,
+                                    condition: 'is'
+                                }
+                            },
+                            business_metrics: {
+                                page_views_count: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="test-diagram-container4" class="widget-data-container" data-params-name-var="widgetParams4"></div>
+    </div>
+</div>
+<br />
+<br />
+<div class="row">
+    <div class="col-12">
+        Device Performance
+        <hr />
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        Mobile
+        <hr />
+        <script>
+            var widgetParams5 = {
+                title: 'Mobile',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+                            bargap: 0,
+                            barmode: 'overlay'
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                        filters: {
+                            device_type: {
+                                search_value: 1,
+                                condition: 'is'
+                            }
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Start Render',
+                            color: '#ff6023',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'First Byte',
+                            color: '#1F77B4',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_byte: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="test-diagram-container5" class="widget-data-container" data-params-name-var="widgetParams5"></div>
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        Desktop
+        <hr />
+        <script>
+            var widgetParams6 = {
+                title: 'Desktop',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+                            bargap: 0,
+                            barmode: 'overlay'
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                        filters: {
+                            device_type: {
+                                search_value: 2,
+                                condition: 'is'
+                            }
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Start Render',
+                            color: '#ff6023',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'First Byte',
+                            color: '#1F77B4',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_byte: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="test-diagram-container6" class="widget-data-container" data-params-name-var="widgetParams6"></div>
+    </div>
+    <div class="col-lg-4 col-sm-12">
+        Tablet
+        <hr />
+        <script>
+            var widgetParams7 = {
+                title: 'Desktop',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+                            bargap: 0,
+                            barmode: 'overlay'
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                        filters: {
+                            device_type: {
+                                search_value: 3,
+                                condition: 'is'
+                            }
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Start Render',
+                            color: '#ff6023',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'First Byte',
+                            color: '#1F77B4',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                time_to_first_byte: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="test-diagram-container7" class="widget-data-container" data-params-name-var="widgetParams7"></div>
+    </div>
+</div>

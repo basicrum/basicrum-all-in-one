@@ -1,219 +1,157 @@
-//
-//    Main script of DevOOPS v1.0 Bootstrap Theme
-//
-"use strict";
-/*-------------------------------------------
-	Main scripts used by theme
----------------------------------------------*/
-(function ($, window) {
-    var trigger = $('.hamburger'),
-        overlay = $('.overlay'),
-        isClosed = false;
+(function(w) {
+    "use strict";
 
-    trigger.click(function () {
-        hamburger_cross();
-    });
+    var impl;
 
-    function hamburger_cross() {
-
-        if (isClosed == true) {
-            overlay.hide();
-            trigger.removeClass('is-open');
-            trigger.addClass('is-closed');
-            isClosed = false;
-        } else {
-            overlay.show();
-            trigger.removeClass('is-closed');
-            trigger.addClass('is-open');
-            isClosed = true;
-        }
+    if (!w.BASIC_RUM_APP) {
+        w.BASIC_RUM_APP = {};
     }
 
-    $('[data-toggle="offcanvas"]').click(function () {
-        $('#wrapper').toggleClass('toggled');
-    });
+    var BASIC_RUM_APP = w.BASIC_RUM_APP;
 
-    //
-    //  Function for load content from url and put in $('.ajax-content') block
-    //
-    function LoadAjaxContent(url){
-        $('.preloader').show();
-
-        var xhrOrig = new XMLHttpRequest();
-        xhrOrig.open('GET', url, true);
-
-        xhrOrig.addEventListener("readystatechange", function () {
-            if (xhrOrig.readyState == 4 && xhrOrig.status == 200) {
-                $('#ajax-content').html(xhrOrig.responseText);
-                $('.preloader').hide();
-
-                //Attach breadcrumbs
-                var ajaxBreadcrumbs = $('#ajax-content nav[aria-label=breadcrumb]');
-                var navBreadcrumbs  = $('header nav[aria-label=breadcrumb]');
-
-                if (ajaxBreadcrumbs !== undefined && navBreadcrumbs !== undefined) {
-                    navBreadcrumbs.html(ajaxBreadcrumbs.html());
-                }
-            }
-        });
-
-        xhrOrig.send();
+    if (!BASIC_RUM_APP.plugins) {
+        BASIC_RUM_APP.plugins = {};
     }
 
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-//
-//      MAIN DOCUMENT READY SCRIPT OF DEVOOPS THEME
-//
-//      In this script main logic of theme
-//
-//////////////////////////////////////////////////////
-//////////////////////////////////////////////////////
-    $(document).ready(function () {
-        var ajax_url = location.hash.replace(/^#/, '');
-        if (ajax_url.length < 1) {
-            ajax_url = '/dashboard';
-        }
-        LoadAjaxContent(ajax_url);
-        var item = $('.main-menu li a[href$="' + ajax_url + '"]');
-        item.addClass('active-parent active');
-        $('.dropdown:has(li:has(a.active)) > a').addClass('active-parent active');
-        $('.dropdown:has(li:has(a.active)) > ul').css("display", "block");
-        $('.main-menu').on('click', 'a', function (e) {
-            var parents = $(this).parents('li');
-            var li = $(this).closest('li.dropdown');
-            var another_items = $('.main-menu li').not(parents);
-            another_items.find('a').removeClass('active');
-            another_items.find('a').removeClass('active-parent');
-            if ($(this).hasClass('dropdown-toggle') || $(this).closest('li').find('ul').length == 0) {
-                $(this).addClass('active-parent');
-                var current = $(this).next();
-                if (current.is(':visible')) {
-                    li.find("ul.dropdown-menu").slideUp('fast');
-                    li.find("ul.dropdown-menu a").removeClass('active')
+    // What do we put here
+    impl = {
+        events: { },
+
+        listenerCallbacks: { },
+
+        fireEvent: function(e_name, data) {
+            var i, handler, handlers, handlersLen;
+
+            e_name = e_name.toLowerCase();
+
+            if (!this.events.hasOwnProperty(e_name)) {
+                return;// false;
+            }
+
+            handlers = this.events[e_name];
+
+            // only call handlers at the time of fireEvent (and not handlers that are
+            // added during this callback to avoid an infinite loop)
+            handlersLen = handlers.length;
+            for (i = 0; i < handlersLen; i++) {
+                try {
+                    handler = handlers[i];
+                    handler.fn.call(handler.scope, data, handler.cb_data);
                 }
-                else {
-                    another_items.find("ul.dropdown-menu").slideUp('fast');
-                    current.slideDown('fast');
+                catch (err) {
+                    alert(err);
+                    // Add error logic here
                 }
             }
-            else {
-                if (li.find('a.dropdown-toggle').hasClass('active-parent')) {
-                    var pre = $(this).closest('ul.dropdown-menu');
-                    pre.find("li.dropdown").not($(this).closest('li')).find('ul.dropdown-menu').slideUp('fast');
+
+            // remove any 'once' handlers now that we've fired all of them
+            for (i = 0; i < handlersLen; i++) {
+                if (handlers[i].once) {
+                    handlers.splice(i, 1);
+                    handlersLen--;
+                    i--;
                 }
             }
-            if ($(this).hasClass('active') == false) {
-                $(this).parents("ul.dropdown-menu").find('a').removeClass('active');
-                $(this).addClass('active')
-            }
-            if ($(this).hasClass('ajax-link')) {
-                e.preventDefault();
-                if ($(this).hasClass('add-full')) {
-                    $('#content').addClass('full-content');
+
+        },
+    };
+
+    var brum = {
+
+        utils: {
+            addListener: function(el, type, fn) {
+                var opts = false;
+                if (el.addEventListener) {
+                    el.addEventListener(type, fn, opts);
                 }
-                else {
-                    $('#content').removeClass('full-content');
+                else if (el.attachEvent) {
+                    el.attachEvent("on" + type, fn);
                 }
-                //var url = $(this).attr('href');
-                //window.location.hash = url;
-                //LoadAjaxContent(url);
-            }
-            if ($(this).attr('href') == '#') {
-                e.preventDefault();
-            }
-        });
-        var height = window.innerHeight - 49;
-        $('#main').css('min-height', height)
-            .on('click', '.expand-link', function (e) {
-                var body = $('body');
-                e.preventDefault();
-                var box = $(this).closest('div.box');
-                var button = $(this).find('i');
-                button.toggleClass('fa-expand').toggleClass('fa-compress');
-                box.toggleClass('expanded');
-                body.toggleClass('body-expanded');
-                var timeout = 0;
-                if (body.hasClass('body-expanded')) {
-                    timeout = 100;
+
+                impl.listenerCallbacks[type] = impl.listenerCallbacks[type] || [];
+
+                impl.listenerCallbacks[type].push({ el: el, fn: fn});
+            },
+
+            removeListener: function(el, type, fn) {
+                var i;
+
+                if (el.removeEventListener) {
+                    // NOTE: We don't need to match any other options (e.g. passive)
+                    // from addEventListener, as removeEventListener only cares
+                    // about captive.
+                    el.removeEventListener(type, fn, false);
                 }
-                setTimeout(function () {
-                    box.toggleClass('expanded-padding');
-                }, timeout);
-                setTimeout(function () {
-                    box.resize();
-                    box.find('[id^=map-]').resize();
-                }, timeout + 50);
+                else if (el.detachEvent) {
+                    el.detachEvent("on" + type, fn);
+                }
+
+                if (impl.listenerCallbacks.hasOwnProperty(type)) {
+                    for (var i = 0; i < impl.listenerCallbacks[type].length; i++) {
+                        if (fn === impl.listenerCallbacks[type][i].fn &&
+                            el === impl.listenerCallbacks[type][i].el) {
+                            impl.listenerCallbacks[type].splice(i, 1);
+                            return;
+                        }
+                    }
+                }
+            },
+        },
+
+        subscribe: function(e_name, fn, cb_data, cb_scope, once) {
+            var i, handler, ev;
+
+            e_name = e_name.toLowerCase();
+
+            if (!impl.events.hasOwnProperty(e_name)) {
+                // allow subscriptions before they're registered
+                impl.events[e_name] = [];
+            }
+
+            // don't allow a handler to be attached more than once to the same event
+            for (i = 0; i < impl.events[e_name].length; i++) {
+                handler = ev[i];
+                if (handler && handler.fn === fn && handler.cb_data === cb_data && handler.scope === cb_scope) {
+                    return this;
+                }
+            }
+
+            impl.events[e_name].push({
+                fn: fn,
+                cb_data: cb_data || {},
+                scope: cb_scope || null,
+                once: once || false
             });
-        $(document).on('click','a', function(e){
-            if ($(this).hasClass('ajax-link')) {
-                e.preventDefault();
-                if ($(this).hasClass('add-full')) {
-                    $('#content').addClass('full-content');
-                }
-                else {
-                    $('#content').removeClass('full-content');
-                }
-                var url = $(this).attr('href');
-                window.location.hash = url;
-                hamburger_cross();
-                $('#wrapper').removeClass('toggled');
-                LoadAjaxContent(url);
-            }
-        });
 
-        $(document).on('click','button', function(e){
-            if ($(this).hasClass('ajax-btn')) {
-                e.preventDefault();
-                if ($(this).hasClass('add-full')) {
-                    $('#content').addClass('full-content');
-                }
-                else {
-                    $('#content').removeClass('full-content');
-                }
-                var url = $(this).data('link');
-                window.location.hash = url;
-                hamburger_cross();
-                $('#wrapper').removeClass('toggled');
-                LoadAjaxContent(url);
-            }
-        });
+            return this;
+        },
 
-    });
+        fireEvent: function(e_name, data) {
+            return impl.fireEvent(e_name, data);
+        },
 
-    // Taken from this GIST: https://gist.github.com/sstephenson/739659
-    var detectBackOrForward = function(onBack, onForward) {
-        var hashHistory = [window.location.hash];
-        var historyLength = window.history.length;
-
-        return function() {
-            var hash = window.location.hash, length = window.history.length;
-            if (hashHistory.length && historyLength == length) {
-                if (hashHistory[hashHistory.length - 2] == hash) {
-                    hashHistory = hashHistory.slice(0, -1);
-                    onBack();
-                } else {
-                    hashHistory.push(hash);
-                    onForward();
+        init: function() {
+            // Init plugins
+            for (var k in this.plugins) {
+                if (this.plugins.hasOwnProperty(k)) {
+                    // plugin exists and has an init method
+                    if (typeof this.plugins[k].init === "function") {
+                        this.plugins[k].init();
+                    }
                 }
-            } else {
-                hashHistory.push(hash);
-                historyLength = length;
             }
         }
     };
 
-    window.addEventListener("hashchange", detectBackOrForward(
-        function() {
-            var ajax_url = location.hash.replace(/^#/, '');
-            LoadAjaxContent(ajax_url);
-        },
-        function() {
-            var ajax_url = location.hash.replace(/^#/, '');
-            LoadAjaxContent(ajax_url);
+    (function() {
+        var ident;
+        for (ident in brum) {
+            if (brum.hasOwnProperty(ident)) {
+                BASIC_RUM_APP[ident] = brum[ident];
+            }
         }
-    ));
-}(jQuery, window));
+    }());
+}(window));
 
 function moreControls() {
     var controls = $('.diagram-controls');
@@ -232,7 +170,7 @@ function lessControls() {
     var controlsBtn = $('.more-diagram-controls');
 
     $(controls).css('overflow', 'hidden');
-    $(controls).css('height', '72px');
+    $(controls).css('height', '68px');
     $(controls).css('opacity', '1');
     $(controlsBtn).children('.fa-angle-down').show();
     $(controlsBtn).children('.fa-angle-up').hide();

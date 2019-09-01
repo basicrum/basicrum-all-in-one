@@ -727,8 +727,6 @@ class ResourceTimingDecompressor_v_0_3_4
             $realUrlParts = parse_url($urlParts['path']);
             $realHost = $urlParts['scheme'] . strrev($realUrlParts['host']);
 
-            var_dump(str_replace($realUrlParts['host'], $realHost, $url));
-
             return str_replace($realUrlParts['host'], $realHost, $url);
         }
 

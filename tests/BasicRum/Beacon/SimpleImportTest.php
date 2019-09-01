@@ -4,7 +4,6 @@ namespace  App\Tests\BasicRum\Beacon;
 
 use App\Tests\BasicRum\NoFixturesTestCase;
 
-use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Beacon\Importer\Process;
 
@@ -65,12 +64,32 @@ class SimpleImportTest extends NoFixturesTestCase
             ]
         ];
 
-        $collaboratorsAggregator = new CollaboratorsAggregator();
-
-        $collaboratorsAggregator->fillRequirements($requirementsArr);
+        $input = [
+            'global' => [
+                'presentation' => [
+                    'render_type' => 'plane'
+                ],
+                'data_requirements' => [
+                    'period' => [
+                        'type'  => 'fixed',
+                        'start' => '03/31/2019',
+                        'end'   => '03/31/2019',
+                    ]
+                ]
+            ],
+            'segments' => [
+                1 => [
+                    'data_requirements' => [
+                        'technical_metrics' => [
+                            'time_to_first_paint' => 1
+                        ]
+                    ]
+                ]
+            ]
+        ];
 
         $diagramOrchestrator = new DiagramOrchestrator(
-            $collaboratorsAggregator->getCollaborators(),
+            $input,
             $this->_getDoctrine()
         );
 
@@ -78,7 +97,7 @@ class SimpleImportTest extends NoFixturesTestCase
 
         $this->assertEquals(
             [
-                [
+                1 => [
                     '2019-03-31 00:00:00' =>
                         [
                             [

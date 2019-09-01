@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch;
 
+use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
+
 class Beacons
 {
 
@@ -25,24 +27,25 @@ class Beacons
     {
         $lastPageViewIdStartOffset = $lastPageViewId + 1;
 
-        $mustFlush = false;
+        $data = [];
 
         foreach ($batch as $key => $entry) {
-            $mustFlush = true;
-
             $pageViewId = $key + $lastPageViewIdStartOffset;
 
-            $beacon = new \App\Entity\Beacons();
-
-            $beacon->setPageViewId($pageViewId);
-            $beacon->setBeacon($entry['beacon_string']);
-
-            $this->registry->getManager()->persist($beacon);
+            $data[] = [
+                'page_view_id' => $pageViewId,
+                'beacon'       => $entry['beacon_string']
+            ];
         }
 
-        if ($mustFlush) {
-            $this->registry->getManager()->flush();
-            $this->registry->getManager()->clear();
+        if (!empty($data)) {
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'beacons');
+
+            $fieldsArr =  array_keys($data[0]);
+
+            $bulkInsert->setColumns($fieldsArr);
+            $bulkInsert->setValues($data);
+            $bulkInsert->execute();
         }
     }
 

@@ -15,7 +15,7 @@ class DataLayer
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
-    /** @var \App\BasicRum\CollaboratorsInterface */
+    /** @var \App\BasicRum\Periods\Period */
     private $period;
 
     /** @var array */
@@ -42,6 +42,7 @@ class DataLayer
 
     /**
      * @return array
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function process()
     {

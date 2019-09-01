@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-use App\BasicRum\CollaboratorsAggregator;
+use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\DiagramOrchestrator;
 use App\Entity\NavigationTimings;
+use App\Entity\PageTypeConfig;
 
 use App\BasicRum\Layers\Presentation;
 
@@ -32,11 +32,15 @@ class WaterfallsController extends AbstractController
     {
         $presentation = new Presentation();
 
+        $timePeriod = new TimePeriod();
+        $period = $timePeriod->getPastDaysFromNow(30);
+
         return $this->render('waterfalls/form.html.twig',
             [
                 'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
                 'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
-                'page_types'         => $presentation->getPageTypes($this->getDoctrine())
+                'page_types'         => $presentation->getPageTypes($this->getDoctrine()),
+                'period'             => $period
             ]
         );
     }
@@ -50,24 +54,24 @@ class WaterfallsController extends AbstractController
         ini_set('memory_limit', '-1');
         set_time_limit(0);
 
-        $collaboratorsAggregator = new CollaboratorsAggregator();
-
         $requirements = [];
 
+        $requirements['global'] = $_POST['global'];
+        $requirements['segments'] = [];
         /**
-         * Ugly filtering of post data in order to map form data correctly to dataLayer API
+         * Ugly filtering of post data in order to map form data correctly to diagram APIs
          */
-        foreach ($_POST as $keyO => $data) {
-            if (is_string($data) && strpos($data, '|') !== false) {
-                $e = explode('|', $data);
-                $requirements[$keyO] = [$e[0] => $e[1]];
+        foreach ($_POST['segments'] as $keyO => $data) {
+            //var_dump($data['data_requirements']['technical_metrics']);
+            $requirements['segments'][$keyO] = $data;
+
+            if (is_string($data['data_requirements']['technical_metrics']) && strpos($data['data_requirements']['technical_metrics'], '|') !== false) {
+                $e = explode('|', $data['data_requirements']['technical_metrics']);
+                $requirements['segments'][$keyO]['data_requirements']['technical_metrics'] = [$e[0] => $e[1]];
 
                 continue;
             }
-
-            $requirements[$keyO] = $data;
         }
-
 
         /**
          * If "page_type" presented then unset "url" and "query_param".
@@ -89,22 +93,20 @@ class WaterfallsController extends AbstractController
             unset($requirements['filters']['query_param']);
         }
 
-        $collaboratorsAggregator->fillRequirements($requirements);
-
         $diagramOrchestrator = new DiagramOrchestrator(
-            $collaboratorsAggregator->getCollaborators(),
+            $requirements,
             $this->getDoctrine()
         );
 
         $res = $diagramOrchestrator->process();
 
-        foreach ($res[0] as $key => $day) {
+        foreach ($res[1] as $key => $day) {
             if(empty($day)) {
-                unset($res[0][$key]);
+                unset($res[1][$key]);
             }
         }
 
-        $reversedDays = array_reverse($res[0]);
+        $reversedDays = array_reverse($res[1]);
 
         $pageViews = [];
 

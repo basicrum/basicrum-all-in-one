@@ -30,7 +30,15 @@ class BeaconInitFolders extends Command
     {
         $file = new File();
 
-        $file->initFolders();
+        $folders = $file->initFolders();
+
+        foreach ($folders as $folder => $result) {
+            if ($result) {
+                $output->writeln('<info>Created folder: ' . $folder . '</info>');
+            } else {
+                $output->writeln('<error>Failed to created folder: ' . $folder. '</error>');
+            }
+        }
     }
 
 }

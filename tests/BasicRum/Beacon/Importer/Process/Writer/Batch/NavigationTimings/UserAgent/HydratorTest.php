@@ -22,13 +22,13 @@ class HydratorTest extends TestCase
 
         $this->assertEquals(
             [
-                $result->getUserAgent(),
-                $result->getDeviceModel(),
-                $result->getDeviceManufacturer(),
-                $result->getBrowserName(),
-                $result->getBrowserVersion(),
-                $result->getOsName(),
-                $result->getOsVersion()
+                $result['user_agent'],
+                $result['device_model'],
+                $result['device_manufacturer'],
+                $result['browser_name'],
+                $result['browser_version'],
+                $result['os_name'],
+                $result['os_version']
             ],
             [
                 $userAgentString,

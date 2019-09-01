@@ -20,7 +20,7 @@ class Process
         $this->registry->getManager()->getConnection()->getConfiguration()->setSQLLogger(null);
     }
 
-    public function runImport(Process\Reader\MonolithCatcher $reader, $batchSize = 200)
+    public function runImport(/**Process\Reader\MonolithCatcher*/ $reader, $batchSize = 300) : int
     {
         $batchImporter = new Process\Writer\Batch($this->registry);
 
@@ -31,7 +31,7 @@ class Process
         $timings = $beaconWorker->extract($beacons);
         $batchImporter->process($timings, $batchSize);
 
-        return 0;
+        return count($beacons);
     }
 
 }

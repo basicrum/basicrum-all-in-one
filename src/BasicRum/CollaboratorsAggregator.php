@@ -61,6 +61,14 @@ class CollaboratorsAggregator
     /**
      * @return array
      */
+    public function getPeriods()
+    {
+        return $this->collaborators['periods'];
+    }
+
+    /**
+     * @return array
+     */
     public function getTechnicalMetrics()
     {
         return $this->collaborators['technical_metrics'];

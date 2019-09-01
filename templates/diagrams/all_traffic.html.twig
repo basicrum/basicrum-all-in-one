@@ -1,0 +1,175 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active">Performance - All Traffic</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col">
+        {% include 'widgets/time_picker.html.twig.php' %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        First Byte (median)
+        <hr />
+        <script>
+            var allTrafficWidgetParams1 = {
+                title: 'First Byte',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series'
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Mobile',
+                            color: '#2ca02c',
+                            type: 'line'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 1,
+                                    condition: 'is'
+                                }
+                            },
+                            technical_metrics: {
+                                time_to_first_byte: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'Desktop',
+                            color: '#ff6023',
+                            type: 'line'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 2,
+                                    condition: 'is'
+                                }
+                            },
+                            technical_metrics: {
+                                time_to_first_byte: 1
+                            }
+                        }
+                    },
+                    3: {
+                        presentation: {
+                            name: 'Tablet',
+                            color: '#000fff',
+                            type: 'line'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 3,
+                                    condition: 'is'
+                                }
+                            },
+                            technical_metrics: {
+                                time_to_first_byte: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="all-traffic-diagram-container1" class="widget-data-container" data-params-name-var="allTrafficWidgetParams1"></div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        Start Render (median)
+        <hr />
+        <script>
+            var allTrafficWidgetParams2 = {
+                title: 'First Byte',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'Mobile',
+                            color: '#2ca02c',
+                            type: 'line'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 1,
+                                    condition: 'is'
+                                }
+                            },
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    },
+                    2: {
+                        presentation: {
+                            name: 'Desktop',
+                            color: '#ff6023',
+                            type: 'line'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 2,
+                                    condition: 'is'
+                                }
+                            },
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    },
+                    3: {
+                        presentation: {
+                            name: 'Tablet',
+                            color: '#000fff',
+                            type: 'line'
+                        },
+                        data_requirements: {
+                            filters: {
+                                device_type: {
+                                    search_value: 3,
+                                    condition: 'is'
+                                }
+                            },
+                            technical_metrics: {
+                                time_to_first_paint: 1
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="all-traffic-diagram-container2" class="widget-data-container" data-params-name-var="allTrafficWidgetParams2"></div>
+    </div>
+</div>

@@ -4,302 +4,208 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Layers\Presentation;
 use App\BasicRum\Statistics\Median;
 
 class DiagramBuilder
 {
-    private $oneLevelDiagramsLayout = [
-        'barmode' => 'overlay',
-        //'title'   => 'Time To First Paint vs Bounce Rate',
-        'xaxis'=> [
-            'rangemode' => 'tozero',
-            'title' => '',
-            'ticks' => 'outside',
-            'tick0' => 0,
-            'dtick' => 200,
-            'ticklen' => 5,
-            'tickwidth' => 2,
-            'tickcolor' => '#000',
-            'tickvals' => 'x1',
-//            'ticktext' => '{{ x_axis_labels|raw }}',
-            'fixedrange' => true
-        ],
-        'yaxis' => [
-            'title' => 'Visits',
-            'fixedrange' => true,
-        ],
-        'legend' => [
-            'traceorder' => 'normal',
-            'font' => [
-                'family' => 'sans-serif',
-                'size'   => 12,
-                'color'  => '#000'
-            ],
-            'bgcolor' => '#E2E2E2',
-            'bordercolor' => '#FFFFFF',
-            'borderwidth' => 2
-        ],
-        'height' => 430,
-        'margin' => [
-            'l' => 55,
-            'r' => 30,
-            't' => 40,
-            'b' => 40
-        ]
-    ];
 
-    private $twoLevelDiagramsLayout = [
-        'barmode' => 'overlay',
-        'xaxis'=> [
-            'rangemode' => 'tozero',
-            'title' => '',
-            'ticks' => 'outside',
-            'tick0' => 0,
-            'dtick' => 200,
-            'ticklen' => 5,
-            'tickwidth' => 2,
-            'tickcolor' => '#000',
-            'tickvals' => 'x1',
-//            'ticktext' => '{{ x_axis_labels|raw }}',
-            'fixedrange' => true
-        ],
-        'yaxis' => [
-            'title' => 'Visits',
-//            'domain' => [0, 0.2],
-            'fixedrange' => true,
-        ],
-        'xaxis2' => [
-            'anchor' => 'y2',
-            'rangemode' => 'tozero',
-            //title: 'Bounce Rate',
-            //autotick: false,
-            //ticks: 'outside',
-            'tick0' => 0,
-            'dtick' => 200,
-            'ticklen' => 5,
-            'tickwidth' => 2,
-            'tickcolor' => '#000',
-            'showgrid' => false,
-            'zeroline' => false,
-            'showline' => false,
-            'autotick' => true,
-            'ticks'    => '',
-            'showticklabels' => false,
-            'fixedrange' => true
-        ],
-        'yaxis2' => [
-//            'domain' => [0.3, 1],
-            'fixedrange' => true
-        ],
-         'annotations' => [],
-          'legend' => [
-            'x' => 0,
-            'y' => 1.2,
-            'traceorder' => 'normal',
-            'font' => [
-                'family' => 'sans-serif',
-                'size'   => 12,
-                'color'  => '#000'
-            ],
-            'bgcolor' => '#E2E2E2',
-            'bordercolor' => '#FFFFFF',
-            'borderwidth' => 2
-        ]
-    ];
-
-    private $colors = [
-        0 => 'rgb(44, 160, 44)',
-        1 => 'rgb(255, 127, 14)',
-        2 => 'rgb(31, 119, 180)',
-        3 => 'rgb(31, 119, 44)',
-        4 => 'rgb(255, 119, 44)'
+    private $_metricsCodeNameMapping = [
+        'time_to_first_byte'     => 'firstByte',
+        'time_to_first_paint'    => 'firstPaint',
+        'document_ready'         => 'loadEventEnd',
+        //Too generic value. Probably in the future we need to prefix all values with entity name
+        'last_blocking_resource' => 'time'
     ];
 
     /**
-     * @param array $buckets
-     * @param CollaboratorsAggregator $collaboratorsAggregator
+     * @param DiagramOrchestrator $diagramOrchestrator
+     * @param array $params
      * @return array
      */
-    public function build(array $buckets, \App\BasicRum\CollaboratorsAggregator $collaboratorsAggregator) : array
+    public function build(DiagramOrchestrator $diagramOrchestrator, array $params) : array
     {
-        $humanReadableTechnicalMetrics = [
-            'loadEventEnd' => 'Document Ready',
-            'firstPaint'   => 'Time To First Paint',
-            'firstByte'    => 'Time To First Byte',
-            'time'         => 'Time'
-        ];
+        $layout = new Diagram\View\Layout();
+        $diagramData = [];
 
-        $probesCount = 0;
+        $results = $diagramOrchestrator->process();
 
-        $diagrams = [];
+        $renderType = $params['global']['presentation']['render_type'];
 
-        $usedTechnicalMetrics = $collaboratorsAggregator->getTechnicalMetrics()->getRequirements();
-        $technicalMetricName = reset($usedTechnicalMetrics)->getSelectDataFieldName();
+        if ('distribution' === $renderType) {
+            $totalsCount = [];
+            $segmentSamples = [];
+            $dataForDiagram = [];
+            $extraLayoutParams = [];
+            $extraDiagramParams = [];
 
-        $sampleDiagramValues = [];
+            if (!empty($params['global']['presentation']['layout'])) {
+                $extraLayoutParams = $params['global']['presentation']['layout'];
+            }
 
-        foreach ($buckets as $bucketSize => $bucket) {
-            $sampleDiagramValues[$bucketSize] = count($bucket);
-            $probesCount += $sampleDiagramValues[$bucketSize];
-        }
+            foreach ($results as $key => $result) {
+                $data = [];
+                $extraDiagramParams[$key] = [];
 
-        //$this->twoLevelDiagramsLayout['xaxis']['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' seconds';
+                foreach ($result as $time => $sample) {
+                    $data[$time] = empty($sample[0]['count']) ? 0 : $sample[0]['count'];
 
-        $samplesDiagram = [
-            'x' => array_keys($sampleDiagramValues),
-            'y' => array_values($sampleDiagramValues),
-            'type' => 'bar',
-            'name' => $humanReadableTechnicalMetrics[$technicalMetricName],
-            'color' => $this->colors[0]
-        ];
+                    // Summing total visits per day. Used later for calculating percentage
+                    $totalsCount[$time] = isset($totalsCount[$time]) ? ($totalsCount[$time] + $data[$time]) : $data[$time];
+                }
 
-        $diagrams[] = $samplesDiagram;
+                $segmentSamples[$key] = $data;
+            }
 
 
-        //$this->oneLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' distribution';
-        $layout = $this->attachSecondsToTimeLine($this->oneLevelDiagramsLayout, $buckets);
-
-        if (count($diagrams) > 1) {
-            $layout = $this->attachSecondsToTimeLine($this->twoLevelDiagramsLayout, $buckets);
-        }
-
-        foreach ($collaboratorsAggregator->getBusinessMetrics()->getRequirements() as $businessMetric) {
-            if (strpos(get_class($businessMetric), 'BounceRate') !== false) {
-                $bounceRateDiagramBuilder = new Presentation\BounceRate();
-
-                $bounceRateDiagram = $bounceRateDiagramBuilder->generate($buckets);
-
-                $diagrams[] = $bounceRateDiagramBuilder->generate($buckets);
-
-                //$bounceRate = 'Bounce rate: ' . $this->getBounceRate($buckets, $probesCount);
-
-                $layout['yaxis2'] = [
-                    'overlaying' => 'y',
-                    'side'       => 'right',
-                    'showgrid'  => false,
-                    'tickvals'   =>  [25, 50, 60, 70, 80, 100],
-                    'ticktext'   => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
-                    'range'      => [50, 85],
-                    'fixedrange' => true
-                ];
-
-                foreach ($bounceRateDiagram['x'] as $key => $v) {
-                    // Add annotation only on every second
-                    if ($v % 1000 != 0) {
+            foreach ($segmentSamples as $key => $data) {
+                foreach ($data as $time => $c) {
+                    if ($totalsCount[$time] == 0) {
+                        $dataForDiagram[$key][$time] = '0.00';
                         continue;
                     }
 
-                    $layout['annotations'][] = [
-                        'xref'      => 'x',
-                        'yref'      => 'y2',
-                        'x'         =>  $v,
-                        'y'         => $bounceRateDiagram['y'][$key],
-                        'xanchor'   => 'center',
-                        'yanchor'   => 'bottom',
-                        'text'      => $bounceRateDiagram['y'][$key] . '%',
-                        'showarrow' => false,
-                        'font' => [
-                            'family' => 'Arial',
-                            'size'   => 12,
-                            'color'  => 'black'
-                        ]
-                    ];
+                    $dataForDiagram[$key][$time] = number_format(($c / $totalsCount[$time]) * 100, 2);
                 }
-
-                //$this->twoLevelDiagramsLayout['title'] = $humanReadableTechnicalMetrics[$technicalMetricName] .  ' vs. Bounce Rate';
             }
+
+            $view = new Diagram\View\RenderType\Distribution($layout);
+
+            $diagramData = $view->build(
+                $dataForDiagram,
+                $params,
+                $extraLayoutParams,
+                $extraDiagramParams
+            );
         }
 
-        if (isset($_POST['decorators']['show_median'])) {
+        if ('time_series' === $renderType) {
+            $bucketizer = new Buckets(1, 10000);
             $median = new Median();
-            $medianVal = $median->calculateMedian($sampleDiagramValues);
-            $layout['shapes'] = [
-                [
-                    'type' => 'line',
-                    'x0' => $medianVal,
-                    'y0' => 0,
-                    'x1' => $medianVal,
-                    'yref'=> 'paper',
-                    'y1' => 1,
-                    'line' => [
-                        'color' => 'red',
-                        'width' => 2.5,
-                        'dash'  => 'dot'
-                    ]
-                ]
-            ];
-        }
 
-        return [
-            'text'                => $probesCount,
-            'diagrams'            => $diagrams,
-            'layout_extra_shapes' => [],
-            'layout'              => $layout
-        ];
-    }
+            $extraLayoutParams = [];
+            $extraDiagramParams = [];
 
-    /**
-     * @param array $buckets
-     * @param int $probesCount
-     * @return string
-     */
-    private function getBounceRate(array $buckets, int $probesCount) : string
-    {
-        $bouncedProbesCount = 0;
+            if (!empty($params['global']['presentation']['layout'])) {
+                $extraLayoutParams = $params['global']['presentation']['layout'];
+            }
 
-        foreach ($buckets as $bucketSize => $bucket) {
-            foreach ($bucket as $sample) {
-                if ($sample['pageViewsCount'] == 1) {
-                    $bouncedProbesCount++;
+            $dataForDiagram = [];
+
+            foreach ($results as $key => $result) {
+                $extraDiagramParams[$key] = [];
+                $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
+
+                $searchKey = $this->_metricsCodeNameMapping[$metrics[0]] ?? '';
+
+                foreach ($result as $time => $samples) {
+                    $buckets = $bucketizer->bucketize($samples, $searchKey);
+                    $countBuckets = [];
+
+                    foreach ($buckets as $bucketSize => $bucket) {
+                        $countBuckets[$bucketSize] = count($bucket);
+                    }
+
+                    $dataForDiagram[$key][$time] = $median->calculateMedian($countBuckets);
                 }
             }
+
+            $view = new Diagram\View\RenderType\TimeSeries($layout);
+
+            $diagramData = $view->build(
+                $dataForDiagram,
+                $params,
+                $extraLayoutParams,
+                $extraDiagramParams
+            );
         }
 
-        return number_format(($bouncedProbesCount / $probesCount) * 100, 2) . '%';
-    }
+        if ('plane' === $renderType) {
+            $bucketizer = new Buckets(200, 5000);
 
-    /**
-     * @param array $layout
-     * @param array $buckets
-     * @return array
-     */
-    private function attachSecondsToTimeLine(array $layout, array $buckets) : array
-    {
-        $tickvals = [];
+            $dataForDiagram = [];
+            $extraLayoutParams = [];
+            $extraDiagramParams = [];
 
-        foreach ($buckets as $bucketSize => $bucket) {
-            if ($bucketSize % 1000 === 0) {
-                $tickvals[$bucketSize] = $bucketSize / 1000 . ' sec';
+            if (!empty($params['global']['presentation']['layout'])) {
+                $extraLayoutParams = $params['global']['presentation']['layout'];
             }
+
+            $searchKey = '';
+
+            foreach ($results as $key => $result) {
+                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
+                    $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
+                    $searchKey = $this->_metricsCodeNameMapping[$metrics[0]] ?? '';
+                    break;
+                }
+            }
+
+            foreach ($results as $key => $result) {
+                $extraDiagramParams[$key] = [];
+
+                $buckets = $bucketizer->bucketizePeriod($result, $searchKey);
+
+                if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
+                    $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
+                    if ($metrics[0] === 'bounce_rate') {
+                        $bounceRateCalculator = new \App\BasicRum\Report\Data\BounceRate();
+
+                        $dataForDiagram[$key] = $bounceRateCalculator->generate($buckets);
+
+                        $extraDiagramParams[$key] = ['yaxis' => 'y2'];
+
+                        $extraLayoutParams['yaxis2'] = [
+                            'overlaying' => 'y',
+                            'side'       => 'right',
+                            'showgrid'  => false,
+                            'tickvals'   =>  [25, 50, 60, 70, 80, 100],
+                            'ticktext'   => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
+                            'range'      => [50, 85],
+                            'fixedrange' => true
+                        ];
+
+                        foreach ($dataForDiagram[$key] as $brkey => $v) {
+                            // Add annotation only on every second
+                            if ($brkey % 1000 != 0) {
+                                continue;
+                            }
+
+                            $extraLayoutParams['annotations'][] = [
+                                'xref'      => 'x',
+                                'yref'      => 'y2',
+                                'x'         => $brkey,
+                                'y'         => $v,
+                                'xanchor'   => 'center',
+                                'yanchor'   => 'bottom',
+                                'text'      => $v . '%',
+                                'showarrow' => false,
+                                'font' => [
+                                    'family' => 'Arial',
+                                    'size'   => 12,
+                                    'color'  => 'black'
+                                ]
+                            ];
+                        }
+                    }
+                    continue;
+                }
+
+                foreach ($buckets as $time => $bucket) {
+                    $dataForDiagram[$key][$time] = count($bucket);
+                }
+            }
+
+            $view = new Diagram\View\RenderType\Plane($layout);
+
+            $diagramData = $view->build(
+                $dataForDiagram,
+                $params,
+                $extraLayoutParams,
+                $extraDiagramParams
+            );
         }
 
-        $layout['xaxis']['tickvals'] = array_keys($tickvals);
-        $layout['xaxis']['ticktext'] = array_values($tickvals);
-
-        return $layout;
+        return $diagramData;
     }
-//
-//    /**
-//     * @param array $data
-//     * @return array
-//     */
-//    public function count(array $data)
-//    {
-//        $dayInterval = new DayInterval();
-//
-//        $interval = $dayInterval->generateDayIntervals(
-//            $data['period']['current_period_from_date'],
-//            $data['period']['current_period_to_date']
-//        );
-//
-//        $samples = [];
-//
-//        foreach ($interval as $day) {
-//            $samples[$day['start']] = count($this->report->query($day, $data['perf_metric'], $data['filters']));
-//        }
-//
-//        return $samples;
-//    }
 
 }

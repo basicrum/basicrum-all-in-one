@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch;
 
+use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
+
 class NavigationTimings
 {
 
@@ -35,12 +37,8 @@ class NavigationTimings
         $this->_queryParamsModel->batchInsert($batch, $this->getLastId());
         $batch = $this->_prepareUrlIds($batch);
         $batch = $this->_prepareUserAgentIds($batch);
-        $mustFlush = $this->_prepareNavigationTimings($batch);
 
-        if ($mustFlush) {
-            $this->registry->getManager()->flush();
-            $this->registry->getManager()->clear();
-        }
+        $this->_saveNavigationTimings($batch);
     }
 
     /**
@@ -88,35 +86,17 @@ class NavigationTimings
      * @param array $batch
      * @return bool
      */
-    private function _prepareNavigationTimings(array $batch)
+    private function _saveNavigationTimings(array $batch)
     {
+        $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings');
 
         $fieldsArr =  array_keys($batch[0]);
 
-        $settersArr = [];
+        $bulkInsert->setColumns($fieldsArr);
+        $bulkInsert->setValues($batch);
+        $bulkInsert->execute();
 
-        $mustFlush = false;
-
-        foreach ($fieldsArr as $field) {
-            $fieldParts = explode('_', $field);
-            $fieldParts = array_map('ucfirst', $fieldParts);
-            $settersArr[$field] = 'set' . implode('', $fieldParts);
-        }
-
-        foreach ($batch as $row) {
-            $mustFlush = true;
-
-            $navigationTiming = new \App\Entity\NavigationTimings();
-
-            foreach ($row as $field => $value) {
-                $setter = $settersArr[$field];
-                $navigationTiming->$setter($value);
-            }
-
-            $this->registry->getManager()->persist($navigationTiming);
-        }
-
-        return $mustFlush;
+        return true;
     }
 
     /**

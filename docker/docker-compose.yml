@@ -45,4 +45,3 @@ services:
 networks:
   basicrum_bo_network:
     driver: bridge
-

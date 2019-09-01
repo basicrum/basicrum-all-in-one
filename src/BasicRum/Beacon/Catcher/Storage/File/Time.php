@@ -15,7 +15,7 @@ class Time
         $parts = explode('_', $path);
         $endOfPath = end($parts);
 
-        return (int) $parts = explode('-', basename($endOfPath))[1];
+        return (int) explode('-', basename($endOfPath))[1];
     }
 
 }
