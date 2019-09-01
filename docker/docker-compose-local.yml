@@ -1,0 +1,7 @@
+version: "2.1"
+
+nginx:
+  volumes:
+  - ./../public/:/usr/src/app
+  - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro #repeated from main file
+  - /var/run/fpm #repeated from main file
