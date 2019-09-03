@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\Runner;
 
-use Doctrine\DBAL\Schema\Identifier;
-
 class SecondaryFilter
 {
 
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
-    /** @var \Symfony\Component\Cache\Adapter\FilesystemAdapter */
+    /** @var \App\BasicRum\Cache\Storage */
     private $cacheAdapter;
 
     public function __construct(
         \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        \Symfony\Component\Cache\Adapter\FilesystemAdapter $cacheAdapter
+        \App\BasicRum\Cache\Storage $cacheAdapter
     )
     {
         $this->registry     = $registry;
@@ -72,6 +70,28 @@ class SecondaryFilter
                 foreach ($params as $search => $replace) {
                    $r = '\'' . $replace . '\'';
                    $sql = str_replace(  ':' . $search, $r, $sql);
+                }
+
+                // Quickly hacking because I am still not sure about the design of DataLayer stuff
+                // We are doing dirty string replace but that is fine for current concept
+                if (false !== strpos($sql, 'visits_overview.page_view_id')) {
+                    $sql = str_replace(
+                        'visits_overview.page_view_id',
+                        'visits_overview.first_page_view_id',
+                        $sql
+                    );
+
+                    $sql = str_replace(
+                        "visits_overview.page_views_count = '1' AND ",
+                        '',
+                        $sql);
+
+                    $res[] = $prefetchCondition->getPrimaryTableName() .
+                        "." .
+                        $prefetchCondition->getPrimarySearchFieldName() .
+                        " " .
+                        ' IN(' . $sql . ')';;
+                    continue;
                 }
 
                 $fetched = $connection->fetchAll($sql);

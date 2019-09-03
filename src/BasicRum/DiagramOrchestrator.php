@@ -17,6 +17,9 @@ class DiagramOrchestrator
     /** @var array<CollaboratorsAggregator> */
     private $collaboratorsAggregators;
 
+    /** @var array<\App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface> */
+    private $dataFlavors;
+
     /**
      * DiagramOrchestrator constructor.
      * @param array $input
@@ -37,36 +40,13 @@ class DiagramOrchestrator
 
             if (!empty($segment['data_requirements'])) {
                 $requirements = array_merge($requirements, $segment['data_requirements']);
-
-                /**
-                 * Temporary hacky way. For now we will group some segments metrics because they
-                 * need to know about each other.
-                 */
-                if (!empty($segment['group_data'])) {
-                    $groupRequirements = $this->_getGroupRequirements($input['segments'], $segment['group_data']);
-                    $requirements = array_merge($requirements, $groupRequirements);
-                }
             }
 
             $this->collaboratorsAggregators[$key] = $this->_initCollaboratorsAggregator($requirements);
+            $this->dataFlavors[$key] = $this->_initDataFlavors($requirements);
         }
 
         $this->registry = $registry;
-    }
-
-    private function _getGroupRequirements(array $segments, string $group) : array
-    {
-        $groupRequirements = [];
-
-        foreach ($segments as $key => $segment) {
-            if (!empty($segment['group_data'])) {
-                if ($segment['group_data'] === $group) {
-                    $groupRequirements = array_merge($groupRequirements, $segment['data_requirements']);
-                }
-            }
-        }
-
-        return $groupRequirements;
     }
 
     /**
@@ -97,7 +77,8 @@ class DiagramOrchestrator
                 $dataLayer = new DataLayer(
                     $this->registry,
                     $period,
-                    $requirements
+                    $requirements,
+                    $this->dataFlavors[$key]
                 );
 
                 $data[$key] = $dataLayer->process();
@@ -143,6 +124,29 @@ class DiagramOrchestrator
         $collaboratorsAggregator->fillRequirements($requirements);
 
         return $collaboratorsAggregator;
+    }
+
+    /**
+     * @param array $requirements
+     * @return \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface
+     * @throws \Exception
+     */
+    private function _initDataFlavors(array $requirements) : \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface
+    {
+        if (isset($requirements['technical_metrics'])) {
+            $metricConfig = current($requirements['technical_metrics']);
+            $metricFieldName = array_key_first($requirements['technical_metrics']);
+
+            $dataFlavor = $metricConfig['data_flavor'];
+
+            if (isset($dataFlavor['percentile'])) {
+                return new Layers\DataLayer\Query\MainDataSelect\Percentile(
+                    'navigation_timings',
+                    $metricFieldName,
+                    (int) $dataFlavor['percentile']
+                );
+            }
+        }
     }
 
 }

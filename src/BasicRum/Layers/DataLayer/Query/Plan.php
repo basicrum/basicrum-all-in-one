@@ -22,8 +22,8 @@ class Plan
     /** @var array */
     private $complexSelects   = [];
 
-    /** @var array */
-    private $partialQuery;
+    /** @var MainDataSelect\MainDataInterface */
+    private $dataFlavor;
 
     /** @var array */
     private $limiterFilters   = [];
@@ -31,10 +31,14 @@ class Plan
     /**
      * Plan constructor.
      * @param string $mainTableName
+     * @param MainDataSelect\MainDataInterface $dataFlavor
      */
-    public function __construct(string $mainTableName)
+    public function __construct(
+        string $mainTableName,
+        MainDataSelect\MainDataInterface $dataFlavor)
     {
         $this->mainTableName = $mainTableName;
+        $this->dataFlavor    = $dataFlavor;
     }
 
     /**
@@ -44,18 +48,6 @@ class Plan
     public function addSelect(SelectInterface $select) : self
     {
         $this->selects[] = new Plan\Select($select);
-
-        return $this;
-    }
-
-
-    /**
-     * @param Statistical\PartialQueryInterface $partialQuery
-     * @return Plan
-     */
-    public function addPartialQuery(Statistical\PartialQueryInterface $partialQuery) : self
-    {
-        $this->partialQuery = $partialQuery;
 
         return $this;
     }
@@ -174,7 +166,8 @@ class Plan
     public function releasePlan() : array
     {
         return [
-            'main_table_name' => $this->mainTableName,
+            'main_table_name'  => $this->mainTableName,
+            'data_flavor'      => $this->dataFlavor,
             'selects'          => $this->selects,
             'complex_selects'  => $this->complexSelects,
             'partial_queries'  => $this->complexSelects,

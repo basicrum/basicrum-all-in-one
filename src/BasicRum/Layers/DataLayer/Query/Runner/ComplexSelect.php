@@ -10,12 +10,12 @@ class ComplexSelect
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
-    /** @var \Symfony\Component\Cache\Adapter\FilesystemAdapter */
+    /** @var \App\BasicRum\Cache\Storage */
     private $cacheAdapter;
 
     public function __construct(
         \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        \Symfony\Component\Cache\Adapter\FilesystemAdapter $cacheAdapter
+        \App\BasicRum\Cache\Storage $cacheAdapter
     )
     {
         $this->registry     = $registry;

@@ -16,7 +16,8 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         'operating_system'    => Primary\OperatingSystem::class,
         'time_to_first_byte'  => Primary\TimeToFirstByte::class,
         'time_to_first_paint' => Primary\TimeToFirstPaint::class,
-        'query_param'         => Secondary\QueryParam::class
+        'query_param'         => Secondary\QueryParam::class,
+        'page_views_count'    => Secondary\PageViewsCount::class
     ];
 
     private $filters = [];

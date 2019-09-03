@@ -10,9 +10,14 @@ use App\BasicRum\Layers\DataLayer\Query\Select;
 class Planner
 {
 
+    /** @var string */
     private $startPeriod;
 
+    /** @var string */
     private $endPeriod;
+
+    /** @var \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface */
+    private $mainDataSelect;
 
     /** @var array */
     private $requirements = [];
@@ -20,12 +25,14 @@ class Planner
     public function __construct(
         string $startPeriod,
         string $endPeriod,
-        array $requirements
+        array $requirements,
+        MainDataSelect\MainDataInterface $mainDataSelect
     )
     {
         $this->startPeriod  = $startPeriod;
         $this->endPeriod    = $endPeriod;
         $this->requirements = $requirements;
+        $this->mainDataSelect = $mainDataSelect;
     }
 
 
@@ -34,7 +41,7 @@ class Planner
      */
     public function createPlan()
     {
-        $plan = new Plan('navigation_timings');
+        $plan = new Plan('navigation_timings', $this->mainDataSelect);
 
         /**
          * Check for selects that may break select query.

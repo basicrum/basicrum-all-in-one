@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Statistics\Median;
-
 class DiagramBuilder
 {
 
@@ -79,8 +77,6 @@ class DiagramBuilder
         }
 
         if ('time_series' === $renderType) {
-            $bucketizer = new Buckets(1, 10000);
-            $median = new Median();
 
             $extraLayoutParams = [];
             $extraDiagramParams = [];
@@ -93,19 +89,11 @@ class DiagramBuilder
 
             foreach ($results as $key => $result) {
                 $extraDiagramParams[$key] = [];
-                $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
 
-                $searchKey = $this->_metricsCodeNameMapping[$metrics[0]] ?? '';
+                foreach ($result as $time => $data) {
 
-                foreach ($result as $time => $samples) {
-                    $buckets = $bucketizer->bucketize($samples, $searchKey);
-                    $countBuckets = [];
-
-                    foreach ($buckets as $bucketSize => $bucket) {
-                        $countBuckets[$bucketSize] = count($bucket);
-                    }
-
-                    $dataForDiagram[$key][$time] = $median->calculateMedian($countBuckets);
+                    $x = isset($data[0]['x']) ? $data[0]['x'] : 0;
+                    $dataForDiagram[$key][$time] = $x;
                 }
             }
 

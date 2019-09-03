@@ -7,7 +7,7 @@ namespace App\BasicRum\Layers;
 use App\BasicRum\Layers\DataLayer\Query\Planner;
 use App\BasicRum\Layers\DataLayer\Query\Runner;
 
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use App\BasicRum\Cache\Storage;
 
 class DataLayer
 {
@@ -18,26 +18,30 @@ class DataLayer
     /** @var \App\BasicRum\Periods\Period */
     private $period;
 
+    /** @var \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface */
+    private $mainDataSelect;
+
     /** @var array */
     private $dataRequirements = [];
 
     /**
-     * @todo: How to make it possible that we do not get Doctrine after passing the object in chain of couple of objects?
-     *
+     * DataLayer constructor.
      * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
      * @param \App\BasicRum\Periods\Period $period
      * @param array $dataRequirements
+     * @param DataLayer\Query\MainDataSelect\MainDataInterface $mainDataSelect
      */
     public function __construct(
         \Doctrine\Bundle\DoctrineBundle\Registry $registry,
         \App\BasicRum\Periods\Period $period,
-        array $dataRequirements
+        array $dataRequirements,
+        DataLayer\Query\MainDataSelect\MainDataInterface $mainDataSelect
     )
     {
-        $this->registry = $registry;
-        $this->period = $period;
+        $this->registry         = $registry;
+        $this->period           = $period;
         $this->dataRequirements = $dataRequirements;
-
+        $this->mainDataSelect   = $mainDataSelect;
     }
 
     /**
@@ -50,7 +54,7 @@ class DataLayer
 
         /** todo: Inject the cache Adapter in different way in order to support different cache storage */
         /** todo: Check if this affects the result of PHP unit, we do not want always to return cached results */
-        $cache = new FilesystemAdapter('basicrum.report.cache');
+        $cache = new Storage('basicrum.report.cache');
 
         while ($this->period->hasPeriods()) {
             $interval = $this->period->requestPeriodInterval();
@@ -60,7 +64,7 @@ class DataLayer
             /** todo: Think about adding a tag that at least can invalidate cache for certain day in interval */
             $cacheKey = end($dbUrlArr) . 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
 
-            if ($cache->hasItem($cacheKey)) {
+            if (true && $cache->hasItem($cacheKey)) {
                 $res[$interval->getStartInterval()] =  $cache->getItem($cacheKey)->get();
                 continue;
             }
@@ -68,7 +72,8 @@ class DataLayer
             $queryPlanner = new Planner(
                 $interval->getStartInterval(),
                 $interval->getEndInterval(),
-                $this->dataRequirements
+                $this->dataRequirements,
+                $this->mainDataSelect
             );
 
             $planActions = $queryPlanner->createPlan()->releasePlan();

@@ -50,16 +50,16 @@ class PerformanceOverTimeController extends AbstractController
         }
 
         $metrics = [
-            'time_to_first_byte' => 'First Byte',
-            'time_to_first_paint' => 'Start Render'
+            'first_byte'  => 'First Byte',
+            'first_paint' => 'Start Render'
         ];
 
         return $this->render('diagrams/pages_traffic.html.twig',
             [
                 'urls'            => $urls,
                 'metrics'         => $metrics,
-                'business_metric' => 'bounce_rate',
-                'title'           => 'Performance - Landing Pages'
+                'title'           => 'Performance - Landing Pages',
+                'landing_pages'   => 1
             ]
         );
     }
@@ -89,16 +89,16 @@ class PerformanceOverTimeController extends AbstractController
         }
 
         $metrics = [
-            'time_to_first_byte' => 'First Byte',
-            'time_to_first_paint' => 'Start Render'
+            'first_byte'  => 'First Byte',
+            'first_paint' => 'Start Render'
         ];
 
         return $this->render('diagrams/pages_traffic.html.twig',
             [
                 'urls'            => $urls,
                 'metrics'         => $metrics,
-                'business_metric' => '',
-                'title'           => 'Performance - Popular Pages'
+                'title'           => 'Performance - Popular Pages',
+                'landing_pages'   => 0
             ]
         );
     }

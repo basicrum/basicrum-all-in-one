@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query;
 
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-
-use Doctrine\DBAL\Schema\Identifier;
+use App\BasicRum\Cache\Storage;
 
 class Runner
 {
@@ -17,7 +15,7 @@ class Runner
     /** @var array */
     private $planActions = [];
 
-    /** @var FilesystemAdapter */
+    /** @var Storage */
     private $cacheAdapter;
 
     /** @var Runner\SecondaryFilter */
@@ -30,7 +28,7 @@ class Runner
     {
         $this->registry     = $registry;
         $this->planActions  = $planActions;
-        $this->cacheAdapter = new FilesystemAdapter('basicrum.datalayer.runner.cache', 300);
+        $this->cacheAdapter = new Storage('basicrum.datalayer.runner.cache', 300);
 
         $this->secondaryFilter = new Runner\SecondaryFilter($registry, $this->cacheAdapter);
         $this->complexSelect   = new Runner\ComplexSelect($registry, $this->cacheAdapter);
@@ -49,10 +47,6 @@ class Runner
         // Abort if we do not have limit result in day
         if(empty($limitFilters)) {
             return [];
-        }
-
-        foreach ($limitFilters as $filter) {
-            $whereArr[] = $filter;
         }
 
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
@@ -88,23 +82,22 @@ class Runner
         //Playing a bit with generating low level query
         $connection = $this->registry->getConnection();
 
-        $sql = 'SELECT ' . implode(',', $selects). ' ';
-        $sql .= 'FROM ' . $this->planActions['main_table_name'] . ' ';
-        $sql .= 'WHERE ' . implode(' AND ', $whereArr);
+//        $sql = 'SELECT ' . implode(',', $selects). ' ';
+//        $sql .= 'FROM ' . $this->planActions['main_table_name'] . ' ';
 
-        $platform = $connection->getDatabasePlatform();
 
+        $sqlWhere = implode(' AND ', $whereArr);
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
         foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
             $params = $primaryFilter->getCondition()->getParams();
 
             foreach ($params as $search => $replace) {
-                $r = '\'' . (string) (new Identifier($replace))->getQuotedName($platform) . '\'';
-                $sql = str_replace(  ':' . $search, $r, $sql);
+                $r = '\'' . $replace . '\'';
+                $sqlWhere = str_replace(  ':' . $search, $r, $sqlWhere);
             }
         }
 
-        $res = $connection->fetchAll($sql);
+        $res = $this->planActions['data_flavor']->retrieve($connection, $sqlWhere, $limitFilters);
 
         if (!empty($complexSelectsResults)) {
             foreach ($complexSelectsResults as $complexSelectKey => $complexSelectData) {
