@@ -27,6 +27,8 @@ class DiagramBuilder
 
         $results = $diagramOrchestrator->process();
 
+        //var_dump($results);
+
         $renderType = $params['global']['presentation']['render_type'];
 
         if ('distribution' === $renderType) {
@@ -108,8 +110,6 @@ class DiagramBuilder
         }
 
         if ('plane' === $renderType) {
-            $bucketizer = new Buckets(200, 5000);
-
             $dataForDiagram = [];
             $extraLayoutParams = [];
             $extraDiagramParams = [];
@@ -118,27 +118,20 @@ class DiagramBuilder
                 $extraLayoutParams = $params['global']['presentation']['layout'];
             }
 
-            $searchKey = '';
-
-            foreach ($results as $key => $result) {
-                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
-                    $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
-                    $searchKey = $this->_metricsCodeNameMapping[$metrics[0]] ?? '';
-                    break;
-                }
-            }
-
             foreach ($results as $key => $result) {
                 $extraDiagramParams[$key] = [];
-
-                $buckets = $bucketizer->bucketizePeriod($result, $searchKey);
+                $buckets = [];
 
                 if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
                     if ($metrics[0] === 'bounce_rate') {
                         $bounceRateCalculator = new \App\BasicRum\Report\Data\BounceRate();
 
-                        $dataForDiagram[$key] = $bounceRateCalculator->generate($buckets);
+                        $buckets = $bounceRateCalculator->generate($result);
+
+                        foreach ($buckets as $time => $bucket) {
+                            $dataForDiagram[$key][$time] = $bucket;
+                        }
 
                         $extraDiagramParams[$key] = ['yaxis' => 'y2'];
 
@@ -175,12 +168,8 @@ class DiagramBuilder
                             ];
                         }
                     }
-                    continue;
                 }
 
-                foreach ($buckets as $time => $bucket) {
-                    $dataForDiagram[$key][$time] = count($bucket);
-                }
             }
 
             $view = new Diagram\View\RenderType\Plane($layout);

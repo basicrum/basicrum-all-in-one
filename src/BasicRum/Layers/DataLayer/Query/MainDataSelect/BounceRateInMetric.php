@@ -15,76 +15,106 @@ class BounceRateInMetric
     private $fieldName;
 
     /** @var int */
-    private $percentile;
+    private $bucketSize;
 
     /**
      * Percentile constructor.
      * @param string $tableName
      * @param string $fieldName
-     * @param int $percentile
+     * @param int $bucketSize
      */
     public function __construct(
         string $tableName,
         string $fieldName,
-        int $percentile
+        int $bucketSize
     )
     {
-        $this->tableName = $tableName;
+        $this->tableName  = $tableName;
         $this->fieldName  = $fieldName;
-        $this->percentile = $percentile;
+        $this->bucketSize = $bucketSize;
     }
 
     /**
      * @param string $where
+     * @param array $limitWhere
      * @return string
      */
-    public function getBouncedBuckets(string $where) : string
+    public function getBouncedBucketsSql(string $where, array $limitWhere) : string
     {
+        $limitWhereStr = implode(' AND ', $limitWhere);
+
+        $visitsOverviewLimit = str_replace(
+            'navigation_timings.page_view_id',
+            'visits_overview.first_page_view_id',
+            $limitWhereStr
+            );
+
+        if (!empty($where)) {
+            $where = ' AND ' . $where;
+        }
+
         return
 
-"SELECT floor(first_byte/200)*200 AS bin_floor, COUNT(*)
+"SELECT floor(first_paint/$this->bucketSize)*$this->bucketSize AS bin_floor, COUNT(*)
 FROM navigation_timings
-WHERE page_view_id IN(
+WHERE 
+  {$limitWhereStr} AND
+  page_view_id IN
+  (
 	SELECT visits_overview.first_page_view_id 
     FROM visits_overview
-    WHERE visits_overview.first_page_view_id >= 163140 AND visits_overview.first_page_view_id <= 165312
+    WHERE {$visitsOverviewLimit}
 		AND visits_overview.page_views_count = 1
-		AND visits_overview.first_page_view_id IN (
+		AND visits_overview.first_page_view_id IN
+		  (
 			SELECT page_view_id
 			from navigation_timings
-			WHERE navigation_timings.page_view_id >= 163140
-				AND navigation_timings.page_view_id <= 165312
-				AND navigation_timings.device_type_id = '1'
-				AND navigation_timings.url_id  IN(4396)
-    )
-) AND page_view_id >= 163140 AND page_view_id <= 165312
+			WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
+		  )
+  )
+  
 GROUP BY 1
 ORDER BY 1";
     }
 
     /**
      * @param string $where
+     * @param array $limitWhere
      * @return string
      */
-    public function getAllBuckets(string $where) : string
+    public function getAllBucketsSql(string $where, array $limitWhere) : string
     {
+        $limitWhereStr = implode(' AND ', $limitWhere);
+
+        $visitsOverviewLimit = str_replace(
+            'navigation_timings.page_view_id',
+            'visits_overview.first_page_view_id',
+            $limitWhereStr
+        );
+
+        if (!empty($where)) {
+            $where = ' AND ' . $where;
+        }
+
         return
 
-            "SELECT floor(first_byte/200)*200 AS bin_floor, COUNT(*)
+            "SELECT floor(first_paint/$this->bucketSize)*$this->bucketSize AS bin_floor, COUNT(*)
 FROM navigation_timings
-WHERE page_view_id IN(
+WHERE 
+  {$limitWhereStr} AND
+  page_view_id IN
+  (
 	SELECT visits_overview.first_page_view_id 
     FROM visits_overview
-    WHERE visits_overview.first_page_view_id >= 163140 AND visits_overview.first_page_view_id <= 165312
-		AND visits_overview.first_page_view_id IN (
+    WHERE {$visitsOverviewLimit}
+		AND visits_overview.first_page_view_id IN
+		  (
 			SELECT page_view_id
 			from navigation_timings
-			WHERE navigation_timings.page_view_id >= 163140
-				AND navigation_timings.page_view_id <= 165312
-				AND navigation_timings.device_type_id = '1'
-				AND navigation_timings.url_id  IN(4396)
-    )
-) AND page_view_id >= 163140 AND page_view_id <= 165312
+			WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
+		  )
+  )
+  
 GROUP BY 1
 ORDER BY 1";
     }
@@ -97,11 +127,35 @@ ORDER BY 1";
      */
     public function retrieve($connection, string $where, array $limitWhere) : array
     {
-        $sql = $this->getPercentileSql($where, $limitWhere);
+        $data = [];
 
-        $res = $connection->fetchAll($sql);
+        $bouncedSql = $this->getBouncedBucketsSql($where, $limitWhere);
+        $allSql     = $this->getAllBucketsSql($where, $limitWhere);
 
-        return $res;
+        $bouncedBuckets = $connection->fetchAll($bouncedSql);
+        $allBuckets     = $connection->fetchAll($allSql);
+
+        // Make bin_floor to be a key and count value. It will be easier to work wit this array in the rest parts of the
+        // application
+        $data['bounced_buckets'] = $this->flattenBuckets($bouncedBuckets);
+        $data['all_buckets']     = $this->flattenBuckets($allBuckets);
+
+        return $data;
+    }
+
+    /**
+     * @param array $buckets
+     * @return array
+     */
+    private function flattenBuckets(array $buckets) : array
+    {
+        $flatten = [];
+
+        foreach ($buckets as $bucket) {
+            $flatten[$bucket['bin_floor']] = $bucket['COUNT(*)'];
+        }
+
+        return $flatten;
     }
 
 }

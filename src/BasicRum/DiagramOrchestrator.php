@@ -147,6 +147,20 @@ class DiagramOrchestrator
                 );
             }
         }
+
+        if (isset($requirements['business_metrics'])) {
+            $metricConfig = current($requirements['business_metrics']);
+
+            $dataFlavor = $metricConfig['data_flavor'];
+
+            if (isset($dataFlavor['bounce_rate'])) {
+                return new Layers\DataLayer\Query\MainDataSelect\BounceRateInMetric(
+                    'navigation_timings',
+                    $dataFlavor['bounce_rate']['in_metric'],
+                    200
+                );
+            }
+        }
     }
 
 }
