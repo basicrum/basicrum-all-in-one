@@ -146,6 +146,15 @@ class DiagramOrchestrator
                     (int) $dataFlavor['percentile']
                 );
             }
+
+            if (isset($dataFlavor['histogram'])) {
+                return new Layers\DataLayer\Query\MainDataSelect\Histogram(
+                    'navigation_timings',
+                    $metricFieldName,
+                    (int) $dataFlavor['histogram']['bucket']
+                );
+            }
+
         }
 
         if (isset($requirements['business_metrics'])) {

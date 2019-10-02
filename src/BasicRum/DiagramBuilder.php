@@ -7,14 +7,6 @@ namespace App\BasicRum;
 class DiagramBuilder
 {
 
-    private $_metricsCodeNameMapping = [
-        'time_to_first_byte'     => 'first_byte',
-        'time_to_first_paint'    => 'first_paint',
-        'document_ready'         => 'load_event_end',
-        //Too generic value. Probably in the future we need to prefix all values with entity name
-        'last_blocking_resource' => 'time'
-    ];
-
     /**
      * @param DiagramOrchestrator $diagramOrchestrator
      * @param array $params
@@ -120,7 +112,19 @@ class DiagramBuilder
 
             foreach ($results as $key => $result) {
                 $extraDiagramParams[$key] = [];
-                $buckets = [];
+
+                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
+                    $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
+                    if ($metrics[0] === 'first_paint') {
+                        $histogram = new \App\BasicRum\Report\Data\Histogram();
+
+                        $buckets = $histogram->generate($result);
+
+                        foreach ($buckets as $time => $bucket) {
+                            $dataForDiagram[$key][$time] = $bucket;
+                        }
+                    }
+                }
 
                 if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
