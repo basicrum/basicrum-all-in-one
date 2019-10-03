@@ -23,13 +23,10 @@ class DayInterval
     {
         $betweenArr = [];
 
-        $lastDay = new DateTime($toDate);
-        $theDayAfter = $lastDay->modify('+1 day');
-
         $period = new DatePeriod(
             new DateTime($fromDate),
             new DateInterval('P1D'),
-            $theDayAfter
+            new DateTime($toDate)
         );
 
         /** @var $value DateTime */

@@ -39,7 +39,7 @@ class DiagramBuilder
                 $extraDiagramParams[$key] = [];
 
                 foreach ($result as $time => $sample) {
-                    $data[$time] = empty($sample[0]['count']) ? 0 : $sample[0]['count'];
+                    $data[$time] = $sample['count'];
 
                     // Summing total visits per day. Used later for calculating percentage
                     $totalsCount[$time] = isset($totalsCount[$time]) ? ($totalsCount[$time] + $data[$time]) : $data[$time];

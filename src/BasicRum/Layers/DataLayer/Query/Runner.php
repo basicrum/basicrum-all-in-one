@@ -82,10 +82,6 @@ class Runner
         //Playing a bit with generating low level query
         $connection = $this->registry->getConnection();
 
-//        $sql = 'SELECT ' . implode(',', $selects). ' ';
-//        $sql .= 'FROM ' . $this->planActions['main_table_name'] . ' ';
-
-
         $sqlWhere = implode(' AND ', $whereArr);
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
         foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {

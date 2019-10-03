@@ -169,6 +169,13 @@ class DiagramOrchestrator
                     200
                 );
             }
+
+            if (isset($dataFlavor['count'])) {
+                return new Layers\DataLayer\Query\MainDataSelect\Count(
+                    'navigation_timings',
+                    'page_view_id'
+                );
+            }
         }
     }
 
