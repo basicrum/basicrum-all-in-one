@@ -115,7 +115,7 @@ class DiagramBuilder
 
                 if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
-                    if ($metrics[0] === 'first_paint') {
+                    //if ($metrics[0] === 'first_paint') {
                         $histogram = new \App\BasicRum\Report\Data\Histogram();
 
                         $buckets = $histogram->generate($result);
@@ -123,7 +123,7 @@ class DiagramBuilder
                         foreach ($buckets as $time => $bucket) {
                             $dataForDiagram[$key][$time] = $bucket;
                         }
-                    }
+                    //}
                 }
 
                 if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {

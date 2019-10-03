@@ -50,21 +50,9 @@ class Histogram
 
         return
 
-            "SELECT floor(first_paint/$this->bucketSize)*$this->bucketSize AS bin_floor, COUNT(*)
+            "SELECT floor({$this->fieldName}/{$this->bucketSize})*{$this->bucketSize} AS bin_floor, COUNT(*)
 FROM navigation_timings
-WHERE 
-  {$limitWhereStr} AND
-  page_view_id IN
-  (
-	SELECT visits_overview.first_page_view_id 
-    FROM visits_overview
-    WHERE visits_overview.first_page_view_id IN
-		  (
-			SELECT page_view_id
-			from navigation_timings
-			WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
-		  )
-  )
+WHERE {$limitWhereStr} {$where}
   
 GROUP BY 1
 ORDER BY 1";

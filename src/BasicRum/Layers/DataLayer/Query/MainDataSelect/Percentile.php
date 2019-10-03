@@ -44,6 +44,10 @@ class Percentile
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
+        if (!empty($where)) {
+            $where = ' AND ' . $where;
+        }
+
         return
 "SELECT DISTINCT first_value({$this->fieldName}) OVER (ORDER BY CASE WHEN p <= 0.{$this->percentile} THEN p END DESC) x
 FROM (
@@ -51,7 +55,7 @@ FROM (
     {$this->tableName}.{$this->fieldName},
     percent_rank() OVER (ORDER BY {$this->tableName}.{$this->fieldName}) p
   FROM {$this->tableName}
-  WHERE {$limitWhereStr} AND {$where} AND {$this->tableName}.{$this->fieldName} > 0
+  WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
 ) t";
     }
 

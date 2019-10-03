@@ -42,6 +42,25 @@ class DiagramOrchestrator
                 $requirements = array_merge($requirements, $segment['data_requirements']);
             }
 
+            //Attach global data flavor
+            if (!empty($input['global']['data_flavor'])) {
+                 foreach ($requirements as $rKey => $rValue) {
+                     if (strpos($rKey, '_metrics') !== false) {
+                         $metric = array_key_first($rValue);
+                         if (empty($requirements[$rKey][$metric]['data_flavor'])) {
+                             if (is_array($requirements[$rKey][$metric])) {
+                                 $requirements[$rKey][$metric]['data_flavor'] = $input['global']['data_flavor'];
+                             }
+
+                             if (1 == $requirements[$rKey][$metric]) {
+                                 $requirements[$rKey][$metric] = [];
+                                 $requirements[$rKey][$metric]['data_flavor'] = $input['global']['data_flavor'];
+                             }
+                         }
+                     }
+                 }
+            }
+
             $this->collaboratorsAggregators[$key] = $this->_initCollaboratorsAggregator($requirements);
             $this->dataFlavors[$key] = $this->_initDataFlavors($requirements);
         }

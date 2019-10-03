@@ -38,10 +38,14 @@ class Count
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
+        if (!empty($where)) {
+            $where = ' AND ' . $where;
+        }
+
         return
             "SELECT COUNT(`{$this->tableName}`.`{$this->fieldName}`) as `cnt`
 FROM navigation_timings
-WHERE {$limitWhereStr} AND {$where}";
+WHERE {$limitWhereStr} {$where}";
     }
 
     /**
