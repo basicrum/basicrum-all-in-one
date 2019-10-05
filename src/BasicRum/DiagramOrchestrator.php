@@ -174,6 +174,14 @@ class DiagramOrchestrator
                 );
             }
 
+
+            if (isset($dataFlavor['data_rows'])) {
+                return new Layers\DataLayer\Query\MainDataSelect\DataRows(
+                    'navigation_timings',
+                    $dataFlavor['data_rows']['fields']
+                );
+            }
+
         }
 
         if (isset($requirements['business_metrics'])) {
