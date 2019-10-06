@@ -52,36 +52,32 @@ class SimpleImportTest extends NoFixturesTestCase
         $process = new Process($this->_getDoctrine());
         $c = $process->runImport($reader, 1);
 
-        $requirementsArr = [
-            'periods' => [
-                [
-                    'from_date' => '03/31/2019',
-                    'to_date'   => '03/31/2019'
-                ]
-            ],
-            'technical_metrics' => [
-                'time_to_first_paint' => 1
-            ]
-        ];
 
+        //<input type="hidden" name="segments[1][data_requirements][internal_data][data_field][data_flavor][data_rows][fields]" value="page_view_id" />
         $input = [
             'global' => [
-                'presentation' => [
-                    'render_type' => 'plane'
-                ],
                 'data_requirements' => [
                     'period' => [
                         'type'  => 'fixed',
                         'start' => '03/31/2019',
-                        'end'   => '03/31/2019',
+                        'end'   => '04/01/2019',
                     ]
                 ]
             ],
             'segments' => [
                 1 => [
                     'data_requirements' => [
-                        'technical_metrics' => [
-                            'time_to_first_paint' => 1
+                        'internal_data' => [
+                            'data_field' => [
+                                'data_flavor' => [
+                                    'data_rows' => [
+                                        'fields' => [
+                                            'page_view_id',
+                                            'first_paint'
+                                        ]
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -100,18 +96,20 @@ class SimpleImportTest extends NoFixturesTestCase
                 1 => [
                     '2019-03-31 00:00:00' =>
                         [
-                            [
-                                'page_view_id'     => 1,
-                                'first_paint'      => 1802
-                            ],
-                            [
-                                'page_view_id'     => 2,
-                                'first_paint'      => 1281
-                            ],
-                            [
-                                'page_view_id'     => 3,
-                                'first_paint'      => 1068
-                            ],
+                            'data_rows' => [
+                                [
+                                    'page_view_id'     => '1',
+                                    'first_paint'      => 1802
+                                ],
+                                [
+                                    'page_view_id'     => '2',
+                                    'first_paint'      => 1281
+                                ],
+                                [
+                                    'page_view_id'     => '3',
+                                    'first_paint'      => 1068
+                                ]
+                            ]
                         ]
                 ]
             ],

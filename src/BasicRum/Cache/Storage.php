@@ -19,7 +19,7 @@ class Storage
      */
     public function hasItem($cacheKey)
     {
-        return false;
+        //return false;
 
         if (isset($_ENV['NO_CACHE']) && $_ENV['NO_CACHE'] == true) {
             return false;

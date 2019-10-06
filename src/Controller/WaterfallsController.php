@@ -58,20 +58,8 @@ class WaterfallsController extends AbstractController
 
         $requirements['global'] = $_POST['global'];
         $requirements['segments'] = [];
-        /**
-         * Ugly filtering of post data in order to map form data correctly to diagram APIs
-         */
-        foreach ($_POST['segments'] as $keyO => $data) {
-            //var_dump($data['data_requirements']['technical_metrics']);
-            $requirements['segments'][$keyO] = $data;
 
-            if (is_string($data['data_requirements']['technical_metrics']) && strpos($data['data_requirements']['technical_metrics'], '|') !== false) {
-                $e = explode('|', $data['data_requirements']['technical_metrics']);
-                $requirements['segments'][$keyO]['data_requirements']['technical_metrics'] = [$e[0] => $e[1]];
-
-                continue;
-            }
-        }
+        $requirements['segments'] = $_POST['segments'];
 
         /**
          * If "page_type" presented then unset "url" and "query_param".

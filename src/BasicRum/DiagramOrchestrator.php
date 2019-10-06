@@ -174,6 +174,12 @@ class DiagramOrchestrator
                 );
             }
 
+        }
+
+        if (isset($requirements['internal_data'])) {
+            $metricConfig = current($requirements['internal_data']);
+
+            $dataFlavor = $metricConfig['data_flavor'];
 
             if (isset($dataFlavor['data_rows'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\DataRows(
@@ -181,7 +187,6 @@ class DiagramOrchestrator
                     $dataFlavor['data_rows']['fields']
                 );
             }
-
         }
 
         if (isset($requirements['business_metrics'])) {

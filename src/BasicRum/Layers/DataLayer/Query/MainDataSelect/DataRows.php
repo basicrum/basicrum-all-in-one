@@ -13,20 +13,20 @@ class DataRows
     private $tableName;
 
     /** @var string */
-    private $fieldName;
+    private $fieldNames;
 
     /**
      * Percentile constructor.
      * @param string $tableName
-     * @param string $fieldName
+     * @param array $fieldNames
      */
     public function __construct(
         string $tableName,
-        string $fieldName
+        array $fieldNames
     )
     {
         $this->tableName  = $tableName;
-        $this->fieldName  = $fieldName;
+        $this->fieldNames = $fieldNames;
     }
 
     /**
@@ -43,9 +43,23 @@ class DataRows
         }
 
         return
-            "SELECT `{$this->tableName}`.`{$this->fieldName}` as `{$this->fieldName}`
+            "SELECT {$this->generateSelectClauseFields()}
 FROM navigation_timings
 WHERE {$limitWhereStr} {$where}";
+    }
+
+    /**
+     * @return string
+     */
+    private function generateSelectClauseFields()
+    {
+        $selectFieldsArray = [];
+
+        foreach ($this->fieldNames as $fieldName) {
+            $selectFieldsArray[] = " `{$this->tableName}`.`{$fieldName}` as `{$fieldName}`";
+        }
+
+        return implode(', ', $selectFieldsArray);
     }
 
     /**
