@@ -98,15 +98,15 @@ class SimpleImportTest extends NoFixturesTestCase
                         [
                             'data_rows' => [
                                 [
-                                    'page_view_id'     => '1',
+                                    'page_view_id'     => 1,
                                     'first_paint'      => 1802
                                 ],
                                 [
-                                    'page_view_id'     => '2',
+                                    'page_view_id'     => 2,
                                     'first_paint'      => 1281
                                 ],
                                 [
-                                    'page_view_id'     => '3',
+                                    'page_view_id'     => 3,
                                     'first_paint'      => 1068
                                 ]
                             ]
