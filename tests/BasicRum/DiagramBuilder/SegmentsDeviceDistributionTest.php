@@ -42,7 +42,11 @@ class SegmentsDeviceDistributionTest extends TestCase
                             ]
                         ],
                         'business_metrics' => [
-                            'page_views_count' => 1
+                            'page_views_count' => [
+                                'data_flavor' => [
+                                    'count' => true
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -59,7 +63,11 @@ class SegmentsDeviceDistributionTest extends TestCase
                             ]
                         ],
                         'business_metrics' => [
-                            'page_views_count' => 1
+                            'page_views_count' => [
+                                'data_flavor' => [
+                                    'count' => true
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -76,7 +84,11 @@ class SegmentsDeviceDistributionTest extends TestCase
                             ]
                         ],
                         'business_metrics' => [
-                            'page_views_count' => 1
+                            'page_views_count' => [
+                                'data_flavor' => [
+                                    'count' => true
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -93,7 +105,11 @@ class SegmentsDeviceDistributionTest extends TestCase
                             ]
                         ],
                         'business_metrics' => [
-                            'page_views_count' => 1
+                            'page_views_count' => [
+                                'data_flavor' => [
+                                    'count' => true
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -115,28 +131,28 @@ class SegmentsDeviceDistributionTest extends TestCase
             ->will($this->returnValue(
                 [
                     1 => [
-                        '2019-07-01 00:00:00' => [0 => ['count' => 42]],
-                        '2019-07-02 00:00:00' => [0 => ['count' => 32]],
-                        '2019-07-03 00:00:00' => [0 => ['count' => 45]],
-                        '2019-07-04 00:00:00' => [0 => ['count' => 33]]
+                        '2019-07-01 00:00:00' => ['count' => 42],
+                        '2019-07-02 00:00:00' => ['count' => 32],
+                        '2019-07-03 00:00:00' => ['count' => 45],
+                        '2019-07-04 00:00:00' => ['count' => 33]
                     ],
                     2 => [
-                        '2019-07-01 00:00:00' => [0 => ['count' => 42]],
-                        '2019-07-02 00:00:00' => [0 => ['count' => 22]],
-                        '2019-07-03 00:00:00' => [0 => ['count' => 55]],
-                        '2019-07-04 00:00:00' => [0 => ['count' => 83]]
+                        '2019-07-01 00:00:00' => ['count' => 42],
+                        '2019-07-02 00:00:00' => ['count' => 22],
+                        '2019-07-03 00:00:00' => ['count' => 55],
+                        '2019-07-04 00:00:00' => ['count' => 83]
                     ],
                     3 => [
-                        '2019-07-01 00:00:00' => [0 => ['count' => 2]],
-                        '2019-07-02 00:00:00' => [0 => ['count' => 38]],
-                        '2019-07-03 00:00:00' => [0 => ['count' => 43]],
-                        '2019-07-04 00:00:00' => [0 => ['count' => 12]]
+                        '2019-07-01 00:00:00' => ['count' => 2],
+                        '2019-07-02 00:00:00' => ['count' => 38],
+                        '2019-07-03 00:00:00' => ['count' => 43],
+                        '2019-07-04 00:00:00' => ['count' => 12]
                     ],
                     4 => [
-                        '2019-07-01 00:00:00' => [0 => ['count' => 43]],
-                        '2019-07-02 00:00:00' => [0 => ['count' => 42]],
-                        '2019-07-03 00:00:00' => [0 => ['count' => 15]],
-                        '2019-07-04 00:00:00' => [0 => ['count' => 43]]
+                        '2019-07-01 00:00:00' => ['count' => 43],
+                        '2019-07-02 00:00:00' => ['count' => 42],
+                        '2019-07-03 00:00:00' => ['count' => 15],
+                        '2019-07-04 00:00:00' => ['count' => 43]
                     ]
                 ]
             ));

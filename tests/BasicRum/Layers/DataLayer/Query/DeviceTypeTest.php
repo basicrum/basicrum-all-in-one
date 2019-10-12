@@ -8,6 +8,8 @@ use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\DeviceType;
 
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
+
 class DeviceTypeTest extends FixturesTestCase
 {
 
@@ -37,10 +39,13 @@ class DeviceTypeTest extends FixturesTestCase
             '2'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$deviceType]
+            [$deviceType],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -49,8 +54,10 @@ class DeviceTypeTest extends FixturesTestCase
             [
                 '2018-10-24 00:00:00' =>
                     [
-                        [
-                            'page_view_id' => 1
+                        'data_rows' => [
+                            [
+                                'page_view_id' => 1
+                            ]
                         ]
                     ]
             ],
@@ -71,10 +78,13 @@ class DeviceTypeTest extends FixturesTestCase
             '1'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$deviceType]
+            [$deviceType],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -83,8 +93,10 @@ class DeviceTypeTest extends FixturesTestCase
             [
                 '2018-10-25 00:00:00' =>
                     [
-                        [
-                            'page_view_id' => 2
+                        'data_rows' => [
+                            [
+                                'page_view_id' => 2
+                            ]
                         ]
                     ]
             ],

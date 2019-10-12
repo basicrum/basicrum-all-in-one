@@ -193,8 +193,9 @@ class FirstByteAndBounceRateTest extends TestCase
     /**
      * @group diagram_builder
      */
-    public function testFirstByteCorrectDiagramName()
+    public function testBounceRateAndFirstByteCorrectDiagramNames()
     {
+
         $input = [
             'global' => [
                 'presentation' => [
@@ -207,16 +208,15 @@ class FirstByteAndBounceRateTest extends TestCase
                         'name' => 'Sessions',
                         'color' => '#ff0000'
                     ],
-                    'group_data' => 'bounce_rate',
                     'data_requirements' => [
-                        'filters' => [
-                            'device_type' => [
-                                'condition'    => 'is',
-                                'search_value' => '2'
-                            ]
-                        ],
                         'technical_metrics' => [
-                            'time_to_first_byte' => 1
+                            'first_paint' => [
+                                'data_flavor' => [
+                                    'histogram' => [
+                                        'bucket' => '200'
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ],
@@ -225,11 +225,15 @@ class FirstByteAndBounceRateTest extends TestCase
                         'name' => 'Bounce Rate',
                         'color' => '#000000'
                     ],
-                    'group_data' => 'bounce_rate',
                     'data_requirements' => [
-
                         'business_metrics' => [
-                            'bounce_rate' => 1
+                            'bounce_rate' => [
+                                'data_flavor' => [
+                                    'bounce_rate' => [
+                                        'in_metric' => 'first_paint'
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -251,10 +255,27 @@ class FirstByteAndBounceRateTest extends TestCase
             ->will($this->returnValue(
                 [
                     1 => [
-                        '2019-07-01 00:00:00' => []
+                        '2019-07-01 00:00:00' => [],
+                        '2019-07-02 00:00:00' => [
+                            'all_buckets' => [
+                                200 => 5,
+                                400 => 2
+                            ]
+                        ]
                     ],
                     2 => [
-                        '2019-07-01 00:00:00' => []
+                        '2019-07-01 00:00:00' => [],
+                        '2019-07-02 00:00:00' => [
+                            'bounced_buckets' => [
+                                400 => 3,
+                                800 => 2
+                            ],
+                            'all_buckets' => [
+                                400 => 5,
+                                800 => 2
+                            ]
+
+                        ]
                     ]
                 ]
             ));
@@ -266,6 +287,11 @@ class FirstByteAndBounceRateTest extends TestCase
         $this->assertEquals(
             'Bounce Rate',
             $result['diagrams'][1]['name']
+        );
+
+        $this->assertEquals(
+            'Sessions',
+            $result['diagrams'][0]['name']
         );
     }
 

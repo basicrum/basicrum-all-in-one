@@ -23,6 +23,20 @@ class DayInterval
     {
         $betweenArr = [];
 
+        if ($fromDate === $toDate) {
+            $calendarDay = new DateTime($fromDate);
+
+            $nextDay = new DateTime($fromDate);
+            $nextDay = $nextDay->modify( '+1 day' );
+
+            return [
+                [
+                    'start' => $calendarDay->format('Y-m-d') . self::TAIL_TIME,
+                    'end'   => $nextDay->format('Y-m-d') . self::TAIL_TIME
+                ]
+            ];
+        }
+
         $period = new DatePeriod(
             new DateTime($fromDate),
             new DateInterval('P1D'),

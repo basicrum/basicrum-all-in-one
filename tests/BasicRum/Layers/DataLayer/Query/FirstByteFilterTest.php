@@ -8,6 +8,8 @@ use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\TimeToFirstByte;
 
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
+
 class FirstByteFilterTest extends FixturesTestCase
 {
 
@@ -32,10 +34,13 @@ class FirstByteFilterTest extends FixturesTestCase
             '150'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$firstByte]
+            [$firstByte],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -44,8 +49,10 @@ class FirstByteFilterTest extends FixturesTestCase
             [
                 '2018-10-24 00:00:00' =>
                     [
-                        [
-                            'page_view_id' => 1
+                        'data_rows' =>[
+                            [
+                                'page_view_id' => 1
+                            ]
                         ]
                     ]
             ],
@@ -66,10 +73,13 @@ class FirstByteFilterTest extends FixturesTestCase
             '91999991'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$firstByte]
+            [$firstByte],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -78,7 +88,9 @@ class FirstByteFilterTest extends FixturesTestCase
             [
                 '2018-10-24 00:00:00' =>
                     [
+                        'data_rows' =>[
 
+                        ]
                     ]
             ],
             $res
