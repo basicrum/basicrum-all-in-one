@@ -158,5 +158,17 @@ ORDER BY 1";
         return $flatten;
     }
 
+    /**
+     * @return string
+     */
+    public function getCacheKeyPart() : string
+    {
+        return 'bounce_rate_in_metric_' . md5(
+                $this->tableName .
+                $this->fieldName .
+                $this->bucketSize
+            );
+    }
+
 }
 

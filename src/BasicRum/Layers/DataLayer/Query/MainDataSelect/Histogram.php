@@ -86,5 +86,17 @@ ORDER BY 1";
         return $flatten;
     }
 
+    /**
+     * @return string
+     */
+    public function getCacheKeyPart() : string
+    {
+        return 'histogram_' . md5(
+                $this->tableName .
+                $this->fieldName .
+                $this->bucketSize
+            );
+    }
+
 }
 

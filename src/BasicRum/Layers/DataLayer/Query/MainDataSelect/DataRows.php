@@ -77,5 +77,16 @@ WHERE {$limitWhereStr} {$where}";
         return ['data_rows' => $res];
     }
 
+    /**
+     * @return string
+     */
+    public function getCacheKeyPart() : string
+    {
+        return 'data_rows_' . md5(
+                $this->tableName .
+                implode('-', $this->fieldNames)
+            );
+    }
+
 }
 

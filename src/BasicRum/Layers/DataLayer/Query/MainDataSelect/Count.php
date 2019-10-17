@@ -63,5 +63,16 @@ WHERE {$limitWhereStr} {$where}";
         return ['count' => $res[0]['cnt']];
     }
 
+    /**
+     * @return string
+     */
+    public function getCacheKeyPart() : string
+    {
+        return 'count_' . md5(
+                $this->tableName .
+                $this->fieldName
+            );
+    }
+
 }
 

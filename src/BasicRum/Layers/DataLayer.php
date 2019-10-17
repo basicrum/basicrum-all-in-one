@@ -64,6 +64,8 @@ class DataLayer
             /** todo: Think about adding a tag that at least can invalidate cache for certain day in interval */
             $cacheKey = end($dbUrlArr) . 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
 
+            $cacheKey .= $this->mainDataSelect->getCacheKeyPart();
+
             if (true && $cache->hasItem($cacheKey)) {
                 $res[$interval->getStartInterval()] =  $cache->getItem($cacheKey)->get();
                 continue;

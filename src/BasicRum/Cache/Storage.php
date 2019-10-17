@@ -10,6 +10,14 @@ class Storage
     extends FilesystemAdapter
 {
 
+    public function __construct(string $namespace = '', int $defaultLifetime = 0)
+    {
+        $projectDir = explode('/src/BasicRum',__DIR__)[0];
+        $cacheDir = $projectDir . '/var/cache/' . $_ENV['APP_ENV'];
+
+        parent::__construct($namespace, $defaultLifetime, $cacheDir);
+    }
+
     /**
      * Used when we do local development or unit testing and we would like
      * to avoid getting pre-cached results
@@ -19,8 +27,6 @@ class Storage
      */
     public function hasItem($cacheKey)
     {
-        //return false;
-
         if (isset($_ENV['NO_CACHE']) && $_ENV['NO_CACHE'] == true) {
             return false;
         }

@@ -74,5 +74,17 @@ FROM (
         return $res;
     }
 
+    /**
+     * @return string
+     */
+    public function getCacheKeyPart() : string
+    {
+        return 'percentile_' . md5(
+                $this->tableName .
+                $this->fieldName .
+                $this->percentile
+            );
+    }
+
 }
 

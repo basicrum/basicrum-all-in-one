@@ -9,4 +9,6 @@ interface MainDataInterface
 
     public function retrieve($connection, string $where, array $limitWhere) : array;
 
+    public function getCacheKeyPart() : string;
+
 }
