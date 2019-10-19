@@ -72,13 +72,6 @@ class Runner
             $whereArr[] = $filter;
         }
 
-        $selects = [];
-
-        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\Select $select */
-        foreach ($this->planActions['selects'] as $select) {
-            $selects[] = $select->getSelect()->getFields()[0];
-        }
-
         //Playing a bit with generating low level query
         $connection = $this->registry->getConnection();
 
@@ -101,14 +94,6 @@ class Runner
                     $res[$key] = array_merge($row, $complexSelectData[$row[$this->planActions['complex_selects'][$complexSelectKey]->getPrimaryKeyFieldName()]]);
                 }
             }
-        }
-
-        if (strpos(print_r($selects, true),'COUNT(') !== false) {
-            return [
-                [
-                    'count' => reset($res[0])
-                ]
-            ];
         }
 
         return $res;
