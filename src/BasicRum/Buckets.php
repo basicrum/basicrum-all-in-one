@@ -60,14 +60,14 @@ class Buckets
             if (!isset($sample[$searchKey])) {
                 continue;
             }
-            if (isset($sample['firstPaint'])) {
-                if (100 >= $sample['firstPaint']) {
+            if (isset($sample['first_paint'])) {
+                if (100 >= $sample['first_paint']) {
                     continue;
                 }
             }
 
-            if (isset($sample['firstByte'])) {
-                if (100 >= $sample['firstByte']) {
+            if (isset($sample['first_byte'])) {
+                if (100 >= $sample['first_byte']) {
                     continue;
                 }
             }

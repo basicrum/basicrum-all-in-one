@@ -4,18 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Statistics\Median;
-
 class DiagramBuilder
 {
-
-    private $_metricsCodeNameMapping = [
-        'time_to_first_byte'     => 'firstByte',
-        'time_to_first_paint'    => 'firstPaint',
-        'document_ready'         => 'loadEventEnd',
-        //Too generic value. Probably in the future we need to prefix all values with entity name
-        'last_blocking_resource' => 'time'
-    ];
 
     /**
      * @param DiagramOrchestrator $diagramOrchestrator
@@ -28,6 +18,8 @@ class DiagramBuilder
         $diagramData = [];
 
         $results = $diagramOrchestrator->process();
+
+        //var_dump($results);
 
         $renderType = $params['global']['presentation']['render_type'];
 
@@ -47,7 +39,7 @@ class DiagramBuilder
                 $extraDiagramParams[$key] = [];
 
                 foreach ($result as $time => $sample) {
-                    $data[$time] = empty($sample[0]['count']) ? 0 : $sample[0]['count'];
+                    $data[$time] = $sample['count'];
 
                     // Summing total visits per day. Used later for calculating percentage
                     $totalsCount[$time] = isset($totalsCount[$time]) ? ($totalsCount[$time] + $data[$time]) : $data[$time];
@@ -79,8 +71,6 @@ class DiagramBuilder
         }
 
         if ('time_series' === $renderType) {
-            $bucketizer = new Buckets(1, 10000);
-            $median = new Median();
 
             $extraLayoutParams = [];
             $extraDiagramParams = [];
@@ -93,19 +83,11 @@ class DiagramBuilder
 
             foreach ($results as $key => $result) {
                 $extraDiagramParams[$key] = [];
-                $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
 
-                $searchKey = $this->_metricsCodeNameMapping[$metrics[0]] ?? '';
+                foreach ($result as $time => $data) {
 
-                foreach ($result as $time => $samples) {
-                    $buckets = $bucketizer->bucketize($samples, $searchKey);
-                    $countBuckets = [];
-
-                    foreach ($buckets as $bucketSize => $bucket) {
-                        $countBuckets[$bucketSize] = count($bucket);
-                    }
-
-                    $dataForDiagram[$key][$time] = $median->calculateMedian($countBuckets);
+                    $x = isset($data[0]['x']) ? $data[0]['x'] : 0;
+                    $dataForDiagram[$key][$time] = $x;
                 }
             }
 
@@ -120,8 +102,6 @@ class DiagramBuilder
         }
 
         if ('plane' === $renderType) {
-            $bucketizer = new Buckets(200, 5000);
-
             $dataForDiagram = [];
             $extraLayoutParams = [];
             $extraDiagramParams = [];
@@ -130,27 +110,32 @@ class DiagramBuilder
                 $extraLayoutParams = $params['global']['presentation']['layout'];
             }
 
-            $searchKey = '';
-
-            foreach ($results as $key => $result) {
-                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
-                    $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
-                    $searchKey = $this->_metricsCodeNameMapping[$metrics[0]] ?? '';
-                    break;
-                }
-            }
-
             foreach ($results as $key => $result) {
                 $extraDiagramParams[$key] = [];
 
-                $buckets = $bucketizer->bucketizePeriod($result, $searchKey);
+                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
+                    $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
+                    //if ($metrics[0] === 'first_paint') {
+                        $histogram = new \App\BasicRum\Report\Data\Histogram();
+
+                        $buckets = $histogram->generate($result);
+
+                        foreach ($buckets as $time => $bucket) {
+                            $dataForDiagram[$key][$time] = $bucket;
+                        }
+                    //}
+                }
 
                 if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
                     if ($metrics[0] === 'bounce_rate') {
                         $bounceRateCalculator = new \App\BasicRum\Report\Data\BounceRate();
 
-                        $dataForDiagram[$key] = $bounceRateCalculator->generate($buckets);
+                        $buckets = $bounceRateCalculator->generate($result);
+
+                        foreach ($buckets as $time => $bucket) {
+                            $dataForDiagram[$key][$time] = $bucket;
+                        }
 
                         $extraDiagramParams[$key] = ['yaxis' => 'y2'];
 
@@ -187,12 +172,8 @@ class DiagramBuilder
                             ];
                         }
                     }
-                    continue;
                 }
 
-                foreach ($buckets as $time => $bucket) {
-                    $dataForDiagram[$key][$time] = count($bucket);
-                }
             }
 
             $view = new Diagram\View\RenderType\Plane($layout);

@@ -8,29 +8,29 @@ class QueryParam
     extends AbstractFilter
 {
 
-    public function getSecondaryEntityName() : string
+    public function getSecondaryTableName() : string
     {
-        return 'NavigationTimingsQueryParams';
+        return 'navigation_timings_query_params';
     }
 
     public function getSecondaryKeyFieldName() : string
     {
-        return 'pageViewId';
+        return 'page_view_id';
     }
 
     public function getSecondarySearchFieldName() : string
     {
-        return 'queryParams';
+        return 'query_params';
     }
 
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimarySearchFieldName() : string
     {
-        return 'pageViewId';
+        return 'page_view_id';
     }
 
 }

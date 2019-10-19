@@ -23,13 +23,24 @@ class DayInterval
     {
         $betweenArr = [];
 
-        $lastDay = new DateTime($toDate);
-        $theDayAfter = $lastDay->modify('+1 day');
+        if ($fromDate === $toDate) {
+            $calendarDay = new DateTime($fromDate);
+
+            $nextDay = new DateTime($fromDate);
+            $nextDay = $nextDay->modify( '+1 day' );
+
+            return [
+                [
+                    'start' => $calendarDay->format('Y-m-d') . self::TAIL_TIME,
+                    'end'   => $nextDay->format('Y-m-d') . self::TAIL_TIME
+                ]
+            ];
+        }
 
         $period = new DatePeriod(
             new DateTime($fromDate),
             new DateInterval('P1D'),
-            $theDayAfter
+            new DateTime($toDate)
         );
 
         /** @var $value DateTime */

@@ -9,7 +9,7 @@ class Between
 {
 
     /** @var string */
-    private $entityName;
+    private $tableName;
 
     /** @var string */
     private $fieldName;
@@ -21,13 +21,13 @@ class Between
     private $rightPart;
 
     public function __construct(
-        string $entityName,
+        string $tableName,
         string $fieldName,
         string $leftPart,
         string $rightPart
     )
     {
-        $this->entityName = $entityName;
+        $this->tableName  = $tableName;
         $this->fieldName  = $fieldName;
         $this->leftPart   = $leftPart;
         $this->rightPart  = $rightPart;
@@ -38,7 +38,7 @@ class Between
      */
     public function getWhere() : string
     {
-        return $this->entityName . "." . $this->fieldName . " BETWEEN " . ":" . $this->_leftPartName() . " AND :" . $this->_rightPartName();
+        return $this->tableName . "." . $this->fieldName . " BETWEEN " . ":" . $this->_leftPartName() . " AND :" . $this->_rightPartName();
     }
 
     /**
@@ -46,7 +46,7 @@ class Between
      */
     private function _leftPartName() : string
     {
-        return $this->entityName . "_" . $this->fieldName . '_left';
+        return $this->tableName . "_" . $this->fieldName . '_left';
     }
 
     /**
@@ -54,7 +54,7 @@ class Between
      */
     private function _rightPartName() : string
     {
-        return $this->entityName . "_" . $this->fieldName . '_right';
+        return $this->tableName . "_" . $this->fieldName . '_right';
     }
 
     /**

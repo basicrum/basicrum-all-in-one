@@ -9,17 +9,17 @@ class Itself
 {
 
     /** @var string */
-    private $entityName;
+    private $tableName;
 
     /** @var string */
     private $fieldName;
 
     public function __construct(
-        string $entityName,
+        string $tableName,
         string $fieldName
     )
     {
-        $this->entityName = $entityName;
+        $this->tableName = $tableName;
         $this->fieldName  = $fieldName;
     }
 
@@ -28,7 +28,7 @@ class Itself
      */
     public function getFields() : array
     {
-        return [$this->entityName . '.' . $this->fieldName];
+        return [$this->tableName . '.' . $this->fieldName];
     }
 
 }

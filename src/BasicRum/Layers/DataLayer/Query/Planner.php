@@ -10,9 +10,14 @@ use App\BasicRum\Layers\DataLayer\Query\Select;
 class Planner
 {
 
+    /** @var string */
     private $startPeriod;
 
+    /** @var string */
     private $endPeriod;
+
+    /** @var \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface */
+    private $mainDataSelect;
 
     /** @var array */
     private $requirements = [];
@@ -20,12 +25,14 @@ class Planner
     public function __construct(
         string $startPeriod,
         string $endPeriod,
-        array $requirements
+        array $requirements,
+        MainDataSelect\MainDataInterface $mainDataSelect
     )
     {
         $this->startPeriod  = $startPeriod;
         $this->endPeriod    = $endPeriod;
         $this->requirements = $requirements;
+        $this->mainDataSelect = $mainDataSelect;
     }
 
 
@@ -34,13 +41,13 @@ class Planner
      */
     public function createPlan()
     {
-        $plan = new Plan('NavigationTimings');
+        $plan = new Plan('navigation_timings', $this->mainDataSelect);
 
         /**
          * Check for selects that may break select query.
          *
-         * E.g we can't have "SELECT pageViewId, COUNT(pageViewId) ..."
-         * We can have only   "SELECT COUNT(pageViewId)"
+         * E.g we can't have "SELECT page_view_id, COUNT(page_view_id) ..."
+         * We can have only   "SELECT COUNT(page_view_id)"
          */
         $addDefaultSelect = true;
 
@@ -52,8 +59,8 @@ class Planner
 
         if ($addDefaultSelect) {
             $itself = new Select\Itself(
-                'NavigationTimings',
-                'pageViewId'
+                'navigation_timings',
+                'page_view_id'
             );
 
             $plan->addSelect($itself);
@@ -61,7 +68,7 @@ class Planner
             foreach ($this->requirements as $requirement) {
                 if ($requirement instanceof \App\BasicRum\Report\SelectableInterface) {
                     $itself = new Select\Itself(
-                        $requirement->getSelectEntityName(),
+                        $requirement->getSelectTableName(),
                         $requirement->getSelectDataFieldName()
                     );
 
@@ -71,32 +78,32 @@ class Planner
         }
 
         $between = new Condition\Between(
-            'NavigationTimings',
-            'createdAt',
+            'navigation_timings',
+            'created_at',
             $this->startPeriod,
             $this->endPeriod
         );
 
         $plan->addLimiterFilter(
-            'NavigationTimings',
-            'pageViewId',
-            'NavigationTimings',
+            'navigation_timings',
+            'page_view_id',
+            'navigation_timings',
             $between,
             new Select\Min(
-                'NavigationTimings',
-                'pageViewId'
+                'navigation_timings',
+                'page_view_id'
             ),
             ">="
         );
 
         $plan->addLimiterFilter(
-            'NavigationTimings',
-            'pageViewId',
-            'NavigationTimings',
+            'navigation_timings',
+            'page_view_id',
+            'navigation_timings',
             $between,
             $max = new Select\Max(
-                'NavigationTimings',
-                'pageViewId'
+                'navigation_timings',
+                'page_view_id'
             ),
             "<="
         );
@@ -104,9 +111,9 @@ class Planner
         foreach ($this->requirements as $requirement) {
             if ($requirement instanceof \App\BasicRum\Report\ComplexSelectableInterface) {
                 $plan->addComplexSelect(
-                    $requirement->getPrimarySelectEntityName(),
+                    $requirement->getPrimarySelectTableName(),
                     $requirement->getPrimaryKeyFieldName(),
-                    $requirement->getSecondarySelectEntityName(),
+                    $requirement->getSecondarySelectTableName(),
                     $requirement->getSecondaryKeyFieldName(),
                     $requirement->getSecondarySelectDataFieldNames()
                 );
@@ -114,7 +121,7 @@ class Planner
 
             if ($requirement instanceof \App\BasicRum\Report\CountableInterface) {
                 $itself = new Select\Count(
-                    $requirement->getSelectEntityName(),
+                    $requirement->getSelectTableName(),
                     $requirement->getSelectDataFieldName()
                 );
 
@@ -124,20 +131,20 @@ class Planner
             if ($requirement instanceof \App\BasicRum\Report\PrimaryFilterableInterface) {
                 if ($requirement->getCondition() === 'isNot') {
                     $condition = new Condition\NotEquals(
-                        $requirement->getPrimaryEntityName(),
+                        $requirement->getPrimaryTableName(),
                         $requirement->getPrimarySearchFieldName(),
                         $requirement->getSearchValue()
                     );
                 } else {
                     $condition = new Condition\Equals(
-                        $requirement->getPrimaryEntityName(),
+                        $requirement->getPrimaryTableName(),
                         $requirement->getPrimarySearchFieldName(),
                         $requirement->getSearchValue()
                     );
                 }
 
                 $plan->addPrimaryFilter(
-                    $requirement->getPrimaryEntityName(),
+                    $requirement->getPrimaryTableName(),
                     $requirement->getPrimarySearchFieldName(),
                     $condition
                 );
@@ -145,28 +152,28 @@ class Planner
 
             if ($requirement instanceof \App\BasicRum\Report\SecondaryFilterableInterface) {
                 $itself = new Select\Itself(
-                    $requirement->getSecondaryEntityName(),
+                    $requirement->getSecondaryTableName(),
                     $requirement->getSecondaryKeyFieldName()
                 );
 
                 if ($requirement->getCondition() === 'contains') {
                     $condition = new Condition\Contains(
-                        $requirement->getSecondaryEntityName(),
+                        $requirement->getSecondaryTableName(),
                         $requirement->getSecondarySearchFieldName(),
                         $requirement->getSearchValue()
                     );
                 } else {
                     $condition = new Condition\Equals(
-                        $requirement->getSecondaryEntityName(),
+                        $requirement->getSecondaryTableName(),
                         $requirement->getSecondarySearchFieldName(),
                         $requirement->getSearchValue()
                     );
                 }
 
                 $plan->addSecondaryFilter(
-                    $requirement->getPrimaryEntityName(),
+                    $requirement->getPrimaryTableName(),
                     $requirement->getPrimarySearchFieldName(),
-                    $requirement->getSecondaryEntityName(),
+                    $requirement->getSecondaryTableName(),
                     $condition,
                     $itself,
                     $requirement->getCondition()

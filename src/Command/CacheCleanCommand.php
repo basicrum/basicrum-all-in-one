@@ -8,7 +8,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use App\BasicRum\Cache\Storage;
 
 class CacheCleanCommand extends Command
 {
@@ -32,13 +32,13 @@ class CacheCleanCommand extends Command
 
     public function clearCache()
     {
-        $cacheAdapter = new FilesystemAdapter('basicrum.report.cache');
+        $cacheAdapter = new Storage('basicrum.report.cache');
         $cacheAdapter->clear();
 
-        $cacheAdapter = new FilesystemAdapter('basicrum.datalayer.runner.cache');
+        $cacheAdapter = new Storage('basicrum.datalayer.runner.cache');
         $cacheAdapter->clear();
 
-        $cacheAdapter = new FilesystemAdapter('basicrum.revenue.estimator.cache');
+        $cacheAdapter = new Storage('basicrum.revenue.estimator.cache');
         $cacheAdapter->clear();
     }
 

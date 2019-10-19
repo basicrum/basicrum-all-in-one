@@ -8,6 +8,7 @@ use App\BasicRum\Filters\Primary\TimeToFirstPaint;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
 class FirstPaintFilterTest extends FixturesTestCase
 {
@@ -20,6 +21,9 @@ class FirstPaintFilterTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstPaintEqualsTo()
     {
         $period = new Period();
@@ -30,10 +34,13 @@ class FirstPaintFilterTest extends FixturesTestCase
             '344'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$firstByte]
+            [$firstByte],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -42,8 +49,10 @@ class FirstPaintFilterTest extends FixturesTestCase
             [
                 '2018-10-24 00:00:00' =>
                     [
-                        [
-                            'pageViewId' => 1
+                        'data_rows' => [
+                            [
+                                'page_view_id' => 1
+                            ]
                         ]
                     ]
             ],
@@ -51,20 +60,26 @@ class FirstPaintFilterTest extends FixturesTestCase
         );
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstPaintNotFound()
     {
         $period = new Period();
-        $period->setPeriod('10/24/2018', '10/24/2018');
+        $period->setPeriod('10/24/2018', '10/25/2018');
 
         $firstByte = new TimeToFirstPaint(
             'is',
             '91999991'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$firstByte]
+            [$firstByte],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -73,7 +88,9 @@ class FirstPaintFilterTest extends FixturesTestCase
             [
                 '2018-10-24 00:00:00' =>
                     [
+                        'data_rows' => [
 
+                        ]
                     ]
             ],
             $res

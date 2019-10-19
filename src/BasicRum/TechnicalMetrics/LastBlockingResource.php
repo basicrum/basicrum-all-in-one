@@ -12,29 +12,29 @@ class LastBlockingResource
     public function getSecondarySelectDataFieldNames() : array
     {
         return [
-            'pageViewId',
+            'page_view_id',
             'time'
         ];
     }
 
-    public function getSecondarySelectEntityName() : string
+    public function getSecondarySelectTableName() : string
     {
-        return 'LastBlockingResources';
+        return 'last_blocking_resources';
     }
 
     public function getSecondaryKeyFieldName() : string
     {
-        return 'pageViewId';
+        return 'page_view_id';
     }
 
-    public function getPrimarySelectEntityName() : string
+    public function getPrimarySelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimaryKeyFieldName() : string
     {
-        return 'pageViewId';
+        return 'page_view_id';
     }
 
     /**

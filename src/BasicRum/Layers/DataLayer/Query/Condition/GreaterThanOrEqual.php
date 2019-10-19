@@ -9,7 +9,7 @@ class GreaterThanOrEqual
 {
 
     /** @var string */
-    private $entityName;
+    private $tableName;
 
     /** @var string */
     private $fieldName;
@@ -18,12 +18,12 @@ class GreaterThanOrEqual
     private $value;
 
     public function __construct(
-        string $entityName,
+        string $tableName,
         string $fieldName,
         string $value
     )
     {
-        $this->entityName = $entityName;
+        $this->tableName = $tableName;
         $this->fieldName  = $fieldName;
         $this->value      = $value;
     }
@@ -33,7 +33,7 @@ class GreaterThanOrEqual
      */
     public function getWhere() : string
     {
-        return $this->entityName . "." . $this->fieldName . " >= " . ":" . $this->_getValueKey();
+        return $this->tableName . "." . $this->fieldName . " >= " . ":" . $this->_getValueKey();
     }
 
     /**
@@ -41,7 +41,7 @@ class GreaterThanOrEqual
      */
     private function _getValueKey() : string
     {
-        return $this->entityName . "_" . $this->fieldName . '_value';
+        return $this->tableName . "_" . $this->fieldName . '_value';
     }
 
     /**

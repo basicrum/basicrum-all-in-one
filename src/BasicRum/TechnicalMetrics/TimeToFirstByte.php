@@ -10,12 +10,12 @@ class TimeToFirstByte
 
     public function getSelectDataFieldName(): string
     {
-        return 'firstByte';
+        return 'first_byte';
     }
 
-    public function getSelectEntityName() : string
+    public function getSelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
 }

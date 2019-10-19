@@ -7,6 +7,7 @@ use App\Tests\BasicRum\FixturesTestCase;
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Secondary\Url;
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
 class UrlLikeTest extends FixturesTestCase
 {
@@ -19,6 +20,9 @@ class UrlLikeTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testUrlLikeFound()
     {
         $period = new Period();
@@ -29,10 +33,13 @@ class UrlLikeTest extends FixturesTestCase
             'https://www.basicrum.com/contact'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$url]
+            [$url],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -41,9 +48,10 @@ class UrlLikeTest extends FixturesTestCase
             [
                 '2018-10-28 00:00:00' =>
                     [
-                        [
-                            'pageViewId' => 3,
-
+                        'data_rows' => [
+                            [
+                                'page_view_id' => 3
+                            ]
                         ]
                     ]
             ],

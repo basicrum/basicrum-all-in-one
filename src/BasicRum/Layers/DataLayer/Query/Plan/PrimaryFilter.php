@@ -7,19 +7,19 @@ namespace App\BasicRum\Layers\DataLayer\Query\Plan;
 class PrimaryFilter
 {
 
-    private $primaryEntityName;
+    private $primaryTableName;
 
     private $primarySearchFieldName;
 
     private $condition;
 
     public function __construct(
-        string $primaryEntityName,
+        string $primaryTableName,
         string $primarySearchFieldName,
         \App\BasicRum\Layers\DataLayer\Query\ConditionInterface $condition
     )
     {
-        $this->primaryEntityName      = $primaryEntityName;
+        $this->primaryTableName      = $primaryTableName;
         $this->primarySearchFieldName = $primarySearchFieldName;
         $this->condition              = $condition;
     }
@@ -27,9 +27,9 @@ class PrimaryFilter
     /**
      * @return string
      */
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return $this->primaryEntityName;
+        return $this->primaryTableName;
     }
 
     /**

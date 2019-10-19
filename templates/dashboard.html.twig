@@ -35,22 +35,32 @@
                             name: 'Bounce Rate',
                             color: '#1F77B4'
                         },
-                        group_data: 'bounce_rate',
                         data_requirements: {
                             business_metrics: {
-                                bounce_rate: 1
+                                bounce_rate: {
+                                    data_flavor: {
+                                        bounce_rate: {
+                                            in_metric: 'first_paint'
+                                        }
+                                    }
+                                }
                             }
                         }
                     },
                     2: {
                         presentation: {
-                            name: 'First Paint',
+                            name: 'Start Render',
                             color: '#ff6023'
                         },
-                        group_data: 'bounce_rate',
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_paint: 1
+                                first_paint: {
+                                    data_flavor: {
+                                        histogram: {
+                                            bucket: '200'
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -92,7 +102,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -109,7 +123,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -126,7 +144,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -143,7 +165,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -196,7 +222,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -213,7 +243,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -230,7 +264,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -278,7 +316,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -295,7 +337,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     },
@@ -312,7 +358,11 @@
                                 }
                             },
                             business_metrics: {
-                                page_views_count: 1
+                                page_views_count: {
+                                    data_flavor: {
+                                        count: true
+                                    }
+                                }
                             }
                         }
                     }
@@ -366,7 +416,11 @@
                         },
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_paint: 1
+                                first_paint: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
                             }
                         }
                     },
@@ -378,7 +432,11 @@
                         },
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_byte: 1
+                                first_byte: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
                             }
                         }
                     }
@@ -424,7 +482,11 @@
                         },
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_paint: 1
+                                first_paint: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
                             }
                         }
                     },
@@ -436,7 +498,11 @@
                         },
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_byte: 1
+                                first_byte: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
                             }
                         }
                     }
@@ -482,7 +548,11 @@
                         },
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_paint: 1
+                                first_paint: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
                             }
                         }
                     },
@@ -494,7 +564,11 @@
                         },
                         data_requirements: {
                             technical_metrics: {
-                                time_to_first_byte: 1
+                                first_byte: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
                             }
                         }
                     }

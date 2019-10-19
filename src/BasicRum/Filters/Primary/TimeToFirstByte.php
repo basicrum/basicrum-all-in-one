@@ -8,14 +8,14 @@ class TimeToFirstByte
     extends AbstractFilter
 {
 
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimarySearchFieldName() : string
     {
-        return 'firstByte';
+        return 'first_byte';
     }
 
 }
