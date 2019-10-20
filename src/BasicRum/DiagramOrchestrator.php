@@ -174,6 +174,14 @@ class DiagramOrchestrator
                 );
             }
 
+            if (isset($dataFlavor['histogram_first_page_view'])) {
+                return new Layers\DataLayer\Query\MainDataSelect\HistogramFirstPageView(
+                    'navigation_timings',
+                    $metricFieldName,
+                    (int)$dataFlavor['histogram_first_page_view']['bucket']
+                );
+            }
+
         }
 
         if (isset($requirements['internal_data'])) {

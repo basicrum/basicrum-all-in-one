@@ -33,7 +33,7 @@
                     1: {
                         presentation: {
                             name: 'Bounce Rate',
-                            color: '#1F77B4'
+                            color: '#ff6023'
                         },
                         data_requirements: {
                             business_metrics: {
@@ -50,13 +50,14 @@
                     2: {
                         presentation: {
                             name: 'Start Render',
-                            color: '#ff6023'
+                            color: '#1F77B4',
+                            type: 'bar'
                         },
                         data_requirements: {
                             technical_metrics: {
                                 first_paint: {
                                     data_flavor: {
-                                        histogram: {
+                                        histogram_first_page_view: {
                                             bucket: '200'
                                         }
                                     }

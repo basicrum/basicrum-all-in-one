@@ -17,6 +17,7 @@ class Plane
     public function __construct(\App\BasicRum\Diagram\View\Layout $layout)
     {
         $this->layout = $layout;
+
     }
 
     /**
@@ -30,7 +31,16 @@ class Plane
     {
         $data = [
             'diagrams' => [],
-            'layout'   => array_merge($this->layout->getLayout(), $extraLayoutParams)
+            'layout'   => array_merge(
+                $this->layout->getLayout(),
+                $extraLayoutParams,
+                [
+                    'xaxis' => [
+                        'tickvals' => [0, 1000, 2000, 3000, 4000, 5000, 6000],
+                        'ticktext' => ['0', '1 sec', '2 sec', '3 sec', '4 sec', '5 sec', '6 sec']
+                    ]
+                ]
+            )
         ];
 
         foreach ($samples as $key => $d) {
@@ -41,7 +51,8 @@ class Plane
                     'name' => $renderParams['segments'][$key]['presentation']['name'],
                     'marker' => [
                         'color' => $renderParams['segments'][$key]['presentation']['color']
-                    ]
+                    ],
+                    'type' => $renderParams['segments'][$key]['presentation']['type'] ?? 'line'
                 ],
                 $extraDiagramParams[$key]
             );
