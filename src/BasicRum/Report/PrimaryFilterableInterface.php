@@ -16,7 +16,7 @@ interface PrimaryFilterableInterface
 
     public function getSearchValue() : string;
 
-    public function getPrimaryEntityName() : string;
+    public function getPrimaryTableName() : string;
 
     public function getPrimarySearchFieldName() : string;
 

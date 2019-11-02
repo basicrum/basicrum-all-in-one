@@ -16,13 +16,13 @@ interface SecondaryFilterableInterface
 
     public function getSearchValue() : string;
 
-    public function getSecondaryEntityName() : string;
+    public function getSecondaryTableName() : string;
 
     public function getSecondarySearchFieldName() : string;
 
     public function getSecondaryKeyFieldName() : string;
 
-    public function getPrimaryEntityName() : string;
+    public function getPrimaryTableName() : string;
 
     public function getPrimarySearchFieldName() : string;
 

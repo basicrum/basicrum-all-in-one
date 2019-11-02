@@ -14,7 +14,8 @@ class CollaboratorsAggregator
         Visualize\Collaborator::class,
         Periods\Collaborator::class,
         Decorators\Collaborator::class,
-        BusinessMetrics\Collaborator::class
+        BusinessMetrics\Collaborator::class,
+        InternalData\Collaborator::class
     ];
 
     /** @var array */

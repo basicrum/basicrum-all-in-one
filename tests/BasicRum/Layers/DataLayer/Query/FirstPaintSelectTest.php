@@ -6,6 +6,7 @@ use App\Tests\BasicRum\FixturesTestCase;
 
 use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
 //use App\BasicRum\Filters\Primary\TimeToFirstPaint;
 //use App\BasicRum\TechnicalMetrics\TimeToFirstPaint;
@@ -21,6 +22,9 @@ class FirstPaintSelectTest extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testFirstPaintEqualsTo()
     {
         $period = new Period();
@@ -33,10 +37,13 @@ class FirstPaintSelectTest extends FixturesTestCase
 
         $firstPaintSelect = new \App\BasicRum\TechnicalMetrics\TimeToFirstPaint();
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id', 'first_paint']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$firstPaintFilter, $firstPaintSelect]
+            [$firstPaintFilter, $firstPaintSelect],
+            $flavor
         );
 
         $res = $dataLayer->process();
@@ -45,9 +52,11 @@ class FirstPaintSelectTest extends FixturesTestCase
             [
                 '2018-10-24 00:00:00' =>
                     [
-                        [
-                            'pageViewId' => 1,
-                            'firstPaint' => 344
+                        'data_rows' => [
+                            [
+                                'page_view_id' => 1,
+                                'first_paint' => 344
+                            ]
                         ]
                     ]
             ],

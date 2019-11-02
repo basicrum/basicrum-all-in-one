@@ -9,6 +9,6 @@ interface CountableInterface
 
     public function getSelectDataFieldName() : string;
 
-    public function getSelectEntityName() : string;
+    public function getSelectTableName() : string;
 
 }

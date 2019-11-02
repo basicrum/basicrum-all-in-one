@@ -10,12 +10,12 @@ class TimeToFirstPaint
 
     public function getSelectDataFieldName(): string
     {
-        return 'firstPaint';
+        return 'first_paint';
     }
 
-    public function getSelectEntityName() : string
+    public function getSelectTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
 }

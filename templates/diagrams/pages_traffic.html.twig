@@ -54,15 +54,21 @@
                                 url: {
                                     search_value: '{{ url }}',
                                     condition: 'is'
+                                },
+                                {% if landing_pages == 1 %}
+                                page_views_count: {
+                                    search_value: 1,
+                                    condition: 'is'
                                 }
+                                {% endif %}
                             },
                             technical_metrics: {
-                                '{{ code }}': 1
-                            },
-                            business_metrics: {
-                                {% if business_metric is not empty %}
-                                '{{ business_metric }}': 1
-                                {% endif %}
+                                '{{ code }}': {
+                                    data_flavor: {
+                                        percentile: 50
+                                    },
+                                    page: 'landing'
+                                }
                             }
                         }
                     },
@@ -81,15 +87,21 @@
                                 url: {
                                     search_value: '{{ url }}',
                                     condition: 'is'
+                                },
+                                {% if landing_pages == 1 %}
+                                page_views_count: {
+                                    search_value: 1,
+                                    condition: 'is'
                                 }
+                                {% endif %}
                             },
                             technical_metrics: {
-                                '{{ code }}': 1
-                            },
-                            business_metrics: {
-                                {% if business_metric is not empty %}
-                                '{{ business_metric }}': 1
-                                {% endif %}
+                                '{{ code }}': {
+                                    data_flavor: {
+                                        percentile: 50
+                                    },
+                                    page: 'landing'
+                                }
                             }
 
                         }
@@ -109,15 +121,21 @@
                                 url: {
                                     search_value: '{{ url }}',
                                     condition: 'is'
+                                },
+                                {% if landing_pages == 1 %}
+                                page_views_count: {
+                                    search_value: 1,
+                                    condition: 'is'
                                 }
+                                {% endif %}
                             },
                             technical_metrics: {
-                                '{{ code }}': 1
-                            },
-                            business_metrics: {
-                                {% if business_metric is not empty %}
-                                '{{ business_metric }}': 1
-                                {% endif %}
+                                '{{ code }}': {
+                                    data_flavor: {
+                                        percentile: 50
+                                    },
+                                    page: 'landing'
+                                }
                             }
                         }
                     }

@@ -58,20 +58,8 @@ class WaterfallsController extends AbstractController
 
         $requirements['global'] = $_POST['global'];
         $requirements['segments'] = [];
-        /**
-         * Ugly filtering of post data in order to map form data correctly to diagram APIs
-         */
-        foreach ($_POST['segments'] as $keyO => $data) {
-            //var_dump($data['data_requirements']['technical_metrics']);
-            $requirements['segments'][$keyO] = $data;
 
-            if (is_string($data['data_requirements']['technical_metrics']) && strpos($data['data_requirements']['technical_metrics'], '|') !== false) {
-                $e = explode('|', $data['data_requirements']['technical_metrics']);
-                $requirements['segments'][$keyO]['data_requirements']['technical_metrics'] = [$e[0] => $e[1]];
-
-                continue;
-            }
-        }
+        $requirements['segments'] = $_POST['segments'];
 
         /**
          * If "page_type" presented then unset "url" and "query_param".
@@ -100,8 +88,8 @@ class WaterfallsController extends AbstractController
 
         $res = $diagramOrchestrator->process();
 
-        foreach ($res[1] as $key => $day) {
-            if(empty($day)) {
+        foreach ($res[1] as $key => $dayRows) {
+            if(empty($dayRows['data_rows'])) {
                 unset($res[1][$key]);
             }
         }
@@ -116,8 +104,8 @@ class WaterfallsController extends AbstractController
             ->getRepository(NavigationTimings::class);
 
         foreach ($reversedDays as $day => $views) {
-            foreach ($views as $view) {
-                $pageViews[] = $repository->find($view['pageViewId']);
+            foreach ($views['data_rows'] as $view) {
+                $pageViews[] = $repository->find($view['page_view_id']);
                 $counter++;
                 if ($counter === 400) {
                     break;

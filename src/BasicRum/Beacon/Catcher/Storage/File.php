@@ -59,7 +59,7 @@ class File
     }
 
 
-    public function generateBundleFromRawBeacons() : void
+    public function generateBundleFromRawBeacons() : int
     {
         $beaconFiles = glob($this->getRawBeaconsDir() . '/*.json');
 
@@ -76,6 +76,8 @@ class File
         $name = time() . '.json';
 
         $this->persistBundle($name, json_encode($entries));
+
+        return count($entries);
     }
 
     /**
@@ -110,23 +112,33 @@ class File
         return $this->rootStorageDirectory . '/' . self::RELATIVE_BUNDLES_STORAGE_DIR;
     }
 
-    public function archiveBundles() : void
+    public function archiveBundles() : int
     {
+        $count = 0;
+
         foreach ($this->getBundleFilePaths() as $filePath) {
             $baseName = basename($filePath);
 
-            $zip = new \ZipArchive();
+            if (class_exists('\ZipArchive')) {
 
-            $zipFileName = $baseName . '.zip';
+                $zip = new \ZipArchive();
 
-            if ($zip->open($this->getArchiveDir() . '/' . $zipFileName, \ZipArchive::CREATE) === TRUE)
-            {
-                $zip->addFile($filePath, basename($filePath));
-                $zip->close();
-                unlink($filePath);
+                $zipFileName = $baseName . '.zip';
+
+                if ($zip->open($this->getArchiveDir() . '/' . $zipFileName, \ZipArchive::CREATE) === TRUE)
+                {
+                    $zip->addFile($filePath, basename($filePath));
+                    $zip->close();
+                    unlink($filePath);
+                }
+            } else {
+                rename($this->getBundlesDir() . '/' . $baseName, $this->getArchiveDir() . '/' . $baseName);
             }
+
+            $count++;
         }
 
+        return $count;
     }
 
     /**

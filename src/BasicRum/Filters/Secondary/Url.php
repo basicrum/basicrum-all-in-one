@@ -8,9 +8,9 @@ class Url
     extends AbstractFilter
 {
 
-    public function getSecondaryEntityName() : string
+    public function getSecondaryTableName() : string
     {
-        return 'NavigationTimingsUrls';
+        return 'navigation_timings_urls';
     }
 
     public function getSecondaryKeyFieldName() : string
@@ -23,14 +23,14 @@ class Url
         return 'url';
     }
 
-    public function getPrimaryEntityName() : string
+    public function getPrimaryTableName() : string
     {
-        return 'NavigationTimings';
+        return 'navigation_timings';
     }
 
     public function getPrimarySearchFieldName() : string
     {
-        return 'urlId';
+        return 'url_id';
     }
 
 }

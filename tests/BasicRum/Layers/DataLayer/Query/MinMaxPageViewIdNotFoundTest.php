@@ -8,6 +8,8 @@ use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\DeviceType;
 
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
+
 class MinMaxPageViewIdNotFound extends FixturesTestCase
 {
 
@@ -19,6 +21,9 @@ class MinMaxPageViewIdNotFound extends FixturesTestCase
         return static::$kernel->getContainer()->get('doctrine');
     }
 
+    /**
+     * @group data_query
+     */
     public function testPageViewIdNotInRange()
     {
         $period = new Period();
@@ -29,10 +34,13 @@ class MinMaxPageViewIdNotFound extends FixturesTestCase
             'mobile'
         );
 
+        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+
         $dataLayer = new DataLayer(
             $this->_getDoctrine(),
             $period,
-            [$deviceType]
+            [$deviceType],
+            $flavor
         );
 
         $res = $dataLayer->process();

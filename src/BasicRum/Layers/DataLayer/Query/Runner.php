@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query;
 
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use App\BasicRum\Cache\Storage;
 
 class Runner
 {
@@ -15,7 +15,7 @@ class Runner
     /** @var array */
     private $planActions = [];
 
-    /** @var FilesystemAdapter */
+    /** @var Storage */
     private $cacheAdapter;
 
     /** @var Runner\SecondaryFilter */
@@ -28,7 +28,7 @@ class Runner
     {
         $this->registry     = $registry;
         $this->planActions  = $planActions;
-        $this->cacheAdapter = new FilesystemAdapter('basicrum.datalayer.runner.cache', 300);
+        $this->cacheAdapter = new Storage('basicrum.datalayer.runner.cache', 300);
 
         $this->secondaryFilter = new Runner\SecondaryFilter($registry, $this->cacheAdapter);
         $this->complexSelect   = new Runner\ComplexSelect($registry, $this->cacheAdapter);
@@ -40,19 +40,18 @@ class Runner
      */
     public function run() : array
     {
-        $repository = $this->registry->getRepository($this->getEntityClassName($this->planActions['main_entity_name']));
-
         $limitFilters = $this->_processPrefetchFilters($this->planActions['where']['limitFilters'], []);
+
+        $whereArr = [];
 
         // Abort if we do not have limit result in day
         if(empty($limitFilters)) {
             return [];
         }
 
-        $queryBuilder = $repository->createQueryBuilder($this->planActions['main_entity_name']);
-
-        foreach ($limitFilters as $filter) {
-            $queryBuilder->andWhere($filter);
+        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
+        foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
+            $whereArr[] = $primaryFilter->getCondition()->getWhere();
         }
 
         /**
@@ -70,31 +69,24 @@ class Runner
         $filters = array_merge($filters, $complexSelectFilters);
 
         foreach ($filters as $filter) {
-            $queryBuilder->andWhere($filter);
+            $whereArr[] = $filter;
         }
 
+        //Playing a bit with generating low level query
+        $connection = $this->registry->getConnection();
+
+        $sqlWhere = implode(' AND ', $whereArr);
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
         foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
-            $queryBuilder->andWhere($primaryFilter->getCondition()->getWhere());
-
             $params = $primaryFilter->getCondition()->getParams();
-            foreach ($params as $name => $value) {
-                $queryBuilder->setParameter($name, $value);
+
+            foreach ($params as $search => $replace) {
+                $r = '\'' . $replace . '\'';
+                $sqlWhere = str_replace(  ':' . $search, $r, $sqlWhere);
             }
         }
 
-        $selects = [];
-
-        /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\Select $select */
-        foreach ($this->planActions['selects'] as $select) {
-            $selects[] = $select->getSelect()->getFields()[0];
-        }
-
-        $queryBuilder->select($selects);
-
-//        var_dump($queryBuilder->getQuery()->getSQL());
-
-        $res = $queryBuilder->getQuery()->getResult();
+        $res = $this->planActions['data_flavor']->retrieve($connection, $sqlWhere, $limitFilters);
 
         if (!empty($complexSelectsResults)) {
             foreach ($complexSelectsResults as $complexSelectKey => $complexSelectData) {
@@ -102,14 +94,6 @@ class Runner
                     $res[$key] = array_merge($row, $complexSelectData[$row[$this->planActions['complex_selects'][$complexSelectKey]->getPrimaryKeyFieldName()]]);
                 }
             }
-        }
-
-        if (strpos(print_r($selects, true),'COUNT(') !== false) {
-            return [
-                [
-                    'count' => $res[0][1]
-                ]
-            ];
         }
 
         return $res;
@@ -130,7 +114,7 @@ class Runner
             $complexSelectData[] = $this->complexSelect->process($complexSelect, $filters);
             if (!empty($complexSelectData)) {
                 foreach ($complexSelectData as $data) {
-                    $complexSelectFilters[] = $this->planActions['main_entity_name'] . ".pageViewId"  .  " " .  ' IN(' . implode(',', array_keys($data)) . ')';
+                    $complexSelectFilters[] = $this->planActions['main_table_name'] . ".page_view_id"  .  " " .  ' IN(' . implode(',', array_keys($data)) . ')';
                 }
             }
         }
@@ -147,15 +131,6 @@ class Runner
     private function _processPrefetchFilters(array $filters, array $limitFilters) : array
     {
         return $this->secondaryFilter->process($filters, $limitFilters);
-    }
-
-    /**
-     * @param string $className
-     * @return string
-     */
-    public function getEntityClassName(string $className) : string
-    {
-        return '\App\Entity\\' . $className;
     }
 
 }
