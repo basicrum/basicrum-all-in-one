@@ -5,42 +5,42 @@ version: "2.1"
 services:
   db:
     image: mysql:8.0.15
-    container_name: basicrum_bo_mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_ROOT_PASSWORD: rootsecret
       MYSQL_DATABASE: basicrum_demo
       MYSQL_USER: basicrum_demo
       MYSQL_PASSWORD: basicrum_demo
-    volumes:
-    - ./db/data/basicrum_demo_2019-04-28.sql.gz:/docker-entrypoint-initdb.d/basicrum_demo_2019-04-28.sql.gz
     networks:
-    - basicrum_bo_network
+      basicrum_bo_network:
+        aliases:
+          - db
     ports:
     - 3308:3306
 
   nginx:
     image: nginx:1.16.0-alpine
-    container_name: basicrum_bo_nginx
     volumes:
     - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
-    - /var/run/fpm
     ports:
       - 8086:80
     depends_on:
     - db
+    - fpm
     networks:
     - basicrum_bo_network
   
   fpm:
-    image: php:7.1-fpm-alpine
-    env_file: ./.env
-    depends_on:
-    - nginx
-    volumes_from:
-    - nginx
-    volumes: 
-    - ./fpm/www.ini:/usr/local/etc/php/conf.d/www.ini
+    build:
+      context: symfony_app
+      dockerfile: Dockerfile
+    env_file: ./symfony_app/.env
+    volumes:
+      - ./../:/usr/src/app
+    networks:
+      basicrum_bo_network:
+        aliases:
+          - fpm
 
 networks:
   basicrum_bo_network:

@@ -1,7 +1,18 @@
 version: "2.1"
 
-nginx:
-  volumes:
-  - ./../public/:/usr/src/app
-  - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro #repeated from main file
-  - /var/run/fpm #repeated from main file
+services:
+  nginx:
+    volumes:
+    - ./../:/usr/src/app
+    - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro #repeated from main file
+    networks:
+      - basicrum_bo_network
+
+  composer:
+    image: composer
+    command: install
+    volumes:
+      - ./../:/usr/src/app
+    working_dir: /usr/src/app
+    networks:
+      - basicrum_bo_network

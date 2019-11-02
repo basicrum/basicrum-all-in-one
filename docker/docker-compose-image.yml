@@ -1,6 +1,8 @@
 version: "2.1"
-code:
-  image: ${CODE_IMAGE}
-nginx:
-  volumes_from: 
-  - code
+
+services:
+  code:
+    image: ${CODE_IMAGE}
+  nginx:
+    volumes_from:
+    - code

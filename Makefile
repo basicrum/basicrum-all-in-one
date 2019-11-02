@@ -9,7 +9,7 @@ endif
 
 run:
 	$(info Starting dev environment.)
-	docker-compose -f docker/docker-compose.yml -f docker/docker-compose-local.yml run -d fpm
+	docker-compose -f docker/docker-compose.yml -f docker/docker-compose-local.yml up -d --build
 
 build:
 	$(info Starting dev environment.)
