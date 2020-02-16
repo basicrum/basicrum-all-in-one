@@ -6,6 +6,16 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
+###> tideways docker build ###
+/docker/symfony_app/tideways
+/docker/docker-compose.tideways.yml
+/docker/tideways
+###< tideways docker build ###
+
+###> production build ###
+/docker/production/
+###> production build ###
+
 ###> symfony/webpack-encore-pack ###
 /node_modules/
 /public/build/
