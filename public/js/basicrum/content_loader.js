@@ -9,6 +9,8 @@
             }
 
             $('.preloader').show();
+            // remove modal if it is there
+            $('#myModal').remove();
 
             var xhrOrig = new XMLHttpRequest();
             xhrOrig.open('POST', ajaxUrl, true);

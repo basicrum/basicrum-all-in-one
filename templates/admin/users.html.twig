@@ -1,0 +1,153 @@
+<button id="addBtn" class="btn btn-info">Add user</button>
+
+<table id="myTable" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        {% if user.id != app.user.id %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.fname }}</td>
+                <td>{{ user.lname }}</td>
+                <td>{{ user.email }}</td>
+                <td>
+                    {% if 'ROLE_ADMIN' in user.roles %}
+                        Admin
+                    {% else %}
+                        User
+                    {% endif %}
+                </td>
+                <td>
+                    <button
+                        id="editBtn"
+                        class="btn btn-info"
+                        data-userid="{{ user.id }}">
+                        Edit User
+                    </button>
+                    <button
+                        id="deleteBtn"
+                        class="btn btn-danger"
+                        data-userid="{{ user.id }}">
+                        Delete User
+                    </button>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<script>
+    var appData = {
+            mode:   '',
+            userId: '',
+            row: '',
+            validator: '',
+        };
+</script>
+
+
+<script src="/js/user/table-manager.js"></script>
+<script src="/js/user/user_crud_actions.js"></script>
+<script src="/js/user/ajax_module.js"></script>
+<script src="/js/user/user_actions.js"></script>
+
+{% include 'admin/register_form.html.twig' %}
+
+{# <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button> #}
+
+
+
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable({
+            "order": [[ 0, "desc" ]]
+        });
+    });
+
+    crudActions.addEventListeners();
+
+    {#$('body').on('click', '#editBtn', function(){
+        $('#create-user-form').trigger("reset");
+
+        $('#modalLabel').html('Edit User');
+        $('#create-user').html('Save changes');
+
+        appData.mode = 'edit';
+        validationInit();
+
+        let userId = $(this).data('userid');
+        appData.userId = userId;
+        appData.row = $(this).parent('td').parent('tr');
+
+        $.get(`/admin/user/info/${userId}`)
+            .done(function(response){
+                let info = JSON.parse(response);
+                console.log(info);
+                $('#fname').val(info.fname);
+                $('#lname').val(info.lname);
+                $('#email').val(info.email);
+
+                $("#user_role option:selected").removeAttr("selected");
+                if ( $.inArray("ROLE_ADMIN", info.role) !== -1 )
+                {
+                    $('#user_role option[value="ROLE_ADMIN"]').prop('selected', true);
+                }
+
+                $('#myModal').modal('show');
+            })
+            .fail(function(){
+                alert('Something went wrong!');
+            });
+    });
+
+    $('body').on('click', '#deleteBtn', function(){
+        if(confirm('Are you sure you want to delete this user?'))
+        {
+            let userId = $(this).data('userid');
+            let row = $(this).parent('td').parent('tr');
+
+            $.get(`/admin/user/delete/${userId}`)
+                .done(function(response){
+                    let info = JSON.parse(response);
+                    console.log(info);
+                    row.remove();
+                    alert(info.message);
+                })
+                .fail(function(){
+                    alert('Something went wrong!');
+                });
+        }
+    });
+
+    $('body').on('click', '#addBtn', function(){
+        /*$('input').each(function(){
+            $(this).val('');
+        });*/
+        $('#create-user-form').trigger("reset");
+        // $('#create-user-form').data('validator').resetForm();
+
+        $('#modalLabel').html('Create User');
+        $('#create-user').html('Add new user');
+        appData.mode = 'add';
+
+        validationInit();
+
+        $("#user_role option:selected").prop("selected", false);
+
+        $('#myModal').modal('show');
+    });#}
+</script>
+

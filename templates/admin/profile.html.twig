@@ -1,0 +1,72 @@
+<form id="edit-user-form">
+    <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Edit Profile</h5>
+    </div>
+    <div class="modal-body">
+        <div class="form-group col-md-12">
+            <label for="fname">First Name</label>
+            <input type="text" class="form-control" id="fname" name="fname" value="{{ app.user.fname }}">
+        </div>
+        <div class="form-group col-md-12">
+            <label for="lname">Last Name</label>
+            <input type="text" class="form-control" id="lname" name="lname" value="{{ app.user.lname }}">
+        </div>
+
+        <div class="form-group col-md-12">
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" name="email" value="{{ app.user.email }}">
+        </div>
+
+        <div class="form-group col-md-12 password-field">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <div class="form-group col-md-12 repeat-password-field">
+            <label for="repeat_password">Repeat Password</label>
+            <input type="password" class="form-control" id="repeat_password" name="repeat_password">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-info" id="update-profile">Save Profile Changes</button>
+    </div>
+</form>
+
+<script src="/js/user/ajax_module.js"></script>
+<script src="/js/user/user_actions.js"></script>
+
+<script>
+
+    var appData = {
+            mode:   '',
+            userId: '{{ app.user.id }}',
+            row: '',
+            validator: '',
+        };
+
+    function validationRules()
+    {
+        this.fname              = "required";
+        this.lname              = "required";
+        this.email              = {
+          required: true,
+          email:    true
+        };
+    }
+
+    function validationInit()
+    {
+        if ( appData.validator )
+        {
+            appData.validator.destroy();
+        }
+
+        appData.validator = $("#edit-user-form").validate({
+            rules: new validationRules(),
+            submitHandler: function(form) {
+                userActions.saveUser("#edit-user-form");
+            }
+        });
+    }
+
+    validationInit();
+</script>
