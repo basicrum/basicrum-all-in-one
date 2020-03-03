@@ -18,8 +18,8 @@
         <link href="{{ asset('css/scroll-table.css') }}" rel="stylesheet">
         <link href="{{ asset('css/diagram-controls.css') }}" rel="stylesheet">
         <link href="{{ asset('css/configure.css') }}" rel="stylesheet">
-        <link href="{{ asset('css/jquery-validation/screen.css') }}" rel="stylesheet">
-        <link href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link href="{{ asset('plugins/jquery-validate/css/screen.css') }}" rel="stylesheet">
+        <link href="{{ asset('plugins/datatables/jquery.dataTables.min.css') }}" rel="stylesheet">
     </head>
     <body>
     <script type="text/javascript">
@@ -157,9 +157,6 @@
                         </div>
                         <div id="top-panel" class="col-xs-4 col-sm-4">
                             <div class="mt-2 mb-2 pull-right btn-group">
-                                {# <a style="color: #fff" class="btn" target="_blank" href="https://github.com/basicrum/backoffice">
-                                    <i class="fa fa-comment-o"></i> Feedback on GitHub <i class="fa fa-github"></i>
-                                </a> #}
                                 <span style="color: #FFF;">Hello, <span class="user-name">{{ app.user.fname }} {{ app.user.lname }}</span></span>
                             </div>
                         </div>
@@ -208,8 +205,8 @@
     <script src="{{ asset('js/basicrum/widget.js') }}"></script>
     <script src="{{ asset('js/user/autologout.js') }}"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.js"></script>
-    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="{{ asset('plugins/jquery-validate/jquery.validate.js') }}"></script>
+    <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
 
     <script>
         BASIC_RUM_APP.init();
