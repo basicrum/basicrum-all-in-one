@@ -59,8 +59,6 @@ var crudActions = (function($){
     var editButtonFunction      = function(){
         var userId = $(this).data('userid');
 
-        // $('#create-user-form').validate().resetForm();
-
         appData.mode    = 'edit';
         appData.userId  = userId;
         appData.row     = $(this).parent('td').parent('tr');
@@ -74,7 +72,6 @@ var crudActions = (function($){
                 $('#lname').val(info.lname);
                 $('#email').val(info.email);
 
-                // $("#user_role option:selected").removeAttr("selected");
                 if ( $.inArray("ROLE_ADMIN", info.role) !== -1 )
                 {
                     $('#user_role option[value="ROLE_ADMIN"]').prop('selected', true);

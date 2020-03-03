@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -27,9 +29,9 @@ class UserLoginController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        // if ($this->getUser()) {
-        //    $this->redirectToRoute('target_path');
-        // }
+        if ($this->getUser()) {
+           return new RedirectResponse($this->generateUrl('page_index'));
+        }
 
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -81,16 +83,6 @@ class UserLoginController extends AbstractController
                         ),
                         'text/html'
                     )
-
-                    // you can remove the following code if you don't define a text version for your emails
-                    /*->addPart(
-                        $this->renderView(
-                            // templates/emails/registration.txt.twig
-                            'emails/registration.txt.twig',
-                            ['name' => $name]
-                        ),
-                        'text/plain'
-                    )*/
                 ;
 
                 $mailer->send($message);
