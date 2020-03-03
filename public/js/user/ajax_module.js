@@ -1,10 +1,10 @@
 var requestAJAX = (function($){
-    let sendPost = function(url, formData){
+    var sendPost = function(url, formData){
         return $.post(url, formData)
             .fail("POST: Something went wrong! Can not continue!");
     }
 
-    let sendGet = function(url){
+    var sendGet = function(url){
         return $.get(url)
             .fail("GET: Something went wrong! Can not continue!");
     }

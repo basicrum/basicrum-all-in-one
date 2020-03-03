@@ -1,5 +1,5 @@
 var tableManager = (function(){
-    let td = {
+    var td = {
         id      : 1,
         fname   : 2,
         lname   : 3,
@@ -7,8 +7,8 @@ var tableManager = (function(){
         role    : 5,
     };
 
-    let userRole = function(roles){
-        let userRole = 'User';
+    var userRole = function(roles){
+        var userRole = 'User';
 
         if ( $.inArray("ROLE_ADMIN", roles) !== -1 )
         {
@@ -18,8 +18,7 @@ var tableManager = (function(){
         return userRole;
     }
 
-    let updateRow = function(row, data){
-        console.log(data);
+    var updateRow = function(row, data){
         row.children(`td:nth-child(${td.id})`).html(data.user.id);
         row.children(`td:nth-child(${td.fname})`).html(data.user.fname);
         row.children(`td:nth-child(${td.lname})`).html(data.user.lname);
@@ -28,8 +27,8 @@ var tableManager = (function(){
         row.children(`td:nth-child(${td.role})`).html(userRole(data.user.roles));
     }
 
-    let insertRow = function(data){
-        let row = `<tr>
+    var insertRow = function(data){
+        var row = `<tr>
             <td>${data.user.id}</td>
             <td>${data.user.fname}</td>
             <td>${data.user.lname}</td>

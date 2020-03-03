@@ -89,7 +89,7 @@
             rules: new validationRules(),
             submitHandler: function(form) {
 
-                let formData = $("#create-user-form").serialize();
+                var formData = $("#create-user-form").serialize();
                 if ( appData.mode == 'edit' )
                 {
                     userActions.saveUser("#create-user-form", true);

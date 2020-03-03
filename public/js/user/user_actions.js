@@ -1,14 +1,12 @@
 var userActions = (function($){
-    let editURL     = '/admin/user/update/',
+    var editURL     = '/admin/user/update/',
         createURL   = '/admin/register/save';
 
-    let saveUser    = function(formId, crud=null){
-        let formData    = $(formId).serialize();
-        // console.log(formData); return;
+    var saveUser    = function(formId, crud=null){
+        var formData    = $(formId).serialize();
         requestAJAX.post(`${editURL}${appData.userId}`, formData)
             .done(function(response){
-                console.log(response);
-                let res = JSON.parse(response);
+                var res = JSON.parse(response);
                 if (res.status == 'error')
                 {
                     res.fields.forEach(function(item){
@@ -38,12 +36,11 @@ var userActions = (function($){
             });
     }
 
-    let createUser  = function(){
+    var createUser  = function(){
         formData    = $("#create-user-form").serialize();
         requestAJAX.post('/admin/register/save', formData)
             .done(function(response){
-                console.log(response);
-                let res = JSON.parse(response);
+                var res = JSON.parse(response);
                 if (res.status == 'error') // error occured
                 {
                     res.fields.forEach(function(item){

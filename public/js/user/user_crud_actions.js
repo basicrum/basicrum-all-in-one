@@ -1,22 +1,22 @@
 var crudActions = (function($){
-    let formId  = '#create-user-form',
+    var formId  = '#create-user-form',
         modalId = '#myModal',
         inputFieldClass = '.form-control';
 
-    let resetForm               = function(){
+    var resetForm               = function(){
         $(formId).trigger("reset");
     }
 
-    let clearObj    = function(){
+    var clearObj    = function(){
         appData.row     = '',
         appData.mode    = '',
         appData.userId  = '';
     }
 
-    let prepareModal            = function(mode){
+    var prepareModal            = function(mode){
         resetForm();
-        let modalLabel  = 'Create user';
-        let buttonLabel = 'Add new user';
+        var modalLabel  = 'Create user';
+        var buttonLabel = 'Add new user';
         if( mode == 'edit')
         {
             modalLabel  = 'Edit user';
@@ -27,11 +27,11 @@ var crudActions = (function($){
         $('#create-user').html(buttonLabel);
     }
 
-    let modalShow               = function(){
+    var modalShow               = function(){
         $(modalId).modal('show');
     }
 
-    let addEventListeners       = function(){
+    var addEventListeners       = function(){
         $('body').on('click', '#addBtn', addButtonFunction);
         $('body').on('click', '#editBtn', editButtonFunction);
         $('body').on('click', '#deleteBtn', deleteButtonFunction);
@@ -41,7 +41,7 @@ var crudActions = (function($){
         });
     }
 
-    let modalClose = function(){ // on modal close
+    var modalClose = function(){ // on modal close
         $(inputFieldClass).removeClass('error'); // reset error class from input fields
         $('input').each(function(){ // blank all input fields
             $(this).val('');
@@ -49,15 +49,15 @@ var crudActions = (function($){
         clearObj();
     };
 
-    let addButtonFunction       = function(){
+    var addButtonFunction       = function(){
         appData.mode = 'add';
         prepareModal('add');
         validationInit();
         modalShow();
     };
 
-    let editButtonFunction      = function(){
-        let userId = $(this).data('userid');
+    var editButtonFunction      = function(){
+        var userId = $(this).data('userid');
 
         // $('#create-user-form').validate().resetForm();
 
@@ -67,10 +67,9 @@ var crudActions = (function($){
 
         prepareModal('edit');
         validationInit();
-        let res = requestAJAX.get(`/admin/user/info/${userId}`)
+        var res = requestAJAX.get(`/admin/user/info/${userId}`)
             .done(function(response){
-                let info = JSON.parse(response);
-                console.log(info);
+                var info = JSON.parse(response);
                 $('#fname').val(info.fname);
                 $('#lname').val(info.lname);
                 $('#email').val(info.email);
@@ -87,11 +86,10 @@ var crudActions = (function($){
         modalShow();
     };
 
-    let deleteButtonFunction    = function(){
-        let res = requestAJAX.get(`/admin/user/delete/${userId}`)
+    var deleteButtonFunction    = function(){
+        var res = requestAJAX.get(`/admin/user/delete/${userId}`)
             .done(function(response){
-                let info = JSON.parse(response);
-                console.log(info);
+                var info = JSON.parse(response);
                 row.remove();
                 alert(info.message);
             });
