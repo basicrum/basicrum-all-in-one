@@ -24,7 +24,7 @@ var userActions = (function($){
                     if ( crud ) // update users table if called from non profile page
                     {
                         tableManager.updateRow(appData.row, res);
-                        $('#myModal').modal('hide')
+                        $(appData.userDetailsModalId).modal('hide')
                     }
                     else
                     {
@@ -56,7 +56,7 @@ var userActions = (function($){
                 else // no errors,
                 {
                     tableManager.insertRow(res);
-                    $('#myModal').modal('hide');
+                    $('#user_details').modal('hide');
                     alert(res.message);
                 }
             });

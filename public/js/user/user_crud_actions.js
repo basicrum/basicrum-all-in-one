@@ -1,6 +1,6 @@
 var crudActions = (function($){
     var formId  = '#create-user-form',
-        modalId = '#myModal',
+        modalId = appData.userDetailsModalId,
         inputFieldClass = '.form-control';
 
     var resetForm               = function(){
@@ -35,7 +35,7 @@ var crudActions = (function($){
         $('body').on('click', '#addBtn', addButtonFunction);
         $('body').on('click', '#editBtn', editButtonFunction);
         $('body').on('click', '#deleteBtn', deleteButtonFunction);
-        $('body').on("hidden.bs.modal", "#myModal", modalClose);
+        $('body').on("hidden.bs.modal", appData.userDetailsModalId, modalClose);
         $(formId).on('submit', function(event){ // dont submit the form in case of errors
             event.preventDefault();
         });

@@ -50,7 +50,7 @@ var tableManager = (function(){
             </td>
             </tr>
         `;
-        $("#myTable").prepend(row);
+        $(appData.usersTableId).prepend(row);
     }
 
     return {
