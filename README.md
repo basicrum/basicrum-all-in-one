@@ -20,9 +20,19 @@ docker exec -it basicrum_bo_php php bin/console c:c
 docker exec -it basicrum_bo_php php bin/console basicrum:cache:clean
 rm may-july-2019.sql.gz
 ```
+
+After installation you need to create a first - super admin user:
+```
+docker exec -it basicrum_bo_php php bin/console basicrum:superadmin:create
+```
+Provide required information and feel free to login at the following address:
+
 Linux:  Load http://127.0.0.1:8086 in your browser
 
 Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker ip here):8086
+
+Once logged in you can create new users. For that click humburger menu in top left corner and click to Manage Users. And there click create user button in order to create your first user.
+
 
 ## Key features:
  - Performance over time by Mobile, Tablet and Desktop devices.
