@@ -24,7 +24,7 @@ final class Version20200304112456 extends AbstractMigration
 
         $this->addSql('CREATE TABLE site_settings (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, value LONGTEXT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql("INSERT INTO `site_settings` (`id`, `name`, `value`) VALUES
-                       (1, 'site_email_address_from', 'no-reply@tux.lc'),
+                       (1, 'site_email_address_from', 'no-reply@domain.com'),
                        (2, 'site_email_name_from', 'Admin'),
                        (3, 'site_email_reset_password_subject', 'Reset Password Email');
 	");

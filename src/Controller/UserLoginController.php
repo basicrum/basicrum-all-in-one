@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use App\Entity\User;
+use App\Entity\SiteSettings;
 
 class UserLoginController extends AbstractController
 {
@@ -61,7 +62,11 @@ class UserLoginController extends AbstractController
         {
             $entityManager = $this->getDoctrine()->getManager();
 
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $request->request->get('email')]);
+            $mailFrom       = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_address_from'])->getValue();
+            $mailFromName   = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_name_from'])->getValue();
+            $mailSubject    = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_reset_password_subject'])->getValue();
+
+            $user           = $entityManager->getRepository(User::class)->findOneBy(['email' => $request->request->get('email')]);
 
             if ( $user )
             {
@@ -73,8 +78,8 @@ class UserLoginController extends AbstractController
 
                 $entityManager->flush();
 
-                $message = (new \Swift_Message('Hello Email'))
-                    ->setFrom('admin@tux.lc')
+                $message = (new \Swift_Message($mailSubject))
+                    ->setFrom([$mailFrom => $mailFromName])
                     ->setTo($user->getEmail())
                     ->setBody(
                         $this->renderView(
