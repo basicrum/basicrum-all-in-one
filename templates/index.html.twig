@@ -18,6 +18,8 @@
         <link href="{{ asset('css/scroll-table.css') }}" rel="stylesheet">
         <link href="{{ asset('css/diagram-controls.css') }}" rel="stylesheet">
         <link href="{{ asset('css/configure.css') }}" rel="stylesheet">
+        <link href="{{ asset('plugins/jquery-validate/css/screen.css') }}" rel="stylesheet">
+        <link href="{{ asset('plugins/datatables/jquery.dataTables.min.css') }}" rel="stylesheet">
     </head>
     <body>
     <script type="text/javascript">
@@ -65,6 +67,7 @@
                     <ul id="configure" class="collapse">
                         <li><a class="ajax-link" href="{{ path('page_type_config_index') }}">Page Types</a></li>
                         <li><a class="ajax-link" href="{{ path('releases_index') }}">Releases</a></li>
+                        <li><a class="ajax-link" href="{{ path('admin_site_settings') }}">Email Setttings</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -76,6 +79,20 @@
                 <li class="nav-item">
                     &nbsp;
                 </li>
+
+                {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link ajax-link" href="{{ path('admin_users') }}">
+                        <i class="fa fa-plus"></i>
+                        Manage Users
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    &nbsp;
+                </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="nav-link ajax-link" href="{{ path('info_about') }}">
                         <i class="fa fa-question"></i>
@@ -92,6 +109,21 @@
                     <a class="nav-link" target="_blank" href="https://github.com/basicrum/backoffice">
                         <i class="fa fa-github"></i>
                         Fork me on GitHub
+                    </a>
+                </li>
+                <li class="nav-item">
+                    &nbsp;
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link ajax-link" href="{{ path('admin_edit_profile') }}">
+                        <i class="fa fa-user"></i>
+                        Edit Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">
+                        <i class="fa fa-sign-out"></i>
+                        Logout
                     </a>
                 </li>
             </ul>
@@ -126,9 +158,7 @@
                         </div>
                         <div id="top-panel" class="col-xs-4 col-sm-4">
                             <div class="mt-2 mb-2 pull-right btn-group">
-                                <a style="color: #fff" class="btn" target="_blank" href="https://github.com/basicrum/backoffice">
-                                    <i class="fa fa-comment-o"></i> Feedback on GitHub <i class="fa fa-github"></i>
-                                </a>
+                                <span style="color: #FFF;">Hello, <span class="user-name">{{ app.user.fname }} {{ app.user.lname }}</span></span>
                             </div>
                         </div>
                     </div>
@@ -148,6 +178,15 @@
                     <!--End Content-->
                 </div>
             </div>
+            <footer>
+                <div id="top-panel" class="col-xs-4 col-sm-4">
+                    <div class="mt-2 mb-2 pull-left btn-group">
+                        <a style="color: #007de1" class="btn" target="_blank" href="https://github.com/basicrum/backoffice">
+                            <i class="fa fa-comment-o"></i> Feedback on GitHub <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
     <!--End Container-->
@@ -165,8 +204,14 @@
     <script src="{{ asset('js/basicrum/navigation.js') }}"></script>
     <script src="{{ asset('js/basicrum/hamburger_menu.js') }}"></script>
     <script src="{{ asset('js/basicrum/widget.js') }}"></script>
+    <script src="{{ asset('js/user/autologout.js') }}"></script>
+
+    <script src="{{ asset('plugins/jquery-validate/jquery.validate.js') }}"></script>
+    <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+
     <script>
         BASIC_RUM_APP.init();
     </script>
+
     </body>
 </html>

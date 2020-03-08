@@ -1,0 +1,104 @@
+<!-- Modal -->
+<div class="modal fade" id="user_details" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="create-user-form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="fname">First Name</label>
+                        <input type="text" class="form-control" id="fname" name="fname">
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="lname">Last Name</label>
+                        <input type="text" class="form-control" id="lname" name="lname">
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label for="email">Email</label>
+                        <input type="text" class="form-control" id="email" name="email">
+                    </div>
+
+                    <div class="form-group col-md-12 password-field">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                    </div>
+                    <div class="form-group col-md-12 repeat-password-field">
+                        <label for="repeat_password">Repeat Password</label>
+                        <input type="password" class="form-control" id="repeat_password" name="repeat_password">
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label for="repeat_password">User Role</label>
+                        <select name="user_role" id="user_role" class="form-control">
+                            <option value="ROLE_USER">USER</option>
+                            <option value="ROLE_ADMIN">ADMIN</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info" id="create-user">Add new user</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    // Once loaded append modal div to body in order to appear above dark background
+    $(function(){
+        $('body').append($('#user_details'));
+    });
+
+    function validationRules()
+    {
+        this.fname              = "required";
+        this.lname              = "required";
+        this.email              = {
+          required: true,
+          email:    true
+        };
+
+        if ( appData.mode == 'add' )
+        {
+            this.password           = "required";
+            this.repeat_password    =    {
+                    required: true,
+                    equalTo: "#password",
+                };
+        }
+    }
+
+    function validationInit()
+    {
+        if ( appData.validator )
+        {
+            appData.validator.destroy();
+        }
+
+        appData.validator = $("#create-user-form").validate({
+            rules: new validationRules(),
+            submitHandler: function(form) {
+
+                var formData = $("#create-user-form").serialize();
+                if ( appData.mode == 'edit' )
+                {
+                    userActions.saveUser("#create-user-form", true);
+                }
+                else if ( appData.mode == 'add' )
+                {
+                    userActions.createUser();
+                }
+            }
+        });
+    }
+</script>
