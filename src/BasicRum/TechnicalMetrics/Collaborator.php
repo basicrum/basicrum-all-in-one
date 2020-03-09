@@ -13,6 +13,8 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         'load_event_end'          => DocumentReady::class,
         'first_byte'              => TimeToFirstByte::class,
         'last_blocking_resource'  => LastBlockingResource::class,
+        'ttfb'                    => Ttfb::class,
+        'download_time'           => DownloadTime::class,
     ];
 
     private $technicalMetrics = [];
