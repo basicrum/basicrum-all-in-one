@@ -17,10 +17,10 @@ class BeaconImportBundleCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:beacon:import-bundle';
 
-    /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var  \Doctrine\Persistence\ManagerRegistry */
     private $registry;
 
-    public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
     {
         $this->registry = $registry;
 

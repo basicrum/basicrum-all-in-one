@@ -18,6 +18,10 @@
         <env name="DATABASE_URL" value="mysql://brumtest:brumpass@127.0.0.1:3306/basic_rum_test_db" />
         <env name="BOOTSTRAP_RESET_DATABASE" value="1" />
         <!-- define your env variables for the test env here -->
+
+        <!-- ###+ symfony/mailer ### -->
+        <!-- MAILER_DSN=smtp://localhost -->
+        <!-- ###- symfony/mailer ### -->
     </php>
 
     <testsuites>

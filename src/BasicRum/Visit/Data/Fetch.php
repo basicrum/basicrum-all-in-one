@@ -10,13 +10,13 @@ use App\Entity\VisitsOverview;
 class Fetch
 {
 
-    /** @var \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /** @var Filter */
     private $filter;
 
-    public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
+    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry   = $registry;
         $this->filter     = new Filter($registry);
