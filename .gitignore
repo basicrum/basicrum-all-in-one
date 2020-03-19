@@ -40,3 +40,8 @@ yarn-error.log
 .DS_Store
 ###< Mac OS metadata ###
 
+
+###> friendsofphp/php-cs-fixer ###
+/.php_cs
+/.php_cs.cache
+###< friendsofphp/php-cs-fixer ###

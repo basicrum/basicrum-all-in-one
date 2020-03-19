@@ -38,7 +38,7 @@ class CreateSuperadmintUserCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine')->getEntityManager();
+        $em = $this->getContainer()->get('doctrine')->getManager();
         $io = new SymfonyStyle($input, $output);
 
         $query = $em->createQuery('SELECT u FROM App\Entity\User u WHERE u.roles LIKE \'%ROLE_ADMIN%\'');
