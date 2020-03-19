@@ -15,6 +15,9 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         'last_blocking_resource'  => LastBlockingResource::class,
         'ttfb'                    => Ttfb::class,
         'download_time'           => DownloadTime::class,
+        'total_img_size'          => TotalImgSize::class,
+        'total_js_compressed_size'=> TotalJsCompressedSize::class,
+        'number_js_files'         => NumberJsFiles::class,
     ];
 
     private $technicalMetrics = [];

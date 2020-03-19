@@ -466,32 +466,33 @@
                             start: '30',
                             end: 'now',
                         },
-                        filters: {
+                        /*filters: {
                             device_type: {
                                 search_value: 2,
                                 condition: 'is'
                             }
-                        }
+                        }*/
                     }
                 },
                 segments: {
                     1: {
                         presentation: {
-                            name: 'Start Render',
+                            name: 'JS Size',
                             color: '#ff6023',
                             type: 'bar'
                         },
                         data_requirements: {
                             technical_metrics: {
-                                first_paint: {
+                                total_js_compressed_size: {
                                     data_flavor: {
                                         percentile: 50
                                     }
                                 }
-                            }
+                            },
+
                         }
                     },
-                    2: {
+                    /*2: {
                         presentation: {
                             name: 'First Byte',
                             color: '#1F77B4',
@@ -506,7 +507,7 @@
                                 }
                             }
                         }
-                    }
+                    }*/
                 }
             };
         </script>

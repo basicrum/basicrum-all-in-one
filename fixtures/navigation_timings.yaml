@@ -10,6 +10,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 3
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyvc3l"
@@ -28,6 +38,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 3
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 1
             osId: 1
             processId: "56jyvc3l"
@@ -46,6 +66,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 1
             urlId: 1
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyvdda"
@@ -64,6 +94,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyrvda"
@@ -82,6 +122,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 3
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jfc3l"
@@ -100,6 +150,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyr1da"
@@ -118,6 +178,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyrdda"
@@ -136,6 +206,16 @@ App\Entity\NavigationTimings:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
+            total_img_size: 1000
+            total_js_compressed_size: 150000
+            total_js_uncomressed_size: 152000
+            total_css_compressed_size: 140000
+            total_css_uncomressed_size: 145000
+            number_js_files: 5
+            number_css_files: 3
+            number_img_files: 3
+            ttfb: 375
+            download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "5fjyrvda"

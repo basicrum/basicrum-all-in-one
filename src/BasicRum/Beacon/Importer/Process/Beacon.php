@@ -8,13 +8,15 @@ class Beacon
 {
 
     private $navigationTimingsNormalizer;
+    private $resourceTimingsNormalizer;
 
     /** @var array */
     private $pageViewUniqueKeys = [];
 
     public function __construct()
     {
-        $this->navigationTimingsNormalizer = new Beacon\NavigationTimingsNormalizer();
+        $this->navigationTimingsNormalizer  = new Beacon\NavigationTimingsNormalizer();
+        $this->resourceTimingsNormalizer    = new Beacon\ResourceTimingsNormalizer();
     }
 
     /**
@@ -58,7 +60,10 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = ['start' => $date];
 
-            $data[$key] = $this->navigationTimingsNormalizer->normalize($beacons[$key]);
+            $data[$key] = array_merge(
+                $this->navigationTimingsNormalizer->normalize($beacons[$key]),
+                $this->resourceTimingsNormalizer->normalize($beacons[$key])
+            );
 
             $data[$key]['beacon_string'] = $beacon[1];
         }
