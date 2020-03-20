@@ -18,8 +18,16 @@ gunzip -k may-july-2019.sql.gz
 cat may-july-2019.sql | docker exec -i basicrum_bo_mysql sh -c 'mysql -uroot -prootsecret'
 docker exec -it basicrum_bo_php php bin/console c:c
 docker exec -it basicrum_bo_php php bin/console basicrum:cache:clean
+docker exec -it basicrum_bo_php php bin/console basicrum:beacon:init-folders
 rm may-july-2019.sql.gz
 ```
+
+Need to issue the following two commands by cron, in order to automaticaly process beacons:
+```
+docker exec -it basicrum_bo_php php bin/console basicrum:beacon:bundle-raw
+docker exec -it basicrum_bo_php php bin/console basicrum:beacon:import-bundle
+```
+
 
 After installation you need to create a first - super admin user:
 ```
