@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,21 +11,22 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 use App\Entity\User;
 
 
-class CreateSuperadmintUserCommand extends ContainerAwareCommand
+class CreateSuperadmintUserCommand extends Command
 {
     protected static $defaultName = 'basicrum:superadmin:create';
 
     private $passwordEncoder;
+    private $entityManager;
 
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager)
     {
-        $this->passwordEncoder = $passwordEncoder;
+        $this->passwordEncoder  = $passwordEncoder;
+        $this->entityManager    = $entityManager;
         parent::__construct();
     }
 
@@ -38,7 +40,7 @@ class CreateSuperadmintUserCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()->get('doctrine')->getManager();
+        $em = $this->entityManager;
         $io = new SymfonyStyle($input, $output);
 
         $query = $em->createQuery('SELECT u FROM App\Entity\User u WHERE u.roles LIKE \'%ROLE_ADMIN%\'');
