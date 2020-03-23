@@ -20,7 +20,7 @@ class BeaconImportBundleCommand extends Command
     /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
 
-    public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
+    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
     {
         $this->registry = $registry;
 
