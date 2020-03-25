@@ -35,7 +35,7 @@ class ChromeDevTest extends TestCase
                 'Galaxy S8',
                 'Samsung',
                 'Chrome',
-                '73.0.3683.90',
+                '73',
                 'Android',
                 '9'
             ]

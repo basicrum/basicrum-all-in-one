@@ -24,30 +24,13 @@
                     data_requirements: {
                         period: {
                             type: 'moving',
-                            start: '30',
+                            start: '130',
                             end: 'now',
                         }
                     }
                 },
                 segments: {
                     1: {
-                        presentation: {
-                            name: 'Bounce Rate',
-                            color: '#ff6023'
-                        },
-                        data_requirements: {
-                            business_metrics: {
-                                bounce_rate: {
-                                    data_flavor: {
-                                        bounce_rate: {
-                                            in_metric: 'first_paint'
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    2: {
                         presentation: {
                             name: 'Start Render',
                             color: '#1F77B4',
@@ -57,7 +40,7 @@
                             technical_metrics: {
                                 first_paint: {
                                     data_flavor: {
-                                        histogram_first_page_view: {
+                                        histogram: {
                                             bucket: '200'
                                         }
                                     }

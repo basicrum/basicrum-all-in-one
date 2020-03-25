@@ -32,8 +32,8 @@ class YandexBrowserTest extends TestCase
             ],
             [
                 $userAgentString,
-                'ATU-L31',
-                '',
+                'Enjoy 8e',
+                'Huawei',
                 'Yandex Browser',
                 '19.3',
                 'Android',

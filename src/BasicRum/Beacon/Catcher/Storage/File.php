@@ -174,7 +174,12 @@ class File
         $res = [];
 
         foreach ($folders as $folder) {
-            $res[$folder] = mkdir($folder);
+            try {
+                $res[$folder] = mkdir($folder, 0777, true);
+                echo "Directory created: ".$folder.PHP_EOL;
+            } catch(\Exception $e){
+                 echo "Directory already exist: ".$folder.PHP_EOL;
+            }
         }
 
         return $res;
