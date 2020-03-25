@@ -17,7 +17,7 @@ class Calculator
     /** @var int */
     private $sessionExpireMinutes = 30;
 
-    /** @var \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /** @var Fetch */
@@ -26,7 +26,7 @@ class Calculator
     /** @var Aggregator */
     private $aggregator;
 
-    public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
+    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry   = $registry;
         $this->fetch      = new Fetch($registry);

@@ -12,10 +12,10 @@ class Persist
     /** @var int */
     private $batchSize = 500;
 
-    /** @var \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
-    public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
+    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry   = $registry;
     }

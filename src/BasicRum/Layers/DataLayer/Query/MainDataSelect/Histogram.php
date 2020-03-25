@@ -52,7 +52,7 @@ class Histogram
 
             "SELECT floor({$this->fieldName}/{$this->bucketSize})*{$this->bucketSize} AS bin_floor, COUNT(*)
 FROM navigation_timings
-WHERE {$limitWhereStr} {$where}
+WHERE {$limitWhereStr} {$where} and {$this->fieldName} > 0
   
 GROUP BY 1
 ORDER BY 1";
