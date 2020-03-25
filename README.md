@@ -33,12 +33,6 @@ Now with symfony/webpack-encore-bundle need to create manifest.json file. Here i
 mkdir public/build
 echo "{}" > public/build/manifest.json
 ```
-
-Now with symfony/webpack-encore-bundle need to create manifest.json file. Here is how-to:
-```
-mkdir public/build
-echo "{}" > public/build/manifest.json
-```
 ### PHP-CS-FIXER  
 In order to continue development need to configure [php_cs_fixer](https://github.com/FriendsOfPhp/PHP-CS-Fixer). It will be installed together with other project dependencies. Now need to add pre-commit git hook:  
 ```bash
