@@ -63,10 +63,6 @@ class SimpleImportTest extends NoFixturesTestCase
                     $array[$key][1] = json_encode($tempArray);
                 }
 
-                file_put_contents('/home/www/www.tests/boomerangjs/log2.log', print_r($array, true));
-
-                // print_r($array); exit();
-
                 return $array;
             })()));
 
