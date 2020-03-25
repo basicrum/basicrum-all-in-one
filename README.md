@@ -28,6 +28,61 @@ docker exec -it basicrum_bo_php php bin/console basicrum:beacon:bundle-raw
 docker exec -it basicrum_bo_php php bin/console basicrum:beacon:import-bundle
 ```
 
+Now with symfony/webpack-encore-bundle need to create manifest.json file. Here is how-to:
+```
+mkdir public/build
+echo "{}" > public/build/manifest.json
+```
+
+Now with symfony/webpack-encore-bundle need to create manifest.json file. Here is how-to:
+```
+mkdir public/build
+echo "{}" > public/build/manifest.json
+```
+### PHP-CS-FIXER  
+In order to continue development need to configure [php_cs_fixer](https://github.com/FriendsOfPhp/PHP-CS-Fixer). It will be installed together with other project dependencies. Now need to add pre-commit git hook:  
+```bash
+touch .git/pre-commit && chmod +x .git/pre-commit
+```
+
+and paste the following into ```.git/pre-commit```:   
+```bash
+#!/usr/bin/env bash
+
+echo "pre commit hook start"
+
+CURRENT_DIRECTORY=`pwd`
+GIT_HOOKS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+PROJECT_DIRECTORY="$GIT_HOOKS_DIR/../.."
+
+cd $PROJECT_DIRECTORY;
+PHP_CS_FIXER="vendor/bin/php-cs-fixer"
+
+HAS_PHP_CS_FIXER=false
+
+if [ -x "$PHP_CS_FIXER" ]; then
+    HAS_PHP_CS_FIXER=true
+fi
+
+if $HAS_PHP_CS_FIXER; then
+    git status --porcelain | grep -e '^[AM]\(.*\).php$' | cut -c 3- | while read line; do
+        ${PHP_CS_FIXER} fix --config-file=.php_cs --verbose ${line};
+        git add "$line";
+    done
+else
+    echo ""
+    echo "Please install php-cs-fixer, e.g.:"
+    echo ""
+    echo "  composer require friendsofphp/php-cs-fixer:2.0.0"
+    echo ""
+fi
+
+cd $CURRENT_DIRECTORY;
+echo "pre commit hook finish"
+
+```
+
 
 After installation you need to create a first - super admin user:
 ```
