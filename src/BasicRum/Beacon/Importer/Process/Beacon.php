@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process;
 
+use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
+
 class Beacon
 {
 
@@ -26,6 +28,7 @@ class Beacon
      */
     public function extract(array $beacons)
     {
+
         $data = [];
 
         foreach ($beacons as $key => $beacon) {
@@ -37,6 +40,15 @@ class Beacon
             }
 
             $beacons[$key] = json_decode($beacon[1], true);
+
+            if ( isset($beacons[$key]['restiming']) && $beacons[$key]['restiming'] )
+            {
+                $decompressor = new ResourceTimingDecompressor_v_0_3_4();
+                $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
+
+                // replace encoded restiming with decoded
+                $beacons[$key]['restiming'] = $resourceTimingsData;
+            }
 
             // Legacy when we didn't have created_at in beacon data
             if (!isset($beacons[$key]['created_at'])) {
