@@ -27,7 +27,6 @@
         "symfony/twig-bundle": "^4.1",
         "symfony/validator": "^4.1",
         "symfony/web-link": "^4.1",
-        "symfony/webpack-encore-bundle": "^1.7",
         "symfony/yaml": "^4.1",
         "whichbrowser/parser": "^2.0"
     },
