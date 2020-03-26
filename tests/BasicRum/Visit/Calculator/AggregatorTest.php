@@ -72,7 +72,7 @@ class AggregatorTest extends TestCase
                     'firstUrlId'             => 1,
                     'lastUrlId'              => 1,
                     'visitDuration'          => 0,
-                    'afterLastVisitDuration' => 259200,
+                    'afterLastVisitDuration' => 262800,
                     'completed'              => false
                 ],
             ],
@@ -156,7 +156,7 @@ class AggregatorTest extends TestCase
                     'lastUrlId'              => 1,
                     'completed'              => false,
                     'visitDuration'          => 0,
-                    'afterLastVisitDuration' => 259200,
+                    'afterLastVisitDuration' => 262800,
                 ],
             ],
             $res

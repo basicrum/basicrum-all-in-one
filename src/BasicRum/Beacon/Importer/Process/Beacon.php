@@ -44,10 +44,13 @@ class Beacon
             if ( isset($beacons[$key]['restiming']) && $beacons[$key]['restiming'] )
             {
                 $decompressor = new ResourceTimingDecompressor_v_0_3_4();
-                $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
+                if ( is_string($beacons[$key]['restiming']) )
+                {
+                    $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
 
-                // replace encoded restiming with decoded
-                $beacons[$key]['restiming'] = $resourceTimingsData;
+                    // replace encoded restiming with decoded
+                    $beacons[$key]['restiming'] = $resourceTimingsData;
+                }
             }
 
             // Legacy when we didn't have created_at in beacon data
