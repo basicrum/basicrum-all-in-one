@@ -140,6 +140,56 @@ class NavigationTimings
      */
     private $loadEventEnd;
 
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $ttfb;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $total_img_size;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $total_js_compressed_size;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $total_js_uncomressed_size;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $total_css_compressed_size;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $total_css_uncomressed_size;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $number_js_files;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $number_css_files;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $number_img_files;
+
+    /**
+     * @ORM\Column(type="smallint")
+     */
+    private $download_time;
+
     public function getPageViewId(): ?int
     {
         return $this->pageViewId;
@@ -345,6 +395,126 @@ class NavigationTimings
     public function setLoadEventEnd(int $loadEventEnd): self
     {
         $this->loadEventEnd = $loadEventEnd;
+
+        return $this;
+    }
+
+    public function getTtfb(): ?int
+    {
+        return $this->ttfb;
+    }
+
+    public function setTtfb(int $ttfb): self
+    {
+        $this->ttfb = $ttfb;
+
+        return $this;
+    }
+
+    public function getTotalImgSize(): ?int
+    {
+        return $this->total_img_size;
+    }
+
+    public function setTotalImgSize(int $total_img_size): self
+    {
+        $this->total_img_size = $total_img_size;
+
+        return $this;
+    }
+
+    public function getTotalJsCompressedSize(): ?int
+    {
+        return $this->total_js_compressed_size;
+    }
+
+    public function setTotalJsCompressedSize(int $total_js_compressed_size): self
+    {
+        $this->total_js_compressed_size = $total_js_compressed_size;
+
+        return $this;
+    }
+
+    public function getTotalJsUncomressedSize(): ?int
+    {
+        return $this->total_js_uncomressed_size;
+    }
+
+    public function setTotalJsUncomressedSize(int $total_js_uncomressed_size): self
+    {
+        $this->total_js_uncomressed_size = $total_js_uncomressed_size;
+
+        return $this;
+    }
+
+    public function getTotalCssCompressedSize(): ?int
+    {
+        return $this->total_css_compressed_size;
+    }
+
+    public function setTotalCssCompressedSize(int $total_css_compressed_size): self
+    {
+        $this->total_css_compressed_size = $total_css_compressed_size;
+
+        return $this;
+    }
+
+    public function getTotalCssUncomressedSize(): ?int
+    {
+        return $this->total_css_uncomressed_size;
+    }
+
+    public function setTotalCssUncomressedSize(int $total_css_uncomressed_size): self
+    {
+        $this->total_css_uncomressed_size = $total_css_uncomressed_size;
+
+        return $this;
+    }
+
+    public function getNumberJsFiles(): ?int
+    {
+        return $this->number_js_files;
+    }
+
+    public function setNumberJsFiles(int $number_js_files): self
+    {
+        $this->number_js_files = $number_js_files;
+
+        return $this;
+    }
+
+    public function getNumberCssFiles(): ?int
+    {
+        return $this->number_css_files;
+    }
+
+    public function setNumberCssFiles(int $number_css_files): self
+    {
+        $this->number_css_files = $number_css_files;
+
+        return $this;
+    }
+
+    public function getNumberImgFiles(): ?int
+    {
+        return $this->number_img_files;
+    }
+
+    public function setNumberImgFiles(int $number_img_files): self
+    {
+        $this->number_img_files = $number_img_files;
+
+        return $this;
+    }
+
+    public function getDownloadTime(): ?int
+    {
+        return $this->download_time;
+    }
+
+    public function setDownloadTime(int $download_time): self
+    {
+        $this->download_time = $download_time;
 
         return $this;
     }

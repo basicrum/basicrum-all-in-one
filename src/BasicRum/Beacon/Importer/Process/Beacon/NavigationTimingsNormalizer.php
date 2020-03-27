@@ -15,7 +15,9 @@ class NavigationTimingsNormalizer
         'redirect_duration'  => ['nt_red_end', 'nt_red_st'],
         'last_byte_duration' => ['nt_res_end', 'nt_nav_st'],
         'first_paint'        => ['nt_first_paint', 'nt_nav_st'],
-        'load_event_end'     => ['nt_load_end', 'nt_nav_st']
+        'load_event_end'     => ['nt_load_end', 'nt_nav_st'],
+        'ttfb'               => ['nt_res_st', 'nt_req_st'],
+        'download_time'      => ['nt_res_end', 'nt_req_st'],
 //        'response_duration'            => [],
 //        'document_processing_duration' => [],
 //        'on_load_duration'             => []

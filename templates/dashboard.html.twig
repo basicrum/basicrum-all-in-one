@@ -562,3 +562,152 @@
         <div id="test-diagram-container7" class="widget-data-container" data-params-name-var="widgetParams7"></div>
     </div>
 </div>
+
+<br />
+<br />
+<div class="row">
+    <div class="col-12">
+        Restiming
+        <hr />
+    </div>
+
+    <div class="col-lg-4 col-sm-12">
+        Total JS Compressed Size
+        <hr />
+        <script>
+            var widgetParams8 = {
+                title: 'Total JS Compressed Size',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+                            bargap: 0,
+                            barmode: 'overlay'
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        }
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'JS Size',
+                            color: '#ff6023',
+                            line: {
+                                width: 3
+                            },
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                total_js_compressed_size: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <div id="test-diagram-container8" class="widget-data-container" data-params-name-var="widgetParams8"></div>
+    </div>
+
+    <div class="col-lg-4 col-sm-12">
+        Total CSS Compressed Size
+        <hr />
+        <script>
+            var widgetParams9 = {
+                title: 'Total JS Compressed Size',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+                            bargap: 0,
+                            barmode: 'overlay'
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'CSS Size',
+                            color: '#ff6023',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                total_css_compressed_size: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
+                            },
+
+                        }
+                    },
+                }
+            };
+        </script>
+        <div id="test-diagram-container9" class="widget-data-container" data-params-name-var="widgetParams9"></div>
+    </div>
+
+    <div class="col-lg-4 col-sm-12">
+        Total Img Compressed Size
+        <hr />
+        <script>
+            var widgetParams10 = {
+                title: 'Total Img Compressed Size',
+                global: {
+                    presentation: {
+                        'render_type': 'time_series',
+                        'layout' : {
+                            bargap: 0,
+                            barmode: 'overlay'
+                        }
+                    },
+                    data_requirements: {
+                        period: {
+                            type: 'moving',
+                            start: '30',
+                            end: 'now',
+                        },
+                    }
+                },
+                segments: {
+                    1: {
+                        presentation: {
+                            name: 'IMG Size',
+                            color: '#ff6023',
+                            type: 'bar'
+                        },
+                        data_requirements: {
+                            technical_metrics: {
+                                total_img_size: {
+                                    data_flavor: {
+                                        percentile: 50
+                                    }
+                                }
+                            },
+
+                        }
+                    },
+                }
+            };
+        </script>
+        <div id="test-diagram-container10" class="widget-data-container" data-params-name-var="widgetParams10"></div>
+    </div>
+</div>

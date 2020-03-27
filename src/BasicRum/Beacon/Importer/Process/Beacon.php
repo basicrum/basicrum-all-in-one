@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process;
 
+use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
+
 class Beacon
 {
 
     private $navigationTimingsNormalizer;
+    private $resourceTimingsNormalizer;
 
     /** @var array */
     private $pageViewUniqueKeys = [];
 
     public function __construct()
     {
-        $this->navigationTimingsNormalizer = new Beacon\NavigationTimingsNormalizer();
+        $this->navigationTimingsNormalizer  = new Beacon\NavigationTimingsNormalizer();
+        $this->resourceTimingsNormalizer    = new Beacon\ResourceTimingsNormalizer();
     }
 
     /**
@@ -24,7 +28,9 @@ class Beacon
      */
     public function extract(array $beacons)
     {
+
         $data = [];
+        $decompressor = new ResourceTimingDecompressor_v_0_3_4();
 
         foreach ($beacons as $key => $beacon) {
             if (false === $beacon
@@ -35,6 +41,17 @@ class Beacon
             }
 
             $beacons[$key] = json_decode($beacon[1], true);
+
+            if ( isset($beacons[$key]['restiming']) && $beacons[$key]['restiming'] )
+            {
+                if ( is_string($beacons[$key]['restiming']) )
+                {
+                    $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
+
+                    // replace encoded restiming with decoded
+                    $beacons[$key]['restiming'] = $resourceTimingsData;
+                }
+            }
 
             // Legacy when we didn't have created_at in beacon data
             if (!isset($beacons[$key]['created_at'])) {
@@ -58,7 +75,10 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = ['start' => $date];
 
-            $data[$key] = $this->navigationTimingsNormalizer->normalize($beacons[$key]);
+            $data[$key] = array_merge(
+                $this->navigationTimingsNormalizer->normalize($beacons[$key]),
+                $this->resourceTimingsNormalizer->normalize($beacons[$key])
+            );
 
             $data[$key]['beacon_string'] = $beacon[1];
         }

@@ -23,8 +23,6 @@ class Beacon extends TestCase
 
         $result = $beacon->extract($beacons);
 
-        //var_dump($result);
-
         $this->assertEquals(
             'missing',
             $result[0]['process_id']
