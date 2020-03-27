@@ -25,9 +25,6 @@ header('Access-Control-Allow-Headers: X-Requested-With, Keep-Alive, content-type
 
 
 use App\BasicRum\Beacon\Catcher\Storage\File;
-// use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
-
-// $decompressor = new ResourceTimingDecompressor_v_0_3_4();
 
 /**
  * We use this in order to return 200 to the user as soon as possible.
@@ -46,7 +43,6 @@ $beacon = !empty($_GET) ? $_GET : $_POST;
 if (!empty($beacon)) {
     $beacon['user_agent'] = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
     $beacon['created_at'] = date("Y-m-d H:i:s");
-
     $beaconJson = json_encode($beacon);
 
     $storage->storeBeacon($beaconJson);
