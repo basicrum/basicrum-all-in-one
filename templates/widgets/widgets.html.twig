@@ -1,0 +1,71 @@
+<button id="addBtn" class="btn btn-info">Add widget</button>
+
+<table id="widgets_table" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>User</th>
+            <th>Created at</th>
+            <th>Updated at</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in widgets %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.getCreatedAt.format("d-m-Y H:i:s") }}</td>
+            <td>{{ item.getUpdatedAt.format("d-m-Y H:i:s") }}</td>
+            <td>
+                <button
+                    id="editBtn"
+                    class="btn btn-info"
+                    data-userid="{{ item.id }}">
+                    Edit Widget
+                </button>
+                <button
+                    id="deleteBtn"
+                    class="btn btn-danger"
+                    data-userid="{{ item.id }}">
+                    Delete Widget
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<script>
+    var appData = {
+            mode:               '',
+            userId:             '',
+            row:                '',
+            validator:          '',
+            usersTableId:       '#widgets_table',
+            userDetailsModalId: '#user_details'
+
+        };
+</script>
+
+<script src="/js/user/table-manager.js"></script>
+{#
+
+<script src="/js/user/user_crud_actions.js"></script>
+<script src="/js/user/ajax_module.js"></script>
+<script src="/js/user/user_actions.js"></script>
+
+{% include 'admin/register_form.html.twig' %}
+#}
+<script>
+    $(document).ready( function () {
+        $(appData.usersTableId).DataTable({
+            "order": [[ 0, "desc" ]]
+        });
+    });
+
+    crudActions.addEventListeners();
+</script>
