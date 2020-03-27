@@ -150,7 +150,7 @@ class RevenueCalculatorController extends AbstractController
         $guid = $sample['guid'];
         $firstPageViewId = $sample['firstPageViewId'];
 
-        $dbUrlArr = explode('/', getenv('DATABASE_URL'));
+        $dbUrlArr = explode('/', $_ENV['DATABASE_URL']);
 
         $cacheKey = end($dbUrlArr).$guid.$firstPageViewId;
 

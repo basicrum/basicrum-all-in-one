@@ -173,7 +173,7 @@ class SecondaryFilter
      */
     private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter, array $limitFiltes)
     {
-        $dbUrlArr = explode('/', getenv('DATABASE_URL'));
+        $dbUrlArr = explode('/', $_ENV['DATABASE_URL']);
 
         return end($dbUrlArr).'prefetch_condition_query_data_layer_'.
             md5(print_r($limitFiltes, true)).
