@@ -7,7 +7,7 @@ use App\Entity\Beacons;
 
 class ResourceTiming
 {
-    public function fetchResources(int $pageViewId, \Symfony\Bridge\Doctrine\RegistryInterface $registry): array
+    public function fetchResources(int $pageViewId, \Doctrine\Bundle\DoctrineBundle\Registry $registry): array
     {
         /** @var Beacons $beacon */
         $beacon = $registry
