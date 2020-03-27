@@ -3,7 +3,6 @@
 namespace  App\Tests\BasicRum\Beacon\Importer\Process;
 
 use PHPUnit\Framework\TestCase;
-use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 
 class Beacon extends TestCase
 {
@@ -20,25 +19,9 @@ class Beacon extends TestCase
             ]
         ];
 
-        $decompressor = new ResourceTimingDecompressor_v_0_3_4();
-
-        foreach ($beacons as $key => $item)
-        {
-            $tempArray = json_decode($item[1], true);
-            $resourceTimingsData = $decompressor->decompressResources(json_decode($tempArray['restiming'], true));
-            $tempArray['restiming'] = $resourceTimingsData;
-            $beacons[$key][1] = json_encode($tempArray);
-        }
-
-        // print_r($beacons); exit();
-
-        // return $beacons;
-
         $beacon = new \App\BasicRum\Beacon\Importer\Process\Beacon();
 
         $result = $beacon->extract($beacons);
-
-        //var_dump($result);
 
         $this->assertEquals(
             'missing',
