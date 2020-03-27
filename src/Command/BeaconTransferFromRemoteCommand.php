@@ -35,8 +35,8 @@ class BeaconTransferFromRemoteCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $catcherEndpoint = getenv('CATCHER_ENDPOINT', true);
-        $catcherEndpoint .= '?origin='.getenv('MONITORED_ORIGIN');
+        $catcherEndpoint = $_ENV['CATCHER_ENDPOINT'];
+        $catcherEndpoint .= '?origin='.$_ENV['MONITORED_ORIGIN'];
 
         $response = $this->httpClient->request('GET', $catcherEndpoint);
 
