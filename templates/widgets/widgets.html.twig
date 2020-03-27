@@ -46,20 +46,23 @@
             row:                '',
             validator:          '',
             usersTableId:       '#widgets_table',
-            userDetailsModalId: '#user_details'
+            userDetailsModalId: '#widget_details',
+            modalFormId:        '#create-widget-form'
 
         };
 </script>
 
-<script src="/js/user/table-manager.js"></script>
-{#
 
-<script src="/js/user/user_crud_actions.js"></script>
+
 <script src="/js/user/ajax_module.js"></script>
+<script src="/js/widgets/widget_crud_actions.js"></script>
+<script src="/js/widgets/widget_actions.js"></script>
+{#
 <script src="/js/user/user_actions.js"></script>
+<script src="/js/user/table-manager.js"></script> #}
 
-{% include 'admin/register_form.html.twig' %}
-#}
+{% include 'widgets/register_form.html.twig' %}
+
 <script>
     $(document).ready( function () {
         $(appData.usersTableId).DataTable({

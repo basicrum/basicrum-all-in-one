@@ -30,15 +30,53 @@ class WidgetsController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="widgets_new", methods={"GET","POST"})
+     * @Route("/widget/save", name="widgets_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ValidatorInterface $validator): Response
     {
+        /*echo $this->getUser()->getId().PHP_EOL;
+        print_r($_POST); exit();*/
         $widget = new Widgets();
-        $form = $this->createForm(WidgetsType::class, $widget);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $widget->setName($request->request->get('name'))
+                ->setWidget($request->request->get('widget'))
+                ->setUserId($this->getUser())
+                ->setCreatedAt(new \DateTime())
+                ->setUpdatedAt(new \DateTime());
+
+        $errors = $validator->validate($widget);
+
+        if (\count($errors) > 0) {
+            $array['status'] = 'error';
+            $i = 0;
+            foreach ($errors as $key => $value) {
+                $array['fields'][$i]['field'] = $value->getPropertyPath();
+                $array['fields'][$i]['message'] = $value->getMessage();
+                ++$i;
+            }
+        } else {
+            $entityManager->persist($widget);
+            $entityManager->flush();
+
+            $array = [
+                'status' => 'success',
+                'message' => 'New Widget Created Successfully',
+                'widget' => [
+                    'id'            => $widget->getId(),
+                    'name'          => $widget->getName(),
+                    'widget'        => $widget->getWidget(),
+                    'user_id'       => $widget->getUserId(),
+                    'created_at'    => $widget->getCreatedAt(),
+                    'updated_at'    => $widget->getUpdatedAt(),
+                ],
+            ];
+        }
+
+        return new Response(json_encode($array));
+
+        /*if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($widget);
             $entityManager->flush();
@@ -49,21 +87,25 @@ class WidgetsController extends AbstractController
         return $this->render('widgets/new.html.twig', [
             'widget' => $widget,
             'form' => $form->createView(),
-        ]);
+        ]);*/
     }
 
     /**
-     * @Route("/{id}", name="widgets_show", methods={"GET"})
+     * @Route("/widget/info/{id}", name="widgets_widget_info", methods={"GET"})
      */
     public function show(Widgets $widget): Response
     {
-        return $this->render('widgets/show.html.twig', [
-            'widget' => $widget,
-        ]);
+        $array = [
+            'name'      => $widget->getName(),
+            'widget'    => $widget->getWidget(),
+        ];
+
+        echo json_encode($array);
+        exit();
     }
 
     /**
-     * @Route("/{id}/edit", name="widgets_edit", methods={"GET","POST"})
+     * @Route("/widget/update/{id}", name="widgets_edit", methods={"GET","POST"})
      */
     public function edit(Request $request, Widgets $widget): Response
     {
