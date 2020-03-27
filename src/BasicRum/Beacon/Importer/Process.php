@@ -4,7 +4,7 @@ namespace App\BasicRum\Beacon\Importer;
 
 class Process
 {
-    /** @var \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /**
