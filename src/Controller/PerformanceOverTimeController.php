@@ -4,19 +4,16 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use App\Entity\VisitsOverview;
-use App\Entity\NavigationTimingsUrls;
-use App\Entity\NavigationTimings;
-
-use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\Date\DayInterval;
+use App\BasicRum\Date\TimePeriod;
+use App\Entity\NavigationTimings;
+use App\Entity\NavigationTimingsUrls;
+use App\Entity\VisitsOverview;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class PerformanceOverTimeController extends AbstractController
 {
-
     /**
      * @Route("/diagrams/allTraffic", name="diagrams_all_traffic")
      */
@@ -50,16 +47,16 @@ class PerformanceOverTimeController extends AbstractController
         }
 
         $metrics = [
-            'first_byte'  => 'First Byte',
-            'first_paint' => 'Start Render'
+            'first_byte' => 'First Byte',
+            'first_paint' => 'Start Render',
         ];
 
         return $this->render('diagrams/pages_traffic.html.twig',
             [
-                'urls'            => $urls,
-                'metrics'         => $metrics,
-                'title'           => 'Performance - Landing Pages',
-                'landing_pages'   => 1
+                'urls' => $urls,
+                'metrics' => $metrics,
+                'title' => 'Performance - Landing Pages',
+                'landing_pages' => 1,
             ]
         );
     }
@@ -89,23 +86,21 @@ class PerformanceOverTimeController extends AbstractController
         }
 
         $metrics = [
-            'first_byte'  => 'First Byte',
-            'first_paint' => 'Start Render'
+            'first_byte' => 'First Byte',
+            'first_paint' => 'Start Render',
         ];
 
         return $this->render('diagrams/pages_traffic.html.twig',
             [
-                'urls'            => $urls,
-                'metrics'         => $metrics,
-                'title'           => 'Performance - Popular Pages',
-                'landing_pages'   => 0
+                'urls' => $urls,
+                'metrics' => $metrics,
+                'title' => 'Performance - Popular Pages',
+                'landing_pages' => 0,
             ]
         );
     }
 
     /**
-     * @param int $count
-     * @param array $interval
      * @return array
      */
     private function _getTopLandingPages(int $count, array $interval)
@@ -121,7 +116,7 @@ class PerformanceOverTimeController extends AbstractController
             ->getManager()
             ->createQueryBuilder()
             ->select('e')
-            ->where("e.createdAt BETWEEN :begin AND :end")
+            ->where('e.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
             ->from(NavigationTimings::class, 'e')
@@ -130,7 +125,7 @@ class PerformanceOverTimeController extends AbstractController
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (!is_null($lastNavigationTiming) ) {
+        if (null !== $lastNavigationTiming) {
             $maxId = $lastNavigationTiming->getPageViewId();
         }
 
@@ -139,7 +134,7 @@ class PerformanceOverTimeController extends AbstractController
             ->getManager()
             ->createQueryBuilder()
             ->select('e')
-            ->where("e.createdAt BETWEEN :begin AND :end")
+            ->where('e.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
             ->from(NavigationTimings::class, 'e')
@@ -148,7 +143,7 @@ class PerformanceOverTimeController extends AbstractController
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (!is_null($firstNavigationTiming) ) {
+        if (null !== $firstNavigationTiming) {
             $minId = $firstNavigationTiming->getPageViewId();
         }
 
@@ -159,7 +154,7 @@ class PerformanceOverTimeController extends AbstractController
 
         $queryBuilder
             ->select(['count(vo.firstUrlId) as visitsCount', 'vo.firstUrlId'])
-            ->where("vo.firstPageViewId BETWEEN " . $minId . " AND " . $maxId)
+            ->where('vo.firstPageViewId BETWEEN '.$minId.' AND '.$maxId)
             ->groupBy('vo.firstUrlId')
             ->orderBy('count(vo.firstUrlId)', 'DESC')
             ->setMaxResults($count)
@@ -178,8 +173,6 @@ class PerformanceOverTimeController extends AbstractController
     }
 
     /**
-     * @param int $count
-     * @param array $interval
      * @return array
      */
     private function _getPopularPages(int $count, array $interval)
@@ -194,7 +187,7 @@ class PerformanceOverTimeController extends AbstractController
 
         $queryBuilder
             ->select(['count(nt.urlId) as visitsCount', 'nt.urlId'])
-            ->where("nt.createdAt BETWEEN :begin AND :end")
+            ->where('nt.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
             ->groupBy('nt.urlId')
@@ -213,5 +206,4 @@ class PerformanceOverTimeController extends AbstractController
 
         return $popularLandingPages;
     }
-
 }

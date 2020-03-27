@@ -4,12 +4,12 @@ namespace App\BasicRum\Beacon\Importer;
 
 class Process
 {
-
-    /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
 
     /**
      * Process constructor.
+     *
      * @param \Doctrine\Bundle\DoctrineBundle\Registry
      */
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
@@ -20,7 +20,7 @@ class Process
         $this->registry->getManager()->getConnection()->getConfiguration()->setSQLLogger(null);
     }
 
-    public function runImport(/**Process\Reader\MonolithCatcher*/ $reader, $batchSize = 300) : int
+    public function runImport(/**Process\Reader\MonolithCatcher*/ $reader, $batchSize = 300): int
     {
         $batchImporter = new Process\Writer\Batch($this->registry);
 
@@ -31,7 +31,6 @@ class Process
         $timings = $beaconWorker->extract($beacons);
         $batchImporter->process($timings, $batchSize);
 
-        return count($beacons);
+        return \count($beacons);
     }
-
 }

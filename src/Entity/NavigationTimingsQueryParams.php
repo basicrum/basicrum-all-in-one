@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NavigationTimingsQueryParams
+ * NavigationTimingsQueryParams.
  *
  * @ORM\Table(name="navigation_timings_query_params")
  * @ORM\Entity
@@ -51,6 +51,4 @@ class NavigationTimingsQueryParams
 
         return $this;
     }
-
-
 }

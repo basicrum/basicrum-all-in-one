@@ -6,14 +6,12 @@ namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\Us
 
 class Hydrator
 {
-
     /**
-     * @param \WhichBrowser\Parser $result
      * @param $userAgentString
-     * @return array
+     *
      * @throws \Exception
      */
-    public function hydrate(\WhichBrowser\Parser $result, $userAgentString) : array
+    public function hydrate(\WhichBrowser\Parser $result, $userAgentString): array
     {
         $userAgent = [];
 
@@ -29,12 +27,10 @@ class Hydrator
     }
 
     /**
-     * @param \WhichBrowser\Parser $result
      * @return mixed
      */
     private function browserName(\WhichBrowser\Parser $result)
     {
         return isset($result->browser->toArray()['name']) ? $result->browser->toArray()['name'] : $result->browser->getName();
     }
-
 }

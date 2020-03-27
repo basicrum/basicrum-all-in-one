@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Stats;
 
+use App\BasicRum\Beacon\RumData\ResourceTiming;
+use App\Entity\LastBlockingResources;
 use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUserAgents;
 
-use App\BasicRum\Beacon\RumData\ResourceTiming;
-
-use App\Entity\LastBlockingResources;
-
 class LastBlockingResourceCalculator
 {
-
     /** @var int */
     private $scannedChunkSize = 1000;
 
-    private $batchSize        = 500;
+    private $batchSize = 500;
 
-    /** @var  \Symfony\Bridge\Doctrine\RegistryInterface */
+    /** @var \Symfony\Bridge\Doctrine\RegistryInterface */
     private $registry;
 
     public function __construct(\Symfony\Bridge\Doctrine\RegistryInterface $registry)
@@ -42,7 +39,7 @@ class LastBlockingResourceCalculator
 
             $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->registry);
 
-            $finalName  = '';
+            $finalName = '';
             $tmpEndTime = 0;
 
             foreach ($this->_getBlockingResources($resourceTimingsData) as $resource) {
@@ -58,44 +55,39 @@ class LastBlockingResourceCalculator
                 }
 
                 $lastBlockingResources[] = [
-                    'page_view_id'          => $pageViewId,
-                    'url'                   => $finalName,
-                    'time'                  => $tmpEndTime,
-                    'first_paint'           => $nav['firstPaint']
+                    'page_view_id' => $pageViewId,
+                    'url' => $finalName,
+                    'time' => $tmpEndTime,
+                    'first_paint' => $nav['firstPaint'],
                 ];
             }
-
         }
 
         $this->_saveBlockingResources($lastBlockingResources);
 
-        return count($lastBlockingResources);
+        return \count($lastBlockingResources);
     }
 
-    /**
-     * @param array $resources
-     * @return array
-     */
-    private function _getBlockingResources(array $resources) : array
+    private function _getBlockingResources(array $resources): array
     {
         $blocking = [];
 
         foreach ($resources as $resource) {
             $name = basename($resource['name']);
 
-            if (strpos($name, '.js') !== false) {
+            if (false !== strpos($name, '.js')) {
                 if (!isset($resource['scriptBody']) || !isset($resource['scriptDefer']) || !isset($resource['scriptAsync'])) {
                     continue;
                 }
 
-                if ($resource['scriptBody'] === true || $resource['scriptDefer'] === true || $resource['scriptAsync'] === true) {
+                if (true === $resource['scriptBody'] || true === $resource['scriptDefer'] || true === $resource['scriptAsync']) {
                     continue;
                 }
 
                 $blocking[] = $resource;
             }
 
-            if (strpos($name, '.css') !== false) {
+            if (false !== strpos($name, '.css')) {
                 $blocking[] = $resource;
             }
         }
@@ -116,7 +108,7 @@ class LastBlockingResourceCalculator
             ->getQuery()
             ->getSingleScalarResult();
 
-        return $pageViewId === 0 ? 0 : $pageViewId;
+        return 0 === $pageViewId ? 0 : $pageViewId;
     }
 
     private function _saveBlockingResources(array $resources)
@@ -124,7 +116,7 @@ class LastBlockingResourceCalculator
         $cnt = 0;
 
         foreach ($resources as $resource) {
-            $cnt++;
+            ++$cnt;
 
             $entity = new LastBlockingResources();
 
@@ -135,7 +127,7 @@ class LastBlockingResourceCalculator
 
             $this->registry->getManager()->persist($entity);
 
-            if (($cnt % $this->batchSize) === 0) {
+            if (0 === ($cnt % $this->batchSize)) {
                 $this->registry->getManager()->flush();
                 $this->registry->getManager()->clear();
             }
@@ -146,8 +138,6 @@ class LastBlockingResourceCalculator
     }
 
     /**
-     * @param int $startId
-     * @param int $endId
      * @return mixed
      */
     private function _getNavTimingsInRange(int $startId, int $endId)
@@ -156,7 +146,7 @@ class LastBlockingResourceCalculator
             ->getRepository(NavigationTimings::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '" . $startId . "' AND nt.pageViewId <= '" . $endId . "'")
+            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
             ->andWhere('nt.userAgentId NOT IN (:userAgentId)')
             ->setParameter('userAgentId', $this->_botUserAgentsIds())
             ->select(['nt.pageViewId', 'nt.firstPaint'])
@@ -188,5 +178,4 @@ class LastBlockingResourceCalculator
 
         return $userAgentsArr;
     }
-
 }

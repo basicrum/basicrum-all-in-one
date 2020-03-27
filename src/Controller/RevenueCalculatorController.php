@@ -2,25 +2,18 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-
-use App\Entity\NavigationTimings;
-
+use App\BasicRum\Buckets;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
-
-use App\BasicRum\Buckets;
-
+use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUrls;
 use App\Entity\VisitsOverview;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Routing\Annotation\Route;
 
 class RevenueCalculatorController extends AbstractController
 {
-
     /**
      * @Route("/diagrams/estimate/revenue_calculator", name="diagrams_estimate_revenue_calculator")
      */
@@ -32,37 +25,37 @@ class RevenueCalculatorController extends AbstractController
 
         $conversionIds = $this->getConversionUrlIds();
 
-        $viewsCount     = 0;
-        $bouncesCount      = 0;
+        $viewsCount = 0;
+        $bouncesCount = 0;
         $convertedSessions = 0;
 
         $filterString = 'gclid=';
 
         $period = [
             [
-                'from_date'   => '01/01/2019',
-                'to_date'     => '03/01/2019'
-            ]
+                'from_date' => '01/01/2019',
+                'to_date' => '03/01/2019',
+            ],
         ];
 
         $requirements = [
-            'periods'     => $period,
-            'filters'     => [
+            'periods' => $period,
+            'filters' => [
                 'query_param' => [
                     'search_value' => $filterString,
-                    'condition'    => 'contains'
+                    'condition' => 'contains',
                 ],
-//                'device_type' => [
-//                    'search_value' => '3',
-//                    'condition'    => 'is'
-//                ]
+                //                'device_type' => [
+                //                    'search_value' => '3',
+                //                    'condition'    => 'is'
+                //                ]
             ],
             'business_metrics' => [
-                'bounce_rate' => 1
+                'bounce_rate' => 1,
             ],
             'technical_metrics' => [
-                'time_to_first_paint' => 1
-            ]
+                'time_to_first_paint' => 1,
+            ],
         ];
 
         $collaboratorsAggregator = new CollaboratorsAggregator();
@@ -79,7 +72,7 @@ class RevenueCalculatorController extends AbstractController
         $bucketizer = new Buckets(200, 4600);
         $buckets = $bucketizer->bucketizePeriod($res[0], 'firstPaint');
 
-        $bounces  = [];
+        $bounces = [];
 
         foreach ($buckets as $bucketSize => $bucket) {
             $bounces[$bucketSize] = 0;
@@ -89,31 +82,31 @@ class RevenueCalculatorController extends AbstractController
 
         foreach ($buckets as $bucketSize => $bucket) {
             foreach ($bucket as $key => $sample) {
-                $viewsCount++;
+                ++$viewsCount;
 
-                if ($sample['pageViewsCount'] == 1) {
-                    $bounces[$bucketSize]++;
-                    $bouncesCount++;
+                if (1 == $sample['pageViewsCount']) {
+                    ++$bounces[$bucketSize];
+                    ++$bouncesCount;
                     continue;
                 }
 
                 if ($this->hasConverted($sample, $conversionIds)) {
-                    $convertedSessions++;
+                    ++$convertedSessions;
                 }
             }
         }
 
         foreach ($buckets as $bucketSize => $samples) {
-            $firstPaintArr[$bucketSize] = count($samples);
+            $firstPaintArr[$bucketSize] = \count($samples);
         }
 
         foreach ($buckets as $bucketSize => $bucket) {
-            if (count($bucket) === 0) {
+            if (0 === \count($bucket)) {
                 $bounceRatePercents[$bucketSize] = 0;
                 continue;
             }
 
-            $bounceRatePercents[$bucketSize] = (float) number_format(($bounces[$bucketSize] / count($bucket)) * 100, 2);
+            $bounceRatePercents[$bucketSize] = (float) number_format(($bounces[$bucketSize] / \count($bucket)) * 100, 2);
         }
 
         $xAxisLabels = [0 => '0 sec', 1000 => '1 sec', 2000 => '2 sec', 3000 => '3 sec', 4000 => '4 sec'];
@@ -123,54 +116,49 @@ class RevenueCalculatorController extends AbstractController
         $bounceRateAssumption = $this->_calculateEstimations($buckets, $bounceRatePercents, $assumptions);
 
         $startDate = new \DateTime($period[0]['from_date']);
-        $endDate   = new \DateTime($period[0]['to_date']);
+        $endDate = new \DateTime($period[0]['to_date']);
 
         $formattedBounceRatePercents = [];
 
-        foreach ($bounceRatePercents as $key => $val ) {
-            $formattedBounceRatePercents[$key] = (int) number_format($val,0);
+        foreach ($bounceRatePercents as $key => $val) {
+            $formattedBounceRatePercents[$key] = (int) number_format($val, 0);
         }
-
 
         return $this->render('diagrams/diagram_first_paint.html.twig',
             [
-                'count'             => $viewsCount,
+                'count' => $viewsCount,
                 'estimated_bounces' => $bounceRateAssumption,
-                'bounceRate'        => (int) number_format(($bouncesCount / $viewsCount) * 100),
-                'conversionRate'    => (int) number_format(($convertedSessions / $viewsCount) * 100),
-                'x1Values'          => json_encode(array_keys($firstPaintArr)),
-                'y1Values'          => json_encode(array_values($firstPaintArr)),
-                'x2Values'          => json_encode(array_keys($bounceRatePercents)),
-                'y2Values'          => json_encode(array_values($bounceRatePercents)),
-                'annotations'       => json_encode($formattedBounceRatePercents),
-                'x_axis_values'     => json_encode(array_keys($xAxisLabels)),
-                'x_axis_labels'     => json_encode(array_values($xAxisLabels)),
-                'startDate'         => $startDate->format('F jS, Y'),
-                'endDate'           => $endDate->format('F jS, Y')
+                'bounceRate' => (int) number_format(($bouncesCount / $viewsCount) * 100),
+                'conversionRate' => (int) number_format(($convertedSessions / $viewsCount) * 100),
+                'x1Values' => json_encode(array_keys($firstPaintArr)),
+                'y1Values' => json_encode(array_values($firstPaintArr)),
+                'x2Values' => json_encode(array_keys($bounceRatePercents)),
+                'y2Values' => json_encode(array_values($bounceRatePercents)),
+                'annotations' => json_encode($formattedBounceRatePercents),
+                'x_axis_values' => json_encode(array_keys($xAxisLabels)),
+                'x_axis_labels' => json_encode(array_values($xAxisLabels)),
+                'startDate' => $startDate->format('F jS, Y'),
+                'endDate' => $endDate->format('F jS, Y'),
             ]
         );
     }
 
-    /**
-     * @param array $sample
-     * @return bool
-     */
-    private function hasConverted(array $sample, array $conversionIds) : bool
+    private function hasConverted(array $sample, array $conversionIds): bool
     {
         $cache = new FilesystemAdapter('basicrum.revenue.estimator.cache');
 
-        $guid            = $sample['guid'];
+        $guid = $sample['guid'];
         $firstPageViewId = $sample['firstPageViewId'];
 
         $dbUrlArr = explode('/', getenv('DATABASE_URL'));
 
-        $cacheKey = end($dbUrlArr) . $guid . $firstPageViewId;
+        $cacheKey = end($dbUrlArr).$guid.$firstPageViewId;
 
         if ($cache->hasItem($cacheKey)) {
             $converted = $cache->getItem($cacheKey)->get();
-            return $converted == 1;
-        }
 
+            return 1 == $converted;
+        }
 
         $repository = $this->getDoctrine()
             ->getRepository(VisitsOverview::class);
@@ -211,7 +199,7 @@ class RevenueCalculatorController extends AbstractController
 
         $cache->save($cacheItem);
 
-        return $converted == 1;
+        return 1 == $converted;
     }
 
     /**
@@ -221,14 +209,13 @@ class RevenueCalculatorController extends AbstractController
     {
         $conversionUrl = 'checkout/onepage';
 
-
         $repository = $this->getDoctrine()
             ->getRepository(NavigationTimingsUrls::class);
 
         $res = $repository
             ->createQueryBuilder('ntu')
             ->where('ntu.url LIKE :url')
-            ->setParameter('url', '%' . $conversionUrl . '%')
+            ->setParameter('url', '%'.$conversionUrl.'%')
             ->getQuery()
             ->getResult();
 
@@ -237,13 +224,11 @@ class RevenueCalculatorController extends AbstractController
             $ids[] = $url->getId();
         }
 
-
         return $ids;
     }
 
     private function _calculateEstimations(array $firstPaintArr, array $bouncesPercents, array $assumptions)
     {
-
         $bounces = [];
 
         $minInterval = 400;
@@ -264,14 +249,13 @@ class RevenueCalculatorController extends AbstractController
                     $newFirsPaintArr[$newFirstPaint] = 0;
                 }
 
-                $newFirsPaintArr[$newFirstPaint] += count($probes);
+                $newFirsPaintArr[$newFirstPaint] += \count($probes);
             }
 
             foreach ($bouncesPercents as $paintGroup => $percent) {
-
                 if (isset($newFirsPaintArr[$paintGroup])) {
                     $assumedSessions += $newFirsPaintArr[$paintGroup];
-                    $assumedBounces  += $newFirsPaintArr[$paintGroup] * $percent / 100;
+                    $assumedBounces += $newFirsPaintArr[$paintGroup] * $percent / 100;
                 }
             }
 
@@ -280,5 +264,4 @@ class RevenueCalculatorController extends AbstractController
 
         return $bounces;
     }
-
 }

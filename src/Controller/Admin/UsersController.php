@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-
-use App\Entity\User;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UsersController extends AbstractController
 {
@@ -33,6 +32,7 @@ class UsersController extends AbstractController
             ->findAll();
 
         $roles = ['ROLE_USER' => 'User', 'ROLE_ADMIN' => 'Admin'];
+
         return $this->render('admin/users.html.twig', ['users' => $users, 'allRoles' => $roles]);
     }
 
@@ -53,11 +53,12 @@ class UsersController extends AbstractController
             'fname' => $user->getFname(),
             'lname' => $user->getLname(),
             'email' => $user->getEmail(),
-            'role'  => $user->getRoles(),
+            'role' => $user->getRoles(),
         ];
 
         echo json_encode($array);
         exit();
+
         return new JsonResponse($array);
     }
 
@@ -66,28 +67,22 @@ class UsersController extends AbstractController
      */
     public function update($id, Request $request, ValidatorInterface $validator)
     {
-
         $entityManager = $this->getDoctrine()->getManager();
         $user = $entityManager->getRepository(User::class)->find($id);
 
-        if ( ! $user )
-        {
-            throw $this->createNotFoundException(
-                'No user found for id '.$id
-            );
+        if (!$user) {
+            throw $this->createNotFoundException('No user found for id '.$id);
         }
 
         $user->setFname($request->request->get('fname'))
              ->setLname($request->request->get('lname'))
              ->setEmail($request->request->get('email'));
 
-        if ( $request->request->get('user_role') )
-        {
+        if ($request->request->get('user_role')) {
             $user->setRoles([$request->request->get('user_role')]);
         }
 
-        if ( $request->request->get('password') )
-        {
+        if ($request->request->get('password')) {
             $encodedPassword = $this->passwordEncoder->encodePassword($user, $request->request->get('password'));
 
             $user->setPlainPassword($request->request->get('password'))
@@ -98,10 +93,10 @@ class UsersController extends AbstractController
         $entityManager->flush();
 
         $array = [
-            'status'    => 'success',
-            'message'   => 'User Updated Successfully',
-            'user'      => [
-                'id'    => $user->getId(),
+            'status' => 'success',
+            'message' => 'User Updated Successfully',
+            'user' => [
+                'id' => $user->getId(),
                 'fname' => $user->getFname(),
                 'lname' => $user->getLname(),
                 'email' => $user->getEmail(),
@@ -125,10 +120,10 @@ class UsersController extends AbstractController
         $entityManager->flush();
 
         $array = [
-            'status'    => 'success',
-            'message'   => 'User Deleted Successfully',
-            'user'      => [
-                'id'    => $user->getId(),
+            'status' => 'success',
+            'message' => 'User Deleted Successfully',
+            'user' => [
+                'id' => $user->getId(),
                 'fname' => $user->getFname(),
                 'lname' => $user->getLname(),
                 'email' => $user->getEmail(),

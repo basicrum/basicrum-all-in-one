@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\Condition;
 
-class Contains
-    implements \App\BasicRum\Layers\DataLayer\Query\ConditionInterface
+class Contains implements \App\BasicRum\Layers\DataLayer\Query\ConditionInterface
 {
-
     /** @var string */
     private $tableName;
 
@@ -21,37 +19,26 @@ class Contains
         string $tableName,
         string $fieldName,
         string $value
-    )
-    {
-        $this->tableName  = $tableName;
-        $this->fieldName  = $fieldName;
-        $this->value      = $value;
+    ) {
+        $this->tableName = $tableName;
+        $this->fieldName = $fieldName;
+        $this->value = $value;
     }
 
-    /**
-     * @return string
-     */
-    public function getWhere() : string
+    public function getWhere(): string
     {
-        return $this->tableName . "." . $this->fieldName . " LIKE " . ":" . $this->_getValueKey();
+        return $this->tableName.'.'.$this->fieldName.' LIKE '.':'.$this->_getValueKey();
     }
 
-    /**
-     * @return string
-     */
-    private function _getValueKey() : string
+    private function _getValueKey(): string
     {
-        return $this->tableName . "_" . $this->fieldName . '_value';
+        return $this->tableName.'_'.$this->fieldName.'_value';
     }
 
-    /**
-     * @return array
-     */
-    public function getParams() : array
+    public function getParams(): array
     {
         return [
-            $this->_getValueKey()  => '%' .  $this->value . '%',
+            $this->_getValueKey() => '%'.$this->value.'%',
         ];
     }
-
 }

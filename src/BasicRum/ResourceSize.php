@@ -4,9 +4,7 @@ namespace App\BasicRum;
 
 class ResourceSize
 {
-
     /**
-     * @param array $resourceTimings
      * @return array
      */
     public function calculateSizes(array $resourceTimings)
@@ -18,8 +16,7 @@ class ResourceSize
         $js = 0;
         $css = 0;
 
-        foreach ($resourceTimings as $resource)
-        {
+        foreach ($resourceTimings as $resource) {
             // We do not need this feature right now
             break;
             if ('html' === $resource['initiatorType']) {
@@ -42,7 +39,6 @@ class ResourceSize
                 $img += $resource['encodedBodySize'];
             }
 
-
             if (strpos($resource['name'], '.css') > 0) {
                 $css += $resource['encodedBodySize'];
             }
@@ -50,29 +46,28 @@ class ResourceSize
             if (isset($resource['encodedBodySize'])) {
                 $total += $resource['encodedBodySize'];
             }
-
         }
 
         $other = $total - ($css + $html + $img + $js);
 
         return [
-            'css'   => $this->calculatePercentage($total, $css),
-            'html'  => $this->calculatePercentage($total, $html),
+            'css' => $this->calculatePercentage($total, $css),
+            'html' => $this->calculatePercentage($total, $html),
             'image' => $this->calculatePercentage($total, $img),
-            'font'  => '0.00',
-            'js'    => $this->calculatePercentage($total, $js),
-            'other' => $this->calculatePercentage($total, $other)
+            'font' => '0.00',
+            'js' => $this->calculatePercentage($total, $js),
+            'other' => $this->calculatePercentage($total, $other),
         ];
     }
 
     /**
      * @param $total
      * @param $part
+     *
      * @return string
      */
     public function calculatePercentage($total, $part)
     {
-        return $total === 0 ? 0 : number_format($part / ($total) * 100, 2);
+        return 0 === $total ? 0 : number_format($part / ($total) * 100, 2);
     }
-
 }

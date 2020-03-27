@@ -6,7 +6,6 @@ namespace App\BasicRum\Layers\DataLayer\Query\Plan;
 
 class ComplexSelect
 {
-
     /** @var string */
     private $primarySelectTableName;
 
@@ -28,53 +27,36 @@ class ComplexSelect
         string $secondarySelectTableName,
         string $secondaryKeyFieldName,
         array $secondarySelectDataFieldNames
-    )
-    {
-        $this->primarySelectTableName       = $primarySelectTableName;
-        $this->primaryKeyFieldName           = $primaryKeyFieldName;
-        $this->secondarySelectTableName     = $secondarySelectTableName;
-        $this->secondaryKeyFieldName         = $secondaryKeyFieldName;
+    ) {
+        $this->primarySelectTableName = $primarySelectTableName;
+        $this->primaryKeyFieldName = $primaryKeyFieldName;
+        $this->secondarySelectTableName = $secondarySelectTableName;
+        $this->secondaryKeyFieldName = $secondaryKeyFieldName;
         $this->secondarySelectDataFieldNames = $secondarySelectDataFieldNames;
     }
 
-    /**
-     * @return string
-     */
-    public function getPrimarySelectTableName() : string
+    public function getPrimarySelectTableName(): string
     {
         return $this->primarySelectTableName;
     }
 
-    /**
-     * @return string
-     */
-    public function getPrimaryKeyFieldName() : string
+    public function getPrimaryKeyFieldName(): string
     {
         return $this->primaryKeyFieldName;
     }
 
-    /**
-     * @return string
-     */
-    public function getSecondarySelectTableName() : string
+    public function getSecondarySelectTableName(): string
     {
         return $this->secondarySelectTableName;
     }
 
-    /**
-     * @return string
-     */
-    public function getSecondaryKeyFieldName() : string
+    public function getSecondaryKeyFieldName(): string
     {
         return $this->secondaryKeyFieldName;
     }
 
-    /**
-     * @return array
-     */
-    public function getSecondarySelectDataFieldNames() : array
+    public function getSecondarySelectDataFieldNames(): array
     {
         return $this->secondarySelectDataFieldNames;
     }
-
 }

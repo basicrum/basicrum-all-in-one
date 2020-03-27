@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\Layers\Presentation;
 use App\Entity\NavigationTimings;
 use App\Entity\PageTypeConfig;
-
-use App\BasicRum\Layers\Presentation;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class WaterfallsController extends AbstractController
 {
-
     private $_deviceMapping = [
         '2' => 'Desktop',
         '3' => 'Tablet',
         '1' => 'Mobile',
         '4' => 'Bot',
-        '5' => 'Unknown'
+        '5' => 'Unknown',
     ];
 
     /**
@@ -38,9 +35,9 @@ class WaterfallsController extends AbstractController
         return $this->render('waterfalls/form.html.twig',
             [
                 'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
-                'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
-                'page_types'         => $presentation->getPageTypes($this->getDoctrine()),
-                'period'             => $period
+                'operating_systems' => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
+                'page_types' => $presentation->getPageTypes($this->getDoctrine()),
+                'period' => $period,
             ]
         );
     }
@@ -61,10 +58,10 @@ class WaterfallsController extends AbstractController
 
         $requirements['segments'] = $_POST['segments'];
 
-        /**
+        /*
          * If "page_type" presented then unset "url" and "query_param".
          */
-        if ( !empty($requirements['filters']['page_type']) ) {
+        if (!empty($requirements['filters']['page_type'])) {
             $pageTypeId = $requirements['filters']['page_type'];
 
             $repository = $this->getDoctrine()->getRepository(PageTypeConfig::class);
@@ -73,8 +70,8 @@ class WaterfallsController extends AbstractController
             $pageType = $repository->find($pageTypeId);
 
             $requirements['filters']['url'] = [
-                'condition'    => $pageType->getConditionValue(),
-                'search_value' => $pageType->getConditionTerm()
+                'condition' => $pageType->getConditionValue(),
+                'search_value' => $pageType->getConditionTerm(),
             ];
 
             unset($requirements['filters']['page_type']);
@@ -89,7 +86,7 @@ class WaterfallsController extends AbstractController
         $res = $diagramOrchestrator->process();
 
         foreach ($res[1] as $key => $dayRows) {
-            if(empty($dayRows['data_rows'])) {
+            if (empty($dayRows['data_rows'])) {
                 unset($res[1][$key]);
             }
         }
@@ -106,8 +103,8 @@ class WaterfallsController extends AbstractController
         foreach ($reversedDays as $day => $views) {
             foreach ($views['data_rows'] as $view) {
                 $pageViews[] = $repository->find($view['page_view_id']);
-                $counter++;
-                if ($counter === 400) {
+                ++$counter;
+                if (400 === $counter) {
                     break;
                 }
             }
@@ -116,10 +113,9 @@ class WaterfallsController extends AbstractController
 
         return $this->render('waterfalls/waterfalls_table.html.twig',
             [
-                'page_views'     => $pageViews,
-                'device_mapping' => $this->_deviceMapping
+                'page_views' => $pageViews,
+                'device_mapping' => $this->_deviceMapping,
             ]
         );
     }
-
 }

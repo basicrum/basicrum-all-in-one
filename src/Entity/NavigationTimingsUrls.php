@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NavigationTimingsUrls
+ * NavigationTimingsUrls.
  *
  * @ORM\Table(name="navigation_timings_urls", indexes={@ORM\Index(name="created_at", columns={"created_at"})})
  * @ORM\Entity
@@ -63,6 +63,4 @@ class NavigationTimingsUrls
 
         return $this;
     }
-
-
 }

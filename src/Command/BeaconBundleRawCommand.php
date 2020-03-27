@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\BasicRum\Beacon\Catcher\Storage\File;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class BeaconBundleRawCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:beacon:bundle-raw';
 
-    /** @var  \Doctrine\Persistence\ManagerRegistry */
+    /** @var \Doctrine\Persistence\ManagerRegistry */
     private $registry;
 
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
@@ -31,9 +30,7 @@ class BeaconBundleRawCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -41,5 +38,4 @@ class BeaconBundleRawCommand extends Command
 
         $storage->generateBundleFromRawBeacons();
     }
-
 }

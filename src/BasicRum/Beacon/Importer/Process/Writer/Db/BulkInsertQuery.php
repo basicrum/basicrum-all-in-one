@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Db;
@@ -7,13 +8,10 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\Identifier;
 
 /**
- * Class BulkInsertQuery
- *
- * @package YourApp\Repository\Query
+ * Class BulkInsertQuery.
  */
 class BulkInsertQuery
 {
-
     /** @var Connection */
     protected $connection;
 
@@ -37,21 +35,16 @@ class BulkInsertQuery
 
     /**
      * BulkInsertQuery constructor.
-     *
-     * @param Connection $connection
-     * @param string     $table
      */
     public function __construct(
         Connection $connection,
-        string     $table
+        string $table
     ) {
         $this->connection = $connection;
-        $this->table      = new Identifier($table);
+        $this->table = new Identifier($table);
     }
 
     /**
-     * @param array $columns
-     *
      * @return $this
      */
     public function setColumns(array $columns)
@@ -62,15 +55,12 @@ class BulkInsertQuery
     }
 
     /**
-     * @param array      $valueSets
-     * @param array|null $types
-     *
      * @return $this
      */
     public function setValues(array $valueSets, array $types = null)
     {
         $this->valueSets = $valueSets;
-        $this->types     = $types;
+        $this->types = $types;
 
         return $this;
     }
@@ -89,7 +79,7 @@ class BulkInsertQuery
         $this->connection->executeQuery($sql, $parameters, $this->getPositionalTypes());
 
         $this->lastInsertId = $this->connection->lastInsertId();
-        $this->numInsertedRows = count($this->valueSets);
+        $this->numInsertedRows = \count($this->valueSets);
 
         return $this;
     }
@@ -125,9 +115,9 @@ class BulkInsertQuery
         // (id, name, ..., date)
         $columnString = empty($this->columns) ? '' : '('.implode(', ', $escapedColumns).')';
         // (?, ?, ?, ... , ?)
-        $singlePlaceholder = '('.implode(', ', array_fill(0, count($this->columns), '?')).')';
+        $singlePlaceholder = '('.implode(', ', array_fill(0, \count($this->columns), '?')).')';
         // (?, ?), ... , (?, ?)
-        $placeholders = implode(', ', array_fill(0, count($this->valueSets), $singlePlaceholder));
+        $placeholders = implode(', ', array_fill(0, \count($this->valueSets), $singlePlaceholder));
 
         $sql = sprintf(
             'INSERT INTO %s %s VALUES %s;',
@@ -150,10 +140,10 @@ class BulkInsertQuery
 
         $types = array_values($this->types);
 
-        $repeat = count($this->valueSets);
+        $repeat = \count($this->valueSets);
 
         $positionalTypes = [];
-        for ($i=1; $i<=$repeat; $i++) {
+        for ($i = 1; $i <= $repeat; ++$i) {
             $positionalTypes = array_merge($positionalTypes, $types);
         }
 

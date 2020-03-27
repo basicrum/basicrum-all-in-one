@@ -34,7 +34,7 @@ class PageTypeConfigController extends AbstractController
         $pageTypeConfig = new PageTypeConfig();
         $form = $this->createForm(PageTypeConfigType::class, $pageTypeConfig, [
             'action' => $this->generateUrl('page_type_config_new'),
-            'method' => 'POST'
+            'method' => 'POST',
         ]);
         $form->handleRequest($request);
 
@@ -67,7 +67,7 @@ class PageTypeConfigController extends AbstractController
     {
         $form = $this->createForm(PageTypeConfigType::class, $pageTypeConfig, [
             'action' => $this->generateUrl('page_type_config_edit', ['id' => $pageTypeConfig->getId()]),
-            'method' => 'POST'
+            'method' => 'POST',
         ]);
         $form->handleRequest($request);
 

@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers;
 
+use App\BasicRum\Cache\Storage;
 use App\BasicRum\Layers\DataLayer\Query\Planner;
 use App\BasicRum\Layers\DataLayer\Query\Runner;
 
-use App\BasicRum\Cache\Storage;
-
 class DataLayer
 {
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
@@ -26,26 +24,22 @@ class DataLayer
 
     /**
      * DataLayer constructor.
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     * @param \App\BasicRum\Periods\Period $period
-     * @param array $dataRequirements
-     * @param DataLayer\Query\MainDataSelect\MainDataInterface $mainDataSelect
      */
     public function __construct(
         \Doctrine\Bundle\DoctrineBundle\Registry $registry,
         \App\BasicRum\Periods\Period $period,
         array $dataRequirements,
         DataLayer\Query\MainDataSelect\MainDataInterface $mainDataSelect
-    )
-    {
-        $this->registry         = $registry;
-        $this->period           = $period;
+    ) {
+        $this->registry = $registry;
+        $this->period = $period;
         $this->dataRequirements = $dataRequirements;
-        $this->mainDataSelect   = $mainDataSelect;
+        $this->mainDataSelect = $mainDataSelect;
     }
 
     /**
      * @return array
+     *
      * @throws \Psr\Cache\InvalidArgumentException
      */
     public function process()
@@ -62,12 +56,12 @@ class DataLayer
             $dbUrlArr = explode('/', getenv('DATABASE_URL'));
 
             /** todo: Think about adding a tag that at least can invalidate cache for certain day in interval */
-            $cacheKey = end($dbUrlArr) . 'query_data_layer_' . md5($interval->getStartInterval() . $interval->getEndInterval() . print_r($this->dataRequirements, true));
+            $cacheKey = end($dbUrlArr).'query_data_layer_'.md5($interval->getStartInterval().$interval->getEndInterval().print_r($this->dataRequirements, true));
 
             $cacheKey .= $this->mainDataSelect->getCacheKeyPart();
 
             if (true && $cache->hasItem($cacheKey)) {
-                $res[$interval->getStartInterval()] =  $cache->getItem($cacheKey)->get();
+                $res[$interval->getStartInterval()] = $cache->getItem($cacheKey)->get();
                 continue;
             }
 
@@ -94,5 +88,4 @@ class DataLayer
 
         return $res;
     }
-
 }

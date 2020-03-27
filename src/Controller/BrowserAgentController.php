@@ -2,16 +2,14 @@
 
 namespace App\Controller;
 
+use App\BasicRum\Boomerang\Builder;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use App\BasicRum\Boomerang\Builder;
 
 class BrowserAgentController extends AbstractController
 {
-
     /**
      * @Route("/browser/agent/builder", name="browser_agent_builder")
      */
@@ -22,14 +20,14 @@ class BrowserAgentController extends AbstractController
         $buildsListHtml = $this->get('twig')->render(
             'browser_agent/builds_list.html.twig',
             [
-                'builds' => $builder->getAllBuilds($this->getDoctrine())
+                'builds' => $builder->getAllBuilds($this->getDoctrine()),
             ]
         );
 
         $builderHtml = $this->get('twig')->render(
             'browser_agent/builder.html.twig',
             [
-                'boomerang_plugins' => $builder->getAvailablePlugins()
+                'boomerang_plugins' => $builder->getAvailablePlugins(),
             ]
         );
 
@@ -43,10 +41,10 @@ class BrowserAgentController extends AbstractController
 
         return $this->render('browser_agent/index.html.twig',
             [
-                'buildsListHtml'             => $buildsListHtml,
-                'builderHtml'                => $builderHtml,
-                'iframeIncludeSnippet'       => $iframeIncludeSnippet,
-                'mainDocumentIncludeSnippet' => $mainDocumentIncludeSnippet
+                'buildsListHtml' => $buildsListHtml,
+                'builderHtml' => $builderHtml,
+                'iframeIncludeSnippet' => $iframeIncludeSnippet,
+                'mainDocumentIncludeSnippet' => $mainDocumentIncludeSnippet,
             ]
         );
     }
@@ -62,16 +60,16 @@ class BrowserAgentController extends AbstractController
             $result = $builder->build($_POST, $this->getDoctrine());
             $response = new Response(
                 json_encode([
-                        'error'    => '',
-                        'build_id' => $result
-                    ]
+                    'error' => '',
+                    'build_id' => $result,
+                ]
                 )
             );
         } catch (\Exception $e) {
             $response = new Response(
                 json_encode([
-                        'error' => $e->getMessage()
-                    ]
+                    'error' => $e->getMessage(),
+                ]
                 )
             );
         }
@@ -91,7 +89,7 @@ class BrowserAgentController extends AbstractController
         return $this->render(
             'browser_agent/builds_list.html.twig',
             [
-                'builds' => $builder->getAllBuilds($this->getDoctrine())
+                'builds' => $builder->getAllBuilds($this->getDoctrine()),
             ]
         );
     }
@@ -115,9 +113,9 @@ class BrowserAgentController extends AbstractController
         $response = new Response(
             json_encode(
                 [
-                    'info'       => $infoBlockHtml,
-                    'build_id'   => $buildId,
-                    'build_date' => $build->getCreatedAt()->format('F d, Y')
+                    'info' => $infoBlockHtml,
+                    'build_id' => $buildId,
+                    'build_date' => $build->getCreatedAt()->format('F d, Y'),
                 ]
             )
         );
@@ -153,5 +151,4 @@ class BrowserAgentController extends AbstractController
 
         return $response;
     }
-
 }

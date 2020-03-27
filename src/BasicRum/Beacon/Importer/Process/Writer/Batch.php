@@ -6,7 +6,6 @@ namespace App\BasicRum\Beacon\Importer\Process\Writer;
 
 class Batch
 {
-
     /** @var int */
     private $_batchSize;
 
@@ -16,25 +15,17 @@ class Batch
     /** @var Batch\Beacons */
     private $_beacons;
 
-    /**
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     * @param int $batchSize
-     */
     public function __construct(
         \Doctrine\Bundle\DoctrineBundle\Registry $registry,
         int $batchSize = 200
-    )
-    {
-        $this->_batchSize  = $batchSize;
+    ) {
+        $this->_batchSize = $batchSize;
 
         $this->_navigationTimings = new Batch\NavigationTimings($registry);
 
-        $this->_beacons   = new Batch\Beacons($registry);
+        $this->_beacons = new Batch\Beacons($registry);
     }
 
-    /**
-     * @param array $data
-     */
     public function process(array $data)
     {
         $batch = [];
@@ -42,7 +33,7 @@ class Batch
         $counter = 0;
 
         foreach ($data as $page) {
-            $counter++;
+            ++$counter;
 
             $batch[] = $page;
 
@@ -59,9 +50,6 @@ class Batch
         }
     }
 
-    /**
-     * @param array $views
-     */
     private function save(array $views)
     {
         // We need this for offset when we insert in related tables
@@ -70,5 +58,4 @@ class Batch
         $this->_navigationTimings->batchInsert($views);
         $this->_beacons->batchInsert($views, $lastPageViewId);
     }
-
 }

@@ -8,8 +8,7 @@ use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
 class NavigationTimings
 {
-
-    /** @var  \Doctrine\Bundle\DoctrineBundle\Registry */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /** @var NavigationTimings\Url */
@@ -23,15 +22,12 @@ class NavigationTimings
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
-        $this->registry                         = $registry;
-        $this->_navigationTimingsUrlModel       = new NavigationTimings\Url($registry);
+        $this->registry = $registry;
+        $this->_navigationTimingsUrlModel = new NavigationTimings\Url($registry);
         $this->_navigationTimingsUserAgentModel = new NavigationTimings\UserAgent($registry);
-        $this->_queryParamsModel                = new NavigationTimings\QueryParams($registry);
+        $this->_queryParamsModel = new NavigationTimings\QueryParams($registry);
     }
 
-    /**
-     * @param array $batch
-     */
     public function batchInsert(array $batch)
     {
         $this->_queryParamsModel->batchInsert($batch, $this->getLastId());
@@ -42,7 +38,6 @@ class NavigationTimings
     }
 
     /**
-     * @param array $batch
      * @return array
      */
     private function _prepareUrlIds(array $batch)
@@ -64,7 +59,6 @@ class NavigationTimings
     }
 
     /**
-     * @param array $batch
      * @return array
      */
     private function _prepareUserAgentIds(array $batch)
@@ -74,23 +68,22 @@ class NavigationTimings
         foreach ($batch as $key => $row) {
             unset($batch[$key]['user_agent']);
 
-            $batch[$key]['user_agent_id']  = $userAgents[$key]['id'];
+            $batch[$key]['user_agent_id'] = $userAgents[$key]['id'];
             $batch[$key]['device_type_id'] = $userAgents[$key]['device_type_id'];
-            $batch[$key]['os_id']          = $userAgents[$key]['os_id'];
+            $batch[$key]['os_id'] = $userAgents[$key]['os_id'];
         }
 
         return $batch;
     }
 
     /**
-     * @param array $batch
      * @return bool
      */
     private function _saveNavigationTimings(array $batch)
     {
         $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings');
 
-        $fieldsArr =  array_keys($batch[0]);
+        $fieldsArr = array_keys($batch[0]);
 
         $bulkInsert->setColumns($fieldsArr);
         $bulkInsert->setValues($batch);
@@ -115,5 +108,4 @@ class NavigationTimings
 
         return !empty($max) ? (int) $max : 0;
     }
-
 }

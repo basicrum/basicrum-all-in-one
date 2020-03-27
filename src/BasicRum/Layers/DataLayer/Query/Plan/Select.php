@@ -6,7 +6,6 @@ namespace App\BasicRum\Layers\DataLayer\Query\Plan;
 
 class Select
 {
-
     /** @var \App\BasicRum\Layers\DataLayer\Query\SelectInterface $select */
     private $select;
 
@@ -25,5 +24,4 @@ class Select
     {
         return $this->select;
     }
-
 }

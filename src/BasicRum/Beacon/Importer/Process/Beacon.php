@@ -8,7 +8,6 @@ use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 
 class Beacon
 {
-
     private $navigationTimingsNormalizer;
     private $resourceTimingsNormalizer;
 
@@ -17,35 +16,30 @@ class Beacon
 
     public function __construct()
     {
-        $this->navigationTimingsNormalizer  = new Beacon\NavigationTimingsNormalizer();
-        $this->resourceTimingsNormalizer    = new Beacon\ResourceTimingsNormalizer();
+        $this->navigationTimingsNormalizer = new Beacon\NavigationTimingsNormalizer();
+        $this->resourceTimingsNormalizer = new Beacon\ResourceTimingsNormalizer();
     }
 
     /**
-     * @param array $beacons
-     *
      * @return array
      */
     public function extract(array $beacons)
     {
-
         $data = [];
         $decompressor = new ResourceTimingDecompressor_v_0_3_4();
 
         foreach ($beacons as $key => $beacon) {
             if (false === $beacon
-                || strpos($beacon[1], 'user_agent') === false
-                || strpos($beacon[1], '"user_agent":""') !== false
+                || false === strpos($beacon[1], 'user_agent')
+                || false !== strpos($beacon[1], '"user_agent":""')
             ) {
                 continue;
             }
 
             $beacons[$key] = json_decode($beacon[1], true);
 
-            if ( isset($beacons[$key]['restiming']) && $beacons[$key]['restiming'] )
-            {
-                if ( is_string($beacons[$key]['restiming']) )
-                {
+            if (isset($beacons[$key]['restiming']) && $beacons[$key]['restiming']) {
+                if (\is_string($beacons[$key]['restiming'])) {
                     $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
 
                     // replace encoded restiming with decoded
@@ -55,20 +49,20 @@ class Beacon
 
             // Legacy when we didn't have created_at in beacon data
             if (!isset($beacons[$key]['created_at'])) {
-                $beacons[$key]['created_at'] = date("Y-m-d H:i:s", $beacon[0]);
+                $beacons[$key]['created_at'] = date('Y-m-d H:i:s', $beacon[0]);
             }
 
             $date = $beacons[$key]['created_at'];
 
             $pageViewKey = $this->_getPageViewKey($beacons[$key]);
 
-            if ($pageViewKey === false) {
+            if (false === $pageViewKey) {
                 unset($beacons[$key]);
                 continue;
             }
 
             // We do not mark as page view beacons send when visitor leaves page
-            if (isset ($this->pageViewUniqueKeys[$pageViewKey])) {
+            if (isset($this->pageViewUniqueKeys[$pageViewKey])) {
                 $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
                 continue;
             }
@@ -87,7 +81,6 @@ class Beacon
     }
 
     /**
-     * @param array $beacons
      * @return array
      */
     public function extractPageVisitDurations(array $beacons)
@@ -105,16 +98,16 @@ class Beacon
             $pageViewKey = $this->_getPageViewKey($beacons[$key]);
 
             // We do not mark as page view beacons send when visitor leaves page
-            if (isset ($this->pageViewUniqueKeys[$pageViewKey])) {
+            if (isset($this->pageViewUniqueKeys[$pageViewKey])) {
                 $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
                 continue;
             }
 
             $this->pageViewUniqueKeys[$pageViewKey] = [
                 'start' => $date,
-                'guid'  => $beacons[$key]['guid'],
-                'pid'   => $beacons[$key]['pid'],
-                'date'  => $date
+                'guid' => $beacons[$key]['guid'],
+                'pid' => $beacons[$key]['pid'],
+                'date' => $date,
             ];
         }
 
@@ -122,7 +115,6 @@ class Beacon
     }
 
     /**
-     * @param array $beacons
      * @return array
      */
     public function extractVirtualViews(array $beacons)
@@ -140,16 +132,16 @@ class Beacon
             $pageViewKey = $this->_getPageViewKey($beacons[$key]);
 
             // We do not mark as page view beacons send when visitor leaves page
-            if (isset ($this->pageViewUniqueKeys[$pageViewKey])) {
+            if (isset($this->pageViewUniqueKeys[$pageViewKey])) {
                 $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
                 continue;
             }
 
             $this->pageViewUniqueKeys[$pageViewKey] = [
                 'start' => $date,
-                'guid'  => $beacons[$key]['guid'],
-                'pid'   => $beacons[$key]['pid'],
-                'date'  => $date
+                'guid' => $beacons[$key]['guid'],
+                'pid' => $beacons[$key]['pid'],
+                'date' => $date,
             ];
         }
 
@@ -157,7 +149,6 @@ class Beacon
     }
 
     /**
-     * @param array $data
      * @return bool|string
      */
     private function _getPageViewKey(array &$data)
@@ -165,7 +156,6 @@ class Beacon
         if (empty($data['guid'])) {
             $data['guid'] = 'missing_guid';
         }
-
 
         if (empty($data['pid'])) {
             $data['pid'] = 'missing';
@@ -175,7 +165,6 @@ class Beacon
             return false;
         }
 
-        return $data['guid'] . $data['pid'] . md5($data['u']);
+        return $data['guid'].$data['pid'].md5($data['u']);
     }
-
 }

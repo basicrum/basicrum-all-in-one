@@ -5,15 +5,13 @@ declare(strict_types=1);
 namespace App\BasicRum\Date;
 
 use App\BasicRum\Date\TimePeriod\Interval;
-
-use \DateTime;
+use DateTime;
 
 class TimePeriod
 {
-
     /**
-     * @param int $days
      * @return Interval
+     *
      * @throws \Exception
      */
     public function getPastDaysFromNow(int $days)
@@ -25,8 +23,8 @@ class TimePeriod
     }
 
     /**
-     * @param int $weeks
      * @return Interval
+     *
      * @throws \Exception
      */
     public function getPastWeeksFromNow(int $weeks)
@@ -38,8 +36,8 @@ class TimePeriod
     }
 
     /**
-     * @param int $months
      * @return Interval
+     *
      * @throws \Exception
      */
     public function getPastMonthsFromNow(int $months)
@@ -52,18 +50,18 @@ class TimePeriod
 
     /**
      * @return string
+     *
      * @throws \Exception
      */
     private function _getEndOfNowPeriod()
     {
         $today = $this->_getTodayDate();
-        $tomorrow = $today->modify("+1 day");
+        $tomorrow = $today->modify('+1 day');
 
         return $this->_prepareIntervalValue($tomorrow);
     }
 
     /**
-     * @param DateTime $date
      * @return string
      */
     private function _prepareIntervalValue(DateTime $date)
@@ -72,8 +70,8 @@ class TimePeriod
     }
 
     /**
-     * @param DateTime $start
      * @return Interval
+     *
      * @throws \Exception
      */
     private function _createInterval(DateTime $start)
@@ -83,12 +81,13 @@ class TimePeriod
 
     /**
      * @return DateTime
+     *
      * @throws \Exception
      */
     private function _getTodayDate()
     {
         $now = isset($_POST['BUMP_NOW_DATE']) ? $_POST['BUMP_NOW_DATE'] : '';
+
         return new DateTime($now);
     }
-
 }

@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\BasicRum\Beacon\Catcher\Storage\File;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Symfony\Contracts\HttpClient\HttpClientInterface;
-
-use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class BeaconTransferFromRemoteCommand extends Command
 {
@@ -22,15 +20,14 @@ class BeaconTransferFromRemoteCommand extends Command
 
     public function __construct(HttpClientInterface $httpClient)
     {
-        $this->httpClient = $httpClient;;
+        $this->httpClient = $httpClient;
 
         parent::__construct();
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return int
+     *
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
@@ -38,26 +35,25 @@ class BeaconTransferFromRemoteCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $catcherEndpoint =  getenv('CATCHER_ENDPOINT', true);
-        $catcherEndpoint .= '?origin=' . getenv('MONITORED_ORIGIN');
+        $catcherEndpoint = getenv('CATCHER_ENDPOINT', true);
+        $catcherEndpoint .= '?origin='.getenv('MONITORED_ORIGIN');
 
         $response = $this->httpClient->request('GET', $catcherEndpoint);
 
         if (200 == $response->getStatusCode()) {
-            $name = time() . '.json';
+            $name = time().'.json';
             $storage = new File();
 
             $storage->persistBundle($name, $response->getContent());
 
-            $output->writeln('<info>Bundle file: ' . $name . '</info>');
+            $output->writeln('<info>Bundle file: '.$name.'</info>');
 
             return 0;
         }
 
         $output->writeln('<error>Problem with fetching beacons</error>');
-        $output->writeln('<error>Endpoint responded with code: ' . $response->getStatusCode() . '</error>');
+        $output->writeln('<error>Endpoint responded with code: '.$response->getStatusCode().'</error>');
 
         return 0;
     }
-
 }

@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Releases
+ * Releases.
  *
  * @ORM\Table(name="releases", indexes={@ORM\Index(name="date", columns={"date"})})
  * @ORM\Entity
@@ -63,6 +63,4 @@ class Releases
 
         return $this;
     }
-
-
 }

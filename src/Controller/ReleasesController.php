@@ -34,7 +34,7 @@ class ReleasesController extends AbstractController
         $release = new Releases();
         $form = $this->createForm(ReleasesType::class, $release, [
             'action' => $this->generateUrl('releases_new'),
-            'method' => 'POST'
+            'method' => 'POST',
         ]);
         $form->handleRequest($request);
 
@@ -67,7 +67,7 @@ class ReleasesController extends AbstractController
     {
         $form = $this->createForm(ReleasesType::class, $release, [
             'action' => $this->generateUrl('releases_edit', ['id' => $release->getId()]),
-            'method' => 'POST'
+            'method' => 'POST',
         ]);
         $form->handleRequest($request);
 

@@ -9,7 +9,6 @@ use App\Entity\VisitsOverview;
 
 class Fetch
 {
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
@@ -18,22 +17,20 @@ class Fetch
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
-        $this->registry   = $registry;
-        $this->filter     = new Filter($registry);
+        $this->registry = $registry;
+        $this->filter = new Filter($registry);
     }
 
     /**
-     * @param int $startId
-     * @param int $endId
      * @return mixed
      */
-    public function fetchNavTimingsInRange(int $startId, int $endId) : array
+    public function fetchNavTimingsInRange(int $startId, int $endId): array
     {
         $repository = $this->registry
             ->getRepository(NavigationTimings::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '" . $startId . "' AND nt.pageViewId <= '" . $endId . "'")
+            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
             ->andWhere('nt.deviceTypeId != :deviceTypeId')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
             ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
@@ -44,18 +41,15 @@ class Fetch
     }
 
     /**
-     * @param int $startId
-     * @param int $endId
-     * @param string $guid
      * @return mixed
      */
-    public function fetchNavTimingsInRangeForSession(int $startId, int $endId, string $guid) : array
+    public function fetchNavTimingsInRangeForSession(int $startId, int $endId, string $guid): array
     {
         $repository = $this->registry
             ->getRepository(NavigationTimings::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '" . $startId . "' AND nt.pageViewId <= '" . $endId . "'")
+            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
             ->andWhere('nt.deviceTypeId != :deviceTypeId')
             ->andWhere('nt.guid = :guid')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
@@ -66,16 +60,13 @@ class Fetch
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
     }
 
-    /**
-     * @return array
-     */
-    public function fetchNotCompletedVisits() : array
+    public function fetchNotCompletedVisits(): array
     {
         $repository = $this->registry
             ->getRepository(VisitsOverview::class);
 
         $query = $repository->createQueryBuilder('vo')
-            ->where("vo.completed = 0")
+            ->where('vo.completed = 0')
             ->select(['vo'])
             ->getQuery();
 
@@ -90,10 +81,7 @@ class Fetch
         return $transformed;
     }
 
-    /**
-     * @return int
-     */
-    public function fetchPreviousLastScannedPageViewId() : int
+    public function fetchPreviousLastScannedPageViewId(): int
     {
         $repository = $this->registry
             ->getRepository(VisitsOverview::class);
@@ -106,20 +94,16 @@ class Fetch
         return $pageViewId;
     }
 
-    /**
-     * @param array $pageView
-     * @return array
-     */
-    public function fetchPreviousSessionPageView(array $pageView) : array
+    public function fetchPreviousSessionPageView(array $pageView): array
     {
         $repository = $this->registry
             ->getRepository(NavigationTimings::class);
 
         $pageViewId = $pageView['pageViewId'];
-        $guid       = $pageView['guid'];
+        $guid = $pageView['guid'];
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId < '" . $pageViewId . "'")
+            ->where("nt.pageViewId < '".$pageViewId."'")
             ->andWhere('nt.guid = :guid')
             ->setParameter('guid', $guid)
             ->select(['nt.createdAt', 'nt.pageViewId', 'nt.guid'])
@@ -131,5 +115,4 @@ class Fetch
 
         return $res[0] ?? [];
     }
-
 }

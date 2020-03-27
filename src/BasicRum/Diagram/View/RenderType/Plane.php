@@ -6,41 +6,31 @@ namespace App\BasicRum\Diagram\View\RenderType;
 
 class Plane
 {
-
     /** @var \App\BasicRum\Diagram\View\Layout */
     private $layout;
 
     /**
      * Distribution constructor.
-     * @param \App\BasicRum\Diagram\View\Layout $layout
      */
     public function __construct(\App\BasicRum\Diagram\View\Layout $layout)
     {
         $this->layout = $layout;
-
     }
 
-    /**
-     * @param array $samples
-     * @param array $renderParams
-     * @param array $extraLayoutParams
-     * @param array $extraDiagramParams
-     * @return array
-     */
-    public function build(array $samples, array $renderParams, array $extraLayoutParams, array $extraDiagramParams) : array
+    public function build(array $samples, array $renderParams, array $extraLayoutParams, array $extraDiagramParams): array
     {
         $data = [
             'diagrams' => [],
-            'layout'   => array_merge(
+            'layout' => array_merge(
                 $this->layout->getLayout(),
                 $extraLayoutParams,
                 [
                     'xaxis' => [
                         'tickvals' => [0, 1000, 2000, 3000, 4000, 5000, 6000],
-                        'ticktext' => ['0', '1 sec', '2 sec', '3 sec', '4 sec', '5 sec', '6 sec']
-                    ]
+                        'ticktext' => ['0', '1 sec', '2 sec', '3 sec', '4 sec', '5 sec', '6 sec'],
+                    ],
                 ]
-            )
+            ),
         ];
 
         foreach ($samples as $key => $d) {
@@ -50,9 +40,9 @@ class Plane
                     'y' => array_values($d),
                     'name' => $renderParams['segments'][$key]['presentation']['name'],
                     'marker' => [
-                        'color' => $renderParams['segments'][$key]['presentation']['color']
+                        'color' => $renderParams['segments'][$key]['presentation']['color'],
                     ],
-                    'type' => $renderParams['segments'][$key]['presentation']['type'] ?? 'line'
+                    'type' => $renderParams['segments'][$key]['presentation']['type'] ?? 'line',
                 ],
                 $extraDiagramParams[$key]
             );
@@ -60,5 +50,4 @@ class Plane
 
         return $data;
     }
-
 }

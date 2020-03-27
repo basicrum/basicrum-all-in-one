@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
-use App\Entity\User;
 
 class RegisterController extends AbstractController
 {
@@ -55,27 +50,23 @@ class RegisterController extends AbstractController
 
         $errors = $validator->validate($user);
 
-        if (count($errors) > 0)
-        {
+        if (\count($errors) > 0) {
             $array['status'] = 'error';
             $i = 0;
-            foreach ($errors as $key => $value)
-            {
+            foreach ($errors as $key => $value) {
                 $array['fields'][$i]['field'] = $value->getPropertyPath();
                 $array['fields'][$i]['message'] = $value->getMessage();
-                $i++;
+                ++$i;
             }
-        }
-        else
-        {
+        } else {
             $entityManager->persist($user);
             $entityManager->flush();
 
             $array = [
                 'status' => 'success',
                 'message' => 'New User Created Successfully',
-                'user'      => [
-                    'id'    => $user->getId(),
+                'user' => [
+                    'id' => $user->getId(),
                     'fname' => $user->getFname(),
                     'lname' => $user->getLname(),
                     'email' => $user->getEmail(),
@@ -86,5 +77,4 @@ class RegisterController extends AbstractController
 
         return new Response(json_encode($array));
     }
-
 }

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Reader;
 
-use App\BasicRum\Beacon\Catcher\Storage\File\Time;
 use App\BasicRum\Beacon\Catcher\Storage\File\Sort;
+use App\BasicRum\Beacon\Catcher\Storage\File\Time;
 
 class CatcherService
 {
-
     /** @var string */
     private $bundleFile = '';
 
@@ -21,9 +20,8 @@ class CatcherService
 
     /**
      * MonolithCatcher constructor.
-     * @param string $bundleFile
      */
-    public function __construct(string  $bundleFile)
+    public function __construct(string $bundleFile)
     {
         $this->time = new Time();
         $this->sort = new Sort();
@@ -45,7 +43,7 @@ class CatcherService
             $beaconData = json_decode($bundleEntry['beacon_data'], true);
             $data[] = [
                 0 => $this->time->getCreatedAtFromPath($bundleEntry['id']),
-                1 => json_encode($beaconData)
+                1 => json_encode($beaconData),
             ];
         }
 
@@ -54,11 +52,7 @@ class CatcherService
         return $data;
     }
 
-    /**
-     * @param array $beaconData
-     * @return array
-     */
-    private function _obfuscateBeacon(array $beaconData) : array
+    private function _obfuscateBeacon(array $beaconData): array
     {
         $replaceUrl = '.basicrum.com';
         $searchHost = '';
@@ -73,8 +67,7 @@ class CatcherService
             $hostParts = explode('.', $realUrlParts['host']);
             unset($hostParts[0]);
 
-            $searchHost = '.' . implode('.', $hostParts);
-
+            $searchHost = '.'.implode('.', $hostParts);
 
             $beaconData['u'] = str_replace($searchHost, $replaceUrl, $beaconData['u']);
         }
@@ -89,7 +82,7 @@ class CatcherService
             $hostParts = explode('.', $realUrlParts['host']);
             unset($hostParts[0]);
 
-            $searchHost = '.' . implode('.', $hostParts);
+            $searchHost = '.'.implode('.', $hostParts);
 
             $beaconData['pgu'] = str_replace($searchHost, $replaceUrl, $beaconData['pgu']);
         }
@@ -100,7 +93,4 @@ class CatcherService
 
         return $beaconData;
     }
-
-
 }
-

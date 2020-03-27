@@ -8,7 +8,6 @@ use App\Entity\VisitsOverview;
 
 class Persist
 {
-
     /** @var int */
     private $batchSize = 500;
 
@@ -17,21 +16,20 @@ class Persist
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
-        $this->registry   = $registry;
+        $this->registry = $registry;
     }
 
     /**
-     * @param array $visits
      * @return Persist
      */
-    public function saveVisits(array $visits) : self
+    public function saveVisits(array $visits): self
     {
         $cnt = 1;
 
         foreach ($visits as $visit) {
-            $cnt++;
+            ++$cnt;
 
-            if ($visit['visitId'] !== false) {
+            if (false !== $visit['visitId']) {
                 $entity = $this->registry->getRepository(VisitsOverview::class)
                     ->find($visit['visitId']);
             } else {
@@ -50,7 +48,7 @@ class Persist
 
             $this->registry->getManager()->persist($entity);
 
-            if (($cnt % $this->batchSize) === 0) {
+            if (0 === ($cnt % $this->batchSize)) {
                 $this->registry->getManager()->flush();
                 $this->registry->getManager()->clear();
             }
@@ -61,5 +59,4 @@ class Persist
 
         return $this;
     }
-
 }

@@ -6,12 +6,7 @@ namespace App\BasicRum\Report\Data;
 
 class BounceRate
 {
-
-    /**
-     * @param array $mixBuckets
-     * @return array
-     */
-    public function generate(array $mixBuckets) : array
+    public function generate(array $mixBuckets): array
     {
         $limit = 6000;
 
@@ -21,25 +16,24 @@ class BounceRate
         $bouncedBuckets = [];
 
         foreach ($mixBuckets as $day => $dayMix) {
-            if (!empty($dayMix["bounced_buckets"])) {
-                $bouncedBuckets[] = $dayMix["bounced_buckets"];
+            if (!empty($dayMix['bounced_buckets'])) {
+                $bouncedBuckets[] = $dayMix['bounced_buckets'];
             }
 
-            if (!empty($dayMix["all_buckets"])) {
-                $allBuckets[] = $dayMix["all_buckets"];
+            if (!empty($dayMix['all_buckets'])) {
+                $allBuckets[] = $dayMix['all_buckets'];
             }
         }
 
         $mergedBucketsBuckets = $this->mergeBuckets($bouncedBuckets);
         $allBuckets = $this->mergeBuckets($allBuckets);
 
-
         foreach ($allBuckets as $bucketSize => $probes) {
             if ($bucketSize > $limit) {
                 continue;
             }
 
-            if ($probes === 0) {
+            if (0 === $probes) {
                 $bounceRatePercents[$bucketSize] = '0';
                 continue;
             }
@@ -50,11 +44,7 @@ class BounceRate
         return $bounceRatePercents;
     }
 
-    /**
-     * @param array $bucketsByDate
-     * @return array
-     */
-    private function mergeBuckets(array $bucketsByDate) : array
+    private function mergeBuckets(array $bucketsByDate): array
     {
         $sumArray = [];
 
@@ -62,8 +52,7 @@ class BounceRate
 
         $maxArrayKeysCount = 0;
 
-        foreach ($bucketsByDate as $date => $buckets)
-        {
+        foreach ($bucketsByDate as $date => $buckets) {
             $this->fillGapsWithZeroes($buckets, $bucketSize);
 
             $maxKey = array_key_last($buckets);
@@ -76,7 +65,7 @@ class BounceRate
                 $maxArrayKeysCount = $bucketCount;
             }
 
-            for ($i = 0; $i < $maxArrayKeysCount; $i++) {
+            for ($i = 0; $i < $maxArrayKeysCount; ++$i) {
                 $key = $i * $bucketSize;
                 $sumArray[$key] = isset($buckets[$key]) ? $sumArray[$key] + $buckets[$key] : $sumArray[$key];
             }
@@ -87,17 +76,11 @@ class BounceRate
         return $sumArray;
     }
 
-    /**
-     * @param array $array
-     * @param int $oldCount
-     * @param int $newCount
-     * @param int $keyDelta
-     */
     private function fillUpWithZeroes(array &$array, int $oldCount, int $newCount, int $keyDelta)
     {
         $fillUpWith = $newCount - $oldCount;
 
-        for ($i = 0; $i < $fillUpWith; $i++) {
+        for ($i = 0; $i < $fillUpWith; ++$i) {
             $key = ($oldCount + $i) * $keyDelta;
             $array[$key] = 0;
         }
@@ -105,16 +88,12 @@ class BounceRate
         ksort($array);
     }
 
-    /**
-     * @param array $array
-     * @param int $keyDelta
-     */
     private function fillGapsWithZeroes(array &$array, int $keyDelta)
     {
         $maxKey = array_key_last($array);
         $limit = $maxKey / $keyDelta;
 
-        for ($i = 0; $i < $limit; $i++) {
+        for ($i = 0; $i < $limit; ++$i) {
             $candidateKey = $i * $keyDelta;
             if (!isset($array[$candidateKey])) {
                 $array[$candidateKey] = 0;
@@ -123,5 +102,4 @@ class BounceRate
 
         ksort($array);
     }
-
 }

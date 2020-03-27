@@ -4,31 +4,23 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\UserAgent;
 
-use \App\Entity\OperatingSystems;
+use App\Entity\OperatingSystems;
 
 class OperatingSystem
 {
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /** @var array */
     private $osCodeIdMap = [];
 
-    /**
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     */
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry = $registry;
         $this->reloadCodeIdMap();
     }
 
-    /**
-     * @param string $name
-     * @return int
-     */
-    public function getOsIdByName(string $name) : int
+    public function getOsIdByName(string $name): int
     {
         if (empty($name)) {
             $name = 'Unknown';
@@ -42,12 +34,7 @@ class OperatingSystem
         return (int) $id;
     }
 
-    /**
-     * @param string $name
-     * @param string $code
-     * @return int
-     */
-    private function insertOs(string $name, string $code) : int
+    private function insertOs(string $name, string $code): int
     {
         $name = trim($name);
 
@@ -60,7 +47,7 @@ class OperatingSystem
         $this->registry->getManager()->flush();
         $this->registry->getManager()->clear();
 
-        $id = count($this->osCodeIdMap) + 1;
+        $id = \count($this->osCodeIdMap) + 1;
 
         $this->osCodeIdMap[$code] = $id;
 
@@ -68,7 +55,6 @@ class OperatingSystem
     }
 
     /**
-     * @param string $name
      * @return string
      */
     private function getCodeByName(string $name)
@@ -99,5 +85,4 @@ class OperatingSystem
             $this->osCodeIdMap[$row['code']] = $row['id'];
         }
     }
-
 }

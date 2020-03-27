@@ -1,19 +1,13 @@
 <?php
+
 namespace App\BasicRum\Beacon\RumData;
 
-use App\Entity\Beacons;
-
 use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
+use App\Entity\Beacons;
 
 class ResourceTiming
 {
-
-    /**
-     * @param int $pageViewId
-     * @param \Symfony\Bridge\Doctrine\RegistryInterface $registry
-     * @return array
-     */
-    public function fetchResources(int $pageViewId, \Symfony\Bridge\Doctrine\RegistryInterface $registry) : array
+    public function fetchResources(int $pageViewId, \Symfony\Bridge\Doctrine\RegistryInterface $registry): array
     {
         /** @var Beacons $beacon */
         $beacon = $registry
@@ -25,20 +19,17 @@ class ResourceTiming
         $resourceTimingsData = [];
 
         if (!empty($beaconData['restiming'])) {
-
             $resourceTimingCompressed = json_decode($beaconData['restiming'], true);
 
             $decompressor = new ResourceTimingDecompressor_v_0_3_4();
 
             $resourceTimingsData = $decompressor->decompressResources($resourceTimingCompressed);
 
-            usort($resourceTimingsData, function($a, $b) {
+            usort($resourceTimingsData, function ($a, $b) {
                 return $a['startTime'] - $b['startTime'];
             });
         }
 
         return $resourceTimingsData;
     }
-
-
 }

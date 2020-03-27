@@ -8,7 +8,6 @@ use App\BasicRum\Visit\Data\Fetch;
 
 class Aggregator
 {
-
     /** @var int */
     private $sessionDuration;
 
@@ -36,38 +35,32 @@ class Aggregator
     public function __construct(int $sessionDuration, Fetch $fetch)
     {
         $this->sessionDuration = $sessionDuration;
-        $this->chunk           = new Aggregator\Chunk();
-        $this->completed       = new Aggregator\Completed();
-        $this->duration        = new Aggregator\Duration();
-        $this->fetch           = $fetch;
+        $this->chunk = new Aggregator\Chunk();
+        $this->completed = new Aggregator\Completed();
+        $this->duration = new Aggregator\Duration();
+        $this->fetch = $fetch;
     }
 
     /**
-     * @param array $pageView
      * @return Aggregator
      */
-    public function addPageView(array $pageView) : self
+    public function addPageView(array $pageView): self
     {
         $this->groupedPageViews[$pageView['guid']][$pageView['pageViewId']] = $pageView;
 
         if ($pageView['pageViewId'] > $this->lastPageViewInScan) {
             $this->lastPageViewInScan = $pageView['pageViewId'];
-            $this->lastGuidInScan     = $pageView['guid'];
+            $this->lastGuidInScan = $pageView['guid'];
         }
 
         return $this;
     }
 
-    /**
-     * @param array $notCompletedVisits
-     * @return array
-     */
-    public function generateVisits(array $notCompletedVisits) : array
+    public function generateVisits(array $notCompletedVisits): array
     {
         $visits = [];
 
-        foreach ($this->groupedPageViews as $guid => $views)
-        {
+        foreach ($this->groupedPageViews as $guid => $views) {
             ksort($views, SORT_NUMERIC);
 
             $chunks = $this->chunk->chunkenize($views, $this->sessionDuration);
@@ -75,10 +68,9 @@ class Aggregator
             $firstChunkKey = array_key_first($chunks);
             $lastChunkKey = array_key_last($chunks);
 
-            foreach ($chunks as $currentChunkKey => $chunk)
-            {
+            foreach ($chunks as $currentChunkKey => $chunk) {
                 $beginId = $chunk['begin'];
-                $endId   = $chunk['end'];
+                $endId = $chunk['end'];
 
                 $visitId = isset($notCompletedVisits[$beginId]['visitId']) ? $notCompletedVisits[$beginId]['visitId'] : false;
 
@@ -105,16 +97,16 @@ class Aggregator
                 );
 
                 $visits[] = [
-                    'visitId'                => $visitId,
-                    'guid'                   => $guid,
-                    'pageViewsCount'         => $this->_countPageViews($views, $beginId, $endId),
-                    'firstPageViewId'        => $beginId,
-                    'lastPageViewId'         => $endId,
-                    'firstUrlId'             => $views[$beginId]['urlId'],
-                    'lastUrlId'              => $views[$endId]['urlId'],
-                    'visitDuration'          => $visitDuration,
+                    'visitId' => $visitId,
+                    'guid' => $guid,
+                    'pageViewsCount' => $this->_countPageViews($views, $beginId, $endId),
+                    'firstPageViewId' => $beginId,
+                    'lastPageViewId' => $endId,
+                    'firstUrlId' => $views[$beginId]['urlId'],
+                    'lastUrlId' => $views[$endId]['urlId'],
+                    'visitDuration' => $visitDuration,
                     'afterLastVisitDuration' => $afterLastVisitDuration,
-                    'completed'              => $completed
+                    'completed' => $completed,
                 ];
             }
         }
@@ -122,21 +114,12 @@ class Aggregator
         return $visits;
     }
 
-    /**
-     * @return \DateTime
-     */
-    private function _getLastPageViewDateInScan() : \DateTime
+    private function _getLastPageViewDateInScan(): \DateTime
     {
         return $this->groupedPageViews[$this->lastGuidInScan][$this->lastPageViewInScan]['createdAt'];
     }
 
-    /**
-     * @param array $views
-     * @param int $beginViewId
-     * @param int $endViewId
-     * @return int
-     */
-    private function _countPageViews(array $views, int $beginViewId, int $endViewId) : int
+    private function _countPageViews(array $views, int $beginViewId, int $endViewId): int
     {
         $count = 0;
 
@@ -148,27 +131,19 @@ class Aggregator
             }
 
             if ($pageViewId >= $beginViewId && $pageViewId <= $endViewId) {
-                $count++;
+                ++$count;
             }
         }
 
         return $count;
     }
 
-    /**
-     * @param bool $isFirstChunk
-     * @param int $currentChunkKey
-     * @param array $chunks
-     * @param array $views
-     * @return int
-     */
     private function _calculateAfterLastVisitDuration(
         bool $isFirstChunk,
         int $currentChunkKey,
         array &$chunks,
         array &$views
-    ) : int
-    {
+    ): int {
         //var_dump(func_get_args());
 
         $beginPageView = $views[$chunks[$currentChunkKey]['begin']];
@@ -187,5 +162,4 @@ class Aggregator
 
         return $this->duration->calculatePageViewsDurationDuration($previousPageView, $beginPageView);
     }
-
 }

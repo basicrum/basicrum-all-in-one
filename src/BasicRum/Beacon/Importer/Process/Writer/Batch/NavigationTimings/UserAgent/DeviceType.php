@@ -6,38 +6,30 @@ namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\Us
 
 class DeviceType
 {
-
     /** @var array */
     private $deviceCodeInternalIdMap = [
-        'mobile'  => 1,
+        'mobile' => 1,
         'desktop' => 2,
-        'tablet'  => 3,
-        'bot'     => 4,
-        'other'   => 5
+        'tablet' => 3,
+        'bot' => 4,
+        'other' => 5,
     ];
 
     /** @var array */
     private $deviceCodeLabelMap = [
-        'mobile'  => 'Mobile',
+        'mobile' => 'Mobile',
         'desktop' => 'Desktop',
-        'tablet'  => 'Tablet',
-        'bot'     => 'Bot',
-        'other'   => 'Other'
+        'tablet' => 'Tablet',
+        'bot' => 'Bot',
+        'other' => 'Other',
     ];
 
-    /**
-     * @param string $code
-     * @return int
-     */
-    public function getDeviceTypeIdByCode(string $code) : int
+    public function getDeviceTypeIdByCode(string $code): int
     {
         return isset($this->deviceCodeInternalIdMap[$code]) ?
             $this->deviceCodeInternalIdMap[$code] : $this->deviceCodeInternalIdMap['other'];
     }
 
-    /**
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     */
     public function initDbRecords(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $repository = $registry
@@ -49,7 +41,7 @@ class DeviceType
 
         $count = $queryBuilder->getQuery()->getSingleScalarResult();
 
-        if($count == 0) {
+        if (0 == $count) {
             foreach ($this->deviceCodeLabelMap as $code => $label) {
                 $deviceType = new \App\Entity\DeviceTypes();
 
@@ -64,5 +56,4 @@ class DeviceType
             $registry->getManager()->clear();
         }
     }
-
 }

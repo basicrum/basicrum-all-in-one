@@ -4,21 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use App\BasicRum\Beacon\Catcher\Storage\File;
 use App\BasicRum\Beacon\Importer\Process;
-
+use App\BasicRum\Stats\LastBlockingResourceCalculator;
 use App\BasicRum\Visit\Calculator;
 use App\BasicRum\Visit\Data\Persist;
-
-use App\BasicRum\Stats\LastBlockingResourceCalculator;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class CronController extends AbstractController
 {
-
     /**
      * @Route("/cron/run_all", name="cron_run_all")
      */
@@ -35,7 +31,7 @@ class CronController extends AbstractController
 
         $data['generate_bundle_bundle_from_raw'] = [
             'duration' => $duration,
-            'count' => $count
+            'count' => $count,
         ];
 
         //Import beacons bundle
@@ -45,7 +41,7 @@ class CronController extends AbstractController
 
         $data['import_beacons_bundle'] = [
             'duration' => $duration,
-            'count' => $count
+            'count' => $count,
         ];
 
         //Generate Visits
@@ -55,7 +51,7 @@ class CronController extends AbstractController
 
         $data['generate_visits'] = [
             'duration' => $duration,
-            'count' => $count
+            'count' => $count,
         ];
 
         //Last Blocking Resource
@@ -65,7 +61,7 @@ class CronController extends AbstractController
 
         $data['last_blocking_resource'] = [
             'duration' => $duration,
-            'count' => $count
+            'count' => $count,
         ];
 
         //Last Blocking Resource
@@ -75,7 +71,7 @@ class CronController extends AbstractController
 
         $data['archive_beacon_bundles'] = [
             'duration' => $duration,
-            'count' => $count
+            'count' => $count,
         ];
 
         $response = new Response(
@@ -89,20 +85,14 @@ class CronController extends AbstractController
         return $response;
     }
 
-    /**
-     * @return int
-     */
-    private function _generateBundleFromRawBeacons() : int
+    private function _generateBundleFromRawBeacons(): int
     {
         $storage = new File();
 
         return $storage->generateBundleFromRawBeacons();
     }
 
-    /**
-     * @return int
-     */
-    private function _importBeaconsFromBundle() : int
+    private function _importBeaconsFromBundle(): int
     {
         $storage = new File();
 
@@ -114,17 +104,13 @@ class CronController extends AbstractController
             $reader = new Process\Reader\CatcherService($file);
             $process = new Process($this->getDoctrine());
 
-
             $count += $process->runImport($reader);
         }
 
         return $count;
     }
 
-    /**
-     * @return int
-     */
-    private function _generateVisits() : int
+    private function _generateVisits(): int
     {
         $calculator = new Calculator($this->getDoctrine());
         $visits = $calculator->calculate();
@@ -132,26 +118,20 @@ class CronController extends AbstractController
         $persist = new Persist($this->getDoctrine());
         $persist->saveVisits($visits);
 
-        return count($visits);
+        return \count($visits);
     }
 
-    /**
-     * @return int
-     */
-    private function _calculateLastBlockingResource() : int
+    private function _calculateLastBlockingResource(): int
     {
         $calculator = new LastBlockingResourceCalculator($this->getDoctrine());
+
         return $calculator->calculate();
     }
 
-    /**
-     * @return int
-     */
-    private function _archiveBeaconsBundle() : int
+    private function _archiveBeaconsBundle(): int
     {
         $storage = new File();
 
         return $storage->archiveBundles();
     }
-
 }

@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query;
 
-use App\BasicRum\Layers\DataLayer\Query\Condition;
-use App\BasicRum\Layers\DataLayer\Query\Select;
-
 class Planner
 {
-
     /** @var string */
     private $startPeriod;
 
@@ -27,14 +23,12 @@ class Planner
         string $endPeriod,
         array $requirements,
         MainDataSelect\MainDataInterface $mainDataSelect
-    )
-    {
-        $this->startPeriod  = $startPeriod;
-        $this->endPeriod    = $endPeriod;
+    ) {
+        $this->startPeriod = $startPeriod;
+        $this->endPeriod = $endPeriod;
         $this->requirements = $requirements;
         $this->mainDataSelect = $mainDataSelect;
     }
-
 
     /**
      * @return Plan
@@ -93,7 +87,7 @@ class Planner
                 'navigation_timings',
                 'page_view_id'
             ),
-            ">="
+            '>='
         );
 
         $plan->addLimiterFilter(
@@ -105,7 +99,7 @@ class Planner
                 'navigation_timings',
                 'page_view_id'
             ),
-            "<="
+            '<='
         );
 
         foreach ($this->requirements as $requirement) {
@@ -129,7 +123,7 @@ class Planner
             }
 
             if ($requirement instanceof \App\BasicRum\Report\PrimaryFilterableInterface) {
-                if ($requirement->getCondition() === 'isNot') {
+                if ('isNot' === $requirement->getCondition()) {
                     $condition = new Condition\NotEquals(
                         $requirement->getPrimaryTableName(),
                         $requirement->getPrimarySearchFieldName(),
@@ -156,7 +150,7 @@ class Planner
                     $requirement->getSecondaryKeyFieldName()
                 );
 
-                if ($requirement->getCondition() === 'contains') {
+                if ('contains' === $requirement->getCondition()) {
                     $condition = new Condition\Contains(
                         $requirement->getSecondaryTableName(),
                         $requirement->getSecondarySearchFieldName(),
@@ -183,5 +177,4 @@ class Planner
 
         return $plan;
     }
-
 }

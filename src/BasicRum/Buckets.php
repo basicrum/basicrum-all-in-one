@@ -6,7 +6,6 @@ namespace App\BasicRum;
 
 class Buckets
 {
-
     /** @var int */
     private $_upperLimit = 15000;
 
@@ -15,16 +14,11 @@ class Buckets
 
     public function __construct(int $bucketSize, int $upperLimit)
     {
-        $this->bucketSize  = $bucketSize;
+        $this->bucketSize = $bucketSize;
         $this->_upperLimit = $upperLimit;
     }
 
-    /**
-     * @param array $periodSamples
-     * @param string $searchKey
-     * @return array
-     */
-    public function bucketizePeriod(array $periodSamples, string $searchKey) : array
+    public function bucketizePeriod(array $periodSamples, string $searchKey): array
     {
         $buckets = [];
 
@@ -39,19 +33,13 @@ class Buckets
         return $buckets;
     }
 
-    /**
-     * @param array $samples
-     * @param string $searchKey
-     *
-     * @return array
-     */
-    public function bucketize(array $samples, string $searchKey)  : array
+    public function bucketize(array $samples, string $searchKey): array
     {
         // Initialize the ZERO bucket
         $buckets = [0 => []];
 
         //Initialize all buckets with ZEROES
-        for($i = $this->bucketSize; $i <= $this->_upperLimit; $i += $this->bucketSize) {
+        for ($i = $this->bucketSize; $i <= $this->_upperLimit; $i += $this->bucketSize) {
             $buckets[$i] = [];
         }
 
@@ -85,5 +73,4 @@ class Buckets
 
         return $buckets;
     }
-
 }

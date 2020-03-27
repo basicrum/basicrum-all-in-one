@@ -6,35 +6,27 @@ namespace App\BasicRum\Filters;
 
 class Collaborator implements \App\BasicRum\CollaboratorsInterface
 {
-
     /** @var array */
     private $filtersClassMap = [
-        'browser_name'        => Secondary\BrowserName::class,
+        'browser_name' => Secondary\BrowserName::class,
         'device_manufacturer' => Secondary\DeviceManufacturer::class,
-        'url'                 => Secondary\Url::class,
-        'device_type'         => Primary\DeviceType::class,
-        'operating_system'    => Primary\OperatingSystem::class,
-        'first_byte'          => Primary\TimeToFirstByte::class,
-        'first_paint'          => Primary\TimeToFirstPaint::class,
-        'query_param'         => Secondary\QueryParam::class,
-        'page_views_count'    => Secondary\PageViewsCount::class
+        'url' => Secondary\Url::class,
+        'device_type' => Primary\DeviceType::class,
+        'operating_system' => Primary\OperatingSystem::class,
+        'first_byte' => Primary\TimeToFirstByte::class,
+        'first_paint' => Primary\TimeToFirstPaint::class,
+        'query_param' => Secondary\QueryParam::class,
+        'page_views_count' => Secondary\PageViewsCount::class,
     ];
 
     private $filters = [];
 
-    /**
-     * @return string
-     */
-    public function getCommandParameterName() : string
+    public function getCommandParameterName(): string
     {
         return 'filters';
     }
 
-    /**
-     * @param array $requirements
-     * @return \App\BasicRum\CollaboratorsInterface
-     */
-    public function applyForRequirement(array $requirements) : \App\BasicRum\CollaboratorsInterface
+    public function applyForRequirement(array $requirements): \App\BasicRum\CollaboratorsInterface
     {
         foreach ($this->filtersClassMap as $filterKey => $class) {
             if (isset($requirements[$filterKey])) {
@@ -53,20 +45,13 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRequirements() : array
+    public function getRequirements(): array
     {
         return $this->filters;
     }
 
-    /**
-     * @return array
-     */
-    public function getAllPossibleRequirementsKeys() : array
+    public function getAllPossibleRequirementsKeys(): array
     {
         return array_keys($this->filtersClassMap);
     }
-
 }
