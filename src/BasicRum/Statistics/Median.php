@@ -6,20 +6,17 @@ namespace App\BasicRum\Statistics;
 
 class Median
 {
-
     /**
-     * @param array $buckets
      * @return int
      */
-    function calculateMedian(array $buckets)
+    public function calculateMedian(array $buckets)
     {
         $sum = array_sum($buckets);
         $halfSum = $sum / 2;
 
         $scanSum = 0;
 
-        foreach ($buckets as $bucket => $values)
-        {
+        foreach ($buckets as $bucket => $values) {
             $scanSum += $values;
 
             if ($halfSum <= $scanSum) {
@@ -29,6 +26,4 @@ class Median
 
         return 0;
     }
-    
-    
 }

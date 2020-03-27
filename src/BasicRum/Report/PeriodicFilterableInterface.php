@@ -6,18 +6,14 @@ namespace App\BasicRum\Report;
 
 interface PeriodicFilterableInterface
 {
-
     /**
-     * @param string $startPeriod
-     * @param string $endPeriod
      * @return PeriodicFilterableInterface
      */
-    public function setPeriod(string $startPeriod, string $endPeriod) : self;
+    public function setPeriod(string $startPeriod, string $endPeriod): self;
 
-    public function getDataField() : string;
+    public function getDataField(): string;
 
-    public function requestPeriodInterval() : \App\BasicRum\Periods\PeriodInterval;
+    public function requestPeriodInterval(): \App\BasicRum\Periods\PeriodInterval;
 
-    public function hasPeriods() : bool;
-
+    public function hasPeriods(): bool;
 }

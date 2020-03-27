@@ -6,7 +6,6 @@ namespace App\BasicRum;
 
 class CollaboratorsAggregator
 {
-
     /** @var array */
     private $collaboratorsClassMap = [
         Filters\Collaborator::class,
@@ -15,7 +14,7 @@ class CollaboratorsAggregator
         Periods\Collaborator::class,
         Decorators\Collaborator::class,
         BusinessMetrics\Collaborator::class,
-        InternalData\Collaborator::class
+        InternalData\Collaborator::class,
     ];
 
     /** @var array */
@@ -31,10 +30,9 @@ class CollaboratorsAggregator
     }
 
     /**
-     * @param array $requirements
      * @return CollaboratorsAggregator
      */
-    public function fillRequirements(array $requirements) : self
+    public function fillRequirements(array $requirements): self
     {
         foreach ($requirements as $requirementCode => $requirement) {
             $this->collaborators[$requirementCode]->applyForRequirement($requirement);
@@ -90,5 +88,4 @@ class CollaboratorsAggregator
     {
         return $this->collaborators['decorators'];
     }
-
 }

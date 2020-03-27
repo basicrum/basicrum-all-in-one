@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\BasicRum\Layers;
 
 use App\BasicRum\CollaboratorsAggregator;
-
 use App\Entity\OperatingSystems;
 use App\Entity\PageTypeConfig;
 
 class Presentation
 {
-
     /** @var CollaboratorsAggregator */
     private $collaboratorsAggregator;
 
@@ -20,10 +18,7 @@ class Presentation
         $this->collaboratorsAggregator = new \App\BasicRum\CollaboratorsAggregator();
     }
 
-    /**
-     * @return array
-     */
-    public function getTechnicalMetricsSelectValues() : array
+    public function getTechnicalMetricsSelectValues(): array
     {
         $metrics = $this->collaboratorsAggregator
             ->getTechnicalMetrics()
@@ -37,19 +32,15 @@ class Presentation
             $label = implode(' ', $label);
 
             $pairs[] = [
-                'key'   => $metric,
-                'label' => $label
+                'key' => $metric,
+                'label' => $label,
             ];
         }
 
         return $pairs;
     }
 
-    /**
-     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
-     * @return array
-     */
-    public function getOperatingSystemSelectValues(\Doctrine\Common\Persistence\ManagerRegistry $doctrine) : array
+    public function getOperatingSystemSelectValues(\Doctrine\Common\Persistence\ManagerRegistry $doctrine): array
     {
         $repository = $doctrine
             ->getRepository(OperatingSystems::class);
@@ -61,23 +52,18 @@ class Presentation
 
         $pairs = [];
 
-        /** @var \App\Entity\OperatingSystems $os  */
+        /** @var \App\Entity\OperatingSystems $os */
         foreach ($operatingSystems as $os) {
             $pairs[] = [
-                'key'   => $os->getId(),
-                'label' => $os->getLabel()
+                'key' => $os->getId(),
+                'label' => $os->getLabel(),
             ];
         }
 
         return $pairs;
     }
 
-
-    /**
-     * @param \Doctrine\Common\Persistence\ManagerRegistry $doctrine
-     * @return array
-     */
-    public function getPageTypes(\Doctrine\Common\Persistence\ManagerRegistry $doctrine) : array
+    public function getPageTypes(\Doctrine\Common\Persistence\ManagerRegistry $doctrine): array
     {
         $repository = $doctrine
             ->getRepository(PageTypeConfig::class);
@@ -89,5 +75,4 @@ class Presentation
 
         return $query->getResult();
     }
-
 }

@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * LastBlockingResources
+ * LastBlockingResources.
  *
  * @ORM\Table(name="last_blocking_resources")
  * @ORM\Entity
@@ -89,6 +89,4 @@ class LastBlockingResources
 
         return $this;
     }
-
-
 }

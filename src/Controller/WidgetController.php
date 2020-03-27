@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class WidgetController extends AbstractController
 {
-
     /**
      * @Route("/widget/generate_diagram", name="widget_generate_diagram")
      */
@@ -40,5 +38,4 @@ class WidgetController extends AbstractController
 
         return $response;
     }
-
 }

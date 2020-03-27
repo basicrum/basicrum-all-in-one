@@ -6,21 +6,20 @@ namespace App\BasicRum\Beacon\Importer\Process\Beacon;
 
 class NavigationTimingsNormalizer
 {
-
     private $fieldsCalculation = [
-        'dns_duration'       => ['nt_dns_end', 'nt_dns_st'],
-        'connect_duration'   => ['nt_con_end', 'nt_con_st'],
-//        'ssl'                          => [],
-        'first_byte'         => ['nt_res_st', 'nt_nav_st'],
-        'redirect_duration'  => ['nt_red_end', 'nt_red_st'],
+        'dns_duration' => ['nt_dns_end', 'nt_dns_st'],
+        'connect_duration' => ['nt_con_end', 'nt_con_st'],
+        //        'ssl'                          => [],
+        'first_byte' => ['nt_res_st', 'nt_nav_st'],
+        'redirect_duration' => ['nt_red_end', 'nt_red_st'],
         'last_byte_duration' => ['nt_res_end', 'nt_nav_st'],
-        'first_paint'        => ['nt_first_paint', 'nt_nav_st'],
-        'load_event_end'     => ['nt_load_end', 'nt_nav_st'],
-        'ttfb'               => ['nt_res_st', 'nt_req_st'],
-        'download_time'      => ['nt_res_end', 'nt_req_st'],
-//        'response_duration'            => [],
-//        'document_processing_duration' => [],
-//        'on_load_duration'             => []
+        'first_paint' => ['nt_first_paint', 'nt_nav_st'],
+        'load_event_end' => ['nt_load_end', 'nt_nav_st'],
+        'ttfb' => ['nt_res_st', 'nt_req_st'],
+        'download_time' => ['nt_res_end', 'nt_req_st'],
+        //        'response_duration'            => [],
+        //        'document_processing_duration' => [],
+        //        'on_load_duration'             => []
     ];
 
 //    private $fieldsPrecalculate = [
@@ -29,7 +28,6 @@ class NavigationTimingsNormalizer
 //    ];
 
     /**
-     * @param array $navigationTiming
      * @return array
      */
     public function normalize(array &$navigationTiming)
@@ -64,7 +62,7 @@ class NavigationTimingsNormalizer
         }
 
         if (!empty($navigationTiming['u'])) {
-            $urlParts =  explode("?", $navigationTiming['u']);
+            $urlParts = explode('?', $navigationTiming['u']);
 
             $entries['url'] = $urlParts[0];
 
@@ -158,5 +156,4 @@ class NavigationTimingsNormalizer
 
         return $entries;
     }
-
 }

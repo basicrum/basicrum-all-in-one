@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Visit;
 
-use App\BasicRum\Visit\Data\Fetch;
-
 use App\BasicRum\Visit\Calculator\Aggregator;
+use App\BasicRum\Visit\Data\Fetch;
 
 class Calculator
 {
-
     /** @var int */
-    private $scannedChunkSize     = 1000;
+    private $scannedChunkSize = 1000;
 
     /** @var int */
     private $sessionExpireMinutes = 30;
@@ -28,15 +26,12 @@ class Calculator
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
-        $this->registry   = $registry;
-        $this->fetch      = new Fetch($registry);
+        $this->registry = $registry;
+        $this->fetch = new Fetch($registry);
         $this->aggregator = new Aggregator($this->sessionExpireMinutes, $this->fetch);
     }
 
-    /**
-     * @return array
-     */
-    public function calculate() : array
+    public function calculate(): array
     {
         $lastPageViewId = $this->fetch->fetchPreviousLastScannedPageViewId();
 
@@ -44,8 +39,7 @@ class Calculator
 
         $notCompletedVisits = $this->fetch->fetchNotCompletedVisits();
 
-        foreach ($notCompletedVisits as $notCompletedVisit)
-        {
+        foreach ($notCompletedVisits as $notCompletedVisit) {
             $notCompletedViews = $this->fetch->fetchNavTimingsInRangeForSession(
                 $notCompletedVisit['firstPageViewId'],
                 $notCompletedVisit['lastPageViewId'],
@@ -57,8 +51,7 @@ class Calculator
             }
         }
 
-        foreach ($navTimingsRes as $nav)
-        {
+        foreach ($navTimingsRes as $nav) {
             $this->aggregator->addPageView($nav);
         }
 
@@ -66,5 +59,4 @@ class Calculator
 
         return $visits;
     }
-
 }

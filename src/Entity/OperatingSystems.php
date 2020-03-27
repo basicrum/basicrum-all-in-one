@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * OperatingSystems
+ * OperatingSystems.
  *
  * @ORM\Table(name="operating_systems")
  * @ORM\Entity
@@ -63,6 +63,4 @@ class OperatingSystems
 
         return $this;
     }
-
-
 }

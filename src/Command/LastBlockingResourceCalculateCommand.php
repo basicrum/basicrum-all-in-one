@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\BasicRum\Stats\LastBlockingResourceCalculator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use App\BasicRum\Stats\LastBlockingResourceCalculator;
 
 class LastBlockingResourceCalculateCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:last-blocking-resource:calculate';
 
-    /** @var  \Doctrine\Persistence\ManagerRegistry */
+    /** @var \Doctrine\Persistence\ManagerRegistry */
     private $registry;
 
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
@@ -31,9 +30,7 @@ class LastBlockingResourceCalculateCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -42,5 +39,4 @@ class LastBlockingResourceCalculateCommand extends Command
 
         echo $c;
     }
-
 }

@@ -6,7 +6,6 @@ namespace App\BasicRum\Visit\Calculator\Aggregator;
 
 class Chunk
 {
-
     /** @var Completed */
     private $completed;
 
@@ -15,12 +14,7 @@ class Chunk
         $this->completed = new Completed();
     }
 
-    /**
-     * @param array $views
-     * @param int $duration
-     * @return array
-     */
-    public function chunkenize(array $views, int $duration) : array
+    public function chunkenize(array $views, int $duration): array
     {
         $chunks = [];
 
@@ -29,10 +23,10 @@ class Chunk
         $next = next($views);
 
         while (true) {
-            if ($next === false) {
+            if (false === $next) {
                 $chunks[] = [
                     'begin' => $current['pageViewId'],
-                    'end'   => end($views)['pageViewId']
+                    'end' => end($views)['pageViewId'],
                 ];
 
                 break;
@@ -41,7 +35,7 @@ class Chunk
             if ($this->completed->isVisitCompleted($current['createdAt'], $next['createdAt'], $duration)) {
                 $chunks[] = [
                     'begin' => $current['pageViewId'],
-                    'end'   => $lastScanned['pageViewId']
+                    'end' => $lastScanned['pageViewId'],
                 ];
 
                 $current = $next;
@@ -51,8 +45,6 @@ class Chunk
             $next = next($views);
         }
 
-
         return $chunks;
     }
-
 }

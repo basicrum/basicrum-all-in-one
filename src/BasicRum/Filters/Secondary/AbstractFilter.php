@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Filters\Secondary;
 
-abstract class AbstractFilter implements
-    \App\BasicRum\Report\SecondaryFilterableInterface
+abstract class AbstractFilter implements \App\BasicRum\Report\SecondaryFilterableInterface
 {
-
     protected $condition;
 
     protected $searchValue;
@@ -18,17 +16,13 @@ abstract class AbstractFilter implements
         $this->searchValue = $searchValue;
     }
 
-    /**
-     * @return string
-     */
-    public function getCondition() : string
+    public function getCondition(): string
     {
         return $this->condition;
     }
 
-    public function getSearchValue() : string
+    public function getSearchValue(): string
     {
         return $this->searchValue;
     }
-
 }

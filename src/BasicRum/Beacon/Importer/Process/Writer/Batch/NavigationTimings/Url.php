@@ -8,8 +8,7 @@ use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
 class Url
 {
-
-    /** @var  \Doctrine\Bundle\DoctrineBundle\Registry */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     /** @var array */
@@ -24,14 +23,11 @@ class Url
 
         $this->_reloadPairs();
 
-        $this->_pairsCount = count($this->_urlsPairs);
+        $this->_pairsCount = \count($this->_urlsPairs);
     }
 
-
     /**
-     * Returns pair ['navigation timing key array key' => 'url id']
-     *
-     * @param array $data
+     * Returns pair ['navigation timing key array key' => 'url id'].
      *
      * @return array
      */
@@ -41,7 +37,7 @@ class Url
 
         $insertData = [];
 
-        $createdAt = date("Y-m-d H:i:s");
+        $createdAt = date('Y-m-d H:i:s');
 
         foreach ($data as $key => $row) {
             $url = $row['url'];
@@ -49,11 +45,11 @@ class Url
             if (isset($this->_urlsPairs[$url])) {
                 $pairs[$key] = $this->_urlsPairs[$url];
             } else {
-                $this->_pairsCount++;
+                ++$this->_pairsCount;
 
                 $insertData[] = [
                     'url' => $url,
-                    'created_at' => $createdAt
+                    'created_at' => $createdAt,
                 ];
 
                 // Speculatively append to current url pairs
@@ -65,7 +61,7 @@ class Url
         if (!empty($insertData)) {
             $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_urls');
 
-            $fieldsArr =  array_keys($insertData[0]);
+            $fieldsArr = array_keys($insertData[0]);
 
             $bulkInsert->setColumns($fieldsArr);
             $bulkInsert->setValues($insertData);
@@ -90,5 +86,4 @@ class Url
             $this->_urlsPairs[$row['url']] = $row['id'];
         }
     }
-
 }

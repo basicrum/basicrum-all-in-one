@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * DeviceTypes
+ * DeviceTypes.
  *
  * @ORM\Table(name="device_types")
  * @ORM\Entity
@@ -70,6 +70,4 @@ class DeviceTypes
 
         return $this;
     }
-
-
 }

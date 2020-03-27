@@ -6,9 +6,7 @@ namespace App\BasicRum\Layers\DataLayer\Query;
 
 interface ConditionInterface
 {
+    public function getWhere(): string;
 
-    public function getWhere() : string;
-
-    public function getParams() : array;
-
+    public function getParams(): array;
 }

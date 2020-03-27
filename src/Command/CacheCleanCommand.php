@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\BasicRum\Cache\Storage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use App\BasicRum\Cache\Storage;
 
 class CacheCleanCommand extends Command
 {
@@ -21,9 +20,7 @@ class CacheCleanCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -41,5 +38,4 @@ class CacheCleanCommand extends Command
         $cacheAdapter = new Storage('basicrum.revenue.estimator.cache');
         $cacheAdapter->clear();
     }
-
 }

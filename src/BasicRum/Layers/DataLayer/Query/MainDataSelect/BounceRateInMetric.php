@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\MainDataSelect;
 
-class BounceRateInMetric
-    implements MainDataInterface
+class BounceRateInMetric implements MainDataInterface
 {
-
     /** @var string */
     private $tableName;
 
@@ -19,27 +17,18 @@ class BounceRateInMetric
 
     /**
      * Percentile constructor.
-     * @param string $tableName
-     * @param string $fieldName
-     * @param int $bucketSize
      */
     public function __construct(
         string $tableName,
         string $fieldName,
         int $bucketSize
-    )
-    {
-        $this->tableName  = $tableName;
-        $this->fieldName  = $fieldName;
+    ) {
+        $this->tableName = $tableName;
+        $this->fieldName = $fieldName;
         $this->bucketSize = $bucketSize;
     }
 
-    /**
-     * @param string $where
-     * @param array $limitWhere
-     * @return string
-     */
-    public function getBouncedBucketsSql(string $where, array $limitWhere) : string
+    public function getBouncedBucketsSql(string $where, array $limitWhere): string
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
@@ -50,7 +39,7 @@ class BounceRateInMetric
             );
 
         if (!empty($where)) {
-            $where = ' AND ' . $where;
+            $where = ' AND '.$where;
         }
 
         return
@@ -77,12 +66,7 @@ GROUP BY 1
 ORDER BY 1";
     }
 
-    /**
-     * @param string $where
-     * @param array $limitWhere
-     * @return string
-     */
-    public function getAllBucketsSql(string $where, array $limitWhere) : string
+    public function getAllBucketsSql(string $where, array $limitWhere): string
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
@@ -93,7 +77,7 @@ ORDER BY 1";
         );
 
         if (!empty($where)) {
-            $where = ' AND ' . $where;
+            $where = ' AND '.$where;
         }
 
         return
@@ -121,33 +105,26 @@ ORDER BY 1";
 
     /**
      * @param $connection
-     * @param string $where
-     * @param array $limitWhere
-     * @return array
      */
-    public function retrieve($connection, string $where, array $limitWhere) : array
+    public function retrieve($connection, string $where, array $limitWhere): array
     {
         $data = [];
 
         $bouncedSql = $this->getBouncedBucketsSql($where, $limitWhere);
-        $allSql     = $this->getAllBucketsSql($where, $limitWhere);
+        $allSql = $this->getAllBucketsSql($where, $limitWhere);
 
         $bouncedBuckets = $connection->fetchAll($bouncedSql);
-        $allBuckets     = $connection->fetchAll($allSql);
+        $allBuckets = $connection->fetchAll($allSql);
 
         // Make bin_floor to be a key and count value. It will be easier to work wit this array in the rest parts of the
         // application
         $data['bounced_buckets'] = $this->flattenBuckets($bouncedBuckets);
-        $data['all_buckets']     = $this->flattenBuckets($allBuckets);
+        $data['all_buckets'] = $this->flattenBuckets($allBuckets);
 
         return $data;
     }
 
-    /**
-     * @param array $buckets
-     * @return array
-     */
-    private function flattenBuckets(array $buckets) : array
+    private function flattenBuckets(array $buckets): array
     {
         $flatten = [];
 
@@ -158,17 +135,12 @@ ORDER BY 1";
         return $flatten;
     }
 
-    /**
-     * @return string
-     */
-    public function getCacheKeyPart() : string
+    public function getCacheKeyPart(): string
     {
-        return 'bounce_rate_in_metric_' . md5(
-                $this->tableName .
-                $this->fieldName .
+        return 'bounce_rate_in_metric_'.md5(
+                $this->tableName.
+                $this->fieldName.
                 $this->bucketSize
             );
     }
-
 }
-

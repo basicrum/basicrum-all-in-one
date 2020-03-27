@@ -6,7 +6,6 @@ namespace App\BasicRum\Diagram\View;
 
 class Layout
 {
-
     /** @var Layout\Annotations */
     private $annotations;
 
@@ -19,36 +18,31 @@ class Layout
     public function __construct()
     {
         $this->annotations = new Layout\Annotations();
-        $this->legend      = new Layout\Legend();
-        $this->margin      = new Layout\Margin();
-        $this->timeline    = new Layout\Timeline();
+        $this->legend = new Layout\Legend();
+        $this->margin = new Layout\Margin();
+        $this->timeline = new Layout\Timeline();
     }
 
-    /**
-     * @return array
-     */
-    public function getLayout() : array
+    public function getLayout(): array
     {
         return [
             'height' => 280,
-            'plot_bgcolor' => "#fcfcfc",
-            'paper_bgcolor' => "#fcfcfc",
+            'plot_bgcolor' => '#fcfcfc',
+            'paper_bgcolor' => '#fcfcfc',
             'margin' => $this->margin->getMargin(),
             'xaxis' => [
-                'fixedrange' => true
+                'fixedrange' => true,
             ],
             'yaxis' => [
-                'fixedrange' => true
+                'fixedrange' => true,
             ],
             'xaxis2' => [
-                'fixedrange' => true
+                'fixedrange' => true,
             ],
             'yaxis2' => [
-                'fixedrange' => true
+                'fixedrange' => true,
             ],
-            'legend' => $this->legend->getLegend()
+            'legend' => $this->legend->getLegend(),
         ];
     }
-
-
 }

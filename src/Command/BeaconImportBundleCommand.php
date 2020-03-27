@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\BasicRum\Beacon\Catcher\Storage\File;
+use App\BasicRum\Beacon\Importer\Process;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use App\BasicRum\Beacon\Importer\Process;
-
-use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class BeaconImportBundleCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:beacon:import-bundle';
 
-    /** @var  \Doctrine\Persistence\ManagerRegistry */
+    /** @var \Doctrine\Persistence\ManagerRegistry */
     private $registry;
 
     public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
@@ -28,8 +26,6 @@ class BeaconImportBundleCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -42,14 +38,13 @@ class BeaconImportBundleCommand extends Command
             $reader = new Process\Reader\CatcherService($file);
             $process = new Process($this->registry);
 
-            $output->writeln('Importing bundle: ' . $file);
+            $output->writeln('Importing bundle: '.$file);
 
             $count = $process->runImport($reader);
 
-            $output->writeln('Beacons imported: ' . $count);
+            $output->writeln('Beacons imported: '.$count);
         }
 
         return 0;
     }
-
 }

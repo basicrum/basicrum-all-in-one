@@ -6,13 +6,7 @@ namespace App\BasicRum;
 
 class DiagramBuilder
 {
-
-    /**
-     * @param DiagramOrchestrator $diagramOrchestrator
-     * @param array $params
-     * @return array
-     */
-    public function build(DiagramOrchestrator $diagramOrchestrator, array $params) : array
+    public function build(DiagramOrchestrator $diagramOrchestrator, array $params): array
     {
         $layout = new Diagram\View\Layout();
         $diagramData = [];
@@ -48,10 +42,9 @@ class DiagramBuilder
                 $segmentSamples[$key] = $data;
             }
 
-
             foreach ($segmentSamples as $key => $data) {
                 foreach ($data as $time => $c) {
-                    if ($totalsCount[$time] == 0) {
+                    if (0 == $totalsCount[$time]) {
                         $dataForDiagram[$key][$time] = '0.00';
                         continue;
                     }
@@ -71,7 +64,6 @@ class DiagramBuilder
         }
 
         if ('time_series' === $renderType) {
-
             $extraLayoutParams = [];
             $extraDiagramParams = [];
 
@@ -85,7 +77,6 @@ class DiagramBuilder
                 $extraDiagramParams[$key] = [];
 
                 foreach ($result as $time => $data) {
-
                     $x = isset($data[0]['x']) ? $data[0]['x'] : 0;
                     $dataForDiagram[$key][$time] = $x;
                 }
@@ -116,19 +107,19 @@ class DiagramBuilder
                 if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
                     //if ($metrics[0] === 'first_paint') {
-                        $histogram = new \App\BasicRum\Report\Data\Histogram();
+                    $histogram = new \App\BasicRum\Report\Data\Histogram();
 
-                        $buckets = $histogram->generate($result);
+                    $buckets = $histogram->generate($result);
 
-                        foreach ($buckets as $time => $bucket) {
-                            $dataForDiagram[$key][$time] = $bucket;
-                        }
+                    foreach ($buckets as $time => $bucket) {
+                        $dataForDiagram[$key][$time] = $bucket;
+                    }
                     //}
                 }
 
                 if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
-                    if ($metrics[0] === 'bounce_rate') {
+                    if ('bounce_rate' === $metrics[0]) {
                         $bounceRateCalculator = new \App\BasicRum\Report\Data\BounceRate();
 
                         $buckets = $bounceRateCalculator->generate($result);
@@ -141,39 +132,38 @@ class DiagramBuilder
 
                         $extraLayoutParams['yaxis2'] = [
                             'overlaying' => 'y',
-                            'side'       => 'right',
-                            'showgrid'  => false,
-                            'tickvals'   =>  [25, 50, 60, 70, 80, 100],
-                            'ticktext'   => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
-                            'range'      => [50, 85],
-                            'fixedrange' => true
+                            'side' => 'right',
+                            'showgrid' => false,
+                            'tickvals' => [25, 50, 60, 70, 80, 100],
+                            'ticktext' => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
+                            'range' => [50, 85],
+                            'fixedrange' => true,
                         ];
 
                         foreach ($dataForDiagram[$key] as $brkey => $v) {
                             // Add annotation only on every second
-                            if ($brkey % 1000 != 0) {
+                            if (0 != $brkey % 1000) {
                                 continue;
                             }
 
                             $extraLayoutParams['annotations'][] = [
-                                'xref'      => 'x',
-                                'yref'      => 'y2',
-                                'x'         => $brkey,
-                                'y'         => $v,
-                                'xanchor'   => 'center',
-                                'yanchor'   => 'bottom',
-                                'text'      => $v . '%',
+                                'xref' => 'x',
+                                'yref' => 'y2',
+                                'x' => $brkey,
+                                'y' => $v,
+                                'xanchor' => 'center',
+                                'yanchor' => 'bottom',
+                                'text' => $v.'%',
                                 'showarrow' => false,
                                 'font' => [
                                     'family' => 'Arial',
-                                    'size'   => 12,
-                                    'color'  => 'black'
-                                ]
+                                    'size' => 12,
+                                    'color' => 'black',
+                                ],
                             ];
                         }
                     }
                 }
-
             }
 
             $view = new Diagram\View\RenderType\Plane($layout);
@@ -188,5 +178,4 @@ class DiagramBuilder
 
         return $diagramData;
     }
-
 }

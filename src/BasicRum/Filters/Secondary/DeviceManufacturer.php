@@ -4,33 +4,30 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Filters\Secondary;
 
-class DeviceManufacturer
-    extends AbstractFilter
+class DeviceManufacturer extends AbstractFilter
 {
-
-    public function getSecondaryTableName() : string
+    public function getSecondaryTableName(): string
     {
         return 'navigation_timings_user_agents';
     }
 
-    public function getSecondaryKeyFieldName() : string
+    public function getSecondaryKeyFieldName(): string
     {
         return 'id';
     }
 
-    public function getSecondarySearchFieldName() : string
+    public function getSecondarySearchFieldName(): string
     {
         return 'device_manufacturer';
     }
 
-    public function getPrimaryTableName() : string
+    public function getPrimaryTableName(): string
     {
         return 'navigation_timings';
     }
 
-    public function getPrimarySearchFieldName() : string
+    public function getPrimarySearchFieldName(): string
     {
         return 'user_agent_id';
     }
-
 }

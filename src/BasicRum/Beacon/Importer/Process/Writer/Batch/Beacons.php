@@ -8,21 +8,13 @@ use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
 class Beacons
 {
-
     private $registry;
 
-    /**
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     */
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @param array $batch
-     * @param int $lastPageViewId
-     */
     public function batchInsert(array $batch, int $lastPageViewId)
     {
         $lastPageViewIdStartOffset = $lastPageViewId + 1;
@@ -34,19 +26,18 @@ class Beacons
 
             $data[] = [
                 'page_view_id' => $pageViewId,
-                'beacon'       => $entry['beacon_string']
+                'beacon' => $entry['beacon_string'],
             ];
         }
 
         if (!empty($data)) {
             $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'beacons');
 
-            $fieldsArr =  array_keys($data[0]);
+            $fieldsArr = array_keys($data[0]);
 
             $bulkInsert->setColumns($fieldsArr);
             $bulkInsert->setValues($data);
             $bulkInsert->execute();
         }
     }
-
 }

@@ -2,19 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\SiteSettings;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
-use App\Entity\User;
-use App\Entity\SiteSettings;
 
 class UserLoginController extends AbstractController
 {
@@ -31,7 +28,7 @@ class UserLoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->getUser()) {
-           return new RedirectResponse($this->generateUrl('page_index'));
+            return new RedirectResponse($this->generateUrl('page_index'));
         }
 
         // get the login error if there is one
@@ -58,18 +55,16 @@ class UserLoginController extends AbstractController
         $error['messageData'] = '';
         $lastUsername = '';
 
-        if ( $request->request->has('email') )
-        {
+        if ($request->request->has('email')) {
             $entityManager = $this->getDoctrine()->getManager();
 
-            $mailFrom       = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_address_from'])->getValue();
-            $mailFromName   = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_name_from'])->getValue();
-            $mailSubject    = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_reset_password_subject'])->getValue();
+            $mailFrom = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_address_from'])->getValue();
+            $mailFromName = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_name_from'])->getValue();
+            $mailSubject = $entityManager->getRepository(SiteSettings::class)->findOneBy(['name' => 'site_email_reset_password_subject'])->getValue();
 
-            $user           = $entityManager->getRepository(User::class)->findOneBy(['email' => $request->request->get('email')]);
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $request->request->get('email')]);
 
-            if ( $user )
-            {
+            if ($user) {
                 // find one
                 // restore_password
                 $string = $user->getId().$user->getEmail().microtime();
@@ -92,20 +87,16 @@ class UserLoginController extends AbstractController
 
                 $mailer->send($message);
 
-
-                $error['messageData']   = "An email sent!";
-                $lastUsername           = $request->request->get('email');
-            }
-            else
-            {
-                $error['messageData']   = "Email not found";
-                $lastUsername           = $request->request->get('email');
+                $error['messageData'] = 'An email sent!';
+                $lastUsername = $request->request->get('email');
+            } else {
+                $error['messageData'] = 'Email not found';
+                $lastUsername = $request->request->get('email');
             }
         }
 
-
         return $this->render('security/forgot_password_form.html.twig', [
-            'error'         => $error,
+            'error' => $error,
             'last_username' => $lastUsername,
         ]);
     }
@@ -119,9 +110,8 @@ class UserLoginController extends AbstractController
 
         $user = $entityManager->getRepository(User::class)->findOneBy(['restore_password' => base64_decode($hash)]);
 
-        if ( $user )
-        {
-            return $this->redirect($this->generateUrl('app_forgot-password-new-password', ['hash' => $hash]));// redirect to form
+        if ($user) {
+            return $this->redirect($this->generateUrl('app_forgot-password-new-password', ['hash' => $hash])); // redirect to form
         }
 
         return $this->render('security/forgot_password_fail.html.twig');
@@ -137,10 +127,8 @@ class UserLoginController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
         $user = $entityManager->getRepository(User::class)->findOneBy(['restore_password' => base64_decode($hash)]);
 
-        if ( $user )
-        {
-            if ( $request->request->has('password') )
-            {
+        if ($user) {
+            if ($request->request->has('password')) {
                 $encodedPassword = $this->passwordEncoder->encodePassword($user, $request->request->get('password'));
 
                 $user->setPlainPassword($request->request->get('password'))
@@ -149,28 +137,23 @@ class UserLoginController extends AbstractController
 
                 $errors = $validator->validate($user);
 
-                if (count($errors) > 0)
-                {
-                    foreach ($errors as $key => $value)
-                    {
+                if (\count($errors) > 0) {
+                    foreach ($errors as $key => $value) {
                         // echo $value->getPropertyPath(); exit();
                         $error = $value->getMessage();
                     }
-                }
-                else
-                {
+                } else {
                     $user->setRestorePassword(null);
                     $entityManager->flush();
+
                     return $this->redirect('/login');
                 }
             }
 
             return $this->render('security/reset_password_form.html.twig', [
-                'error'         => $error
+                'error' => $error,
             ]);
-        }
-        else
-        {
+        } else {
             return $this->render('security/forgot_password_fail.html.twig');
         }
     }

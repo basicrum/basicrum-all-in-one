@@ -8,8 +8,7 @@ use App\Entity\DeviceTypes;
 
 class Filter
 {
-
-    /** @var  \Doctrine\Bundle\DoctrineBundle\Registry */
+    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
@@ -17,10 +16,7 @@ class Filter
         $this->registry = $registry;
     }
 
-    /**
-     * @return int
-     */
-    public function getBotDeviceTypeId() : int
+    public function getBotDeviceTypeId(): int
     {
         $userAgentRepo = $this->registry
             ->getRepository(DeviceTypes::class);
@@ -29,5 +25,4 @@ class Filter
 
         return $deviceType->getId();
     }
-
 }

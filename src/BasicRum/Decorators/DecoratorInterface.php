@@ -6,9 +6,7 @@ namespace App\BasicRum\Decorators;
 
 interface DecoratorInterface
 {
+    public function decorate(array $buckets, array $samples): array;
 
-    public function decorate(array $buckets, array $samples) : array;
-
-    public function isApplicable(array $options) : bool;
-
+    public function isApplicable(array $options): bool;
 }

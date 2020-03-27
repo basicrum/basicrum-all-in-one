@@ -6,7 +6,5 @@ namespace App\BasicRum\Layers\DataLayer\Query;
 
 interface SelectInterface
 {
-
-    public function getFields() : array;
-
+    public function getFields(): array;
 }

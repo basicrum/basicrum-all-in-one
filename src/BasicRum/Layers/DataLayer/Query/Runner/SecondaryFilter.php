@@ -6,7 +6,6 @@ namespace App\BasicRum\Layers\DataLayer\Query\Runner;
 
 class SecondaryFilter
 {
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
@@ -16,19 +15,15 @@ class SecondaryFilter
     public function __construct(
         \Doctrine\Bundle\DoctrineBundle\Registry $registry,
         \App\BasicRum\Cache\Storage $cacheAdapter
-    )
-    {
-        $this->registry     = $registry;
+    ) {
+        $this->registry = $registry;
         $this->cacheAdapter = $cacheAdapter;
     }
 
     /**
-     * @param array $filters
-     * @param array $limitFilters
-     * @return array
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function process(array $filters, array $limitFilters) : array
+    public function process(array $filters, array $limitFilters): array
     {
         $res = [];
 
@@ -62,14 +57,13 @@ class SecondaryFilter
                 //Playing a bit with generating low level query
                 $connection = $this->registry->getConnection();
 
-                $sql = 'SELECT ' . implode(',', $selectFields). ' ';
-                $sql .= 'FROM ' . $prefetchCondition->getSecondaryTableName() . ' ';
-                $sql .= 'WHERE ' . implode(' AND ', $whereArr);
-
+                $sql = 'SELECT '.implode(',', $selectFields).' ';
+                $sql .= 'FROM '.$prefetchCondition->getSecondaryTableName().' ';
+                $sql .= 'WHERE '.implode(' AND ', $whereArr);
 
                 foreach ($params as $search => $replace) {
-                   $r = '\'' . $replace . '\'';
-                   $sql = str_replace(  ':' . $search, $r, $sql);
+                    $r = '\''.$replace.'\'';
+                    $sql = str_replace(':'.$search, $r, $sql);
                 }
 
                 // Quickly hacking because I am still not sure about the design of DataLayer stuff
@@ -86,11 +80,11 @@ class SecondaryFilter
                         '',
                         $sql);
 
-                    $res[] = $prefetchCondition->getPrimaryTableName() .
-                        "." .
-                        $prefetchCondition->getPrimarySearchFieldName() .
-                        " " .
-                        ' IN(' . $sql . ')';;
+                    $res[] = $prefetchCondition->getPrimaryTableName().
+                        '.'.
+                        $prefetchCondition->getPrimarySearchFieldName().
+                        ' '.
+                        ' IN('.$sql.')';
                     continue;
                 }
 
@@ -113,7 +107,7 @@ class SecondaryFilter
                 }
 
                 if ('>=' === $prefetchCondition->getMainCondition() || '<=' === $prefetchCondition->getMainCondition()) {
-                    $res[] = $prefetchCondition->getPrimaryTableName() . "."  . $prefetchCondition->getPrimarySearchFieldName() .  " " . $prefetchCondition->getMainCondition() .  ' ' . $value;
+                    $res[] = $prefetchCondition->getPrimaryTableName().'.'.$prefetchCondition->getPrimarySearchFieldName().' '.$prefetchCondition->getMainCondition().' '.$value;
                 }
                 continue;
             }
@@ -123,10 +117,10 @@ class SecondaryFilter
             $mainColumn = end($fieldsArr);
             $ids = array_column($fetched, $mainColumn);
 
-            if ($prefetchCondition->getMainCondition() === 'isNot') {
-                $res[] = $prefetchCondition->getPrimaryTableName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . 'NOT IN(' . implode(',', $ids) . ')';
+            if ('isNot' === $prefetchCondition->getMainCondition()) {
+                $res[] = $prefetchCondition->getPrimaryTableName().'.'.$prefetchCondition->getPrimarySearchFieldName().' '.'NOT IN('.implode(',', $ids).')';
             } else {
-                $res[] = $prefetchCondition->getPrimaryTableName() . "." . $prefetchCondition->getPrimarySearchFieldName() . " " . ' IN(' . implode(',', $ids) . ')';
+                $res[] = $prefetchCondition->getPrimaryTableName().'.'.$prefetchCondition->getPrimarySearchFieldName().' '.' IN('.implode(',', $ids).')';
             }
         }
 
@@ -134,24 +128,21 @@ class SecondaryFilter
     }
 
     /**
-     * @param \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter
-     * @param array $limitFilters
      * @return bool
      */
     private function shouldLimitPrefetchCondition(
         \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter,
         array $limitFilters
-    )
-    {
+    ) {
         if (empty($limitFilters)) {
             return false;
         }
 
-        $searchKey = $filter->getPrimaryTableName() . '.' . $filter->getPrimarySearchFieldName();
+        $searchKey = $filter->getPrimaryTableName().'.'.$filter->getPrimarySearchFieldName();
 
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $limitFilter */
         foreach ($limitFilters as $limitFilter) {
-            if (strpos($limitFilter, $searchKey) !== false) {
+            if (false !== strpos($limitFilter, $searchKey)) {
                 return true;
             }
         }
@@ -166,12 +157,11 @@ class SecondaryFilter
 
     private function isMinMaxQuery(array $selectFields)
     {
-        if (strpos(print_r($selectFields, true),'MAX(') !== false) {
+        if (false !== strpos(print_r($selectFields, true), 'MAX(')) {
             return true;
         }
 
-
-        if (strpos(print_r($selectFields, true),'MIN(') !== false) {
+        if (false !== strpos(print_r($selectFields, true), 'MIN(')) {
             return true;
         }
 
@@ -179,25 +169,20 @@ class SecondaryFilter
     }
 
     /**
-     * @param \App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter
      * @return string
      */
-    private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter, array $limitFiltes) {
+    private function getPrefetchCacheKey(\App\BasicRum\Layers\DataLayer\Query\Plan\SecondaryFilter $filter, array $limitFiltes)
+    {
         $dbUrlArr = explode('/', getenv('DATABASE_URL'));
 
-        return end($dbUrlArr) . 'prefetch_condition_query_data_layer_' .
-            md5(print_r($limitFiltes, true)) .
-            md5(print_r($filter->getPrefetchSelect()->getFields(), true)) .
-            md5($filter->getPrefetchCondition()->getWhere() . print_r($filter->getPrefetchCondition()->getParams(), true));
+        return end($dbUrlArr).'prefetch_condition_query_data_layer_'.
+            md5(print_r($limitFiltes, true)).
+            md5(print_r($filter->getPrefetchSelect()->getFields(), true)).
+            md5($filter->getPrefetchCondition()->getWhere().print_r($filter->getPrefetchCondition()->getParams(), true));
     }
 
-    /**
-     * @param string $className
-     * @return string
-     */
-    public function getEntityClassName(string $className) : string
+    public function getEntityClassName(string $className): string
     {
-        return '\App\Entity\\' . $className;
+        return '\App\Entity\\'.$className;
     }
-
 }

@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\MainDataSelect;
 
-
-class DataRows
-    implements MainDataInterface
+class DataRows implements MainDataInterface
 {
-
     /** @var string */
     private $tableName;
 
@@ -17,29 +14,21 @@ class DataRows
 
     /**
      * Percentile constructor.
-     * @param string $tableName
-     * @param array $fieldNames
      */
     public function __construct(
         string $tableName,
         array $fieldNames
-    )
-    {
-        $this->tableName  = $tableName;
+    ) {
+        $this->tableName = $tableName;
         $this->fieldNames = $fieldNames;
     }
 
-    /**
-     * @param string $where
-     * @param array $limitWhere
-     * @return string
-     */
-    public function getCountSql(string $where, array $limitWhere) : string
+    public function getCountSql(string $where, array $limitWhere): string
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
         if (!empty($where)) {
-            $where = ' AND ' . $where;
+            $where = ' AND '.$where;
         }
 
         return
@@ -64,11 +53,8 @@ WHERE {$limitWhereStr} {$where}";
 
     /**
      * @param $connection
-     * @param string $where
-     * @param array $limitWhere
-     * @return array
      */
-    public function retrieve($connection, string $where, array $limitWhere) : array
+    public function retrieve($connection, string $where, array $limitWhere): array
     {
         $sql = $this->getCountSql($where, $limitWhere);
 
@@ -77,16 +63,11 @@ WHERE {$limitWhereStr} {$where}";
         return ['data_rows' => $res];
     }
 
-    /**
-     * @return string
-     */
-    public function getCacheKeyPart() : string
+    public function getCacheKeyPart(): string
     {
-        return 'data_rows_' . md5(
-                $this->tableName .
+        return 'data_rows_'.md5(
+                $this->tableName.
                 implode('-', $this->fieldNames)
             );
     }
-
 }
-

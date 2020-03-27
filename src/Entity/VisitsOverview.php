@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * VisitsOverview
+ * VisitsOverview.
  *
  * @ORM\Table(name="visits_overview", indexes={@ORM\Index(name="completed", columns={"completed"}), @ORM\Index(name="first_page_view_id", columns={"first_page_view_id"}), @ORM\Index(name="last_page_view_id", columns={"last_page_view_id"}), @ORM\Index(name="guid", columns={"guid"})})
  * @ORM\Entity
@@ -196,6 +196,4 @@ class VisitsOverview
 
         return $this;
     }
-
-
 }

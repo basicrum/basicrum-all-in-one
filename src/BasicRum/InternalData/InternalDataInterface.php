@@ -6,7 +6,5 @@ namespace App\BasicRum\InternalData;
 
 interface InternalDataInterface
 {
-
-    public function isApplicable(array $options) : bool;
-
+    public function isApplicable(array $options): bool;
 }

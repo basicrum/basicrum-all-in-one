@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * BoomerangBuilds
+ * BoomerangBuilds.
  *
  * @ORM\Table(name="boomerang_builds")
  * @ORM\Entity
@@ -101,6 +101,4 @@ class BoomerangBuilds
 
         return $this;
     }
-
-
 }

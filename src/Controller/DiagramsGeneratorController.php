@@ -4,23 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\BasicRum\Date\TimePeriod;
+use App\BasicRum\DiagramBuilder;
+use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\Layers\Presentation;
+use App\Entity\PageTypeConfig;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use App\Entity\PageTypeConfig;
-
-use App\BasicRum\DiagramOrchestrator;
-
-use App\BasicRum\DiagramBuilder;
-
-use App\BasicRum\Layers\Presentation;
-
-use App\BasicRum\Date\TimePeriod;
 
 class DiagramsGeneratorController extends AbstractController
 {
-
     /**
      * @Route("/diagrams_generator/index", name="diagrams_generator_index")
      */
@@ -34,9 +28,9 @@ class DiagramsGeneratorController extends AbstractController
         return $this->render('diagrams_generator/form.html.twig',
             [
                 'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
-                'operating_systems'  => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
-                'page_types'         => $presentation->getPageTypes($this->getDoctrine()),
-                'period'             => $period
+                'operating_systems' => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
+                'page_types' => $presentation->getPageTypes($this->getDoctrine()),
+                'period' => $period,
             ]
         );
     }
@@ -54,14 +48,14 @@ class DiagramsGeneratorController extends AbstractController
 
         $requirements['global'] = $_POST['global'];
         $requirements['segments'] = [];
-        /**
+        /*
          * Ugly filtering of post data in order to map form data correctly to diagram APIs
          */
         foreach ($_POST['segments'] as $keyO => $data) {
             //var_dump($data['data_requirements']['technical_metrics']);
             $requirements['segments'][$keyO] = $data;
 
-            if (is_string($data['data_requirements']['technical_metrics']) && strpos($data['data_requirements']['technical_metrics'], '|') !== false) {
+            if (\is_string($data['data_requirements']['technical_metrics']) && false !== strpos($data['data_requirements']['technical_metrics'], '|')) {
                 $e = explode('|', $data['data_requirements']['technical_metrics']);
                 $requirements['segments'][$keyO]['data_requirements']['technical_metrics'] = [$e[0] => $e[1]];
 
@@ -69,10 +63,10 @@ class DiagramsGeneratorController extends AbstractController
             }
         }
 
-        /**
+        /*
          * If "page_type" presented then unset "url" and "query_param".
          */
-        if ( !empty($requirements['filters']['page_type']) ) {
+        if (!empty($requirements['filters']['page_type'])) {
             $pageTypeId = $requirements['filters']['page_type'];
 
             $repository = $this->getDoctrine()->getRepository(PageTypeConfig::class);
@@ -81,8 +75,8 @@ class DiagramsGeneratorController extends AbstractController
             $pageType = $repository->find($pageTypeId);
 
             $requirements['filters']['url'] = [
-                'condition'    => $pageType->getConditionValue(),
-                'search_value' => $pageType->getConditionTerm()
+                'condition' => $pageType->getConditionValue(),
+                'search_value' => $pageType->getConditionTerm(),
             ];
 
             unset($requirements['filters']['page_type']);
@@ -108,5 +102,4 @@ class DiagramsGeneratorController extends AbstractController
 
         return $response;
     }
-
 }

@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\BasicRum\Beacon\Catcher\Storage\File;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class BeaconArchiveBundleCommand extends Command
 {
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:beacon:archive-bundle';
-
 
     protected function configure()
     {
@@ -22,9 +20,7 @@ class BeaconArchiveBundleCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -32,5 +28,4 @@ class BeaconArchiveBundleCommand extends Command
 
         $file->archiveBundles();
     }
-
 }

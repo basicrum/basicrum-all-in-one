@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\MainDataSelect;
 
-
-class Percentile
-    implements MainDataInterface
+class Percentile implements MainDataInterface
 {
-
     /** @var string */
     private $tableName;
 
@@ -20,32 +17,23 @@ class Percentile
 
     /**
      * Percentile constructor.
-     * @param string $tableName
-     * @param string $fieldName
-     * @param int $percentile
      */
     public function __construct(
         string $tableName,
         string $fieldName,
         int $percentile
-    )
-    {
+    ) {
         $this->tableName = $tableName;
-        $this->fieldName  = $fieldName;
+        $this->fieldName = $fieldName;
         $this->percentile = $percentile;
     }
 
-    /**
-     * @param string $where
-     * @param array $limitWhere
-     * @return string
-     */
-    public function getPercentileSql(string $where, array $limitWhere) : string
+    public function getPercentileSql(string $where, array $limitWhere): string
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
         if (!empty($where)) {
-            $where = ' AND ' . $where;
+            $where = ' AND '.$where;
         }
 
         return
@@ -61,11 +49,8 @@ FROM (
 
     /**
      * @param $connection
-     * @param string $where
-     * @param array $limitWhere
-     * @return array
      */
-    public function retrieve($connection, string $where, array $limitWhere) : array
+    public function retrieve($connection, string $where, array $limitWhere): array
     {
         $sql = $this->getPercentileSql($where, $limitWhere);
 
@@ -74,17 +59,12 @@ FROM (
         return $res;
     }
 
-    /**
-     * @return string
-     */
-    public function getCacheKeyPart() : string
+    public function getCacheKeyPart(): string
     {
-        return 'percentile_' . md5(
-                $this->tableName .
-                $this->fieldName .
+        return 'percentile_'.md5(
+                $this->tableName.
+                $this->fieldName.
                 $this->percentile
             );
     }
-
 }
-

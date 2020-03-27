@@ -6,7 +6,4 @@ namespace App\BasicRum\Layers\DataLayer\Query\Runner;
 
 class PrimaryFilter
 {
-
-
-
 }

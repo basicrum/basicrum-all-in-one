@@ -2,13 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class InfoController extends AbstractController
 {
-
     /**
      * @Route("/info/about", name="info_about")
      */
@@ -24,5 +22,4 @@ class InfoController extends AbstractController
     {
         return $this->render('info/next.html.twig');
     }
-
 }

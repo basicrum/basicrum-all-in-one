@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\MainDataSelect;
 
-
-class Histogram
-    implements MainDataInterface
+class Histogram implements MainDataInterface
 {
-
     /** @var string */
     private $tableName;
 
@@ -20,32 +17,23 @@ class Histogram
 
     /**
      * Percentile constructor.
-     * @param string $tableName
-     * @param string $fieldName
-     * @param int $bucketSize
      */
     public function __construct(
         string $tableName,
         string $fieldName,
         int $bucketSize
-    )
-    {
-        $this->tableName  = $tableName;
-        $this->fieldName  = $fieldName;
+    ) {
+        $this->tableName = $tableName;
+        $this->fieldName = $fieldName;
         $this->bucketSize = $bucketSize;
     }
 
-    /**
-     * @param string $where
-     * @param array $limitWhere
-     * @return string
-     */
-    public function getBucketsSql(string $where, array $limitWhere) : string
+    public function getBucketsSql(string $where, array $limitWhere): string
     {
         $limitWhereStr = implode(' AND ', $limitWhere);
 
         if (!empty($where)) {
-            $where = ' AND ' . $where;
+            $where = ' AND '.$where;
         }
 
         return
@@ -60,22 +48,15 @@ ORDER BY 1";
 
     /**
      * @param $connection
-     * @param string $where
-     * @param array $limitWhere
-     * @return array
      */
-    public function retrieve($connection, string $where, array $limitWhere) : array
+    public function retrieve($connection, string $where, array $limitWhere): array
     {
         $sql = $this->getBucketsSql($where, $limitWhere);
 
         return ['all_buckets' => $this->flattenBuckets($connection->fetchAll($sql))];
     }
 
-    /**
-     * @param array $buckets
-     * @return array
-     */
-    private function flattenBuckets(array $buckets) : array
+    private function flattenBuckets(array $buckets): array
     {
         $flatten = [];
 
@@ -86,17 +67,12 @@ ORDER BY 1";
         return $flatten;
     }
 
-    /**
-     * @return string
-     */
-    public function getCacheKeyPart() : string
+    public function getCacheKeyPart(): string
     {
-        return 'histogram_' . md5(
-                $this->tableName .
-                $this->fieldName .
+        return 'histogram_'.md5(
+                $this->tableName.
+                $this->fieldName.
                 $this->bucketSize
             );
     }
-
 }
-

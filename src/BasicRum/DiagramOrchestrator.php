@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\Layers\DataLayer;
-
 use App\BasicRum\Date\TimePeriod;
+use App\BasicRum\Layers\DataLayer;
 
 class DiagramOrchestrator
 {
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
@@ -22,15 +20,13 @@ class DiagramOrchestrator
 
     /**
      * DiagramOrchestrator constructor.
-     * @param array $input
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
+     *
      * @throws \Exception
      */
     public function __construct(
         array $input,
         \Doctrine\Bundle\DoctrineBundle\Registry $registry
-    )
-    {
+    ) {
         foreach ($input['segments'] as $key => $segment) {
             $requirements = [];
 
@@ -44,21 +40,21 @@ class DiagramOrchestrator
 
             //Attach global data flavor
             if (!empty($input['global']['data_flavor'])) {
-                 foreach ($requirements as $rKey => $rValue) {
-                     if (strpos($rKey, '_metrics') !== false) {
-                         $metric = array_key_first($rValue);
-                         if (empty($requirements[$rKey][$metric]['data_flavor'])) {
-                             if (is_array($requirements[$rKey][$metric])) {
-                                 $requirements[$rKey][$metric]['data_flavor'] = $input['global']['data_flavor'];
-                             }
+                foreach ($requirements as $rKey => $rValue) {
+                    if (false !== strpos($rKey, '_metrics')) {
+                        $metric = array_key_first($rValue);
+                        if (empty($requirements[$rKey][$metric]['data_flavor'])) {
+                            if (\is_array($requirements[$rKey][$metric])) {
+                                $requirements[$rKey][$metric]['data_flavor'] = $input['global']['data_flavor'];
+                            }
 
-                             if (1 == $requirements[$rKey][$metric]) {
-                                 $requirements[$rKey][$metric] = [];
-                                 $requirements[$rKey][$metric]['data_flavor'] = $input['global']['data_flavor'];
-                             }
-                         }
-                     }
-                 }
+                            if (1 == $requirements[$rKey][$metric]) {
+                                $requirements[$rKey][$metric] = [];
+                                $requirements[$rKey][$metric]['data_flavor'] = $input['global']['data_flavor'];
+                            }
+                        }
+                    }
+                }
             }
 
             $this->collaboratorsAggregators[$key] = $this->_initCollaboratorsAggregator($requirements);
@@ -71,7 +67,7 @@ class DiagramOrchestrator
     /**
      * @return array<CollaboratorsAggregator>
      */
-    public function getCollaboratorsAggregator() : array
+    public function getCollaboratorsAggregator(): array
     {
         return $this->collaboratorsAggregators;
     }
@@ -108,11 +104,9 @@ class DiagramOrchestrator
     }
 
     /**
-     * @param array $requirements
-     * @return CollaboratorsAggregator
      * @throws \Exception
      */
-    private function _initCollaboratorsAggregator(array $requirements) : CollaboratorsAggregator
+    private function _initCollaboratorsAggregator(array $requirements): CollaboratorsAggregator
     {
         if (!empty($requirements['period'])) {
             if ('moving' === $requirements['period']['type']) {
@@ -121,18 +115,18 @@ class DiagramOrchestrator
 
                 $requirements['periods'] = [
                     [
-                        'from_date'   => $period->getStart(),
-                        'to_date'     => $period->getEnd()
-                    ]
+                        'from_date' => $period->getStart(),
+                        'to_date' => $period->getEnd(),
+                    ],
                 ];
             }
 
             if ('fixed' === $requirements['period']['type']) {
                 $requirements['periods'] = [
                     [
-                        'from_date'   => $requirements['period']['start'],
-                        'to_date'     => $requirements['period']['end']
-                    ]
+                        'from_date' => $requirements['period']['start'],
+                        'to_date' => $requirements['period']['end'],
+                    ],
                 ];
             }
 
@@ -146,11 +140,9 @@ class DiagramOrchestrator
     }
 
     /**
-     * @param array $requirements
-     * @return \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface
      * @throws \Exception
      */
-    private function _initDataFlavors(array $requirements) : \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface
+    private function _initDataFlavors(array $requirements): \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface
     {
         if (isset($requirements['technical_metrics'])) {
             $metricConfig = current($requirements['technical_metrics']);
@@ -178,10 +170,9 @@ class DiagramOrchestrator
                 return new Layers\DataLayer\Query\MainDataSelect\HistogramFirstPageView(
                     'navigation_timings',
                     $metricFieldName,
-                    (int)$dataFlavor['histogram_first_page_view']['bucket']
+                    (int) $dataFlavor['histogram_first_page_view']['bucket']
                 );
             }
-
         }
 
         if (isset($requirements['internal_data'])) {
@@ -218,5 +209,4 @@ class DiagramOrchestrator
             }
         }
     }
-
 }

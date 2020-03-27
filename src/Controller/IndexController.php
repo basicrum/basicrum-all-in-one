@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\NavigationTimings;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
@@ -21,7 +21,7 @@ class IndexController extends AbstractController
 
         $bumpNowDate = '';
 
-        if( '' !== $globalNotification ) {
+        if ('' !== $globalNotification) {
             /** @var NavigationTimings $lastNavigationTiming */
             $lastNavigationTiming = $this->getDoctrine()
                 ->getManager()
@@ -33,7 +33,7 @@ class IndexController extends AbstractController
                 ->getQuery()
                 ->getOneOrNullResult();
 
-            if ( is_null($lastNavigationTiming) ) {
+            if (null === $lastNavigationTiming) {
                 $lastNavigationTiming = new \DateTime();
                 $endTestData = $lastNavigationTiming->format('F j, Y');
             } else {
@@ -54,7 +54,7 @@ class IndexController extends AbstractController
                 ->getQuery()
                 ->getOneOrNullResult();
 
-            if ( is_null($firstNavigationTiming) ) {
+            if (null === $firstNavigationTiming) {
                 $firstNavigationTiming = new \DateTime();
                 $startTestData = $firstNavigationTiming->format('F j, Y');
             } else {
@@ -66,11 +66,10 @@ class IndexController extends AbstractController
             'index.html.twig',
             [
                 'global_notification' => $globalNotification,
-                'start_test_data'     => $startTestData,
-                'end_test_data'       => $endTestData,
-                'bump_now_date'       => $bumpNowDate
+                'start_test_data' => $startTestData,
+                'end_test_data' => $endTestData,
+                'bump_now_date' => $bumpNowDate,
             ]
         );
     }
-
 }

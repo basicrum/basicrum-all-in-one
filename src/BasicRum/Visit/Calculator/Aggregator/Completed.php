@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Visit\Calculator\Aggregator;
 
-
 class Completed
 {
-
     /**
-     * @param \DateTime $earlier
-     * @param \DateTime $later
-     * @param int $duration
      * @return bool
+     *
      * @throws \Exception
      */
     public function isVisitCompleted(\DateTime $earlier, \DateTime $later, int $duration)
     {
         // Check if there were no other visits in certain period of time
-        $startDiff  = strtotime($earlier->format('Y-m-d H:i:s'));
-        $endDiff    = strtotime($later->format('Y-m-d H:i:s'));
+        $startDiff = strtotime($earlier->format('Y-m-d H:i:s'));
+        $endDiff = strtotime($later->format('Y-m-d H:i:s'));
 
         $minutes = round(($endDiff - $startDiff) / 60, 2);
 
@@ -29,5 +25,4 @@ class Completed
 
         return $duration < $minutes;
     }
-
 }

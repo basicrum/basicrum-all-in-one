@@ -8,7 +8,6 @@ use App\BasicRum\Beacon\Catcher\Storage\File;
 
 class MonolithCatcher
 {
-
     /** @var File */
     private $storage;
 
@@ -24,6 +23,4 @@ class MonolithCatcher
     {
         return $this->storage->fetchBeacons();
     }
-
 }
-

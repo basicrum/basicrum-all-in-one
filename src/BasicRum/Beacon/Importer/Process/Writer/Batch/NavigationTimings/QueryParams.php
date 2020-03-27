@@ -8,22 +8,14 @@ use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
 class QueryParams
 {
-
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
-    /**
-     * @param \Doctrine\Bundle\DoctrineBundle\Registry $registry
-     */
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry = $registry;
     }
 
-    /**
-     * @param array $batch
-     * @param int $lastPageViewId
-     */
     public function batchInsert(array $batch, int $lastPageViewId)
     {
         $lastPageViewIdStartOffset = $lastPageViewId + 1;
@@ -36,7 +28,7 @@ class QueryParams
 
                 $insertData[] = [
                     'page_view_id' => $pageViewId,
-                    'query_params' => $row['query_params']
+                    'query_params' => $row['query_params'],
                 ];
             }
         }
@@ -44,12 +36,11 @@ class QueryParams
         if ($insertData) {
             $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_query_params');
 
-            $fieldsArr =  array_keys($insertData[0]);
+            $fieldsArr = array_keys($insertData[0]);
 
             $bulkInsert->setColumns($fieldsArr);
             $bulkInsert->setValues($insertData);
             $bulkInsert->execute();
         }
     }
-
 }

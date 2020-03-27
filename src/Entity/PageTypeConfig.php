@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * PageTypeConfig
+ * PageTypeConfig.
  *
  * @ORM\Table(name="page_type_config")
  * @ORM\Entity
@@ -82,6 +82,4 @@ class PageTypeConfig
 
         return $this;
     }
-
-
 }
