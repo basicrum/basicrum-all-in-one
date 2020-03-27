@@ -30,6 +30,7 @@ class Beacon
     {
 
         $data = [];
+        $decompressor = new ResourceTimingDecompressor_v_0_3_4();
 
         foreach ($beacons as $key => $beacon) {
             if (false === $beacon
@@ -43,7 +44,6 @@ class Beacon
 
             if ( isset($beacons[$key]['restiming']) && $beacons[$key]['restiming'] )
             {
-                $decompressor = new ResourceTimingDecompressor_v_0_3_4();
                 if ( is_string($beacons[$key]['restiming']) )
                 {
                     $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
