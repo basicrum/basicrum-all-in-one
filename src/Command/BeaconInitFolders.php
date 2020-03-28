@@ -35,5 +35,7 @@ class BeaconInitFolders extends Command
                 $output->writeln('<error>Failed to created folder: '.$folder.'</error>');
             }
         }
+
+        return 0;
     }
 }

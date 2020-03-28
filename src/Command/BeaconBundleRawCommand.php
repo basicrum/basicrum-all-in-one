@@ -37,5 +37,7 @@ class BeaconBundleRawCommand extends Command
         $storage = new File();
 
         $storage->generateBundleFromRawBeacons();
+
+        return 0;
     }
 }

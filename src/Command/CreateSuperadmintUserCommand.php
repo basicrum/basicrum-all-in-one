@@ -127,5 +127,7 @@ class CreateSuperadmintUserCommand extends Command
         $em->flush();
 
         $io->success('Super admin user with email '.$answer['email']." has been created! \n You may now login using registred email and password!");
+
+        return 0;
     }
 }

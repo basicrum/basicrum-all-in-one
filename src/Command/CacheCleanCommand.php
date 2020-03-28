@@ -25,6 +25,8 @@ class CacheCleanCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->clearCache();
+
+        return 0;
     }
 
     public function clearCache()
