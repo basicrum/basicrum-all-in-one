@@ -27,5 +27,7 @@ class BeaconArchiveBundleCommand extends Command
         $file = new File();
 
         $file->archiveBundles();
+
+        return 0;
     }
 }

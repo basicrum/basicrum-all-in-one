@@ -38,5 +38,7 @@ class LastBlockingResourceCalculateCommand extends Command
         $c = $calculator->calculate();
 
         echo $c;
+
+        return 0;
     }
 }
