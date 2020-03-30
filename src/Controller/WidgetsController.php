@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Widgets;
 use App\Repository\WidgetsRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use App\Entity\Widgets;
 
 /**
  * @Route("/widgets")
@@ -62,12 +60,12 @@ class WidgetsController extends AbstractController
                 'status' => 'success',
                 'message' => 'New Widget Created Successfully',
                 'item' => [
-                    'id'            => $widget->getId(),
-                    'name'          => $widget->getName(),
-                    'widget'        => $widget->getWidget(),
-                    'user_id'       => $widget->getUserId()->getFname()." ".$widget->getUserId()->getLname(),
-                    'created_at'    => $widget->getCreatedAt()->format("d M Y H:i:s"),
-                    'updated_at'    => $widget->getUpdatedAt()->format("d M Y H:i:s"),
+                    'id' => $widget->getId(),
+                    'name' => $widget->getName(),
+                    'widget' => $widget->getWidget(),
+                    'user_id' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
+                    'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
+                    'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
                 ],
             ];
         }
@@ -81,8 +79,8 @@ class WidgetsController extends AbstractController
     public function show(Widgets $widget): Response
     {
         $array = [
-            'name'      => $widget->getName(),
-            'widget'    => $widget->getWidget(),
+            'name' => $widget->getName(),
+            'widget' => $widget->getWidget(),
         ];
 
         echo json_encode($array);
@@ -106,12 +104,12 @@ class WidgetsController extends AbstractController
             'status' => 'success',
             'message' => 'Widget Updated Successfully',
             'item' => [
-                'id'            => $widget->getId(),
-                'name'          => $widget->getName(),
-                'widget'        => $widget->getWidget(),
-                'user_id'       => $widget->getUserId()->getFname()." ".$widget->getUserId()->getLname(),
-                'created_at'    => $widget->getCreatedAt()->format("d M Y H:i:s"),
-                'updated_at'    => $widget->getUpdatedAt()->format("d M Y H:i:s"),
+                'id' => $widget->getId(),
+                'name' => $widget->getName(),
+                'widget' => $widget->getWidget(),
+                'user_id' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
+                'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
+                'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
             ],
         ];
 
@@ -131,12 +129,12 @@ class WidgetsController extends AbstractController
             'status' => 'success',
             'message' => 'Widget Deleted Successfully',
             'item' => [
-                'id'            => $widget->getId(),
-                'name'          => $widget->getName(),
-                'widget'        => $widget->getWidget(),
-                'user_id'       => $widget->getUserId()->getFname()." ".$widget->getUserId()->getLname(),
-                'created_at'    => $widget->getCreatedAt()->format("d M Y H:i:s"),
-                'updated_at'    => $widget->getUpdatedAt()->format("d M Y H:i:s"),
+                'id' => $widget->getId(),
+                'name' => $widget->getName(),
+                'widget' => $widget->getWidget(),
+                'user_id' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
+                'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
+                'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
             ],
         ];
 
