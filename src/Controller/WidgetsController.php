@@ -34,8 +34,6 @@ class WidgetsController extends AbstractController
      */
     public function new(Request $request, ValidatorInterface $validator): Response
     {
-        /*echo $this->getUser()->getId().PHP_EOL;
-        print_r($_POST); exit();*/
         $widget = new Widgets();
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -63,31 +61,18 @@ class WidgetsController extends AbstractController
             $array = [
                 'status' => 'success',
                 'message' => 'New Widget Created Successfully',
-                'widget' => [
+                'item' => [
                     'id'            => $widget->getId(),
                     'name'          => $widget->getName(),
                     'widget'        => $widget->getWidget(),
-                    'user_id'       => $widget->getUserId(),
-                    'created_at'    => $widget->getCreatedAt(),
-                    'updated_at'    => $widget->getUpdatedAt(),
+                    'user_id'       => $widget->getUserId()->getFname()." ".$widget->getUserId()->getLname(),
+                    'created_at'    => $widget->getCreatedAt()->format("d M Y H:i:s"),
+                    'updated_at'    => $widget->getUpdatedAt()->format("d M Y H:i:s"),
                 ],
             ];
         }
 
         return new Response(json_encode($array));
-
-        /*if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($widget);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('widgets_index');
-        }
-
-        return $this->render('widgets/new.html.twig', [
-            'widget' => $widget,
-            'form' => $form->createView(),
-        ]);*/
     }
 
     /**
@@ -107,34 +92,54 @@ class WidgetsController extends AbstractController
     /**
      * @Route("/widget/update/{id}", name="widgets_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Widgets $widget): Response
+    public function edit(Request $request, Widgets $widget, ValidatorInterface $validator): Response
     {
-        $form = $this->createForm(WidgetsType::class, $widget);
-        $form->handleRequest($request);
+        $widget->setName($request->request->get('name'));
+        $widget->setWidget($request->request->get('widget'));
+        $widget->setUpdatedAt(new \DateTime());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($widget);
+        $entityManager->flush();
 
-            return $this->redirectToRoute('widgets_index');
-        }
+        $array = [
+            'status' => 'success',
+            'message' => 'Widget Updated Successfully',
+            'item' => [
+                'id'            => $widget->getId(),
+                'name'          => $widget->getName(),
+                'widget'        => $widget->getWidget(),
+                'user_id'       => $widget->getUserId()->getFname()." ".$widget->getUserId()->getLname(),
+                'created_at'    => $widget->getCreatedAt()->format("d M Y H:i:s"),
+                'updated_at'    => $widget->getUpdatedAt()->format("d M Y H:i:s"),
+            ],
+        ];
 
-        return $this->render('widgets/edit.html.twig', [
-            'widget' => $widget,
-            'form' => $form->createView(),
-        ]);
+        return new Response(json_encode($array));
     }
 
     /**
-     * @Route("/{id}", name="widgets_delete", methods={"DELETE"})
+     * @Route("/widget/delete/{id}", name="widgets_delete")
      */
     public function delete(Request $request, Widgets $widget): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$widget->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($widget);
-            $entityManager->flush();
-        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($widget);
+        $entityManager->flush();
 
-        return $this->redirectToRoute('widgets_index');
+        $array = [
+            'status' => 'success',
+            'message' => 'Widget Deleted Successfully',
+            'item' => [
+                'id'            => $widget->getId(),
+                'name'          => $widget->getName(),
+                'widget'        => $widget->getWidget(),
+                'user_id'       => $widget->getUserId()->getFname()." ".$widget->getUserId()->getLname(),
+                'created_at'    => $widget->getCreatedAt()->format("d M Y H:i:s"),
+                'updated_at'    => $widget->getUpdatedAt()->format("d M Y H:i:s"),
+            ],
+        ];
+
+        return new Response(json_encode($array));
     }
 }

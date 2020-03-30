@@ -1,6 +1,6 @@
 var crudActions = (function($){
     var formId  = appData.modalFormId,
-        modalId = appData.userDetailsModalId,
+        modalId = appData.itemDetailsModalId,
         inputFieldClass = '.form-control';
 
     var resetForm               = function(){
@@ -10,16 +10,16 @@ var crudActions = (function($){
     var clearObj    = function(){
         appData.row     = '',
         appData.mode    = '',
-        appData.userId  = '';
+        appData.itemId  = '';
     }
 
     var prepareModal            = function(mode){
         resetForm();
-        var modalLabel  = 'Create user';
-        var buttonLabel = 'Add new user';
+        var modalLabel  = 'Create Widget';
+        var buttonLabel = 'Add new widget';
         if( mode == 'edit')
         {
-            modalLabel  = 'Edit user';
+            modalLabel  = 'Edit widget';
             buttonLabel = 'Save changes';
         }
 
@@ -57,15 +57,15 @@ var crudActions = (function($){
     };
 
     var editButtonFunction      = function(){
-        var userId = $(this).data('userid');
+        var itemId = $(this).data('itemid');
 
         appData.mode    = 'edit';
-        appData.userId  = userId;
+        appData.itemId  = itemId;
         appData.row     = $(this).parent('td').parent('tr');
 
         prepareModal('edit');
         validationInit();
-        var res = requestAJAX.get(`/widgets/widget/info/${userId}`)
+        var res = requestAJAX.get(`/widgets/widget/info/${itemId}`)
             .done(function(response){
                 var info = JSON.parse(response);
                 $('#name').val(info.name);
@@ -78,7 +78,9 @@ var crudActions = (function($){
     };
 
     var deleteButtonFunction    = function(){
-        var res = requestAJAX.get(`/admin/user/delete/${userId}`)
+        var itemId  = $(this).data('itemid');
+        var row     = $(this).parent('td').parent('tr');
+        var res     = requestAJAX.get(`/widgets/widget/delete/${itemId}`)
             .done(function(response){
                 var info = JSON.parse(response);
                 row.remove();

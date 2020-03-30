@@ -16,20 +16,20 @@
         <tr>
             <td>{{ item.id }}</td>
             <td>{{ item.name }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.getCreatedAt.format("d-m-Y H:i:s") }}</td>
-            <td>{{ item.getUpdatedAt.format("d-m-Y H:i:s") }}</td>
+            <td>{{ item.userId.fname }} {{ item.userId.lname }}</td>
+            <td>{{ item.getCreatedAt.format("d M Y H:i:s") }}</td>
+            <td>{{ item.getUpdatedAt.format("d M Y H:i:s") }}</td>
             <td>
                 <button
                     id="editBtn"
                     class="btn btn-info"
-                    data-userid="{{ item.id }}">
+                    data-itemid="{{ item.id }}">
                     Edit Widget
                 </button>
                 <button
                     id="deleteBtn"
                     class="btn btn-danger"
-                    data-userid="{{ item.id }}">
+                    data-itemid="{{ item.id }}">
                     Delete Widget
                 </button>
             </td>
@@ -42,11 +42,11 @@
 <script>
     var appData = {
             mode:               '',
-            userId:             '',
+            itemId:             '',
             row:                '',
             validator:          '',
-            usersTableId:       '#widgets_table',
-            userDetailsModalId: '#widget_details',
+            itemsTableId:       '#widgets_table',
+            itemDetailsModalId: '#widget_details',
             modalFormId:        '#create-widget-form'
 
         };
@@ -57,15 +57,13 @@
 <script src="/js/user/ajax_module.js"></script>
 <script src="/js/widgets/widget_crud_actions.js"></script>
 <script src="/js/widgets/widget_actions.js"></script>
-{#
-<script src="/js/user/user_actions.js"></script>
-<script src="/js/user/table-manager.js"></script> #}
+<script src="/js/widgets/table-manager.js"></script>
 
 {% include 'widgets/register_form.html.twig' %}
 
 <script>
     $(document).ready( function () {
-        $(appData.usersTableId).DataTable({
+        $(appData.itemsTableId).DataTable({
             "order": [[ 0, "desc" ]]
         });
     });

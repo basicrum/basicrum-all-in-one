@@ -1,0 +1,72 @@
+<!-- Modal -->
+<div class="modal fade" id="widget_details" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="create-widget-form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-12">
+                        <label for="fname">Name</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label for="widget">Content</label>
+                        <textarea class="form-control" id="widget" rows="10" name="widget"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-info" id="create-widget">Add new widget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    // Once loaded append modal div to body in order to appear above dark background
+    $(function(){
+        $('body').append($(appData.itemDetailsModalId));
+    });
+
+    function validationInit()
+    {
+        if ( appData.validator )
+        {
+            appData.validator.destroy();
+        }
+
+        appData.validator = $(appData.modalFormId).validate({
+            rules: {
+                name: "required",
+                widget: "required",
+            },
+            submitHandler: function(form) {
+
+                var formData = $(appData.modalFormId).serialize();
+                if ( appData.mode == 'edit' )
+                {
+                    itemActions.saveItem(appData.modalFormId, true);
+                }
+                else if ( appData.mode == 'add' )
+                {
+                    itemActions.createItem();
+                }
+            }
+        });
+    }
+
+    // Need this to provent double modals on same page.
+    // Unload page - unload modal
+    $('.ajax-link').on('click', function(){
+        $('#widget_details').remove();
+    });
+</script>
