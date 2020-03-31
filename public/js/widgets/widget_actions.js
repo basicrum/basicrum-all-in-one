@@ -1,6 +1,6 @@
 var itemActions = (function($){
-    var editURL     = '/widgets/widget/update/',
-        createURL   = '/widgets/widget/save';
+    var editURL     = '/widget/update/',
+        createURL   = '/widget/save';
 
     var saveItem    = function(formId, crud=null){
         var formData    = $(formId).serialize();

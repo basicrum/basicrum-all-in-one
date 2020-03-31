@@ -65,7 +65,7 @@ var crudActions = (function($){
 
         prepareModal('edit');
         validationInit();
-        var res = requestAJAX.get(`/widgets/widget/info/${itemId}`)
+        var res = requestAJAX.get(`/widget/info/${itemId}`)
             .done(function(response){
                 var info = JSON.parse(response);
                 $('#name').val(info.name);
@@ -80,7 +80,7 @@ var crudActions = (function($){
     var deleteButtonFunction    = function(){
         var itemId  = $(this).data('itemid');
         var row     = $(this).parent('td').parent('tr');
-        var res     = requestAJAX.get(`/widgets/widget/delete/${itemId}`)
+        var res     = requestAJAX.get(`/widget/delete/${itemId}`)
             .done(function(response){
                 var info = JSON.parse(response);
                 row.remove();
