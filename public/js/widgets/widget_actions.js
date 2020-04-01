@@ -17,7 +17,7 @@ var itemActions = (function($){
                 }
                 else
                 {
-                    if ( crud ) // update users table if called from non profile page
+                    if ( crud ) // update table if called from non profile page
                     {
                         tableManager.updateRow(appData.row, res);
                         $(appData.itemDetailsModalId).modal('hide')
