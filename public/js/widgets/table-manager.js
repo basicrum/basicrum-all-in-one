@@ -29,12 +29,14 @@ var tableManager = (function(){
                     data-itemid="${data.item.id}">
                     Edit
                 </button>
+                <a href="/widget/view/${data.item.id}">
                 <button
                     id="viewBtn"
                     class="btn btn-sm btn-success"
                     data-itemid="${data.item.id}">
                     View
                 </button>
+                </a>
                 <button
                     id="deleteBtn"
                     class="btn btn-sm btn-danger"

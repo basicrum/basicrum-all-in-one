@@ -1,5 +1,11 @@
+<h4>{{ item.name }}</h4>
+<p>
+    Created by: {{ item.user }}
+</p>
+<div id="widget-data-container"></div>
+
 <!-- Modal -->
-<div class="modal fade" id="widget_view" aria-hidden="true">
+{# <div class="modal fade" id="widget_view" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,28 +15,27 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="widget-data-container">
 
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div>
+</div> #}
 
 <script>
-    // Once loaded append modal div to body in order to appear above dark background
-    $(function(){
-        $('body').append($(appData.modalViewId));
+    document.addEventListener('DOMContentLoaded', function() {
+       // alert("Ready!");
+        $(function(){
+        $.ajax('/widget/generate_diagram',{
+            method: 'post',
+            data: JSON.parse('{{ item.widget|raw }}'),
+            success : function(response) {
+                Plotly.react('widget-data-container', response.diagrams, response.layout, {displayModeBar: false, responsive: true})
+            }
+        });
     });
+    }, false);
 
-
-
-    // Need this to provent double modals on same page.
-    // Unload page - unload modal
-    $('.ajax-link').on('click', function(){
-        $(appData.modalViewId).remove();
-    });
 </script>

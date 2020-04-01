@@ -170,4 +170,26 @@ class WidgetController extends AbstractController
 
         return new Response(json_encode($array));
     }
+
+    /**
+     * @Route("/widget/view/{id}", name="widgets_widget_view")
+     */
+    public function view(Widgets $widget): Response
+    {
+        $array = [
+            'id' => $widget->getId(),
+            'name' => $widget->getName(),
+            'widget' => $widget->getWidget(),
+            'user' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
+            'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
+            'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
+        ];
+
+        return $this->render(
+            'widgets/view.html.twig',
+            [
+                'item' => $array,
+            ]
+        );
+    }
 }

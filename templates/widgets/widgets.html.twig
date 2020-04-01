@@ -26,12 +26,14 @@
                     data-itemid="{{ item.id }}">
                     Edit
                 </button>
+                <a href="{{ path('widgets_widget_view', {id:item.id}) }}" class="ajax-link">
                 <button
                     id="viewBtn"
                     class="btn btn-sm btn-success"
                     data-itemid="{{ item.id }}">
                     View
                 </button>
+                </a>
                 <button
                     id="deleteBtn"
                     class="btn btn-sm btn-danger"
@@ -67,7 +69,6 @@
 <script src="/js/widgets/table-manager.js"></script>
 
 {% include 'widgets/edit.html.twig' %}
-{% include 'widgets/view.html.twig' %}
 
 <script>
     $(document).ready( function () {
