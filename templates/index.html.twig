@@ -19,7 +19,7 @@
         <link href="{{ asset('css/diagram-controls.css') }}" rel="stylesheet">
         <link href="{{ asset('css/configure.css') }}" rel="stylesheet">
         <link href="{{ asset('plugins/jquery-validate/css/screen.css') }}" rel="stylesheet">
-        <link href="{{ asset('plugins/datatables/jquery.dataTables.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('plugins/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     </head>
     <body>
     <script type="text/javascript">
@@ -92,6 +92,17 @@
                     &nbsp;
                 </li>
                 {% endif %}
+
+
+                <li class="nav-item">
+                    <a class="nav-link ajax-link" href="{{ path('widgets_index') }}">
+                        <i class="fa fa-cogs"></i>
+                        Manage Widgets
+                    </a>
+                </li>
+                <li class="nav-item">
+                    &nbsp;
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link ajax-link" href="{{ path('info_about') }}">

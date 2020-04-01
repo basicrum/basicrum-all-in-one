@@ -1,0 +1,81 @@
+<button id="addBtn" class="btn btn-info">Add widget</button>
+
+<table id="widgets_table" class="table table-hover">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>User</th>
+            <th>Created at</th>
+            <th>Updated at</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in widgets %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.userId.fname }} {{ item.userId.lname }}</td>
+            <td>{{ item.getCreatedAt.format("d M Y H:i:s") }}</td>
+            <td>{{ item.getUpdatedAt.format("d M Y H:i:s") }}</td>
+            <td>
+                <button
+                    id="editBtn"
+                    class="btn btn-sm btn-info"
+                    data-itemid="{{ item.id }}">
+                    Edit
+                </button>
+                <a href="{{ path('widgets_widget_view', {id:item.id}) }}" class="ajax-link">
+                <button
+                    id="viewBtn"
+                    class="btn btn-sm btn-success"
+                    data-itemid="{{ item.id }}">
+                    View
+                </button>
+                </a>
+                <button
+                    id="deleteBtn"
+                    class="btn btn-sm btn-danger"
+                    data-itemid="{{ item.id }}">
+                    Delete
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+
+<script>
+    var appData = {
+            mode:               '',
+            itemId:             '',
+            row:                '',
+            validator:          '',
+            itemsTableId:       '#widgets_table',
+            itemDetailsModalId: '#widget_details',
+            modalViewId:        '#widget_view',
+            modalFormId:        '#create-widget-form',
+
+        };
+</script>
+
+
+
+<script src="/js/user/ajax_module.js"></script>
+<script src="/js/widgets/widget_crud_actions.js"></script>
+<script src="/js/widgets/widget_actions.js"></script>
+<script src="/js/widgets/table-manager.js"></script>
+
+{% include 'widgets/edit.html.twig' %}
+
+<script>
+    $(document).ready( function () {
+        $(appData.itemsTableId).DataTable({
+            "order": [[ 0, "desc" ]]
+        });
+    });
+
+    crudActions.addEventListeners();
+</script>
