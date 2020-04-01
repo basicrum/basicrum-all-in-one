@@ -25,15 +25,21 @@ var tableManager = (function(){
             <td>
                 <button
                     id="editBtn"
-                    class="btn btn-info"
+                    class="btn btn-sm btn-info"
                     data-itemid="${data.item.id}">
-                    Edit Widget
+                    Edit
+                </button>
+                <button
+                    id="viewBtn"
+                    class="btn btn-sm btn-success"
+                    data-itemid="${data.item.id}">
+                    View
                 </button>
                 <button
                     id="deleteBtn"
-                    class="btn btn-danger"
+                    class="btn btn-sm btn-danger"
                     data-itemid="${data.item.id}">
-                    Delete Widget
+                    Delete
                 </button>
             </td>
             </tr>
