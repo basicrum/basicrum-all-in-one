@@ -54,10 +54,14 @@ var itemActions = (function($){
             });
     }
 
+    var itemInfo    = function(itemId){
+        return requestAJAX.get(`/widget/info/${itemId}`)
+    }
 
     return {
         saveItem:   saveItem,
         createItem: createItem,
+        itemInfo:   itemInfo,
     };
 
 })(jQuery);

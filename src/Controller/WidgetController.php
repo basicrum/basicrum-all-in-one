@@ -105,8 +105,12 @@ class WidgetController extends AbstractController
     public function show(Widgets $widget): Response
     {
         $array = [
+            'id' => $widget->getId(),
             'name' => $widget->getName(),
             'widget' => $widget->getWidget(),
+            'user' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
+            'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
+            'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
         ];
 
         echo json_encode($array);

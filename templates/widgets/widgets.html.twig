@@ -22,15 +22,21 @@
             <td>
                 <button
                     id="editBtn"
-                    class="btn btn-info"
+                    class="btn btn-sm btn-info"
                     data-itemid="{{ item.id }}">
-                    Edit Widget
+                    Edit
+                </button>
+                <button
+                    id="viewBtn"
+                    class="btn btn-sm btn-success"
+                    data-itemid="{{ item.id }}">
+                    View
                 </button>
                 <button
                     id="deleteBtn"
-                    class="btn btn-danger"
+                    class="btn btn-sm btn-danger"
                     data-itemid="{{ item.id }}">
-                    Delete Widget
+                    Delete
                 </button>
             </td>
         </tr>
@@ -47,7 +53,8 @@
             validator:          '',
             itemsTableId:       '#widgets_table',
             itemDetailsModalId: '#widget_details',
-            modalFormId:        '#create-widget-form'
+            modalViewId:        '#widget_view',
+            modalFormId:        '#create-widget-form',
 
         };
 </script>
@@ -60,6 +67,7 @@
 <script src="/js/widgets/table-manager.js"></script>
 
 {% include 'widgets/edit.html.twig' %}
+{% include 'widgets/view.html.twig' %}
 
 <script>
     $(document).ready( function () {
