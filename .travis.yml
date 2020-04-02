@@ -1,0 +1,29 @@
+sudo: required
+
+services:
+  - docker
+
+before_script:
+  - docker-compose -f docker/docker-compose.yml build --no-cache
+  - docker-compose -f docker/docker-compose.yml up -d
+  - mv -f .env.travis .env
+  - docker exec basicrum_bo_php composer install
+  - docker exec basicrum_bo_php php bin/console c:c
+  - docker exec basicrum_bo_php php bin/console cache:clear
+
+script: 
+  - docker exec basicrum_bo_php bin/console doctrine:migrations:migrate
+  - cat .env
+  - cat docker/symfony_app/.env
+  - |
+    for n in {1..5}; do \
+    docker exec basicrum_bo_php bin/console basicrum:beacon:init-folders; \ 
+    docker exec basicrum_bo_php bin/console basicrum:beacon:archive-bundle; \
+    docker exec basicrum_bo_php bin/console basicrum:beacon:bundle-raw; \
+    docker exec basicrum_bo_php bin/console basicrum:beacon:import-bundle; \
+    docker exec basicrum_bo_php bin/console basicrum:cache:clean; \
+    docker exec basicrum_bo_php bin/console basicrum:last-blocking-resource:calculate; \
+    docker exec basicrum_bo_php bin/console basicrum:visit:generate; \
+    done;
+
+  - docker exec -it basicrum_bo_php php bin/phpunit
