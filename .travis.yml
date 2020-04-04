@@ -15,7 +15,7 @@ script:
   - |
     loop=0; 
     while [ "$loop" -le 9 ]; do
-      if docker exec basicrum_bo_php /bin/console doctrine:migrations:migrate --no-interaction; then
+      if docker exec basicrum_bo_php bin/console doctrine:migrations:migrate --no-interaction; then
         echo "doctrine:migrations:migrate Done!"
       else
         echo 'Waiting for MySql to start ...' && sleep 2;
