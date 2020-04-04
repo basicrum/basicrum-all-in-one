@@ -12,7 +12,11 @@ before_script:
   - docker exec basicrum_bo_php php bin/console cache:clear
 
 script: 
-  - docker exec basicrum_bo_php bin/console doctrine:migrations:migrate
+  - |
+    while [ -z "$(docker exec basicrum_bo_php /bin/console doctrine:migrations:migrate --no-interaction)" ]; do \
+      echo 'Waiting for MySql to start ...' && sleep 2; \
+    done;
+    
   - |
     for n in {1..5}; do \
     docker exec basicrum_bo_php bin/console basicrum:beacon:init-folders; \ 
