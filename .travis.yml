@@ -5,7 +5,7 @@ services:
 
 before_script:
   - docker-compose -f docker/docker-compose.yml build --no-cache
-  - docker-compose -f docker/docker-compose.yml up -d
+  - docker-compose -f docker/docker-compose.yml up -d; sleep 5;
   - mv -f .env.travis .env
   - docker exec basicrum_bo_php composer install
   - docker exec basicrum_bo_php php bin/console c:c
