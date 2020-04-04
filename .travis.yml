@@ -5,16 +5,25 @@ services:
 
 before_script:
   - docker-compose -f docker/docker-compose.yml build --no-cache
-  - docker-compose -f docker/docker-compose.yml up -d
+  - docker-compose -f docker/docker-compose.yml up -d;
   - mv -f .env.travis .env
   - docker exec basicrum_bo_php composer install
   - docker exec basicrum_bo_php php bin/console c:c
   - docker exec basicrum_bo_php php bin/console cache:clear
 
 script: 
-  - docker exec basicrum_bo_php bin/console doctrine:migrations:migrate
-  - cat .env
-  - cat docker/symfony_app/.env
+  - |
+    loop=0; 
+    while [ "$loop" -le 9 ]; do
+      if docker exec basicrum_bo_php bin/console doctrine:migrations:migrate --no-interaction; then
+        echo "doctrine:migrations:migrate Done!";
+        break;
+      else
+        echo 'Waiting for MySql to start ...' && sleep 2;
+      fi
+      ((loop++))
+    done;
+
   - |
     for n in {1..5}; do \
     docker exec basicrum_bo_php bin/console basicrum:beacon:init-folders; \ 
