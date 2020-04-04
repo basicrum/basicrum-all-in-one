@@ -32,6 +32,7 @@ script:
     docker exec basicrum_bo_php bin/console basicrum:beacon:import-bundle; \
     docker exec basicrum_bo_php bin/console basicrum:cache:clean; \
     docker exec basicrum_bo_php bin/console basicrum:last-blocking-resource:calculate; \
+    docker exec basicrum_bo_php bin/console basicrum:superadmin:create --no-interaction \
     docker exec basicrum_bo_php bin/console basicrum:visit:generate; \
     done;
 

@@ -59,7 +59,7 @@ class CreateSuperadmintUserCommand extends Command
         });
         $answer['fname'] = $helper->ask($input, $output, $question['fname']);
 
-        $question['lname'] = new Question('Please enter Super User first name : ', 'Last Name');
+        $question['lname'] = new Question('Please enter Super User last name : ', 'Last Name');
         $question['lname']->setMaxAttempts(20);
         $question['lname']->setValidator(function ($lname) {
             if ('' == trim($lname)) {
@@ -111,22 +111,24 @@ class CreateSuperadmintUserCommand extends Command
         });
         $answer['repeat_password'] = $helper->ask($input, $output, $question['repeat_password']);
 
-        $user = new User();
+        if ($answer['password'] && $answer['repeat_password']) {
+            $user = new User();
 
-        $password = $this->passwordEncoder->encodePassword($user, $answer['password']);
+            $password = $this->passwordEncoder->encodePassword($user, $answer['password']);
 
-        $user
-            ->setEmail($answer['email'])
-            ->setPassword($password)
-            ->setFname($answer['fname'])
-            ->setLname($answer['lname'])
-            ->setRoles(['ROLE_ADMIN'])
-        ;
+            $user
+                ->setEmail($answer['email'])
+                ->setPassword($password)
+                ->setFname($answer['fname'])
+                ->setLname($answer['lname'])
+                ->setRoles(['ROLE_ADMIN'])
+            ;
 
-        $em->persist($user);
-        $em->flush();
+            $em->persist($user);
+            $em->flush();
 
-        $io->success('Super admin user with email '.$answer['email']." has been created! \n You may now login using registred email and password!");
+            $io->success('Super admin user with email '.$answer['email']." has been created! \n You may now login using registred email and password!");
+        }
 
         return 0;
     }
