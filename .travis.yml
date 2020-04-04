@@ -5,7 +5,7 @@ services:
 
 before_script:
   - docker-compose -f docker/docker-compose.yml build --no-cache
-  - docker-compose -f docker/docker-compose.yml up -d; sleep 5;
+  - docker-compose -f docker/docker-compose.yml up -d;
   - mv -f .env.travis .env
   - docker exec basicrum_bo_php composer install
   - docker exec basicrum_bo_php php bin/console c:c
@@ -16,7 +16,8 @@ script:
     loop=0; 
     while [ "$loop" -le 9 ]; do
       if docker exec basicrum_bo_php bin/console doctrine:migrations:migrate --no-interaction; then
-        echo "doctrine:migrations:migrate Done!"
+        echo "doctrine:migrations:migrate Done!";
+        break;
       else
         echo 'Waiting for MySql to start ...' && sleep 2;
       fi
