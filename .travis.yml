@@ -14,11 +14,12 @@ before_script:
 script: 
   - |
     loop=0; 
-    while [ -z "$(docker exec basicrum_bo_php /bin/console doctrine:migrations:migrate --no-interaction)" ]; do
-      if [ "$loop" -gt 9 ]; then
-        break
-      fi;
-      echo 'Waiting for MySql to start ...' && sleep 2;
+    while [ "$loop" -le 9 ]; do
+      if docker exec basicrum_bo_php /bin/console doctrine:migrations:migrate --no-interaction; then
+        echo "doctrine:migrations:migrate Done!"
+      else
+        echo 'Waiting for MySql to start ...' && sleep 2;
+      fi
       ((loop++))
     done;
 
