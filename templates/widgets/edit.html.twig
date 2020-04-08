@@ -16,7 +16,8 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="widget">Content</label>
-                        <textarea class="form-control" id="widget" rows="10" name="widget"></textarea>
+                        {# <textarea class="form-control" id="widget" rows="10" name="widget"></textarea> #}
+                        <div id="jsoneditor"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -29,8 +30,188 @@
 </div>
 
 
+<link href="/plugins/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<script src="/plugins/jsoneditor/jsoneditor.min.js"></script>
 
 <script>
+
+    const schema = {
+        "title": "Single Element Time Series Widget",
+        "description": "Object containing time series widget details",
+        "definitions": {
+            "segment": {
+                "type": "object",
+                "properties": {
+                    "presentation": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "Segment Name"
+                            },
+                            "color": {
+                                "type": "string",
+                                "title": "Segment Color"
+                            },
+                            "type": {
+                                "enum": ["bar"],
+                                // "type": "string"
+                            }
+                        },
+                    }
+                }
+            }
+        },
+        "type": "object",
+        "properties": {
+            "global": {
+                //"$ref": "global",
+                // "$ref2": "data_requirements"
+                 "type": "object",
+                "properties": {
+                    "presentation": {
+                        "$ref": "presentation",
+                    },
+                    "data_requirements": {
+                        "$ref": "data_requirements"
+                    }
+                }
+            },
+            "segments": {
+                "type": "object",
+                "properties": {
+                    "1": {"$ref": "#/definitions/segment"}
+                }
+            }
+        }
+
+    };
+
+    const data_requirements = {
+        "$ref": "period"
+    };
+
+    const period = {
+        "title": "Data part",
+        "type": "object",
+        // "required": ["type"],
+        "properties": {
+            "type": {
+                "title": "Type",
+                "enum": ["moving"]
+            },
+            "start": {
+                "title": "Start",
+                "enum": ["30"]
+            },
+            "end": {
+                "Title": "End Date",
+                "enum": ["now"]
+            }
+        }
+    };
+
+    const global = {
+        "type": "object",
+        "properties": {
+            "presentation": {
+                "$ref": "presentation",
+            },
+            "data_requirements": {
+                "$ref": "data_requirements"
+            }
+        }
+    };
+
+    const presentation = {
+        "title": "Presentation part",
+        "type": "object",
+        // "required": ["render_type"],
+        "properties": {
+            "render_type": {
+                "title": "Widget Type",
+                "enum": ["time_series", "time_no_series"]
+            },
+            "layout" : {
+                "$ref": "layout"
+            }
+        }
+    };
+
+    const layout = {
+        "title": "Layout",
+        "type": "object",
+        // "required": ["global.presentation.render_type"],
+        "properties": {
+            "bargap": {
+                "description": "Bargap",
+                "type": "integer",
+                "minimum": 0
+            },
+            "barmode": {
+                "enum": ["overlay", "overover"]
+                // "type": "string"
+            }
+        }
+    };
+
+    const json = {
+            title: 'Total Img Compressed Size',
+            global: {
+                presentation: {
+                    'render_type': 'time_series',
+                    'layout' : {
+                        bargap: 0,
+                        barmode: null
+                    }
+                },
+                data_requirements: {
+                    period: {
+                        type: 'moving',
+                        start: '30',
+                        end: 'now',
+                    },
+                }
+            },
+            segments: {
+                1: {
+                    presentation: {
+                        name: 'IMG Size',
+                        color: '#ff6023',
+                        type: 'bar'
+                    },
+                    data_requirements: {
+                        technical_metrics: {
+                            total_img_size: {
+                                data_flavor: {
+                                    percentile: 50
+                                }
+                            }
+                        },
+
+                    }
+                },
+            }
+        };
+
+    const options = {
+        schema: schema,
+        schemaRefs: {
+            "global": global,
+            "presentation": presentation,
+            "data_requirements": data_requirements,
+            "period": period,
+            "layout": layout,
+            // "1": "#/definitions/segment",
+        },
+
+        mode: 'tree',
+        modes: ['code', 'text', 'tree', 'preview']
+    }
+
+
+    const container = document.getElementById('jsoneditor');
+    const editor = new JSONEditor(container, options, json);
 
     // Once loaded append modal div to body in order to appear above dark background
     $(function(){
@@ -44,7 +225,7 @@
             appData.validator.destroy();
         }
 
-        appData.validator = $(appData.modalFormId).validate({
+       /* appData.validator = $(appData.modalFormId).validate({
             rules: {
                 name: "required",
                 widget: "required",
@@ -61,7 +242,7 @@
                     itemActions.createItem();
                 }
             }
-        });
+        });*/
     }
 
     // Need this to provent double modals on same page.
