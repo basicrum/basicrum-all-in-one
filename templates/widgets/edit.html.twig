@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="widget_details" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form id="create-widget-form">
                 <div class="modal-header">
@@ -21,7 +21,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info" id="create-widget">Add new widget</button>
+                    <button type="submit" class="btn btn-info" id="create-widget" disabled="disabled">Add new widget</button>
                 </div>
             </form>
         </div>
@@ -33,44 +33,6 @@
 <script src="/plugins/jsoneditor/jsoneditor.min.js"></script>
 
 <script>
-
-    const schema2 = {
-          "$schema": "http://json-schema.org/draft-07/schema#",
-
-          "definitions": {
-            "address": {
-              "type": "object",
-              "properties": {
-                "street_address": { "type": "string" },
-                "city":           { "enum": ["Washington", "New-York"] },
-                "state":          { "type": "string" }
-              },
-              "required": ["street_address", "city", "state"]
-            }
-          },
-
-          "type": "object",
-
-          "properties": {
-            "billing_address": { "$ref": "#/definitions/address" },
-            "shipping_address": { "$ref": "#/definitions/address" }
-          }
-        };
-
-        const json2 = {
-            "shipping_address": {
-                "street_address": "1600 Pennsylvania Avenue NW",
-                "city": null,
-                "state": "DC"
-              },
-            "billing_address": {
-                "street_address": "1st Street SE",
-                "city": null,
-                "state": "DC"
-            }
-        };
-
-
     const schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Single Element Time Series Widget",
@@ -145,7 +107,7 @@
                                         "minimum": 0
                                     },
                                     "barmode": {
-                                        "enum": ["overlay", "overover"]
+                                        "enum": ["overlay"]
                                     }
                                 }
                             }
@@ -229,11 +191,19 @@
         schema: schema,
         mode: 'tree',
         modes: ['code', 'text', 'tree', 'preview'],
+
+        onValidationError: function(errors) {
+            $("#create-widget").prop("disabled", true);
+            if ( errors.length == 0 )
+            {
+                $("#create-widget").prop("disabled", false);
+            }
+        },
     }
 
 
     const container = document.getElementById('jsoneditor');
-    const editor = new JSONEditor(container, options, json);
+    appData.jsonEditor = new JSONEditor(container, options, json);
 
     // Once loaded append modal div to body in order to appear above dark background
     $(function(){
@@ -247,10 +217,10 @@
             appData.validator.destroy();
         }
 
-       /* appData.validator = $(appData.modalFormId).validate({
+        appData.validator = $(appData.modalFormId).validate({
             rules: {
                 name: "required",
-                widget: "required",
+                // widget: "required",
             },
             submitHandler: function(form) {
 
@@ -264,10 +234,10 @@
                     itemActions.createItem();
                 }
             }
-        });*/
+        });
     }
 
-    // Need this to provent double modals on same page.
+    // Need this to prevent double modals on same page.
     // Unload page - unload modal
     $('.ajax-link').on('click', function(){
         $(appData.itemDetailsModalId).remove();
