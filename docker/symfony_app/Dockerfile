@@ -11,9 +11,6 @@ RUN apk add --no-cache zip libzip-dev
 RUN docker-php-ext-configure zip --with-libzip
 RUN docker-php-ext-install zip
 
-# we need mysqli extension for phpmyadmin
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
-
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --filename=composer --install-dir=/usr/local/bin \
