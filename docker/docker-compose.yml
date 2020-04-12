@@ -60,6 +60,21 @@ services:
     networks:
       - basicrum_bo_network
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.2
+    container_name: basicrum_bo_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: rootsecret
+    ports:
+      - "8087:80"
+    networks:
+      - basicrum_bo_network
+    links:
+      - db
+
 networks:
   basicrum_bo_network:
     driver: bridge
