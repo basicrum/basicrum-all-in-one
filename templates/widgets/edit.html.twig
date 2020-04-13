@@ -125,7 +125,8 @@
                                     },
                                     "start": {
                                         "title": "Start",
-                                        "enum": ["30"]
+                                        "enum": ["30"],
+                                        "type": "integer"
                                     },
                                     "end": {
                                         "Title": "End Date",
@@ -150,13 +151,13 @@
 
 
     const json = {
-            title: 'Total Img Compressed Size',
+            title: '',
             global: {
                 presentation: {
                     'render_type': 'time_series',
                     'layout' : {
                         bargap: 0,
-                        barmode: null
+                        barmode: 'overlay'
                     }
                 },
                 data_requirements: {
@@ -170,15 +171,15 @@
             segments: {
                 1: {
                     presentation: {
-                        name: 'IMG Size',
+                        name: '',
                         color: '#ff6023',
-                        type: null
+                        type: 'bar'
                     },
                     data_requirements: {
                         technical_metrics: {
                             total_img_size: {
                                 data_flavor: {
-                                    percentile: "ert"
+                                    percentile: 50
                                 }
                             }
                         }
