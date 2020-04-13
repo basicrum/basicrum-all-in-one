@@ -3,8 +3,10 @@ var itemActions = (function($){
         createURL   = '/widget/save';
 
     var saveItem    = function(formId, crud=null){
-        var formData    = $(formId).serialize();
-        requestAJAX.post(`${editURL}${appData.itemId}`, formData)
+        var formData    = $(formId).serializeArray(),
+            jsonData    = JSON.stringify(appData.jsonEditor.get());
+        formData.push({name: "widget", value: jsonData});
+        requestAJAX.post(`${editURL}${appData.itemId}`, $.param(formData))
             .done(function(response){
                 var res = JSON.parse(response);
                 if (res.status == 'error')
@@ -29,8 +31,11 @@ var itemActions = (function($){
     }
 
     var createItem  = function(){
-        formData    = $(appData.modalFormId).serialize();
-        requestAJAX.post(createURL, formData)
+        var formData    = $(appData.modalFormId).serializeArray(),
+            jsonData    = JSON.stringify(appData.jsonEditor.get());
+
+        formData.push({name: "widget", value: jsonData});
+        requestAJAX.post(createURL, $.param(formData))
             .done(function(response){
                 var res = JSON.parse(response);
                 if (res.status == 'error') // error occured

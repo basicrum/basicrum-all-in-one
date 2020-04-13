@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="widget_details" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form id="create-widget-form">
                 <div class="modal-header">
@@ -16,12 +16,12 @@
                     </div>
                     <div class="form-group col-md-12">
                         <label for="widget">Content</label>
-                        <textarea class="form-control" id="widget" rows="10" name="widget"></textarea>
+                        <div id="jsoneditor"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-info" id="create-widget">Add new widget</button>
+                    <button type="submit" class="btn btn-info" id="create-widget" disabled="disabled">Add new widget</button>
                 </div>
             </form>
         </div>
@@ -29,8 +29,182 @@
 </div>
 
 
+<link href="/plugins/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
+<script src="/plugins/jsoneditor/jsoneditor.min.js"></script>
 
 <script>
+    const schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Single Element Time Series Widget",
+        "description": "Object containing time series widget details",
+        "definitions": {
+            "segment": {
+                "type": "object",
+                "properties": {
+                    "presentation": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "Segment Name"
+                            },
+                            "color": {
+                                "type": "string",
+                                "title": "Segment Color"
+                            },
+                            "type": {
+                                "enum": ["bar"],
+                            }
+                        },
+                    },
+                    "data_requirements": {
+                        "type": "object",
+                        "properties": {
+                            "technical_metrics": {
+                                "type": "object",
+                                "properties": {
+                                    "total_img_size": {
+                                        "type": "object",
+                                        "properties": {
+                                            "data_flavor": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "percentile": {
+                                                        "title": "Some test title",
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "type": "object",
+        "properties": {
+            "global": {
+                "type": "object",
+                "properties": {
+                    "presentation": {
+                        "title": "Presentation part",
+                        "type": "object",
+                        "properties": {
+                            "render_type": {
+                                "title": "Widget Type",
+                                "enum": ["time_series", "time_no_series"]
+                            },
+                            "layout" : {
+                                "title": "Layout",
+                                "type": "object",
+                                "properties": {
+                                    "bargap": {
+                                        "description": "Bargap",
+                                        "type": "integer",
+                                        "minimum": 0
+                                    },
+                                    "barmode": {
+                                        "enum": ["overlay"]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "data_requirements": {
+                        "type": "object",
+                        "properties": {
+                            "period": {
+                               "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "title": "Type",
+                                        "enum": ["moving"]
+                                    },
+                                    "start": {
+                                        "title": "Start",
+                                        "enum": ["30"],
+                                        "type": "integer"
+                                    },
+                                    "end": {
+                                        "Title": "End Date",
+                                        "enum": ["now"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "segments": {
+                "type": "object",
+                "properties": {
+                    "1": {"$ref": "#/definitions/segment"}
+                }
+            }
+        }
+
+    };
+
+
+
+    const json = {
+            title: '',
+            global: {
+                presentation: {
+                    'render_type': 'time_series',
+                    'layout' : {
+                        bargap: 0,
+                        barmode: 'overlay'
+                    }
+                },
+                data_requirements: {
+                    period: {
+                        type: 'moving',
+                        start: '30',
+                        end: 'now',
+                    },
+                }
+            },
+            segments: {
+                1: {
+                    presentation: {
+                        name: '',
+                        color: '#ff6023',
+                        type: 'bar'
+                    },
+                    data_requirements: {
+                        technical_metrics: {
+                            total_img_size: {
+                                data_flavor: {
+                                    percentile: 50
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+    const options = {
+        schema: schema,
+        mode: 'tree',
+        modes: ['code', 'text', 'tree', 'preview'],
+
+        onValidationError: function(errors) {
+            $("#create-widget").prop("disabled", true);
+            if ( errors.length == 0 )
+            {
+                $("#create-widget").prop("disabled", false);
+            }
+        },
+    }
+
+
+    const container = document.getElementById('jsoneditor');
+    appData.jsonEditor = new JSONEditor(container, options, json);
 
     // Once loaded append modal div to body in order to appear above dark background
     $(function(){
@@ -47,7 +221,7 @@
         appData.validator = $(appData.modalFormId).validate({
             rules: {
                 name: "required",
-                widget: "required",
+                // widget: "required",
             },
             submitHandler: function(form) {
 
@@ -64,7 +238,7 @@
         });
     }
 
-    // Need this to provent double modals on same page.
+    // Need this to prevent double modals on same page.
     // Unload page - unload modal
     $('.ajax-link').on('click', function(){
         $(appData.itemDetailsModalId).remove();
