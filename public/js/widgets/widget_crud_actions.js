@@ -71,7 +71,7 @@ var crudActions = (function($){
             .done(function(response){
                 var info = JSON.parse(response);
                 $('#name').val(info.name);
-                $('#widget').val(info.widget);
+                appData.jsonEditor.set(JSON.parse(info.widget));
             });
 
         modalShow(formModalId);
@@ -82,8 +82,6 @@ var crudActions = (function($){
         itemActions.itemInfo(itemId)
             .done(function(response){
                 var info = JSON.parse(response);
-                /*$('#name').val(info.name);
-                $('#widget').val(info.widget);*/
                 $('#modalWidgetLabel').html(info.name);
                 $.ajax('/widget/generate_diagram',{
                     method: 'post',
