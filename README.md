@@ -84,7 +84,8 @@ docker exec -it basicrum_bo_php php bin/console basicrum:superadmin:create
 ```
 Provide required information and feel free to login at the following address:
 
-Linux:  Load http://127.0.0.1:8086 in your browser
+Linux:  Load http://127.0.0.1:8086 in your browser  
+PhpMyAdmin: http://127.0.0.1:8087
 
 Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker ip here):8086
 
