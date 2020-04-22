@@ -6,8 +6,10 @@
             var widgets = document.getElementsByClassName('widget-data-container');
 
             for (var i=0, len = widgets.length|0; i < len; i=i+1|0) {
+                widgets[i].classList.add("loading");
+                
                 var paramsVarName = widgets[i].getAttribute('data-params-name-var');
-
+                
                 /** we would like to use copy of original diagram params */
                 var params = window[paramsVarName];
 
@@ -36,6 +38,7 @@
                     method: 'post',
                     data: params,
                     success : function(response) {
+                        document.getElementById(diagramContainerId).classList.remove("loading");
                         callback(diagramContainerId, response)
                     }
                 }

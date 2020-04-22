@@ -70,5 +70,20 @@
 }
 
 .widget-data-container {
+    position: relative;
+    z-index: 1;
     height: 280px;
+}
+
+.widget-data-container:before {
+    content: none;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 280px;
+    background: rgba(51,51,51,0.1) url(../../img/devoops_getdata.gif) 50% 50% no-repeat;
+}
+
+.widget-data-container.loading:before {
+    content: '';
 }
