@@ -34,13 +34,11 @@ class DiagramBuilder {
 
                 try {
                     foreach ($result as $time => $sample) {
-//                    if(isset($sample['count'])){
                         $data[$time] = $sample['count'];
 
                         // Summing total visits per day. Used later for calculating percentage
                         $totalsCount[$time] = isset($totalsCount[$time]) ? ($totalsCount[$time] + $data[$time]) : $data[$time];
                     }
-//                }
                 } catch (\Throwable $e) {
                     $hasError = true;
                 };
