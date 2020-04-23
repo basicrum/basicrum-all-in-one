@@ -17,12 +17,27 @@ class TimeSeries
         $this->layout = $layout;
     }
 
-    public function build(array $samples, array $renderParams, array $extraLayoutParams, array $extraDiagramParams): array
+    public function build(array $samples, array $renderParams, array $extraLayoutParams, array $extraDiagramParams, bool $hasError): array
     {
         $data = [
             'diagrams' => [],
             'layout' => array_merge($this->layout->getLayout(), $extraLayoutParams),
         ];
+
+        if ($hasError || empty($samples)) {
+            $data['layout']['xaxis']['fixedrange'] = true;
+            $data['layout']['xaxis']['range'] = [0, 20];
+            $data['layout']['yaxis']['fixedrange'] = true;
+            $data['layout']['yaxis']['range'] = [0, 20];
+            $data['layout']['annotations'][0]['xref'] = 'paper';
+            $data['layout']['annotations'][0]['yref'] = 'paper';
+            $data['layout']['annotations'][0]['text'] = $hasError ? 'Data error' : 'No data available';
+            $data['layout']['annotations'][0]['showarrow'] = false;
+            $data['layout']['annotations'][0]['font']['size'] = '14';
+            $data['layout']['annotations'][0]['font']['color'] = '#ff0000';
+        } else {
+            $data['layout']['yaxis']['rangemode'] = 'tozero';
+        }
 
         foreach ($samples as $key => $d) {
             $data['diagrams'][] = [
