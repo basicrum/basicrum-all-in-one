@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\DiagramSchema;
 use App\Entity\Widgets;
 use App\Repository\WidgetsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,6 +42,16 @@ class WidgetController extends AbstractController
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * @Route("/widget/schema/{type}", name="widgets_schema")
+     */
+    public function generateSchema($type)
+    {
+        $schema = new DiagramSchema($type);
+        echo $schema->generateSchema();
+        exit();
     }
 
     /**

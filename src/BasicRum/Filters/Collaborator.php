@@ -28,10 +28,13 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     public function applyForRequirement(array $requirements): \App\BasicRum\CollaboratorsInterface
     {
-        foreach ($this->filtersClassMap as $filterKey => $class) {
+        // Array ( [operating_system] => Array ( [search_value] => 1 [condition] => is ) )
+        // print_r($requirements); exit();
+        foreach ($this->filtersClassMap as $filterKey => $class) { //echo $filterKey." === ".$requirements[$filterKey].PHP_EOL;
             if (isset($requirements[$filterKey])) {
                 $requirement = $requirements[$filterKey];
-
+                print_r($requirement);
+                exit();
                 if (empty($requirement['search_value'])) {
                     continue;
                 }
@@ -53,5 +56,28 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     public function getAllPossibleRequirementsKeys(): array
     {
         return array_keys($this->filtersClassMap);
+    }
+
+    public function getAllPossibleFiltersSchema()
+    {
+        $schema = '
+                            "filters": {
+                                "type": "object",
+                                "properties": {
+            ';
+        /*$dt = new $this->filtersClassMap['device_type']();//->getSchema();
+        $os = new $this->filtersClassMap['operating_system']();//->getSchema();
+        $schema .= $dt->getSchema();
+        $schema .= $os->getSchema();*/
+        foreach ($this->filtersClassMap as $filterKey => $class) {
+            $init = new $class();
+            $schema .= $init->getSchema();
+        }
+        $schema .= '
+                                }
+                            }
+        ';
+
+        return $schema;
     }
 }
