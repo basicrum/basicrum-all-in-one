@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-class DiagramBuilder {
-
-    public function build(DiagramOrchestrator $diagramOrchestrator, array $params): array {
+class DiagramBuilder
+{
+    public function build(DiagramOrchestrator $diagramOrchestrator, array $params): array
+    {
         $layout = new Diagram\View\Layout();
         $diagramData = [];
 
@@ -41,7 +42,7 @@ class DiagramBuilder {
                     }
                 } catch (\Throwable $e) {
                     $hasError = true;
-                };
+                }
 
                 $segmentSamples[$key] = $data;
             }
@@ -89,7 +90,7 @@ class DiagramBuilder {
                 }
             } catch (\Throwable $e) {
                 $hasError = true;
-            };
+            }
 
             $view = new Diagram\View\RenderType\TimeSeries($layout);
 
@@ -164,7 +165,7 @@ class DiagramBuilder {
                                     'y' => $v,
                                     'xanchor' => 'center',
                                     'yanchor' => 'bottom',
-                                    'text' => $v . '%',
+                                    'text' => $v.'%',
                                     'showarrow' => false,
                                     'font' => [
                                         'family' => 'Arial',
@@ -178,7 +179,7 @@ class DiagramBuilder {
                 }
             } catch (\Throwable $e) {
                 $hasError = true;
-            };
+            }
 
             $view = new Diagram\View\RenderType\Plane($layout);
 
@@ -193,5 +194,4 @@ class DiagramBuilder {
 
         return $diagramData;
     }
-
 }

@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Diagram\View\RenderType;
 
-class Plane {
-
+class Plane
+{
     /** @var \App\BasicRum\Diagram\View\Layout */
     private $layout;
 
     /**
      * Distribution constructor.
      */
-    public function __construct(\App\BasicRum\Diagram\View\Layout $layout) {
+    public function __construct(\App\BasicRum\Diagram\View\Layout $layout)
+    {
         $this->layout = $layout;
     }
 
-    public function build(array $samples, array $renderParams, array $extraLayoutParams, array $extraDiagramParams, bool $hasError): array {
+    public function build(array $samples, array $renderParams, array $extraLayoutParams, array $extraDiagramParams, bool $hasError): array
+    {
         $data = [
             'diagrams' => [],
             'layout' => array_merge(
@@ -30,7 +32,7 @@ class Plane {
                     ]
             ),
         ];
-        
+
         if ($hasError || empty($samples)) {
             $data['layout']['xaxis']['fixedrange'] = true;
             $data['layout']['xaxis']['range'] = [0, 6000];
@@ -63,5 +65,4 @@ class Plane {
 
         return $data;
     }
-
 }
