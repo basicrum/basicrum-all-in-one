@@ -3,10 +3,10 @@
 Hello and thank you for your interested in contributing to Basic RUM. We want a contributor to have a pleasant experience with the project and we prepared some useful hints for contributors:
 
 Table of Contents:
- * [Study the system](#1.Study-the-system)
- * [Unit Testing](#2.-Unit-Testing)
- * [Code Style](#3.-Code-Style)
- * [Pull Requests](#4.-Pull-Requests)
+* [Study the system](#1.Study-the-system)
+* [Unit Testing](#2.-Unit-Testing)
+* [Code Style](#3.-Code-Style)
+* [Pull Requests](#4.-Pull-Requests)
  
 ## 1. Study the system
 
@@ -16,12 +16,12 @@ We encourage everybody to take a look our wiki and some blog posts
 
 **Wiki:**
 
- * [System architecture diagrams](https://github.com/basicrum/backoffice/wiki/Architecture-diagrams)
- * [Misc-Notes](https://github.com/basicrum/backoffice/wiki/Misc-Notes)
+* [System architecture diagrams](https://github.com/basicrum/backoffice/wiki/Architecture-diagrams)
+* [Misc-Notes](https://github.com/basicrum/backoffice/wiki/Misc-Notes)
  
 Blog Posts:
- * [Open source backend RUM tool. Wait! What?](https://calendar.perfplanet.com/2018/open-source-backend-rum-tool-wait-what)
- * [Lessons learned from developing my Real User Monitoring system – Basic RUM](https://calendar.perfplanet.com/2019/lessons-learned-from-developing-my-real-user-monitoring-system-basic-rum/)
+* [Open source backend RUM tool. Wait! What?](https://calendar.perfplanet.com/2018/open-source-backend-rum-tool-wait-what)
+* [Lessons learned from developing my Real User Monitoring system – Basic RUM](https://calendar.perfplanet.com/2019/lessons-learned-from-developing-my-real-user-monitoring-system-basic-rum/)
 
 ## 2. Unit Testing
 
@@ -107,3 +107,5 @@ echo "pre-commit hook finish"
  - In your fork create a new branch from the latest master branch.
  - Push to your fork and create a Pull Request to Basic RUM master.
  - In the Pull Request description write a basic information for a reviewer.
+
+In case you are not familair with GitHub's Pull Request createion, please check this artice: [About pull requests](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
