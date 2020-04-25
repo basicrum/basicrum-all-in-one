@@ -40,8 +40,8 @@ docker exec -it basicrum_bo_php php bin/console basicrum:superadmin:create
 
 ## Accessing Basic RUM and its local database:
 
-**Basic RUM:** http://127.0.0.1:8086 
-**PhpMyAdmin:** http://127.0.0.1:8087
+ - **Basic RUM:** http://127.0.0.1:8086 
+ - **PhpMyAdmin:** http://127.0.0.1:8087
 
 Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker ip here):8086
 
