@@ -19,7 +19,8 @@ We encourage everybody to take a look our wiki and some blog posts
 * [System architecture diagrams](https://github.com/basicrum/backoffice/wiki/Architecture-diagrams)
 * [Misc-Notes](https://github.com/basicrum/backoffice/wiki/Misc-Notes)
  
-Blog Posts:
+**Blog Posts:**
+
 * [Open source backend RUM tool. Wait! What?](https://calendar.perfplanet.com/2018/open-source-backend-rum-tool-wait-what)
 * [Lessons learned from developing my Real User Monitoring system – Basic RUM](https://calendar.perfplanet.com/2019/lessons-learned-from-developing-my-real-user-monitoring-system-basic-rum/)
 
