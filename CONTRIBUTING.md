@@ -3,10 +3,10 @@
 Hello and thank you for your interested in contributing to Basic RUM. We want a contributor to have a pleasant experience with the project and we prepared some useful hints for contributors:
 
 Table of Contents:
-* [Study the system](#1.Study-the-system)
-* [Unit Testing](#2.-Unit-Testing)
-* [Code Style](#3.-Code-Style)
-* [Pull Requests](#4.-Pull-Requests)
+- [Study the system](#1.Study-the-system)
+- [Unit Testing](#2.-Unit-Testing)
+- [Code Style](#3.-Code-Style)
+- [Pull Requests](#4.-Pull-Requests)
  
 ## 1. Study the system
 
