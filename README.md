@@ -7,7 +7,7 @@ The backoffice of Basic RUM. A system written on Symfony 5 that aims to help per
 
 ## I want to contribute!
 
-Checkout the [contributors notes](./README.md) 
+Checkout the [contributors notes](./CONTRIBUTING.md) 
 
 ## Installation:
 The instruction below are applicable only for development but still incomplete for production. This installation will be automatically initialized with demo database.
