@@ -14,7 +14,7 @@ services:
     volumes:
       - ./../:/usr/src/app
       - ./symfony_app/.env:/usr/src/app/.env
-    links:
+    depends_on:
       - db
     networks:
       - basicrum_bo_network
@@ -27,7 +27,7 @@ services:
     volumes:
       - ./../:/usr/src/app
       - ./symfony_app/.env:/usr/src/app/.env
-    links:
+    depends_on:
       - db
     networks:
       - basicrum_bo_network
@@ -48,7 +48,7 @@ services:
       - 3308:3306
 
   nginx:
-    image: nginx:1.15.11-alpine
+    image: nginx:1.17-alpine
     container_name: basicrum_bo_nginx
     volumes:
       - ./../public/:/usr/src/app
@@ -66,13 +66,13 @@ services:
     restart: always
     environment:
       PMA_HOST: db
-      PMA_USER: root
-      PMA_PASSWORD: rootsecret
+      PMA_USER: roottest
+      PMA_PASSWORD: roottest
     ports:
       - "8087:80"
     networks:
       - basicrum_bo_network
-    links:
+    depends_on:
       - db
 
 networks:
