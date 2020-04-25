@@ -2,7 +2,10 @@
 
 Hello and thank you for your interested in contributing to Basic RUM. We want a contributor to have a pleasant experience with the project and we prepared some useful hints for contributors:
 
-## 1. Unit Testing
+Table of Contents:
+ - [Unit Testing](#Unit-Testing)
+
+## Unit Testing
 
 We already built Unit Tests that cover the main application logic. However, in order to avoid regressions we encourage everyone to run Unit Tests locally before a Pull Request is created. We do not expect from every contributor to be able to deliver code covered by unit tests but we are open and ready to assist. 
 
