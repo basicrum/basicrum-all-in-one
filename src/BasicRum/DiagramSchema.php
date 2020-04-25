@@ -15,7 +15,7 @@ class DiagramSchema
     private $schema;
 
     /**
-     * SchemaOrchestrator constructor.
+     * DiagramSchema constructor.
      *
      * @throws \Exception
      */

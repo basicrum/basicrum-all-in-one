@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\TechnicalMetrics;
 
-class Collaborator implements \App\BasicRum\CollaboratorsInterface
+class Collaborator implements \App\BasicRum\CollaboratorsInterface, \App\BasicRum\DataFlavorInterface
 {
     /** @var array */
     private $technicalMetricsClassMap = [
@@ -52,5 +52,10 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     public function getAllPossibleRequirementsKeys(): array
     {
         return array_keys($this->technicalMetricsClassMap);
+    }
+
+    public function getDataFlavorType(): array
+    {
+        return ['percentile', 'histogram', 'count'];
     }
 }
