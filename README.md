@@ -24,12 +24,6 @@ If you would like to preload some data, you can do it by executing :
 make demo
 ```
 
-We need to run the following two commands by cron, in order to automaticaly process beacons:
-```
-docker exec -it basicrum_bo_php php bin/console basicrum:beacon:bundle-raw
-docker exec -it basicrum_bo_php php bin/console basicrum:beacon:import-bundle
-```
-
 ## Accessing Basic RUM and its local database:
 
  - **Basic RUM:** http://127.0.0.1:8086
