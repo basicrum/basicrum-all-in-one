@@ -8,9 +8,8 @@ services:
       context: symfony_app
       dockerfile: Dockerfile
     container_name: basicrum_bo_php
-    environment:
-      - CATCHER_ENDPOINT=http://test11:test22@172.27.0.1/excavator/digger.php
-      - MONITORED_ORIGIN=www.darvart.de
+    env_file:
+      - app.env
     volumes:
       - ./../:/usr/src/app
       - ./symfony_app/.env:/usr/src/app/.env
@@ -19,11 +18,13 @@ services:
     networks:
       - basicrum_bo_network
 
-  symfony_app_init:
+  crons:
     build:
-      context: symfony_app
+      context: crons
       dockerfile: Dockerfile
-    container_name: symfony_app_init
+    container_name: basicrum_bo_crons
+    env_file:
+      - app.env
     volumes:
       - ./../:/usr/src/app
       - ./symfony_app/.env:/usr/src/app/.env
@@ -31,17 +32,16 @@ services:
       - db
     networks:
       - basicrum_bo_network
-    command: "sh /usr/src/app/init.sh"
 
   db:
     image: mysql:8.0.15
     container_name: basicrum_bo_mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
       MYSQL_DATABASE: basicrum_demo
-      MYSQL_USER: roottest
-      MYSQL_PASSWORD: roottest
+      MYSQL_USER: basic
+      MYSQL_PASSWORD: rum
     networks:
       - basicrum_bo_network
     ports:
@@ -66,8 +66,8 @@ services:
     restart: always
     environment:
       PMA_HOST: db
-      PMA_USER: roottest
-      PMA_PASSWORD: roottest
+      PMA_USER: basic
+      PMA_PASSWORD: rum
     ports:
       - "8087:80"
     networks:

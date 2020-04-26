@@ -1,6 +1,6 @@
 ARG PHP_VERSION="7.3"
 
-FROM php:${PHP_VERSION}-fpm-alpine
+FROM php:${PHP_VERSION}-cli-alpine
 
 WORKDIR /usr/src/app
 
@@ -11,7 +11,10 @@ RUN apk add --no-cache zip bash libzip \
     && docker-php-ext-install pdo_mysql zip  \
     && apk del --purge .build-deps
 
-# install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --filename=composer --install-dir=/usr/local/bin \
-    && php -r "unlink('composer-setup.php');"
+# Configure crons
+COPY crontab /etc/crontabs/basicrum
+RUN crontab -u www-data /etc/crontabs/basicrum
+
+ENTRYPOINT []
+CMD ["crond", "-f", "-L", "/dev/stderr"]
+

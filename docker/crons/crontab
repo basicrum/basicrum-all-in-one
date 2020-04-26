@@ -1,0 +1,2 @@
+3/10 * * * * php /usr/src/app/bin/console basicrum:beacon:bundle-raw
+7/10 * * * * php /usr/src/app/bin/console basicrum:beacon:import-bundle
