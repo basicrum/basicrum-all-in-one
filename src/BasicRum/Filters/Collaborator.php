@@ -33,8 +33,8 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         foreach ($this->filtersClassMap as $filterKey => $class) { //echo $filterKey." === ".$requirements[$filterKey].PHP_EOL;
             if (isset($requirements[$filterKey])) {
                 $requirement = $requirements[$filterKey];
-                print_r($requirement);
-                exit();
+                // print_r($requirement);
+                // exit();
                 if (empty($requirement['search_value'])) {
                     continue;
                 }

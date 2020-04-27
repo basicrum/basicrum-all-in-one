@@ -58,7 +58,7 @@
             });
     })
 
-    const schema = {
+    var defaultSchema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Single Element Time Series Widget",
         "description": "Object containing time series widget details",
@@ -71,7 +71,8 @@
                         "properties": {
                             "name": {
                                 "type": "string",
-                                "title": "Segment Name"
+                                "title": "Segment Name",
+                                "minLength": 1
                             },
                             "color": {
                                 "type": "string",
@@ -81,10 +82,28 @@
                                 "enum": ["bar"],
                             }
                         },
+                        "required": ["name"],
                     },
                     "data_requirements": {
                         "type": "object",
                         "properties": {
+                            "filters": {
+                                "type": "object",
+                                "properties": {
+                                    "device_type": {
+                                        "type": "object",
+                                        "properties": {
+                                            "search_value": {
+                                                "enum": [1, 2, 3, 4],
+                                                "type": "integer"
+                                            },
+                                            "condition": {
+                                                "enum": ["is"]
+                                            }
+                                        }
+                                    }
+                                }
+                            },
                             "technical_metrics": {
                                 "type": "object",
                                 "properties": {
@@ -111,6 +130,10 @@
         },
         "type": "object",
         "properties": {
+            "title": {
+                "type": "string",
+                "minLength": 1
+            },
             "global": {
                 "type": "object",
                 "properties": {
@@ -120,7 +143,7 @@
                         "properties": {
                             "render_type": {
                                 "title": "Widget Type",
-                                "enum": ["time_series", "time_no_series"]
+                                "enum": ["time_series", "plane", "distribution"]
                             },
                             "layout" : {
                                 "title": "Layout",
@@ -150,8 +173,7 @@
                                     },
                                     "start": {
                                         "title": "Start",
-                                        "enum": [30],
-                                        "type": "integer"
+                                        "enum": ["30", "130"],
                                     },
                                     "end": {
                                         "Title": "End Date",
@@ -169,26 +191,20 @@
                     "1": {"$ref": "#/definitions/segment"}
                 }
             }
-        }
-
+        },
+        "required": ["title"]
     };
 
-
-
-    const json = {
+    const defaultJson = {
             title: '',
             global: {
                 presentation: {
-                    'render_type': 'time_series',
-                    'layout' : {
-                        bargap: 0,
-                        barmode: 'overlay'
-                    }
+                    'render_type': 'plane',
                 },
                 data_requirements: {
                     period: {
                         type: 'moving',
-                        start: 30,
+                        start: 130,
                         end: 'now',
                     },
                 }
@@ -201,10 +217,18 @@
                         type: 'bar'
                     },
                     data_requirements: {
+                        filters: {
+                            device_type: {
+                                search_value: 1,
+                                condition: 'is'
+                            }
+                        },
                         technical_metrics: {
-                            total_img_size: {
+                            first_paint: {
                                 data_flavor: {
-                                    percentile: 50
+                                    histogram: {
+                                        bucket: '200'
+                                    }
                                 }
                             }
                         }
@@ -214,7 +238,7 @@
         };
 
     const options = {
-        schema: schema,
+        schema: defaultSchema,
         mode: 'tree',
         modes: ['code', 'text', 'tree', 'preview'],
 
@@ -229,7 +253,7 @@
 
 
     const container = document.getElementById('jsoneditor');
-    appData.jsonEditor = new JSONEditor(container, options, json);
+    appData.jsonEditor = new JSONEditor(container, options, defaultJson);
 
     // Once loaded append modal div to body in order to appear above dark background
     $(function(){
@@ -246,7 +270,6 @@
         appData.validator = $(appData.modalFormId).validate({
             rules: {
                 name: "required",
-                // widget: "required",
             },
             submitHandler: function(form) {
 
