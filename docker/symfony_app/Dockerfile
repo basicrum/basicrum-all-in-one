@@ -15,3 +15,6 @@ RUN apk add --no-cache zip bash libzip \
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --filename=composer --install-dir=/usr/local/bin \
     && php -r "unlink('composer-setup.php');"
+
+# https://github.com/moby/moby/issues/2259
+RUN mkdir -p /usr/src/app && chown -R www-data:www-data /usr/src/app

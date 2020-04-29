@@ -1,4 +1,7 @@
 #!/bin/sh
+set -e
+
+cat /etc/passwd
 
 composer install --no-interaction;
 

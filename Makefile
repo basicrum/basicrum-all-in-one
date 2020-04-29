@@ -1,17 +1,8 @@
-.ONESHELL:
-SHELL = bash
-.SHELLFLAGS = -e
-
 dc_path=docker/docker-compose.yml
 app_container=symfony_app
 db_container=db
 
-init:
-	make up
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./init.sh
-	make user
-	make cc
-	make beacons
+init: up init_script user cc beacons
 
 up:
 	docker-compose -f ${dc_path} up -d --build
@@ -20,7 +11,7 @@ down:
 	docker-compose -f ${dc_path} down
 
 rebuild:
-	@echo -n "All the volumes will be deleted. You will loose data in DB. Are you sure? [y/N]: " && read answer && \
+	@/bin/echo -n "All the volumes will be deleted. You will loose data in DB. Are you sure? [y/N]: " && read answer && \
 	[[ $${answer:-N} = y ]] && make destroy && make init
 
 destroy:
@@ -31,11 +22,7 @@ jumpapp:
 	docker-compose -f ${dc_path} exec --user=www-data ${app_container} bash
 
 jumpdb:
-	docker-compose -f ${dc_path} exec --user=www-data ${db_container} mysql -h localhost
-
-cc:
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console cache:clear
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console basicrum:cache:clean
+	docker-compose -f ${dc_path} exec --user=www-data ${db_container} mysql
 
 demo: # Loads demo data to the DB
 	curl https://s3.eu-central-1.amazonaws.com/com.basicrum.demo/test_data/may-july-2019.sql.gz -o may-july-2019.sql.gz
@@ -43,6 +30,16 @@ demo: # Loads demo data to the DB
 	rm may-july-2019.sql.gz
 	make cc
 	make beacons
+
+test:
+	docker-compose -f ${dc_path} exec --user=www-data ${app_container} ./bin/phpunit
+
+init_script:
+	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./init.sh
+
+cc:
+	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console cache:clear
+	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console basicrum:cache:clean
 
 user: # Creates superadmin user
 	docker-compose -f ${dc_path} exec --user=www-data ${app_container} ./bin/console basicrum:superadmin:create
