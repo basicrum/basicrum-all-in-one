@@ -30,4 +30,9 @@ class BrowserName extends AbstractFilter
     {
         return 'user_agent_id';
     }
+
+    public function getSchema(): ?string
+    {
+        return null;
+    }
 }

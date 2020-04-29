@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\TechnicalMetrics;
 
-class Collaborator implements \App\BasicRum\CollaboratorsInterface, \App\BasicRum\DataFlavorInterface
+class Collaborator implements \App\BasicRum\CollaboratorsInterface
 {
     /** @var array */
     private $technicalMetricsClassMap = [
@@ -54,8 +54,35 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface, \App\BasicRu
         return array_keys($this->technicalMetricsClassMap);
     }
 
-    public function getDataFlavorType(): array
+    public function getDataMetrics(string $dataFlavor): string
     {
-        return ['percentile', 'histogram', 'count'];
+        $count = \count($this->technicalMetricsClassMap);
+        $segmentMetricsPart = '
+                            "technical_metrics": {
+                                "type": "object",
+                                "properties": {
+            ';
+        $i = 1;
+        foreach ($this->technicalMetricsClassMap as $key => $class) {
+            $entry = new $class();
+
+            $segmentMetricsPart .= '
+                    "'.$key.'": {
+                        "type": "object",
+                        "properties": {
+                            '.$dataFlavor.'
+                        }
+                    }';
+            if ($i < $count) {
+                $segmentMetricsPart .= ',';
+            }
+            ++$i;
+        }
+        $segmentMetricsPart .= '
+                }
+            },
+            ';
+
+        return $segmentMetricsPart;
     }
 }

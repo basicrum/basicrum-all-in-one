@@ -60,19 +60,26 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     public function getAllPossibleFiltersSchema()
     {
+        $count = \count($this->filtersClassMap);
+
         $schema = '
                             "filters": {
                                 "type": "object",
                                 "properties": {
             ';
-        /*$dt = new $this->filtersClassMap['device_type']();//->getSchema();
-        $os = new $this->filtersClassMap['operating_system']();//->getSchema();
-        $schema .= $dt->getSchema();
-        $schema .= $os->getSchema();*/
+
         foreach ($this->filtersClassMap as $filterKey => $class) {
             $init = new $class();
-            $schema .= $init->getSchema();
+
+            if (null === $init->getSchema()) {
+                continue;
+            }
+
+            $array[] = $init->getSchema();
         }
+
+        $schema .= implode(',', $array);
+
         $schema .= '
                                 }
                             }

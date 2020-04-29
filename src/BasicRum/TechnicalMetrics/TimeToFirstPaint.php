@@ -15,4 +15,9 @@ class TimeToFirstPaint implements \App\BasicRum\Report\SelectableInterface
     {
         return 'navigation_timings';
     }
+
+    public function getSchemaEntry(): string
+    {
+        return 'first_paint';
+    }
 }

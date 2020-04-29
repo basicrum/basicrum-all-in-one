@@ -30,7 +30,7 @@ class OperatingSystem extends AbstractFilter
                                                 "enum": ["is"]
                                             }
                                         }
-                                    },
+                                    }
         ';
 
         return $schema;

@@ -30,7 +30,7 @@ class DeviceType extends AbstractFilter
                                                 "enum": ["is"]
                                             }
                                         }
-                                    },
+                                    }
         ';
 
         return $schema;

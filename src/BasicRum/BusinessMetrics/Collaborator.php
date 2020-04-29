@@ -48,4 +48,39 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     {
         return array_keys($this->businessMetricsClassMap);
     }
+
+    public function getDataMetrics(string $dataFlavor): string
+    {
+        $count = \count($this->businessMetricsClassMap);
+
+        $segmentMetricsPart = '
+                            "business_metrics": {
+                                "type": "object",
+                                "properties": {
+            ';
+        $i = 1;
+        foreach ($this->businessMetricsClassMap as $key => $class) {
+            $entry = new $class();
+
+            $segmentMetricsPart .= '
+                    "'.$key.'": {
+                        "type": "object",
+                        "properties": {
+                            '.$dataFlavor.'
+                        }
+                    }';
+
+            if ($i < $count) {
+                $segmentMetricsPart .= ',';
+            }
+            ++$i;
+        }
+
+        $segmentMetricsPart .= '
+                }
+            }
+            ';
+
+        return $segmentMetricsPart;
+    }
 }

@@ -55,6 +55,7 @@
         requestAJAX.get("/widget/schema/"+wtype)
             .done(function(response){
                 console.log(response);
+                appData.jsonEditor.setSchema(JSON.parse(response));
             });
     })
 
@@ -173,7 +174,7 @@
                                     },
                                     "start": {
                                         "title": "Start",
-                                        "enum": ["30", "130"],
+                                        "enum": [30, 130],
                                     },
                                     "end": {
                                         "Title": "End Date",

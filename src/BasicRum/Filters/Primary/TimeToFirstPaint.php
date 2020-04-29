@@ -15,4 +15,9 @@ class TimeToFirstPaint extends AbstractFilter
     {
         return 'first_paint';
     }
+
+    public function getSchema(): ?string
+    {
+        return null;
+    }
 }

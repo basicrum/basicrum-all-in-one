@@ -25,9 +25,4 @@ abstract class AbstractFilter implements \App\BasicRum\Report\SecondaryFilterabl
     {
         return $this->searchValue;
     }
-
-    public function getSchema(): ?string
-    {
-        return '';
-    }
 }
