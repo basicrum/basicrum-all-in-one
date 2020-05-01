@@ -4,8 +4,7 @@ services:
   - docker
 
 stages:
-  - build
-  - test
+  - build_and_test
   - name: publish
     if: tag IS present
 
@@ -14,14 +13,14 @@ env:
 
 jobs:
   include:
-    - stage: build
+    - stage: build_and_test
       script:
+        # build
         - mv -f .env.travis .env
         - make up
         - make init_script
         - make cc
-    - stage: test
-      script:
+        # test
         - >
           for n in {1..5}; do
             docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:beacon:init-folders;
@@ -35,6 +34,7 @@ jobs:
           done;
 
         - make test
+
     - stage: publish
       script:
         - make docker_publish
