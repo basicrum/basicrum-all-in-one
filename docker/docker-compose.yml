@@ -11,8 +11,8 @@ services:
     env_file:
       - app.env
     volumes:
-      - ./..:/usr/src/app
-      - ./symfony_app/.env:/usr/src/app/.env
+      - ./..:/var/www/html
+      - ./symfony_app/.env:/var/www/html/.env
     depends_on:
       - db
     networks:
@@ -26,8 +26,8 @@ services:
     env_file:
       - app.env
     volumes:
-      - ./..:/usr/src/app
-      - ./symfony_app/.env:/usr/src/app/.env
+      - ./..:/var/www/html
+      - ./symfony_app/.env:/var/www/html/.env
     depends_on:
       - db
     networks:
@@ -51,7 +51,7 @@ services:
     image: nginx:1.17-alpine
     container_name: basicrum_bo_nginx
     volumes:
-      - ./../public/:/usr/src/app
+      - ./../public/:/var/www/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - 8086:80

@@ -2,8 +2,6 @@ ARG PHP_VERSION="7.3"
 
 FROM php:${PHP_VERSION}-cli-alpine
 
-WORKDIR /usr/src/app
-
 # Install php extennsions (mysql & zip)
 RUN apk add --no-cache zip bash libzip \
     && apk add --no-cache --virtual .build-deps libzip-dev \
@@ -14,9 +12,6 @@ RUN apk add --no-cache zip bash libzip \
 # Configure crons
 COPY crontab /etc/crontabs/basicrum
 RUN crontab -u www-data /etc/crontabs/basicrum
-
-# https://github.com/moby/moby/issues/2259
-RUN mkdir -p /usr/src/app && chown -R www-data:www-data /usr/src/app
 
 ENTRYPOINT []
 CMD ["crond", "-f", "-L", "/dev/stderr"]
