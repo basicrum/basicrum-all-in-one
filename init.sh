@@ -1,7 +1,9 @@
 #!/bin/sh
 set -e
 
-cat /etc/passwd
+if [ ! -f .env ]; then
+  cp docker/symfony_app/.env .env
+fi
 
 composer install --no-interaction;
 

@@ -8,8 +8,8 @@ env:
   - DC_PATH=docker/docker-compose.yml APP=symfony_app
 
 before_script:
-  - make up
   - mv -f .env.travis .env
+  - make up
   - make init_script
   - make cc
 

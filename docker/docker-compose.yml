@@ -12,7 +12,6 @@ services:
       - app.env
     volumes:
       - ./..:/var/www/html:delegated
-      - ./symfony_app/.env:/var/www/html/.env
     depends_on:
       - db
     networks:
@@ -27,7 +26,6 @@ services:
       - app.env
     volumes:
       - ./..:/var/www/html:delegated
-      - ./symfony_app/.env:/var/www/html/.env
     depends_on:
       - db
     networks:
