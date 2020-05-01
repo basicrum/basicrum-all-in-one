@@ -54,34 +54,25 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         return array_keys($this->technicalMetricsClassMap);
     }
 
-    public function getDataMetrics(string $dataFlavor): string
+    public function getDataMetrics(array $dataFlavor): array
     {
-        $count = \count($this->technicalMetricsClassMap);
-        $segmentMetricsPart = '
-                            "technical_metrics": {
-                                "type": "object",
-                                "properties": {
-            ';
-        $i = 1;
+        $segmentMetricsPart = [
+            'technical_metrics' => [
+                'type' => 'object',
+                'properties' => [],
+            ],
+        ];
+
         foreach ($this->technicalMetricsClassMap as $key => $class) {
             $entry = new $class();
 
-            $segmentMetricsPart .= '
-                    "'.$key.'": {
-                        "type": "object",
-                        "properties": {
-                            '.$dataFlavor.'
-                        }
-                    }';
-            if ($i < $count) {
-                $segmentMetricsPart .= ',';
-            }
-            ++$i;
+            $segmentMetricsPart['technical_metrics']['properties'][$key] = [
+                'type' => 'object',
+                'properties' => [],
+            ];
+
+            $segmentMetricsPart['technical_metrics']['properties'][$key]['properties'] = $dataFlavor;
         }
-        $segmentMetricsPart .= '
-                }
-            },
-            ';
 
         return $segmentMetricsPart;
     }

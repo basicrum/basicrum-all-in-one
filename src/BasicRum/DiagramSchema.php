@@ -26,46 +26,53 @@ class DiagramSchema
         $this->type = $type;
         $this->generateLayout();
 
+        $this->generateGlobalFilters();
         $this->generateDefinitionSegment();
     }
 
-    public function getDataFlavor($renderType): string
+    public function getDataFlavor($renderType): array
     {
         $dataFlavor = '';
         if ('time_series' == $renderType) {
-            $dataFlavor = '"data_flavor": {
-                                "type": "object",
-                                "properties": {
-                                    "percentile": {
-                                        "enum": [50],
-                                        "type": "integer"
-                                    }
-                                }
-                            }';
+            $dataFlavor = [
+                'data_flavor' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'percentile' => [
+                            'enum' => [50],
+                            'type' => 'integer',
+                        ],
+                    ],
+                ],
+            ];
         } elseif ('plane' == $renderType) {
-            $dataFlavor = '"data_flavor": {
-                                "type": "object",
-                                "properties": {
-                                    "histogram": {
-                                        "type": "object",
-                                        "properties": {
-                                            "bucket": {
-                                                "enum": [200],
-                                                "type": "integer"
-                                            }
-                                        }
-                                    }
-                                }
-                            }';
+            $dataFlavor = [
+                'data_flavor' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'histogram' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'bucket' => [
+                                    'enum' => [200],
+                                    'type' => 'integer',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ];
         } elseif ('distribution' == $renderType) {
-            $dataFlavor = '"data_flavor": {
-                                "type": "object",
-                                "properties": {
-                                    "count": {
-                                        "type": "boolean"
-                                    }
-                                }
-                            }';
+            $dataFlavor = [
+                'data_flavor' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'count' => [
+                            'type' => 'boolean',
+                        ],
+                    ],
+                ],
+            ];
         }
 
         return $dataFlavor;
@@ -75,67 +82,77 @@ class DiagramSchema
     {
         $tm = new TechnicalMetrics();
         $bm = new BusinessMetrics();
-        //echo $tm->getDataMetrics($this->type); exit();
-        $segment = '
-            "segment": {
-                "type": "object",
-                "properties": {
-                    "presentation": {
-                        "type": "object",
-                        "properties": {
-                            "name": {
-                                "type": "string",
-                                "title": "Segment Name"
-                            },
-                            "color": {
-                                "type": "string",
-                                "title": "Segment Color"
-                            }';
+
+        $segment = [
+            'segment' => [
+                'type' => 'object',
+                'properties' => [
+                    'presentation' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'name' => [
+                                'type' => 'string',
+                                'title' => 'Segment Name',
+                            ],
+                            'color' => [
+                                'type' => 'string',
+                                'title' => 'Segment Color',
+                            ],
+                        ],
+                    ],
+                    'data_requirements' => [
+                        'type' => 'object',
+                        'properties' => [
+                            // technical metrics
+                            // business metrics
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $technicalMetrics = $tm->getDataMetrics($this->getDataFlavor($this->type));
+        $businessMetrics = $bm->getDataMetrics($this->getDataFlavor($this->type));
+
+        $segment['segment']['properties']['data_requirements']['properties'][key($this->filters)] = $this->filters;
+
+        $segment['segment']['properties']['data_requirements']['properties'][key($technicalMetrics)] = $technicalMetrics;
+        $segment['segment']['properties']['data_requirements']['properties'][key($businessMetrics)] = $businessMetrics;
 
         if ('time_series' == $this->type) {
-            $segment .= ',
-                                "type": {
-                                    "enum": ["bar"]
-                                }
-            ';
+            $segment['segment']['properties']['presentation']['properties'] = [
+                'type' => [
+                    'enum' => ['bar'],
+                ],
+            ];
         }
-
-        $segment .= '
-                        }
-                    },
-                    "data_requirements": {
-                        "type": "object",
-                        "properties": {
-                            '.($tm->getDataMetrics($this->getDataFlavor($this->type))).'
-                            '.($bm->getDataMetrics($this->getDataFlavor($this->type))).'
-                        }
-                    }
-                }
-            }
-        ';
 
         $this->definitionSegment = $segment;
     }
 
     public function generateLayout()
     {
-        $this->layout = '';
+        $this->layout = [
+            'layout' => [
+                'title' => 'Layout',
+                'type' => 'object',
+                'properties' => [
+                    'bargap' => [
+                        'description' => 'Bargap',
+                        'type' => 'integer',
+                        'minimum' => 0,
+                    ],
+                ],
+            ],
+        ];
+
         if ('time_series' == $this->type) {
-            $this->layout = ',
-                            "layout" : {
-                                "title": "Layout",
-                                "type": "object",
-                                "properties": {
-                                    "bargap": {
-                                        "description": "Bargap",
-                                        "type": "integer",
-                                        "minimum": 0
-                                    },
-                                    "barmode": {
-                                        "enum": ["overlay"]
-                                    }
-                                }
-                            }';
+            $barmode = [
+                'barmode' => [
+                    'enum' => ['overlay'],
+                ],
+            ];
+            $this->layout = array_merge($this->layout, $barmode);
         }
     }
 
@@ -155,66 +172,74 @@ class DiagramSchema
 
     public function generateSchema()
     {
-        $this->generateGlobalFilters();
+        $schemaArray = [
+            '$schema' => 'http://json-schema.org/draft-07/schema#',
+            'definitions' => [
+            ],
+            'type' => 'object',
+            'properties' => [
+                'global' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'presentation' => [
+                            'title' => 'Presentation part',
+                            'type' => 'object',
+                            'properties' => [
+                                'render_type' => [
+                                    'title' => 'Widget Type',
+                                    'enum' => ['time_series', 'distribution', 'plane'],
+                                ],
+                                // $this->layout
+                                'layout' => [
+                                    'title' => 'Layout',
+                                    'type' => 'object',
+                                    'properties' => [],
+                                ],
+                            ],
+                        ],
+                        'data_requirements' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'period' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'type' => [
+                                            'title' => 'Type',
+                                            'enum' => ['moving'],
+                                        ],
+                                        'start' => [
+                                            'title' => 'Start',
+                                            'enum' => ['30'],
+                                            'type' => 'integer',
+                                        ],
+                                        'end' => [
+                                            'Title' => 'End Date',
+                                            'enum' => ['now'],
+                                        ],
+                                    ],
+                                ],
+                                //$this->filters
+                            ],
+                        ],
+                    ],
+                ],
+                'segments' => [
+                    'type' => 'object',
+                    'properties' => [
+                        '1' => ['"$ref"' => '#/definitions/segment'],
+                    ],
+                ],
+            ],
+        ];
 
-        $schema = '
-        {
-            "$schema": "http://json-schema.org/draft-07/schema#",
-            "definitions": {
-                '.$this->definitionSegment.'
-            },
-            "type": "object",
-            "properties": {
-                "global": {
-                    "type": "object",
-                    "properties": {
-                        "presentation": {
-                            "title": "Presentation part",
-                            "type": "object",
-                            "properties": {
-                                "render_type": {
-                                    "title": "Widget Type",
-                                    "enum": ["time_series", "distribution", "plane"]
-                                }
-                                '.$this->layout.'
-                            }
-                        },
-                        "data_requirements": {
-                            "type": "object",
-                            "properties": {
-                                "period": {
-                                   "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "title": "Type",
-                                            "enum": ["moving"]
-                                        },
-                                        "start": {
-                                            "title": "Start",
-                                            "enum": ["30"],
-                                            "type": "integer"
-                                        },
-                                        "end": {
-                                            "Title": "End Date",
-                                            "enum": ["now"]
-                                        }
-                                    }
-                                },
-                                '.$this->filters.'
-                            }
-                        }
-                    }
-                },
-                "segments": {
-                    "type": "object",
-                    "properties": {
-                        "1": {"$ref": "#/definitions/segment"}
-                    }
-                }
-            }
+        if ($this->layout) {
+            $schemaArray['properties']['global']['properties']['presentation']['properties']['layout']['properties'] = $this->layout;
         }
-        ';
 
-        return $schema;
+        $schemaArray['properties']['global']['properties']['data_requirements']['properties'][key($this->filters)] = $this->filters;
+
+        $schemaArray['definitions'] = $this->definitionSegment;
+
+        return $schemaArray;
     }
 }

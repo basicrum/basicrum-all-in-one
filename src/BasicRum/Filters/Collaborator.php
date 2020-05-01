@@ -60,30 +60,21 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
 
     public function getAllPossibleFiltersSchema()
     {
-        $count = \count($this->filtersClassMap);
-
-        $schema = '
-                            "filters": {
-                                "type": "object",
-                                "properties": {
-            ';
+        $schema = [
+            'filters' => [
+                'type' => 'object',
+                'properties' => [],
+            ],
+        ];
 
         foreach ($this->filtersClassMap as $filterKey => $class) {
             $init = new $class();
+            $filterSegment = $init->getSchema();
 
-            if (null === $init->getSchema()) {
-                continue;
+            if (\is_array($init->getSchema())) {
+                $schema['filters']['properties'][key($filterSegment)] = $filterSegment;
             }
-
-            $array[] = $init->getSchema();
         }
-
-        $schema .= implode(',', $array);
-
-        $schema .= '
-                                }
-                            }
-        ';
 
         return $schema;
     }

@@ -16,7 +16,7 @@ class TimeToFirstByte extends AbstractFilter
         return 'first_byte';
     }
 
-    public function getSchema(): ?string
+    public function getSchema(): ?array
     {
         return null;
     }

@@ -16,22 +16,22 @@ class DeviceType extends AbstractFilter
         return 'device_type_id';
     }
 
-    public function getSchema(): string
+    public function getSchema(): array
     {
-        $schema = '
-                                    "device_type": {
-                                        "type": "object",
-                                        "properties": {
-                                            "search_value": {
-                                                "enum": [1, 2, 3, 4, 5],
-                                                "type": "integer"
-                                            },
-                                            "condition": {
-                                                "enum": ["is"]
-                                            }
-                                        }
-                                    }
-        ';
+        $schema = [
+            'device_type' => [
+                'type' => 'object',
+                'properties' => [
+                    'search_value' => [
+                        'enum' => [1, 2, 3, 4, 5],
+                        'type' => 'integer',
+                    ],
+                    'condition' => [
+                        'enum' => ['is'],
+                    ],
+                ],
+            ],
+        ];
 
         return $schema;
     }

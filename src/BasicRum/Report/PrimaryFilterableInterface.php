@@ -19,5 +19,5 @@ interface PrimaryFilterableInterface
 
     public function getPrimarySearchFieldName(): string;
 
-    public function getSchema(): ?string;
+    public function getSchema(): ?array;
 }
