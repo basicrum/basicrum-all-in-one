@@ -6,7 +6,7 @@ init: up init_script user cc beacons
 
 up:
 	docker-compose -f ${dc_path} up -d --build
-	docker-compose -f ${dc_path} exec ${app_container} chown www-data:www-data .
+	docker-compose -f ${dc_path} exec ${app_container} ./chown.sh
 
 down:
 	docker-compose -f ${dc_path} down
