@@ -1,5 +1,6 @@
 .PHONY: help
 .DEFAULT_GOAL := help
+SHELL=bash
 
 REPO := basicrum/backoffice_php_fpm
 TAG := $(shell git tag --points-at HEAD | head -1)
