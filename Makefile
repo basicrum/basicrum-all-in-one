@@ -15,7 +15,6 @@ init: up init_script user cc beacons ## Initialise environment on a first start
 
 up: ## Start local environment
 	docker-compose -f ${dc_path} up -d --build
-	docker-compose -f ${dc_path} exec ${app_container} ./chown.sh
 
 down: ## Stop local environment
 	docker-compose -f ${dc_path} down
