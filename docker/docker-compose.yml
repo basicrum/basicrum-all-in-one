@@ -12,6 +12,10 @@ services:
       - app.env
     volumes:
       - ./..:/var/www/html:delegated
+      - ./symfony_app/www.conf:/usr/local/etc/php-fpm.d/www.conf # local dev only, should not be used for production
+    command: # local dev only, should not be used for production
+      - "php-fpm"
+      - "-R"
     depends_on:
       - db
     networks:
@@ -76,4 +80,3 @@ services:
 networks:
   basicrum_bo_network:
     driver: bridge
-

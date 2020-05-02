@@ -29,10 +29,10 @@ destroy: ## Destroy local environment
 	docker-compose -f ${dc_path} rm -vsf
 
 jumpapp: ## Jump to the app container
-	docker-compose -f ${dc_path} exec --user=www-data ${app_container} bash
+	docker-compose -f ${dc_path} exec ${app_container} bash
 
 jumpdb: ## Jump to db container
-	docker-compose -f ${dc_path} exec --user=www-data ${db_container} mysql
+	docker-compose -f ${dc_path} exec ${db_container} mysql
 
 demo: ## Loads demo data to the DB
 	curl https://s3.eu-central-1.amazonaws.com/com.basicrum.demo/test_data/may-july-2019.sql.gz -o may-july-2019.sql.gz
@@ -42,23 +42,23 @@ demo: ## Loads demo data to the DB
 	make beacons
 
 test: ## Start tests on local environment
-	docker-compose -f ${dc_path} exec --user=www-data ${app_container} ./bin/phpunit
+	docker-compose -f ${dc_path} exec ${app_container} ./bin/phpunit
 
 init_script: ## Inistall dependencies and apply migrations
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./init.sh
+	docker-compose -f ${dc_path} exec -T ${app_container} ./init.sh
 
 cc: ## Clean cache
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console cache:clear
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console basicrum:cache:clean
+	docker-compose -f ${dc_path} exec -T ${app_container} ./bin/console cache:clear
+	docker-compose -f ${dc_path} exec -T ${app_container} ./bin/console basicrum:cache:clean
 
 user: ## Creates superadmin user
-	docker-compose -f ${dc_path} exec --user=www-data ${app_container} ./bin/console basicrum:superadmin:create
+	docker-compose -f ${dc_path} exec ${app_container} ./bin/console basicrum:superadmin:create
 
 beacons: ## Prepare beacons folders
-	docker-compose -f ${dc_path} exec -T --user=www-data ${app_container} ./bin/console basicrum:beacon:init-folders
+	docker-compose -f ${dc_path} exec -T ${app_container} ./bin/console basicrum:beacon:init-folders
 
 migrate: ## Apply migrations
-	docker-compose -f ${dc_path} exec --user=www-data ${app_container} ./bin/console doctrine:migrations:migrate
+	docker-compose -f ${dc_path} exec ${app_container} ./bin/console doctrine:migrations:migrate
 
 docker_publish: docker_build docker_login docker_push ## Publish new image to docker hub
 

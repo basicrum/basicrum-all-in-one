@@ -23,14 +23,14 @@ jobs:
         # test
         - >
           for n in {1..5}; do
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:beacon:init-folders;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:beacon:archive-bundle;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:beacon:bundle-raw;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:beacon:import-bundle;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:cache:clean;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:last-blocking-resource:calculate;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:superadmin:create --no-interaction --quiet;
-            docker-compose -f ${DC_PATH} exec -T --user=www-data ${APP} ./bin/console basicrum:visit:generate;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:init-folders;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:archive-bundle;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:bundle-raw;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:import-bundle;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:cache:clean;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:last-blocking-resource:calculate;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:superadmin:create --no-interaction --quiet;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:visit:generate;
           done;
 
         - make test
