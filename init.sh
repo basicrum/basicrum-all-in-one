@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ ! -f .env ]; then
+if [ ! -f ".env" ]; then
   cp docker/symfony_app/.env .env
 fi
 

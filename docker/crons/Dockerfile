@@ -11,7 +11,7 @@ RUN apk add --no-cache zip bash libzip \
 
 # Configure crons
 COPY crontab /etc/crontabs/basicrum
-RUN crontab -u www-data /etc/crontabs/basicrum
+RUN crontab /etc/crontabs/basicrum
 
 ENTRYPOINT []
 CMD ["crond", "-f", "-L", "/dev/stderr"]
