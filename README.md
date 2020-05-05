@@ -7,40 +7,26 @@ The backoffice of Basic RUM. A system written on Symfony 5 that aims to help per
 
 ## I want to contribute!
 
-Checkout the [contributors notes](./CONTRIBUTING.md) 
+Checkout the [contributors notes](./CONTRIBUTING.md)
 
 ## Installation:
 The instruction below are applicable only for development but still incomplete for production. This installation will be automatically initialized with demo database.
-
+Init script will ask you to create an admin user during the process of
+ installation.
 ```
 git clone git@github.com:basicrum/backoffice.git
 cd backoffice
-docker-compose -f docker/docker-compose.yml build --no-cache
-docker-compose -f docker/docker-compose.yml up -d
-docker exec basicrum_bo_php composer update symfony/flex --no-plugins --no-scripts
-curl https://www.revampix.com/basic_rum/test_data/may-july-2019.sql.gz -o may-july-2019.sql.gz
-gunzip -k may-july-2019.sql.gz
-cat may-july-2019.sql | docker exec -i basicrum_bo_mysql sh -c 'mysql -uroot -prootsecret'
-docker exec -it basicrum_bo_php php bin/console c:c
-docker exec -it basicrum_bo_php php bin/console basicrum:cache:clean
-docker exec -it basicrum_bo_php php bin/console basicrum:beacon:init-folders
-rm may-july-2019.sql.gz
+make init
 ```
 
-We need to run the following two commands by cron, in order to automaticaly process beacons:
+If you would like to preload some data, you can do it by executing :
 ```
-docker exec -it basicrum_bo_php php bin/console basicrum:beacon:bundle-raw
-docker exec -it basicrum_bo_php php bin/console basicrum:beacon:import-bundle
-```
-
-After installation we need first to create a **super admin user**:
-```
-docker exec -it basicrum_bo_php php bin/console basicrum:superadmin:create
+make demo
 ```
 
 ## Accessing Basic RUM and its local database:
 
- - **Basic RUM:** http://127.0.0.1:8086 
+ - **Basic RUM:** http://127.0.0.1:8086
  - **PhpMyAdmin:** http://127.0.0.1:8087
 
 Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker ip here):8086
