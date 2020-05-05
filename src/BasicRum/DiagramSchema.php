@@ -13,8 +13,8 @@ class DiagramSchema
     private $definitionSegment;
     private $layout;
     private $filters;
-    private $properties;
-    private $schema;
+    private $businessMetrics;
+    private $technicalMetrics;
 
     /**
      * DiagramSchema constructor.
@@ -28,6 +28,56 @@ class DiagramSchema
 
         $this->generateGlobalFilters();
         $this->generateDefinitionSegment();
+    }
+
+    public function getBusinessMetrics(): array
+    {
+        $class = new BusinessMetrics();
+        $businessMetricsClassMap = $class->getAllPossibleRequirements();
+
+        $count = \count($businessMetricsClassMap);
+
+        $segmentMetricsPart = [
+            'business_metrics' => [
+                'type' => 'object',
+                'properties' => [],
+            ],
+        ];
+
+        foreach (array_keys($businessMetricsClassMap) as $key) {
+            $segmentMetricsPart['business_metrics']['properties'][$key] = [
+                'type' => 'object',
+                'properties' => [],
+            ];
+
+            $segmentMetricsPart['business_metrics']['properties'][$key]['properties'] = $this->getDataFlavor($this->type);
+        }
+
+        return $segmentMetricsPart;
+    }
+
+    public function getTechnicalMetrics(): array
+    {
+        $class = new TechnicalMetrics();
+        $technicalMetricsClassMap = $class->getAllPossibleRequirements();
+
+        $segmentMetricsPart = [
+            'technical_metrics' => [
+                'type' => 'object',
+                'properties' => [],
+            ],
+        ];
+
+        foreach (array_keys($technicalMetricsClassMap) as $key) {
+            $segmentMetricsPart['technical_metrics']['properties'][$key] = [
+                'type' => 'object',
+                'properties' => [],
+            ];
+
+            $segmentMetricsPart['technical_metrics']['properties'][$key]['properties'] = $this->getDataFlavor($this->type);
+        }
+
+        return $segmentMetricsPart;
     }
 
     public function getDataFlavor($renderType): array
@@ -80,9 +130,6 @@ class DiagramSchema
 
     public function generateDefinitionSegment()
     {
-        $tm = new TechnicalMetrics();
-        $bm = new BusinessMetrics();
-
         $segment = [
             'segment' => [
                 'type' => 'object',
@@ -111,13 +158,15 @@ class DiagramSchema
             ],
         ];
 
-        $technicalMetrics = $tm->getDataMetrics($this->getDataFlavor($this->type));
-        $businessMetrics = $bm->getDataMetrics($this->getDataFlavor($this->type));
+        $businessMetrics = $this->getBusinessMetrics();
+        $technicalMetrics = $this->getTechnicalMetrics();
 
-        $segment['segment']['properties']['data_requirements']['properties'][key($this->filters)] = $this->filters;
-
-        $segment['segment']['properties']['data_requirements']['properties'][key($technicalMetrics)] = $technicalMetrics;
-        $segment['segment']['properties']['data_requirements']['properties'][key($businessMetrics)] = $businessMetrics;
+        $segment['segment']['properties']['data_requirements']['properties'] = array_merge(
+            $segment['segment']['properties']['data_requirements']['properties'],
+            $this->filters,
+            $technicalMetrics,
+            $businessMetrics
+        );
 
         if ('time_series' == $this->type) {
             $segment['segment']['properties']['presentation']['properties'] = [
@@ -159,15 +208,25 @@ class DiagramSchema
     public function generateGlobalFilters()
     {
         $filter = new Filters();
-        $this->filters = $filter->getAllPossibleFiltersSchema();
-    }
+        $filtersClassMap = $filter->getAllPossibleRequirements();
 
-    public function generateSegmentFilters()
-    {
-    }
+        $schema = [
+            'filters' => [
+                'type' => 'object',
+                'properties' => [],
+            ],
+        ];
 
-    public function generateProperties()
-    {
+        foreach ($filtersClassMap as $filterKey => $filtersClass) {
+            $init = new $filtersClass();
+            $filterSegment = $init->getSchema();
+
+            if (\is_array($init->getSchema())) {
+                $schema['filters']['properties'][key($filterSegment)] = $filterSegment;
+            }
+        }
+
+        $this->filters = $schema;
     }
 
     public function generateSchema()
@@ -236,7 +295,10 @@ class DiagramSchema
             $schemaArray['properties']['global']['properties']['presentation']['properties']['layout']['properties'] = $this->layout;
         }
 
-        $schemaArray['properties']['global']['properties']['data_requirements']['properties'][key($this->filters)] = $this->filters;
+        $schemaArray['properties']['global']['properties']['data_requirements']['properties'] = array_merge(
+            $schemaArray['properties']['global']['properties']['data_requirements']['properties'],
+            $this->filters
+        );
 
         $schemaArray['definitions'] = $this->definitionSegment;
 
