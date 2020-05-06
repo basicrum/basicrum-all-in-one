@@ -268,8 +268,8 @@ class DiagramSchema
                                         ],
                                         'start' => [
                                             'title' => 'Start',
-                                            'enum' => ['30'],
                                             'type' => 'integer',
+                                            'minimum' => 0,
                                         ],
                                         'end' => [
                                             'Title' => 'End Date',
