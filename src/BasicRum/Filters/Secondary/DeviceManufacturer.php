@@ -30,9 +30,4 @@ class DeviceManufacturer extends AbstractFilter
     {
         return 'user_agent_id';
     }
-
-    public function getSchema(): ?array
-    {
-        return null;
-    }
 }

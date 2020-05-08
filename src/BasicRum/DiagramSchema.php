@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\BasicRum;
 
 use App\BasicRum\BusinessMetrics\Collaborator as BusinessMetrics;
-use App\BasicRum\Filters\Collaborator as Filters;
+use App\BasicRum\DiagramSchema\Filters\Collaborator as Filters;
 use App\BasicRum\TechnicalMetrics\Collaborator as TechnicalMetrics;
 
 class DiagramSchema

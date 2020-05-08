@@ -30,9 +30,4 @@ class PageViewsCount extends AbstractFilter
     {
         return 'page_view_id';
     }
-
-    public function getSchema(): ?array
-    {
-        return null;
-    }
 }

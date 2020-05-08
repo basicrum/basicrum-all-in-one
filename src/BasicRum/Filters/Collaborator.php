@@ -54,9 +54,4 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     {
         return array_keys($this->filtersClassMap);
     }
-
-    public function getAllPossibleRequirements(): array
-    {
-        return $this->filtersClassMap;
-    }
 }

@@ -24,6 +24,4 @@ interface SecondaryFilterableInterface
     public function getPrimaryTableName(): string;
 
     public function getPrimarySearchFieldName(): string;
-
-    public function getSchema(): ?array;
 }

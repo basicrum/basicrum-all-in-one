@@ -30,9 +30,4 @@ class Url extends AbstractFilter
     {
         return 'url_id';
     }
-
-    public function getSchema(): ?array
-    {
-        return null;
-    }
 }
