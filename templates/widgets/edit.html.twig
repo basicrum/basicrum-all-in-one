@@ -19,7 +19,6 @@
                             <div class="form-group col-md-6">
                                 <label for="wtype">Diagram Type</label>
                                 <select name="wtype" class="form-control" id="wtype">
-                                    <option disabled="disabled" selected="selected">----</option>
                                     <option value="distribution">Distribution</option>
                                     <option value="time_series">Time Series</option>
                                     <option value="plane">Plane</option>
@@ -46,20 +45,32 @@
 
 <link href="/plugins/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <script src="/plugins/jsoneditor/jsoneditor.min.js"></script>
+<script src="/js/widgets/default_json.js"></script>
 
 <script>
 
-    $("#wtype").on("change", function(){
-        var wtype = $(this, " option:selected").val();
-        console.log(wtype);
-        requestAJAX.get("/widget/schema/"+wtype)
+    function getSchema( schemaType ) {
+        requestAJAX.get("/widget/schema/"+schemaType)
             .done(function(response){
                 console.log(response);
                 appData.jsonEditor.setSchema(JSON.parse(response));
             });
-    })
+    }
 
-    var defaultSchema = {
+    $("#wtype").on("change", function(){
+        var wtype = $(this, " option:selected").val();
+        console.log(wtype);
+        /*requestAJAX.get("/widget/schema/"+wtype)
+            .done(function(response){
+                console.log(response);
+                appData.jsonEditor.setSchema(JSON.parse(response));
+            });*/
+        getSchema(wtype);
+    });
+
+    getSchema($("#wtype option:selected").val());
+
+    /*var defaultSchema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Single Element Time Series Widget",
         "description": "Object containing time series widget details",
@@ -194,52 +205,12 @@
             }
         },
         "required": ["title"]
-    };
+    };*/
 
-    const defaultJson = {
-            title: '',
-            global: {
-                presentation: {
-                    'render_type': 'plane',
-                },
-                data_requirements: {
-                    period: {
-                        type: 'moving',
-                        start: 130,
-                        end: 'now',
-                    },
-                }
-            },
-            segments: {
-                1: {
-                    presentation: {
-                        name: '',
-                        color: '#ff6023',
-                        type: 'bar'
-                    },
-                    data_requirements: {
-                        filters: {
-                            device_type: {
-                                search_value: 1,
-                                condition: 'is'
-                            }
-                        },
-                        technical_metrics: {
-                            first_paint: {
-                                data_flavor: {
-                                    histogram: {
-                                        bucket: '200'
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
+
 
     const options = {
-        schema: defaultSchema,
+        // schema: defaultSchema,
         mode: 'tree',
         modes: ['code', 'text', 'tree', 'preview'],
 
