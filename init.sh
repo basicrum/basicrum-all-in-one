@@ -1,9 +1,7 @@
 #!/bin/sh
 set -e
 
-if [ ! -f ".env" ]; then
-  cp docker/symfony_app/.env .env
-fi
+cp docker/symfony_app/.env .env
 
 composer install --no-interaction;
 
