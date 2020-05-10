@@ -116,13 +116,9 @@ class SegmentsDeviceDistributionTest extends TestCase
             ]
         ];
 
-        $doctrine = $this->getMockBuilder(\Doctrine\Bundle\DoctrineBundle\Registry::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
         $diagramOrchestrator = $this->getMockBuilder(DiagramOrchestrator::class)
             ->setMethods(['process'])
-            ->setConstructorArgs([$input, $doctrine])
+            ->disableOriginalConstructor()
             ->getMock();
 
         $diagramOrchestrator

@@ -18,33 +18,26 @@ class WidgetController extends AbstractController
 {
     /**
      * @Route("/widget/generate_diagram", name="widget_generate_diagram")
+     * @param DiagramOrchestrator $diagramOrchestrator
+     * @param DiagramBuilder $diagramBuilder
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
      */
-    public function generateDiagram()
+    public function generateDiagram(DiagramOrchestrator $diagramOrchestrator, DiagramBuilder $diagramBuilder)
     {
         ini_set('memory_limit', '-1');
 
-        $diagramOrchestrator = new DiagramOrchestrator(
-            $_POST,
-            $this->getDoctrine()
-        );
-
-        $diagramBuilder = new DiagramBuilder();
+        $diagramOrchestrator->load($_POST);
 
         $data = $diagramBuilder->build($diagramOrchestrator, $_POST);
 
-        $response = new Response(
-            json_encode(
-                $data
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->json($data);
     }
 
     /**
      * @Route("/widget/main", name="widgets_index")
+     * @param WidgetsRepository $widgetsRepository
+     * @return Response
      */
     public function index(WidgetsRepository $widgetsRepository): Response
     {
@@ -55,6 +48,9 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/save", name="widgets_new", methods={"GET","POST"})
+     * @param Request $request
+     * @param ValidatorInterface $validator
+     * @return Response
      */
     public function new(Request $request, ValidatorInterface $validator): Response
     {
@@ -96,29 +92,32 @@ class WidgetController extends AbstractController
             ];
         }
 
-        return new Response(json_encode($array));
+        return $this->json($array);
     }
 
     /**
      * @Route("/widget/info/{id}", name="widgets_widget_info", methods={"GET"})
+     * @param Widgets $widget
+     * @return Response
      */
     public function show(Widgets $widget): Response
     {
-        $array = [
+        return $this->json([
             'id' => $widget->getId(),
             'name' => $widget->getName(),
             'widget' => $widget->getWidget(),
             'user' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
             'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
             'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
-        ];
-
-        echo json_encode($array);
-        exit();
+        ]);
     }
 
     /**
      * @Route("/widget/update/{id}", name="widgets_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Widgets $widget
+     * @param ValidatorInterface $validator
+     * @return Response
      */
     public function edit(Request $request, Widgets $widget, ValidatorInterface $validator): Response
     {
@@ -143,11 +142,14 @@ class WidgetController extends AbstractController
             ],
         ];
 
-        return new Response(json_encode($array));
+        return $this->json($array);
     }
 
     /**
      * @Route("/widget/delete/{id}", name="widgets_delete")
+     * @param Request $request
+     * @param Widgets $widget
+     * @return Response
      */
     public function delete(Request $request, Widgets $widget): Response
     {
@@ -168,11 +170,13 @@ class WidgetController extends AbstractController
             ],
         ];
 
-        return new Response(json_encode($array));
+        return $this->json($array);
     }
 
     /**
      * @Route("/widget/view/{id}", name="widgets_widget_view")
+     * @param Widgets $widget
+     * @return Response
      */
     public function view(Widgets $widget): Response
     {

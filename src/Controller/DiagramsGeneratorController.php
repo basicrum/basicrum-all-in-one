@@ -37,8 +37,11 @@ class DiagramsGeneratorController extends AbstractController
 
     /**
      * @Route("/diagrams_generator/generate", name="diagrams_generator_generate")
+     * @param DiagramOrchestrator $diagramOrchestrator
+     * @return Response
+     * @throws \Exception
      */
-    public function generate()
+    public function generate(DiagramOrchestrator $diagramOrchestrator)
     {
         // Quick hack for out of memory problems
         ini_set('memory_limit', '-1');
@@ -83,14 +86,9 @@ class DiagramsGeneratorController extends AbstractController
             unset($requirements['filters']['query_param']);
         }
 
-        $diagramOrchestrator = new DiagramOrchestrator(
-            $requirements,
-            $this->getDoctrine()
-        );
-
         $diagramBuilder = new DiagramBuilder();
 
-        $data = $diagramBuilder->build($diagramOrchestrator, $requirements);
+        $data = $diagramBuilder->build($diagramOrchestrator->load($requirements), $requirements);
 
         $response = new Response(
             json_encode(
