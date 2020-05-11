@@ -51,7 +51,16 @@ class DiagramSchema
             ];
 
             $segmentMetricsPart['business_metrics']['properties'][$key]['properties'] = $this->getDataFlavor($this->type);
+
+            $oneOf['oneOf'][] = [
+                'required' => [$key],
+            ];
         }
+
+        $segmentMetricsPart['business_metrics'] = array_merge(
+            $segmentMetricsPart['business_metrics'],
+            $oneOf
+        );
 
         return $segmentMetricsPart;
     }
@@ -75,7 +84,16 @@ class DiagramSchema
             ];
 
             $segmentMetricsPart['technical_metrics']['properties'][$key]['properties'] = $this->getDataFlavor($this->type);
+
+            $oneOf['oneOf'][] = [
+                'required' => [$key],
+            ];
         }
+
+        $segmentMetricsPart['technical_metrics'] = array_merge(
+            $segmentMetricsPart['technical_metrics'],
+            $oneOf
+        );
 
         return $segmentMetricsPart;
     }
@@ -256,9 +274,21 @@ class DiagramSchema
             $filterSegment = $init->getSchema();
 
             if (\is_array($init->getSchema())) {
-                $schema['filters']['properties'][key($filterSegment)] = $filterSegment;
+                $schema['filters']['properties'] = array_merge(
+                    $schema['filters']['properties'],
+                    $filterSegment
+                );
+
+                $oneOf['oneOf'][] = [
+                    'required' => [key($filterSegment)],
+                ];
             }
         }
+
+        $schema['filters'] = array_merge(
+            $schema['filters'],
+            $oneOf
+        );
 
         $this->filters = $schema;
     }
@@ -319,7 +349,7 @@ class DiagramSchema
                 'segments' => [
                     'type' => 'object',
                     'properties' => [
-                        '1' => ['"$ref"' => '#/definitions/segment'],
+                        '1' => ['$ref' => '#/definitions/segment'],
                     ],
                 ],
             ],

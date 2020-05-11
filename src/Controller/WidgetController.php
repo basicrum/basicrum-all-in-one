@@ -50,7 +50,7 @@ class WidgetController extends AbstractController
     public function generateSchema($type)
     {
         $schema = new DiagramSchema($type);
-        echo json_encode($schema->generateSchema(), JSON_PRETTY_PRINT);
+        echo stripslashes(json_encode($schema->generateSchema(), JSON_PRETTY_PRINT));
         exit();
     }
 
