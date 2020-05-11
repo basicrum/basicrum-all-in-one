@@ -10,7 +10,7 @@ class DiagramSchemaTest extends TestCase
 {
     public function testDistributionSchema()
     {
-        $distributionSchema = [
+        $distributionSchema = $distributionSchema = [
             '$schema' => 'http://json-schema.org/draft-07/schema#',
             'definitions' => [
                 'segment' => [
@@ -36,63 +36,71 @@ class DiagramSchemaTest extends TestCase
                                     'type' => 'object',
                                     'properties' => [
                                         'device_type' => [
-                                            'device_type' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
                                             ],
                                         ],
                                         'operating_system' => [
-                                            'operating_system' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                            5 => 6,
-                                                            6 => 7,
-                                                            7 => 8,
-                                                            8 => 9,
-                                                            9 => 10,
-                                                            10 => 11,
-                                                            11 => 12,
-                                                            12 => 13,
-                                                            13 => 14,
-                                                            14 => 15,
-                                                            15 => 16,
-                                                            16 => 17,
-                                                            17 => 18,
-                                                            18 => 19,
-                                                            19 => 20,
-                                                            20 => 21,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
+                                                        5 => 6,
+                                                        6 => 7,
+                                                        7 => 8,
+                                                        8 => 9,
+                                                        9 => 10,
+                                                        10 => 11,
+                                                        11 => 12,
+                                                        12 => 13,
+                                                        13 => 14,
+                                                        14 => 15,
+                                                        15 => 16,
+                                                        16 => 17,
+                                                        17 => 18,
+                                                        18 => 19,
+                                                        19 => 20,
+                                                        20 => 21,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'device_type',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'operating_system',
                                             ],
                                         ],
                                     ],
@@ -110,6 +118,23 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
                                             ],
                                         ],
@@ -121,6 +146,23 @@ class DiagramSchemaTest extends TestCase
                                                     'properties' => [
                                                         'count' => [
                                                             'type' => 'boolean',
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -136,6 +178,23 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
                                             ],
                                         ],
@@ -147,6 +206,23 @@ class DiagramSchemaTest extends TestCase
                                                     'properties' => [
                                                         'count' => [
                                                             'type' => 'boolean',
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -162,6 +238,23 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
                                             ],
                                         ],
@@ -173,6 +266,23 @@ class DiagramSchemaTest extends TestCase
                                                     'properties' => [
                                                         'count' => [
                                                             'type' => 'boolean',
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -188,6 +298,23 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
                                             ],
                                         ],
@@ -199,6 +326,23 @@ class DiagramSchemaTest extends TestCase
                                                     'properties' => [
                                                         'count' => [
                                                             'type' => 'boolean',
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -214,7 +358,71 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'first_paint',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'load_event_end',
+                                            ],
+                                        ],
+                                        2 => [
+                                            'required' => [
+                                                0 => 'first_byte',
+                                            ],
+                                        ],
+                                        3 => [
+                                            'required' => [
+                                                0 => 'last_blocking_resource',
+                                            ],
+                                        ],
+                                        4 => [
+                                            'required' => [
+                                                0 => 'ttfb',
+                                            ],
+                                        ],
+                                        5 => [
+                                            'required' => [
+                                                0 => 'download_time',
+                                            ],
+                                        ],
+                                        6 => [
+                                            'required' => [
+                                                0 => 'total_img_size',
+                                            ],
+                                        ],
+                                        7 => [
+                                            'required' => [
+                                                0 => 'total_js_compressed_size',
+                                            ],
+                                        ],
+                                        8 => [
+                                            'required' => [
+                                                0 => 'number_js_files',
                                             ],
                                         ],
                                     ],
@@ -232,6 +440,23 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
                                             ],
                                         ],
@@ -243,6 +468,23 @@ class DiagramSchemaTest extends TestCase
                                                     'properties' => [
                                                         'count' => [
                                                             'type' => 'boolean',
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -258,7 +500,41 @@ class DiagramSchemaTest extends TestCase
                                                             'type' => 'boolean',
                                                         ],
                                                     ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
+                                                        ],
+                                                    ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'bounce_rate',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'stay_on_page_time',
+                                            ],
+                                        ],
+                                        2 => [
+                                            'required' => [
+                                                0 => 'page_views_count',
                                             ],
                                         ],
                                     ],
@@ -333,63 +609,71 @@ class DiagramSchemaTest extends TestCase
                                     'type' => 'object',
                                     'properties' => [
                                         'device_type' => [
-                                            'device_type' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
                                             ],
                                         ],
                                         'operating_system' => [
-                                            'operating_system' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                            5 => 6,
-                                                            6 => 7,
-                                                            7 => 8,
-                                                            8 => 9,
-                                                            9 => 10,
-                                                            10 => 11,
-                                                            11 => 12,
-                                                            12 => 13,
-                                                            13 => 14,
-                                                            14 => 15,
-                                                            15 => 16,
-                                                            16 => 17,
-                                                            17 => 18,
-                                                            18 => 19,
-                                                            19 => 20,
-                                                            20 => 21,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
+                                                        5 => 6,
+                                                        6 => 7,
+                                                        7 => 8,
+                                                        8 => 9,
+                                                        9 => 10,
+                                                        10 => 11,
+                                                        11 => 12,
+                                                        12 => 13,
+                                                        13 => 14,
+                                                        14 => 15,
+                                                        15 => 16,
+                                                        16 => 17,
+                                                        17 => 18,
+                                                        18 => 19,
+                                                        19 => 20,
+                                                        20 => 21,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'device_type',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'operating_system',
                                             ],
                                         ],
                                     ],
@@ -402,7 +686,7 @@ class DiagramSchemaTest extends TestCase
                     'type' => 'object',
                     'properties' => [
                         1 => [
-                            '"$ref"' => '#/definitions/segment',
+                            '$ref' => '#/definitions/segment',
                         ],
                     ],
                 ],
@@ -443,63 +727,71 @@ class DiagramSchemaTest extends TestCase
                                     'type' => 'object',
                                     'properties' => [
                                         'device_type' => [
-                                            'device_type' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
                                             ],
                                         ],
                                         'operating_system' => [
-                                            'operating_system' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                            5 => 6,
-                                                            6 => 7,
-                                                            7 => 8,
-                                                            8 => 9,
-                                                            9 => 10,
-                                                            10 => 11,
-                                                            11 => 12,
-                                                            12 => 13,
-                                                            13 => 14,
-                                                            14 => 15,
-                                                            15 => 16,
-                                                            16 => 17,
-                                                            17 => 18,
-                                                            18 => 19,
-                                                            19 => 20,
-                                                            20 => 21,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
+                                                        5 => 6,
+                                                        6 => 7,
+                                                        7 => 8,
+                                                        8 => 9,
+                                                        9 => 10,
+                                                        10 => 11,
+                                                        11 => 12,
+                                                        12 => 13,
+                                                        13 => 14,
+                                                        14 => 15,
+                                                        15 => 16,
+                                                        16 => 17,
+                                                        17 => 18,
+                                                        18 => 19,
+                                                        19 => 20,
+                                                        20 => 21,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'device_type',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'operating_system',
                                             ],
                                         ],
                                     ],
@@ -514,10 +806,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -530,10 +838,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -546,10 +870,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -562,10 +902,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -578,10 +934,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -594,10 +966,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -610,10 +998,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -626,10 +1030,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -642,13 +1062,76 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'first_paint',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'load_event_end',
+                                            ],
+                                        ],
+                                        2 => [
+                                            'required' => [
+                                                0 => 'first_byte',
+                                            ],
+                                        ],
+                                        3 => [
+                                            'required' => [
+                                                0 => 'last_blocking_resource',
+                                            ],
+                                        ],
+                                        4 => [
+                                            'required' => [
+                                                0 => 'ttfb',
+                                            ],
+                                        ],
+                                        5 => [
+                                            'required' => [
+                                                0 => 'download_time',
+                                            ],
+                                        ],
+                                        6 => [
+                                            'required' => [
+                                                0 => 'total_img_size',
+                                            ],
+                                        ],
+                                        7 => [
+                                            'required' => [
+                                                0 => 'total_js_compressed_size',
+                                            ],
+                                        ],
+                                        8 => [
+                                            'required' => [
+                                                0 => 'number_js_files',
                                             ],
                                         ],
                                     ],
@@ -663,10 +1146,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -679,10 +1178,26 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
@@ -695,13 +1210,46 @@ class DiagramSchemaTest extends TestCase
                                                     'type' => 'object',
                                                     'properties' => [
                                                         'percentile' => [
-                                                            'enum' => [
-                                                                0 => 50,
-                                                            ],
                                                             'type' => 'integer',
+                                                            'minimum' => 0,
+                                                            'maximum' => 100,
+                                                        ],
+                                                    ],
+                                                    'oneOf' => [
+                                                        0 => [
+                                                            'required' => [
+                                                                0 => 'percentile',
+                                                            ],
+                                                        ],
+                                                        1 => [
+                                                            'required' => [
+                                                                0 => 'histogram',
+                                                            ],
+                                                        ],
+                                                        2 => [
+                                                            'required' => [
+                                                                0 => 'count',
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'bounce_rate',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'stay_on_page_time',
+                                            ],
+                                        ],
+                                        2 => [
+                                            'required' => [
+                                                0 => 'page_views_count',
                                             ],
                                         ],
                                     ],
@@ -781,63 +1329,71 @@ class DiagramSchemaTest extends TestCase
                                     'type' => 'object',
                                     'properties' => [
                                         'device_type' => [
-                                            'device_type' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
                                             ],
                                         ],
                                         'operating_system' => [
-                                            'operating_system' => [
-                                                'type' => 'object',
-                                                'properties' => [
-                                                    'search_value' => [
-                                                        'enum' => [
-                                                            0 => 1,
-                                                            1 => 2,
-                                                            2 => 3,
-                                                            3 => 4,
-                                                            4 => 5,
-                                                            5 => 6,
-                                                            6 => 7,
-                                                            7 => 8,
-                                                            8 => 9,
-                                                            9 => 10,
-                                                            10 => 11,
-                                                            11 => 12,
-                                                            12 => 13,
-                                                            13 => 14,
-                                                            14 => 15,
-                                                            15 => 16,
-                                                            16 => 17,
-                                                            17 => 18,
-                                                            18 => 19,
-                                                            19 => 20,
-                                                            20 => 21,
-                                                        ],
-                                                        'type' => 'integer',
+                                            'type' => 'object',
+                                            'properties' => [
+                                                'search_value' => [
+                                                    'enum' => [
+                                                        0 => 1,
+                                                        1 => 2,
+                                                        2 => 3,
+                                                        3 => 4,
+                                                        4 => 5,
+                                                        5 => 6,
+                                                        6 => 7,
+                                                        7 => 8,
+                                                        8 => 9,
+                                                        9 => 10,
+                                                        10 => 11,
+                                                        11 => 12,
+                                                        12 => 13,
+                                                        13 => 14,
+                                                        14 => 15,
+                                                        15 => 16,
+                                                        16 => 17,
+                                                        17 => 18,
+                                                        18 => 19,
+                                                        19 => 20,
+                                                        20 => 21,
                                                     ],
-                                                    'condition' => [
-                                                        'enum' => [
-                                                            0 => 'is',
-                                                        ],
+                                                    'type' => 'integer',
+                                                ],
+                                                'condition' => [
+                                                    'enum' => [
+                                                        0 => 'is',
                                                     ],
                                                 ],
+                                            ],
+                                        ],
+                                    ],
+                                    'oneOf' => [
+                                        0 => [
+                                            'required' => [
+                                                0 => 'device_type',
+                                            ],
+                                        ],
+                                        1 => [
+                                            'required' => [
+                                                0 => 'operating_system',
                                             ],
                                         ],
                                     ],
@@ -850,7 +1406,7 @@ class DiagramSchemaTest extends TestCase
                     'type' => 'object',
                     'properties' => [
                         1 => [
-                            '"$ref"' => '#/definitions/segment',
+                            '$ref' => '#/definitions/segment',
                         ],
                     ],
                 ],
