@@ -10,7 +10,7 @@ abstract class AbstractFilter implements \App\BasicRum\Report\PrimaryFilterableI
 
     protected $searchValue;
 
-    public function __construct(string $condition = null, string $searchValue = null)
+    public function __construct(string $condition, string $searchValue)
     {
         $this->condition = $condition;
         $this->searchValue = $searchValue;

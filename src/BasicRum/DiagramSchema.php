@@ -89,8 +89,20 @@ class DiagramSchema
                     'type' => 'object',
                     'properties' => [
                         'percentile' => [
-                            'enum' => [50],
                             'type' => 'integer',
+                            'minimum' => 0,
+                            'maximum' => 100,
+                        ],
+                    ],
+                    'oneOf' => [
+                        [
+                            'required' => ['percentile'],
+                        ],
+                        [
+                            'required' => ['histogram'],
+                        ],
+                        [
+                            'required' => ['count'],
                         ],
                     ],
                 ],
@@ -110,6 +122,17 @@ class DiagramSchema
                             ],
                         ],
                     ],
+                    'oneOf' => [
+                        [
+                            'required' => ['percentile'],
+                        ],
+                        [
+                            'required' => ['histogram'],
+                        ],
+                        [
+                            'required' => ['count'],
+                        ],
+                    ],
                 ],
             ];
         } elseif ('distribution' == $renderType) {
@@ -119,6 +142,17 @@ class DiagramSchema
                     'properties' => [
                         'count' => [
                             'type' => 'boolean',
+                        ],
+                    ],
+                    'oneOf' => [
+                        [
+                            'required' => ['percentile'],
+                        ],
+                        [
+                            'required' => ['histogram'],
+                        ],
+                        [
+                            'required' => ['count'],
                         ],
                     ],
                 ],
