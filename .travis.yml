@@ -1,39 +1,40 @@
-sudo: required
+language: minimal
 
 services:
   - docker
 
-before_script:
-  - docker-compose -f docker/docker-compose.yml build --no-cache
-  - docker-compose -f docker/docker-compose.yml up -d;
-  - mv -f .env.travis .env
-  - docker exec basicrum_bo_php composer install
-  - docker exec basicrum_bo_php php bin/console c:c
-  - docker exec basicrum_bo_php php bin/console cache:clear
+stages:
+  - build_and_test
+  - name: publish
+    if: tag IS present
 
-script: 
-  - |
-    loop=0; 
-    while [ "$loop" -le 9 ]; do
-      if docker exec basicrum_bo_php bin/console doctrine:migrations:migrate --no-interaction; then
-        echo "doctrine:migrations:migrate Done!";
-        break;
-      else
-        echo 'Waiting for MySql to start ...' && sleep 2;
-      fi
-      ((loop++))
-    done;
+env:
+  - DC_PATH=docker/docker-compose.yml APP=symfony_app
 
-  - |
-    for n in {1..5}; do \
-    docker exec basicrum_bo_php bin/console basicrum:beacon:init-folders; \ 
-    docker exec basicrum_bo_php bin/console basicrum:beacon:archive-bundle; \
-    docker exec basicrum_bo_php bin/console basicrum:beacon:bundle-raw; \
-    docker exec basicrum_bo_php bin/console basicrum:beacon:import-bundle; \
-    docker exec basicrum_bo_php bin/console basicrum:cache:clean; \
-    docker exec basicrum_bo_php bin/console basicrum:last-blocking-resource:calculate; \
-    docker exec basicrum_bo_php bin/console basicrum:superadmin:create --no-interaction --quiet; \
-    docker exec basicrum_bo_php bin/console basicrum:visit:generate; \
-    done;
+jobs:
+  include:
+    - stage: build_and_test
+      script:
+        # build
+        - mv -f .env.travis docker/symfony_app/.env
+        - make up
+        - make init_script
+        - make cc
+        # test
+        - >
+          for n in {1..5}; do
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:init-folders;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:archive-bundle;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:bundle-raw;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:beacon:import-bundle;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:cache:clean;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:last-blocking-resource:calculate;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:superadmin:create --no-interaction --quiet;
+            docker-compose -f ${DC_PATH} exec -T ${APP} ./bin/console basicrum:visit:generate;
+          done;
 
-  - docker exec -it basicrum_bo_php php bin/phpunit
+        - make test
+
+    - stage: publish
+      script:
+        - make docker_publish
