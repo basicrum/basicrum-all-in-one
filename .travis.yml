@@ -16,7 +16,7 @@ jobs:
     - stage: build_and_test
       script:
         # build
-        - mv -f .env.travis .env
+        - mv -f .env.travis docker/symfony_app/.env
         - make up
         - make init_script
         - make cc
