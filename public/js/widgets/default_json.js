@@ -12,8 +12,8 @@ var defaultJson = {
             },
         }
     },
-    segments: {
-        1: {
+    segments: [
+        {
             presentation: {
                 name: '',
                 color: '#ff6023',
@@ -37,5 +37,5 @@ var defaultJson = {
                 }
             }
         }
-    }
+    ]
 };
