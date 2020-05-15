@@ -348,7 +348,7 @@ class DiagramSchema
                 ],
                 'segments' => [
                     'type' => 'array',
-                    'items' => ['$ref' => '#/definitions/segment'],
+                    'segment' => ['$ref' => '#/definitions/segment'],
                 ],
             ],
         ];

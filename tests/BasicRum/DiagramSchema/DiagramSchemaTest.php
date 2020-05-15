@@ -683,11 +683,9 @@ class DiagramSchemaTest extends TestCase
                     ],
                 ],
                 'segments' => [
-                    'type' => 'object',
-                    'properties' => [
-                        1 => [
-                            '$ref' => '#/definitions/segment',
-                        ],
+                    'type' => 'array',
+                    'segment' => [
+                        '$ref' => '#/definitions/segment',
                     ],
                 ],
             ],
@@ -1403,11 +1401,9 @@ class DiagramSchemaTest extends TestCase
                     ],
                 ],
                 'segments' => [
-                    'type' => 'object',
-                    'properties' => [
-                        1 => [
-                            '$ref' => '#/definitions/segment',
-                        ],
+                    'type' => 'array',
+                    'segment' => [
+                        '$ref' => '#/definitions/segment',
                     ],
                 ],
             ],
