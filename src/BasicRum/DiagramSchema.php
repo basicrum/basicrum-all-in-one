@@ -98,11 +98,10 @@ class DiagramSchema
         return $segmentMetricsPart;
     }
 
-    public function getDataFlavor($renderType): array
+    public function getDataFlavor(string $renderType): array
     {
-        $dataFlavor = '';
         if ('time_series' == $renderType) {
-            $dataFlavor = [
+            return [
                 'data_flavor' => [
                     'type' => 'object',
                     'properties' => [
@@ -125,8 +124,10 @@ class DiagramSchema
                     ],
                 ],
             ];
-        } elseif ('plane' == $renderType) {
-            $dataFlavor = [
+        }
+
+        if ('plane' == $renderType) {
+            return [
                 'data_flavor' => [
                     'type' => 'object',
                     'properties' => [
@@ -153,8 +154,10 @@ class DiagramSchema
                     ],
                 ],
             ];
-        } elseif ('distribution' == $renderType) {
-            $dataFlavor = [
+        }
+
+        if ('distribution' == $renderType) {
+            return [
                 'data_flavor' => [
                     'type' => 'object',
                     'properties' => [
@@ -177,7 +180,7 @@ class DiagramSchema
             ];
         }
 
-        return $dataFlavor;
+        throw new Exception('Missing render type.');
     }
 
     public function generateDefinitionSegment()
@@ -365,25 +368,5 @@ class DiagramSchema
         $schemaArray['definitions'] = $this->definitionSegment;
 
         return $schemaArray;
-    }
-
-    public function varexport($expression, $return = false)
-    {
-        $export = var_export($expression, true);
-        $export = preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
-        $array = preg_split("/\r\n|\n|\r/", $export);
-        $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [null, ']$1', ' => ['], $array);
-        $export = implode(PHP_EOL, array_filter(['['] + $array));
-        if ((bool) $return) {
-            return $export;
-        } else {
-            echo $export;
-        }
-    }
-
-    public function generateSchemaArray()
-    {
-        $schema = $this->generateSchema();
-        file_put_contents('/home/www/www.basicrum/distribution.php', '<?php'.PHP_EOL.'$distributionSchema = '.$this->varexport($schema, true));
     }
 }
