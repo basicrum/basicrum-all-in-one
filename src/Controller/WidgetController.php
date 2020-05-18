@@ -58,8 +58,6 @@ class WidgetController extends AbstractController
             )
         );
 
-        $response->headers->set('Content-Type', 'application/json');
-
         return $response;
     }
 
@@ -133,8 +131,7 @@ class WidgetController extends AbstractController
             'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
         ];
 
-        echo json_encode($array);
-        exit();
+        return new Response(json_encode($array));
     }
 
     /**
