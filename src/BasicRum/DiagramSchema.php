@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
-use App\BasicRum\BusinessMetrics\Collaborator as BusinessMetrics;
+use App\BasicRum\DiagramSchema\BusinessMetrics\Collaborator as BusinessMetrics;
 use App\BasicRum\DiagramSchema\Filters\Collaborator as Filters;
-use App\BasicRum\TechnicalMetrics\Collaborator as TechnicalMetrics;
+use App\BasicRum\DiagramSchema\TechnicalMetrics\Collaborator as TechnicalMetrics;
 
 class DiagramSchema
 {
@@ -15,6 +15,20 @@ class DiagramSchema
     private $filters;
     private $businessMetrics;
     private $technicalMetrics;
+    private $type;
+
+    private $typeToFlavor = [
+        'distribution' => [
+            'percentile',
+        ],
+        'time_series' => [
+            'percentile',
+        ],
+        'plane' => [
+            'histogram',
+            'histogramFirstPageView',
+        ],
+    ];
 
     /**
      * DiagramSchema constructor.
@@ -33,7 +47,7 @@ class DiagramSchema
     public function getBusinessMetrics(): array
     {
         $class = new BusinessMetrics();
-        $businessMetricsClassMap = $class->getAllPossibleRequirements();
+        $businessMetricsClassMap = $class->getAllPossibleMetrics();
 
         $count = \count($businessMetricsClassMap);
 
@@ -67,8 +81,8 @@ class DiagramSchema
 
     public function getTechnicalMetrics(): array
     {
-        $class = new TechnicalMetrics();
-        $technicalMetricsClassMap = $class->getAllPossibleRequirements();
+        $tmClass = new TechnicalMetrics();
+        $technicalMetricsClassMap = $tmClass->getAllPossibleMetrics();
 
         $segmentMetricsPart = [
             'technical_metrics' => [
@@ -77,7 +91,13 @@ class DiagramSchema
             ],
         ];
 
-        foreach (array_keys($technicalMetricsClassMap) as $key) {
+        foreach ($technicalMetricsClassMap as $key => $class) {
+            $nClass = new $class();
+
+            if (!array_intersect($this->typeToFlavor[$this->type], $nClass->getPossibleDataFlavorType())) {
+                continue;
+            }
+
             $segmentMetricsPart['technical_metrics']['properties'][$key] = [
                 'type' => 'object',
                 'properties' => [],
@@ -351,7 +371,7 @@ class DiagramSchema
                 ],
                 'segments' => [
                     'type' => 'array',
-                    'segment' => ['$ref' => '#/definitions/segment'],
+                    'items' => ['$ref' => '#/definitions/segment'],
                 ],
             ],
         ];
