@@ -1,4 +1,0 @@
-doctrine:
-  dbal:
-    url: 'mysql://root@db:3306/basicrum_test'
-
