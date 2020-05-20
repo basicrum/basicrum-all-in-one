@@ -87,17 +87,10 @@ class DiagramsGeneratorController extends AbstractController
         }
 
         $diagramBuilder = new DiagramBuilder();
+        $diagramOrchestrator->load($requirements);
 
-        $data = $diagramBuilder->build($diagramOrchestrator->load($requirements), $requirements);
+        $data = $diagramBuilder->build($diagramOrchestrator, $requirements);
 
-        $response = new Response(
-            json_encode(
-                $data
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->json($data);
     }
 }
