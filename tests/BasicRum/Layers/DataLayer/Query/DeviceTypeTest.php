@@ -2,29 +2,13 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\Tests\BasicRum\FixturesTestCase;
-
-use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\DeviceType;
 
 use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
-class DeviceTypeTest extends FixturesTestCase
+class DeviceTypeTest extends DataLayerFixtureTestCase
 {
-
-    protected function setUp()
-    {
-        static::bootKernel();
-    }
-
-    /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     */
-    private function _getDoctrine() : \Doctrine\Bundle\DoctrineBundle\Registry
-    {
-        return static::$kernel->getContainer()->get('doctrine');
-    }
 
     /**
      * @group data_query
@@ -41,14 +25,11 @@ class DeviceTypeTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $res = $this->getDataLayer()->load(
             $period,
             [$deviceType],
             $flavor
-        );
-
-        $res = $dataLayer->process();
+        )->process();
 
         $this->assertEquals(
             [
@@ -80,14 +61,11 @@ class DeviceTypeTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $res = $this->getDataLayer()->load(
             $period,
             [$deviceType],
             $flavor
-        );
-
-        $res = $dataLayer->process();
+        )->process();
 
         $this->assertEquals(
             [
@@ -103,5 +81,4 @@ class DeviceTypeTest extends FixturesTestCase
             $res
         );
     }
-
 }

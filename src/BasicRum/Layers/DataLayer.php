@@ -7,13 +7,14 @@ namespace App\BasicRum\Layers;
 use App\BasicRum\Cache\Storage;
 use App\BasicRum\Layers\DataLayer\Query\Planner;
 use App\BasicRum\Layers\DataLayer\Query\Runner;
+use App\BasicRum\Periods\Period;
 
+/**
+ * Class DataLayer.
+ */
 class DataLayer
 {
-    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
-    private $registry;
-
-    /** @var \App\BasicRum\Periods\Period */
+    /** @var Period */
     private $period;
 
     /** @var \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface */
@@ -22,19 +23,30 @@ class DataLayer
     /** @var array */
     private $dataRequirements = [];
 
+    /** @var Runner */
+    private $runner;
+
     /**
      * DataLayer constructor.
      */
-    public function __construct(
-        \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        \App\BasicRum\Periods\Period $period,
+    public function __construct(Runner $runner)
+    {
+        $this->runner = $runner;
+    }
+
+    /**
+     * @return DataLayer
+     */
+    public function load(
+        Period $period,
         array $dataRequirements,
         DataLayer\Query\MainDataSelect\MainDataInterface $mainDataSelect
     ) {
-        $this->registry = $registry;
         $this->period = $period;
         $this->dataRequirements = $dataRequirements;
         $this->mainDataSelect = $mainDataSelect;
+
+        return $this;
     }
 
     /**
@@ -74,9 +86,7 @@ class DataLayer
 
             $planActions = $queryPlanner->createPlan()->releasePlan();
 
-            $planRunner = new Runner($this->registry, $planActions);
-
-            $data = $planRunner->run();
+            $data = $this->runner->load($planActions)->run();
 
             $cacheItem = $cache->getItem($cacheKey);
             $cacheItem->set($data);

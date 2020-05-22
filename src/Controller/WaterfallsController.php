@@ -44,8 +44,12 @@ class WaterfallsController extends AbstractController
 
     /**
      * @Route("/waterfalls/list", name="waterfalls_list")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Exception
      */
-    public function generate()
+    public function generate(DiagramOrchestrator $diagramOrchestrator)
     {
         // Quick hack for out of memory problems
         ini_set('memory_limit', '-1');
@@ -78,12 +82,7 @@ class WaterfallsController extends AbstractController
             unset($requirements['filters']['query_param']);
         }
 
-        $diagramOrchestrator = new DiagramOrchestrator(
-            $requirements,
-            $this->getDoctrine()
-        );
-
-        $res = $diagramOrchestrator->process();
+        $res = $diagramOrchestrator->load($requirements)->process();
 
         foreach ($res[1] as $key => $dayRows) {
             if (empty($dayRows['data_rows'])) {

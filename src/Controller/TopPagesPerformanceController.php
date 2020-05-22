@@ -17,8 +17,12 @@ class TopPagesPerformanceController extends AbstractController
 {
     /**
      * @Route("/top_page/performance", name="top_page_performance")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index()
+    public function index(DiagramOrchestrator $diagramOrchestrator)
     {
         $date = '01/24/2019';
         $offsetDys = 24;
@@ -28,7 +32,8 @@ class TopPagesPerformanceController extends AbstractController
                 'popular_pages_performance' => $this->getPagesPerformanceData(
                     $this->tenMostPopularVisitedPages($date, $offsetDys),
                     $date,
-                    $offsetDys
+                    $offsetDys,
+                    $diagramOrchestrator
                 ),
             ]
         );
@@ -39,7 +44,7 @@ class TopPagesPerformanceController extends AbstractController
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    private function getPagesPerformanceData(array $data, string $date, int $offsetDays)
+    private function getPagesPerformanceData(array $data, string $date, int $offsetDays, DiagramOrchestrator $diagramOrchestrator)
     {
         $pageViewsPerformance = [];
 
@@ -56,7 +61,7 @@ class TopPagesPerformanceController extends AbstractController
         $allVisitsCount = $this->countViewsInPeriod($markerDate, $futureDate)['visitsCount'];
 
         foreach ($data as $urlId => $count) {
-            /** @var \App\Entity\NavigationTimingsUrls $resourceTimingUrl */
+            /** @var \App\Entity\NavigationTimingsUrls $navigationTimingUrl */
             $navigationTimingUrl = $this->getDoctrine()
                 ->getRepository(NavigationTimingsUrls::class)
                 ->findOneBy(['id' => $urlId]);
@@ -66,8 +71,8 @@ class TopPagesPerformanceController extends AbstractController
                 'time_to_first_paint',
             ];
 
-            $recentSamples = $this->periodForUrl($navigationTimingUrl->getUrl(), $markerDate, $futureDate, $metrics);
-            $oldSamples = $this->periodForUrl($navigationTimingUrl->getUrl(), $pastDate, $markerDate, $metrics);
+            $recentSamples = $this->periodForUrl($navigationTimingUrl->getUrl(), $markerDate, $futureDate, $metrics, $diagramOrchestrator);
+            $oldSamples = $this->periodForUrl($navigationTimingUrl->getUrl(), $pastDate, $markerDate, $metrics, $diagramOrchestrator);
 
             //@todo: Move this to some decorator logic or use TWIG if possible
             $firstByteDiff = $oldSamples['time_to_first_byte'] - $recentSamples['time_to_first_byte'];
@@ -102,8 +107,10 @@ class TopPagesPerformanceController extends AbstractController
 
     /**
      * @return array
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function periodForUrl(string $url, \DateTime $start, \DateTime $end, array $metrics)
+    public function periodForUrl(string $url, \DateTime $start, \DateTime $end, array $metrics, DiagramOrchestrator $diagramOrchestrator)
     {
         $bucketizer = new Buckets(1, 15000);
 
@@ -138,9 +145,8 @@ class TopPagesPerformanceController extends AbstractController
             $collaboratorsAggregator = new CollaboratorsAggregator();
             $collaboratorsAggregator->fillRequirements($requirements);
 
-            $diagramOrchestrator = new DiagramOrchestrator(
-                $collaboratorsAggregator->getCollaborators(),
-                $this->getDoctrine()
+            $diagramOrchestrator->load(
+                $collaboratorsAggregator->getCollaborators()
             );
 
             $median = new Median();

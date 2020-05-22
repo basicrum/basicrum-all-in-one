@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\Runner;
 
+use App\BasicRum\Cache\Storage;
+use Doctrine\DBAL\Connection;
+
 class ComplexSelect
 {
-    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
-    private $registry;
-
-    /** @var \App\BasicRum\Cache\Storage */
+    /** @var Storage */
     private $cacheAdapter;
+    /** @var Connection */
+    private $connection;
 
     public function __construct(
-        \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        \App\BasicRum\Cache\Storage $cacheAdapter
+        Connection $connection,
+        Storage $cacheAdapter
     ) {
-        $this->registry = $registry;
+        $this->connection = $connection;
         $this->cacheAdapter = $cacheAdapter;
     }
 
@@ -41,13 +43,12 @@ class ComplexSelect
         }
 
         //Playing a bit with generating low level query
-        $connection = $this->registry->getConnection();
 
         $sql = 'SELECT '.implode(',', $selects).' ';
         $sql .= 'FROM '.$complexSelect->getSecondarySelectTableName().' ';
         $sql .= 'WHERE '.implode(' AND ', $whereArr);
 
-        $res = $connection->fetchAll($sql);
+        $res = $this->connection->fetchAll($sql);
 
         $data = [];
 
