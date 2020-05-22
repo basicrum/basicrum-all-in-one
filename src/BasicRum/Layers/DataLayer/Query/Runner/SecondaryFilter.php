@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Layers\DataLayer\Query\Runner;
 
+use App\BasicRum\Cache\Storage;
+use Doctrine\DBAL\Connection;
+
 class SecondaryFilter
 {
-    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
-    private $registry;
-
-    /** @var \App\BasicRum\Cache\Storage */
+    /** @var Storage */
     private $cacheAdapter;
+    /** @var Connection */
+    private $connection;
 
     public function __construct(
-        \Doctrine\Bundle\DoctrineBundle\Registry $registry,
-        \App\BasicRum\Cache\Storage $cacheAdapter
+        Connection $connection,
+        Storage $cacheAdapter
     ) {
-        $this->registry = $registry;
+        $this->connection = $connection;
         $this->cacheAdapter = $cacheAdapter;
     }
 
@@ -55,8 +57,6 @@ class SecondaryFilter
                 $fetched = $this->cacheAdapter->getItem($cacheKey)->get();
             } else {
                 //Playing a bit with generating low level query
-                $connection = $this->registry->getConnection();
-
                 $sql = 'SELECT '.implode(',', $selectFields).' ';
                 $sql .= 'FROM '.$prefetchCondition->getSecondaryTableName().' ';
                 $sql .= 'WHERE '.implode(' AND ', $whereArr);
@@ -88,7 +88,7 @@ class SecondaryFilter
                     continue;
                 }
 
-                $fetched = $connection->fetchAll($sql);
+                $fetched = $this->connection->fetchAll($sql);
 
                 $cacheItem = $this->cacheAdapter->getItem($cacheKey);
                 $cacheItem->set($fetched);

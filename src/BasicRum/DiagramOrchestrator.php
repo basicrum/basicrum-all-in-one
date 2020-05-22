@@ -6,27 +6,32 @@ namespace App\BasicRum;
 
 use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\Layers\DataLayer;
+use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface;
 
 class DiagramOrchestrator
 {
-    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
-    private $registry;
-
     /** @var array<CollaboratorsAggregator> */
     private $collaboratorsAggregators;
 
     /** @var array<\App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface> */
     private $dataFlavors;
 
+    /** @var DataLayer */
+    private $dataLayer;
+
     /**
      * DiagramOrchestrator constructor.
-     *
+     */
+    public function __construct(DataLayer $dataLayer)
+    {
+        $this->dataLayer = $dataLayer;
+    }
+
+    /**
      * @throws \Exception
      */
-    public function __construct(
-        array $input,
-        \Doctrine\Bundle\DoctrineBundle\Registry $registry
-    ) {
+    public function load(array $input)
+    {
         foreach ($input['segments'] as $key => $segment) {
             $requirements = [];
 
@@ -61,7 +66,7 @@ class DiagramOrchestrator
             $this->dataFlavors[$key] = $this->_initDataFlavors($requirements);
         }
 
-        $this->registry = $registry;
+        return $this;
     }
 
     /**
@@ -74,6 +79,8 @@ class DiagramOrchestrator
 
     /**
      * @return array
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function process()
     {
@@ -89,14 +96,11 @@ class DiagramOrchestrator
             );
 
             foreach ($periods as $period) {
-                $dataLayer = new DataLayer(
-                    $this->registry,
+                $data[$key] = $this->dataLayer->load(
                     $period,
                     $requirements,
                     $this->dataFlavors[$key]
-                );
-
-                $data[$key] = $dataLayer->process();
+                )->process();
             }
         }
 
@@ -142,7 +146,7 @@ class DiagramOrchestrator
     /**
      * @throws \Exception
      */
-    private function _initDataFlavors(array $requirements): \App\BasicRum\Layers\DataLayer\Query\MainDataSelect\MainDataInterface
+    private function _initDataFlavors(array $requirements): MainDataInterface
     {
         if (isset($requirements['technical_metrics'])) {
             $metricConfig = current($requirements['technical_metrics']);

@@ -2,24 +2,12 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\Tests\BasicRum\FixturesTestCase;
-
-use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Secondary\QueryParam;
 use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
-class QueryParamLikeTest extends FixturesTestCase
+class QueryParamLikeTest extends DataLayerFixtureTestCase
 {
-
-    /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     */
-    private function _getDoctrine() : \Doctrine\Bundle\DoctrineBundle\Registry
-    {
-        return static::$kernel->getContainer()->get('doctrine');
-    }
-
     /**
      * @group data_query
      */
@@ -37,14 +25,11 @@ class QueryParamLikeTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $res = $this->getDataLayer()->load(
             $period,
             [$queryParam],
             $flavor
-        );
-
-        $res = $dataLayer->process();
+        )->process();
 
         $this->assertEquals(
             [
@@ -75,8 +60,7 @@ class QueryParamLikeTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $dataLayer = $this->getDataLayer()->load(
             $period,
             [$queryParam],
             $flavor

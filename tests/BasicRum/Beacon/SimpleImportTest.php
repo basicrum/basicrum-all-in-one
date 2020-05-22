@@ -6,15 +6,16 @@ use App\Tests\BasicRum\NoFixturesTestCase;
 
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Beacon\Importer\Process;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 class SimpleImportTest extends NoFixturesTestCase
 {
 
 
     /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
+     * @return Registry $doctrine
      */
-    private function _getDoctrine() : \Doctrine\Bundle\DoctrineBundle\Registry
+    private function _getDoctrine() : Registry
     {
         return static::$kernel->getContainer()->get('doctrine');
     }
@@ -84,12 +85,9 @@ class SimpleImportTest extends NoFixturesTestCase
             ]
         ];
 
-        $diagramOrchestrator = new DiagramOrchestrator(
-            $input,
-            $this->_getDoctrine()
-        );
-
-        $res = $diagramOrchestrator->process();
+        /** @var DiagramOrchestrator $diagramOrchestrator */
+        $diagramOrchestrator = self::bootKernel()->getContainer()->get(DiagramOrchestrator::class);
+        $res = $diagramOrchestrator->load($input)->process();
 
         $this->assertEquals(
             [
