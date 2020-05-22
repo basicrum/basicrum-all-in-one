@@ -18,9 +18,9 @@ class WidgetController extends AbstractController
 {
     /**
      * @Route("/widget/generate_diagram", name="widget_generate_diagram")
-     * @param DiagramOrchestrator $diagramOrchestrator
-     * @param DiagramBuilder $diagramBuilder
+     *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
      * @throws \Exception
      */
     public function generateDiagram(DiagramOrchestrator $diagramOrchestrator, DiagramBuilder $diagramBuilder)
@@ -36,8 +36,6 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/main", name="widgets_index")
-     * @param WidgetsRepository $widgetsRepository
-     * @return Response
      */
     public function index(WidgetsRepository $widgetsRepository): Response
     {
@@ -48,9 +46,6 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/save", name="widgets_new", methods={"GET","POST"})
-     * @param Request $request
-     * @param ValidatorInterface $validator
-     * @return Response
      */
     public function new(Request $request, ValidatorInterface $validator): Response
     {
@@ -97,8 +92,6 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/info/{id}", name="widgets_widget_info", methods={"GET"})
-     * @param Widgets $widget
-     * @return Response
      */
     public function show(Widgets $widget): Response
     {
@@ -114,10 +107,6 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/update/{id}", name="widgets_edit", methods={"GET","POST"})
-     * @param Request $request
-     * @param Widgets $widget
-     * @param ValidatorInterface $validator
-     * @return Response
      */
     public function edit(Request $request, Widgets $widget, ValidatorInterface $validator): Response
     {
@@ -147,9 +136,6 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/delete/{id}", name="widgets_delete")
-     * @param Request $request
-     * @param Widgets $widget
-     * @return Response
      */
     public function delete(Request $request, Widgets $widget): Response
     {
@@ -175,8 +161,6 @@ class WidgetController extends AbstractController
 
     /**
      * @Route("/widget/view/{id}", name="widgets_widget_view")
-     * @param Widgets $widget
-     * @return Response
      */
     public function view(Widgets $widget): Response
     {

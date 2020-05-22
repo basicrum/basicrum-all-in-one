@@ -26,9 +26,9 @@ class Runner
 
     /**
      * @required
-     * @param EntityManager $entityManager
      */
-    public function setConnection(EntityManager $entityManager){
+    public function setConnection(EntityManager $entityManager)
+    {
         $this->connection = $entityManager->getConnection();
     }
 

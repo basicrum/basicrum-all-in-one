@@ -16,8 +16,9 @@ class RevenueCalculatorController extends AbstractController
 {
     /**
      * @Route("/diagrams/estimate/revenue_calculator", name="diagrams_estimate_revenue_calculator")
-     * @param DiagramOrchestrator $diagramOrchestrator
+     *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
      */
     public function revenueCalculator(DiagramOrchestrator $diagramOrchestrator)

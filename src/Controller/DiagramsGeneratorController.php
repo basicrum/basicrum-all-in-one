@@ -37,8 +37,9 @@ class DiagramsGeneratorController extends AbstractController
 
     /**
      * @Route("/diagrams_generator/generate", name="diagrams_generator_generate")
-     * @param DiagramOrchestrator $diagramOrchestrator
+     *
      * @return Response
+     *
      * @throws \Exception
      */
     public function generate(DiagramOrchestrator $diagramOrchestrator)

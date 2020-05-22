@@ -44,8 +44,9 @@ class WaterfallsController extends AbstractController
 
     /**
      * @Route("/waterfalls/list", name="waterfalls_list")
-     * @param DiagramOrchestrator $diagramOrchestrator
+     *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
      */
     public function generate(DiagramOrchestrator $diagramOrchestrator)

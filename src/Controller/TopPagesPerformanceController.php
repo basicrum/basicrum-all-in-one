@@ -17,8 +17,9 @@ class TopPagesPerformanceController extends AbstractController
 {
     /**
      * @Route("/top_page/performance", name="top_page_performance")
-     * @param DiagramOrchestrator $diagramOrchestrator
+     *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function index(DiagramOrchestrator $diagramOrchestrator)
@@ -105,12 +106,8 @@ class TopPagesPerformanceController extends AbstractController
     }
 
     /**
-     * @param string $url
-     * @param \DateTime $start
-     * @param \DateTime $end
-     * @param array $metrics
-     * @param DiagramOrchestrator $diagramOrchestrator
      * @return array
+     *
      * @throws \Psr\Cache\InvalidArgumentException
      */
     public function periodForUrl(string $url, \DateTime $start, \DateTime $end, array $metrics, DiagramOrchestrator $diagramOrchestrator)

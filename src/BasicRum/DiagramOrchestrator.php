@@ -21,7 +21,6 @@ class DiagramOrchestrator
 
     /**
      * DiagramOrchestrator constructor.
-     * @param DataLayer $dataLayer
      */
     public function __construct(DataLayer $dataLayer)
     {
@@ -29,10 +28,10 @@ class DiagramOrchestrator
     }
 
     /**
-     * @param array $input
      * @throws \Exception
      */
-    public function load(array $input) {
+    public function load(array $input)
+    {
         foreach ($input['segments'] as $key => $segment) {
             $requirements = [];
 
@@ -80,6 +79,7 @@ class DiagramOrchestrator
 
     /**
      * @return array
+     *
      * @throws \Psr\Cache\InvalidArgumentException
      */
     public function process()

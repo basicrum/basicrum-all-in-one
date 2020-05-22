@@ -10,8 +10,7 @@ use App\BasicRum\Layers\DataLayer\Query\Runner;
 use App\BasicRum\Periods\Period;
 
 /**
- * Class DataLayer
- * @package App\BasicRum\Layers
+ * Class DataLayer.
  */
 class DataLayer
 {
@@ -29,7 +28,6 @@ class DataLayer
 
     /**
      * DataLayer constructor.
-     * @param Runner $runner
      */
     public function __construct(Runner $runner)
     {
@@ -37,9 +35,6 @@ class DataLayer
     }
 
     /**
-     * @param Period $period
-     * @param array $dataRequirements
-     * @param DataLayer\Query\MainDataSelect\MainDataInterface $mainDataSelect
      * @return DataLayer
      */
     public function load(
