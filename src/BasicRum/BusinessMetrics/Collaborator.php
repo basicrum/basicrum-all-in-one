@@ -48,4 +48,9 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
     {
         return array_keys($this->businessMetricsClassMap);
     }
+
+    public function getAllPossibleRequirements(): array
+    {
+        return $this->businessMetricsClassMap;
+    }
 }

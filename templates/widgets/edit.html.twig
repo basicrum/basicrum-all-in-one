@@ -1,6 +1,6 @@
 <!-- Modal -->
 <div class="modal fade" id="widget_details" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <form id="create-widget-form">
                 <div class="modal-header">
@@ -10,13 +10,27 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group col-md-12">
-                        <label for="fname">Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label for="widget">Content</label>
-                        <div id="jsoneditor"></div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="wtype">Diagram Type</label>
+                                <select name="wtype" class="form-control" id="wtype">
+                                    <option value="distribution">Distribution</option>
+                                    <option value="time_series">Time Series</option>
+                                    <option value="plane">Plane</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="widget">Content</label>
+                                <div id="jsoneditor"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -31,9 +45,32 @@
 
 <link href="/plugins/jsoneditor/jsoneditor.min.css" rel="stylesheet" type="text/css">
 <script src="/plugins/jsoneditor/jsoneditor.min.js"></script>
+<script src="/js/widgets/default_json.js"></script>
 
 <script>
-    const schema = {
+
+    function getSchema( schemaType ) {
+        requestAJAX.get("/widget/schema/"+schemaType)
+            .done(function(response){
+                console.log(response);
+                appData.jsonEditor.setSchema(JSON.parse(response));
+            });
+    }
+
+    $("#wtype").on("change", function(){
+        var wtype = $(this, " option:selected").val();
+        console.log(wtype);
+        /*requestAJAX.get("/widget/schema/"+wtype)
+            .done(function(response){
+                console.log(response);
+                appData.jsonEditor.setSchema(JSON.parse(response));
+            });*/
+        getSchema(wtype);
+    });
+
+    getSchema($("#wtype option:selected").val());
+
+    /*var defaultSchema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         "title": "Single Element Time Series Widget",
         "description": "Object containing time series widget details",
@@ -46,7 +83,8 @@
                         "properties": {
                             "name": {
                                 "type": "string",
-                                "title": "Segment Name"
+                                "title": "Segment Name",
+                                "minLength": 1
                             },
                             "color": {
                                 "type": "string",
@@ -56,10 +94,28 @@
                                 "enum": ["bar"],
                             }
                         },
+                        "required": ["name"],
                     },
                     "data_requirements": {
                         "type": "object",
                         "properties": {
+                            "filters": {
+                                "type": "object",
+                                "properties": {
+                                    "device_type": {
+                                        "type": "object",
+                                        "properties": {
+                                            "search_value": {
+                                                "enum": [1, 2, 3, 4],
+                                                "type": "integer"
+                                            },
+                                            "condition": {
+                                                "enum": ["is"]
+                                            }
+                                        }
+                                    }
+                                }
+                            },
                             "technical_metrics": {
                                 "type": "object",
                                 "properties": {
@@ -86,6 +142,10 @@
         },
         "type": "object",
         "properties": {
+            "title": {
+                "type": "string",
+                "minLength": 1
+            },
             "global": {
                 "type": "object",
                 "properties": {
@@ -95,7 +155,7 @@
                         "properties": {
                             "render_type": {
                                 "title": "Widget Type",
-                                "enum": ["time_series", "time_no_series"]
+                                "enum": ["time_series", "plane", "distribution"]
                             },
                             "layout" : {
                                 "title": "Layout",
@@ -125,8 +185,7 @@
                                     },
                                     "start": {
                                         "title": "Start",
-                                        "enum": ["30"],
-                                        "type": "integer"
+                                        "enum": [30, 130],
                                     },
                                     "end": {
                                         "Title": "End Date",
@@ -144,52 +203,14 @@
                     "1": {"$ref": "#/definitions/segment"}
                 }
             }
-        }
+        },
+        "required": ["title"]
+    };*/
 
-    };
 
-
-
-    const json = {
-            title: '',
-            global: {
-                presentation: {
-                    'render_type': 'time_series',
-                    'layout' : {
-                        bargap: 0,
-                        barmode: 'overlay'
-                    }
-                },
-                data_requirements: {
-                    period: {
-                        type: 'moving',
-                        start: '30',
-                        end: 'now',
-                    },
-                }
-            },
-            segments: {
-                1: {
-                    presentation: {
-                        name: '',
-                        color: '#ff6023',
-                        type: 'bar'
-                    },
-                    data_requirements: {
-                        technical_metrics: {
-                            total_img_size: {
-                                data_flavor: {
-                                    percentile: 50
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
 
     const options = {
-        schema: schema,
+        // schema: defaultSchema,
         mode: 'tree',
         modes: ['code', 'text', 'tree', 'preview'],
 
@@ -204,7 +225,7 @@
 
 
     const container = document.getElementById('jsoneditor');
-    appData.jsonEditor = new JSONEditor(container, options, json);
+    appData.jsonEditor = new JSONEditor(container, options, defaultJson);
 
     // Once loaded append modal div to body in order to appear above dark background
     $(function(){
@@ -221,7 +242,6 @@
         appData.validator = $(appData.modalFormId).validate({
             rules: {
                 name: "required",
-                // widget: "required",
             },
             submitHandler: function(form) {
 
