@@ -20,6 +20,8 @@ up: ## Start local environment
 down: ## Stop local environment
 	docker-compose -f ${dc_path} down
 
+restart: down up # Restart environment
+
 rebuild: ## Rebuild local environment from scratch
 	@/bin/echo -n "All the volumes will be deleted. You will loose data in DB. Are you sure? [y/N]: " && read answer && \
 	[[ $${answer:-N} = y ]] && make destroy && make init
