@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace App\BasicRum\Layers\DataLayer\Query;
 
 use App\BasicRum\Cache\Storage;
+use Doctrine\ORM\EntityManager;
 
 class Runner
 {
-    /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
-    private $registry;
+    /** @var \Doctrine\DBAL\Connection */
+    private $connection;
 
     /** @var array */
     private $planActions = [];
@@ -23,14 +24,23 @@ class Runner
     /** @var Runner\ComplexSelect */
     private $complexSelect;
 
-    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry, array $planActions)
+    /**
+     * @required
+     */
+    public function setConnection(EntityManager $entityManager)
     {
-        $this->registry = $registry;
+        $this->connection = $entityManager->getConnection();
+    }
+
+    public function load(array $planActions)
+    {
         $this->planActions = $planActions;
         $this->cacheAdapter = new Storage('basicrum.datalayer.runner.cache', 300);
 
-        $this->secondaryFilter = new Runner\SecondaryFilter($registry, $this->cacheAdapter);
-        $this->complexSelect = new Runner\ComplexSelect($registry, $this->cacheAdapter);
+        $this->secondaryFilter = new Runner\SecondaryFilter($this->connection, $this->cacheAdapter);
+        $this->complexSelect = new Runner\ComplexSelect($this->connection, $this->cacheAdapter);
+
+        return $this;
     }
 
     /**
@@ -71,8 +81,6 @@ class Runner
         }
 
         //Playing a bit with generating low level query
-        $connection = $this->registry->getConnection();
-
         $sqlWhere = implode(' AND ', $whereArr);
         /** @var \App\BasicRum\Layers\DataLayer\Query\Plan\PrimaryFilter $primaryFilter */
         foreach ($this->planActions['where']['primaryFilters'] as $primaryFilter) {
@@ -84,7 +92,7 @@ class Runner
             }
         }
 
-        $res = $this->planActions['data_flavor']->retrieve($connection, $sqlWhere, $limitFilters);
+        $res = $this->planActions['data_flavor']->retrieve($this->connection, $sqlWhere, $limitFilters);
 
         if (!empty($complexSelectsResults)) {
             foreach ($complexSelectsResults as $complexSelectKey => $complexSelectData) {

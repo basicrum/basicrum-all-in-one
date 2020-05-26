@@ -2,24 +2,12 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\Tests\BasicRum\FixturesTestCase;
-
-use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Secondary\Url;
 use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
-class UrlLikeTest extends FixturesTestCase
+class UrlLikeTest extends DataLayerFixtureTestCase
 {
-
-    /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     */
-    private function _getDoctrine() : \Doctrine\Bundle\DoctrineBundle\Registry
-    {
-        return static::$kernel->getContainer()->get('doctrine');
-    }
-
     /**
      * @group data_query
      */
@@ -35,14 +23,11 @@ class UrlLikeTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $res = $this->getDataLayer()->load(
             $period,
             [$url],
             $flavor
-        );
-
-        $res = $dataLayer->process();
+        )->process();
 
         $this->assertEquals(
             [
@@ -50,10 +35,10 @@ class UrlLikeTest extends FixturesTestCase
                     [
                         'data_rows' => [
                             [
-                                'page_view_id' => 3
-                            ]
-                        ]
-                    ]
+                                'page_view_id' => 3,
+                            ],
+                        ],
+                    ],
             ],
             $res
         );
@@ -69,13 +54,11 @@ class UrlLikeTest extends FixturesTestCase
 //            'https://www.basicrum.com/doesnotexist-url'
 //        );
 //
-//        $dataLayer = new DataLayer(
-//            $this->_getDoctrine(),
+//        $res = $this->getDataLayer()->load(
 //            $period,
-//            [$url]
-//        );
-//
-//        $res = $dataLayer->process();
+//            [$url],
+//            $flavor
+//        )->process();
 //
 //        $this->assertEquals(
 //            [

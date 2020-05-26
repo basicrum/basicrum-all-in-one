@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\DiagramSchema;
 use App\Entity\Widgets;
 use App\Repository\WidgetsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,27 +19,35 @@ class WidgetController extends AbstractController
 {
     /**
      * @Route("/widget/generate_diagram", name="widget_generate_diagram")
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     *
+     * @throws \Exception
      */
-    public function generateDiagram()
+    public function generateDiagram(DiagramOrchestrator $diagramOrchestrator, DiagramBuilder $diagramBuilder)
     {
         ini_set('memory_limit', '-1');
 
-        $diagramOrchestrator = new DiagramOrchestrator(
-            $_POST,
-            $this->getDoctrine()
-        );
-
-        $diagramBuilder = new DiagramBuilder();
+        $diagramOrchestrator->load($_POST);
 
         $data = $diagramBuilder->build($diagramOrchestrator, $_POST);
 
+        return $this->json($data);
+    }
+
+    /**
+     * @Route("/widget/schema/{type}", name="widgets_schema")
+     */
+    public function generateSchema($type)
+    {
+        $schema = new DiagramSchema($type);
+
         $response = new Response(
             json_encode(
-                $data
+                $schema->generateSchema(),
+                JSON_PRETTY_PRINT
             )
         );
-
-        $response->headers->set('Content-Type', 'application/json');
 
         return $response;
     }
@@ -96,7 +105,7 @@ class WidgetController extends AbstractController
             ];
         }
 
-        return new Response(json_encode($array));
+        return $this->json($array);
     }
 
     /**
@@ -104,17 +113,14 @@ class WidgetController extends AbstractController
      */
     public function show(Widgets $widget): Response
     {
-        $array = [
+        return $this->json([
             'id' => $widget->getId(),
             'name' => $widget->getName(),
             'widget' => $widget->getWidget(),
             'user' => $widget->getUserId()->getFname().' '.$widget->getUserId()->getLname(),
             'created_at' => $widget->getCreatedAt()->format('d M Y H:i:s'),
             'updated_at' => $widget->getUpdatedAt()->format('d M Y H:i:s'),
-        ];
-
-        echo json_encode($array);
-        exit();
+        ]);
     }
 
     /**
@@ -143,7 +149,7 @@ class WidgetController extends AbstractController
             ],
         ];
 
-        return new Response(json_encode($array));
+        return $this->json($array);
     }
 
     /**
@@ -168,7 +174,7 @@ class WidgetController extends AbstractController
             ],
         ];
 
-        return new Response(json_encode($array));
+        return $this->json($array);
     }
 
     /**

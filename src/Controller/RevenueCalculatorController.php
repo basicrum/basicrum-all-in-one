@@ -16,8 +16,12 @@ class RevenueCalculatorController extends AbstractController
 {
     /**
      * @Route("/diagrams/estimate/revenue_calculator", name="diagrams_estimate_revenue_calculator")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Exception
      */
-    public function revenueCalculator()
+    public function revenueCalculator(DiagramOrchestrator $diagramOrchestrator)
     {
         // Quick hack for out of memory problems
         ini_set('memory_limit', -1);
@@ -62,12 +66,7 @@ class RevenueCalculatorController extends AbstractController
 
         $collaboratorsAggregator->fillRequirements($requirements);
 
-        $diagramOrchestrator = new DiagramOrchestrator(
-            $collaboratorsAggregator->getCollaborators(),
-            $this->getDoctrine()
-        );
-
-        $res = $diagramOrchestrator->process();
+        $res = $diagramOrchestrator->load($collaboratorsAggregator->getCollaborators())->process();
 
         $bucketizer = new Buckets(200, 4600);
         $buckets = $bucketizer->bucketizePeriod($res[0], 'firstPaint');

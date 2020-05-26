@@ -2,25 +2,13 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\Tests\BasicRum\FixturesTestCase;
-
 use App\BasicRum\Filters\Primary\TimeToFirstPaint;
 
-use App\BasicRum\Layers\DataLayer;
 use App\BasicRum\Periods\Period;
 use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
 
-class FirstPaintFilterTest extends FixturesTestCase
+class FirstPaintFilterTest extends DataLayerFixtureTestCase
 {
-
-    /**
-     * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
-     */
-    private function _getDoctrine() : \Doctrine\Bundle\DoctrineBundle\Registry
-    {
-        return static::$kernel->getContainer()->get('doctrine');
-    }
-
     /**
      * @group data_query
      */
@@ -36,14 +24,11 @@ class FirstPaintFilterTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $res = $this->getDataLayer()->load(
             $period,
             [$firstByte],
             $flavor
-        );
-
-        $res = $dataLayer->process();
+        )->process();
 
         $this->assertEquals(
             [
@@ -75,14 +60,11 @@ class FirstPaintFilterTest extends FixturesTestCase
 
         $flavor = new DataRows('navigation_timings', ['page_view_id']);
 
-        $dataLayer = new DataLayer(
-            $this->_getDoctrine(),
+        $res = $this->getDataLayer()->load(
             $period,
             [$firstByte],
             $flavor
-        );
-
-        $res = $dataLayer->process();
+        )->process();
 
         $this->assertEquals(
             [
