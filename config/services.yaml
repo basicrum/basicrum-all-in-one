@@ -32,6 +32,10 @@ services:
     # please note that last definitions always *replace* previous ones
     App\BasicRum\Layers\DataLayer:
         public: true
+    App\BasicRum\Release:
+        calls:
+            - [setConnection, ['@doctrine.orm.entity_manager']]
+        public: true
     App\BasicRum\Layers\DataLayer\Query\Runner:
         calls:
             - [setConnection, ['@doctrine.orm.entity_manager']]
