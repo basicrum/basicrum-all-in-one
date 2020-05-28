@@ -34,7 +34,7 @@ services:
         public: true
     App\BasicRum\Release:
         calls:
-            - [setConnection, ['@doctrine.orm.entity_manager']]
+            - [setConnection]
         public: true
     App\BasicRum\Layers\DataLayer\Query\Runner:
         calls:
