@@ -45,6 +45,13 @@ class Releases
         return $this->date;
     }
 
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
