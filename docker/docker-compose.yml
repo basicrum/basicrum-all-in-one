@@ -7,12 +7,15 @@ services:
     build:
       context: symfony_app
       dockerfile: Dockerfile
+      args:
+        XDEBUG_ON: "${XDEBUG_ON:-N}" # just add XDEBUG_ON=Y to your .env and `make restart`
     container_name: basicrum_bo_php
     env_file:
       - app.env
     volumes:
       - ./..:/var/www/html:delegated
       - ./symfony_app/www.conf:/usr/local/etc/php-fpm.d/www.conf # local dev only, should not be used for production
+      - ./symfony_app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini # local dev only, should not be used for production
     command: # local dev only, should not be used for production
       - "php-fpm"
       - "-R"

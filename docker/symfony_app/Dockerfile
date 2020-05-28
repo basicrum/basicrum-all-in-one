@@ -9,6 +9,15 @@ RUN apk add --no-cache zip bash libzip \
     && docker-php-ext-install pdo_mysql zip  \
     && apk del --purge .build-deps
 
+# Install xdebug if required
+ARG XDEBUG_ON="N"
+RUN if [ "${XDEBUG_ON}" == "Y" ]; then \
+    apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && apk del --purge .phpize-deps; \
+ fi
+
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --filename=composer --install-dir=/usr/local/bin \
