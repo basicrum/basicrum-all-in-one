@@ -8,11 +8,9 @@ use DateTime;
 
 class Release
 {
-    private $repository;
+    private $releasses;
 
-    private $entityManager;
-
-    public function setConnection(\App\Repository\ReleasesRepository $releases)
+    public function __construct(\App\Repository\ReleasesRepository $releases)
     {
         $this->releases = $releases;
     }

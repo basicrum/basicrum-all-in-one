@@ -32,7 +32,6 @@ class ReleasesRepository extends ServiceEntityRepository
         ->setParameter('date2', $dates['endDate']->format('Y-m-d'))
         ;
 
-        // returns an array of Product objects
         return $query->getResult();
     }
 }

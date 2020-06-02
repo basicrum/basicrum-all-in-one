@@ -5,17 +5,23 @@ namespace App\Tests\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class SegmentsDeviceDistributionTest extends TestCase
+class SegmentsDeviceDistributionTest extends KernelTestCase
 {
+    private $release;
+
+    public function setUp()
+    {
+        self::bootKernel();
+        $this->release = self::$kernel->getContainer()->get(Release::class);
+    }
+
     /**
      * @group diagram_builder
      */
     public function testFourDevicesDistribution()
     {
-        $release = new Release();
-
         $input = [
             'global' => [
                 'presentation' => [
@@ -156,7 +162,7 @@ class SegmentsDeviceDistributionTest extends TestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $release);
+        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
 
         $mobileResult = array_combine($result['diagrams'][0]['x'], $result['diagrams'][0]['y']);
         $desktopResult = array_combine($result['diagrams'][1]['x'], $result['diagrams'][1]['y']);

@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Releases.
  *
+ * @ORM\Entity(repositoryClass="App\Repository\ReleasesRepository")
  * @ORM\Table(name="releases", indexes={@ORM\Index(name="date", columns={"date"})})
- * @ORM\Entity
  */
 class Releases
 {

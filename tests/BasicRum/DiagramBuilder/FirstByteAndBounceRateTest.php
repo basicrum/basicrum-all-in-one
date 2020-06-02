@@ -5,16 +5,24 @@ namespace App\Tests\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class FirstByteAndBounceRateTest extends TestCase
+class FirstByteAndBounceRateTest extends KernelTestCase
 {
+    private $release;
+
+    public function setUp()
+    {
+        self::bootKernel();
+        $this->release = self::$kernel->getContainer()->get(Release::class);
+    }
+
     /**
      * @group diagram_builder
      */
     public function testBounceRateValuesInBuckets()
     {
-        $release = new Release();
+        // $release = new Release();
         $input = [
             'global' => [
                 'presentation' => [
@@ -96,7 +104,7 @@ class FirstByteAndBounceRateTest extends TestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $release);
+        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
 
         $nonZeroResult = array_filter($result['diagrams'][1]['y']);
 
@@ -114,8 +122,6 @@ class FirstByteAndBounceRateTest extends TestCase
      */
     public function testFirstByteCorrectBuckets()
     {
-        $release = new Release();
-
         $input = [
             'global' => [
                 'presentation' => [
@@ -169,7 +175,7 @@ class FirstByteAndBounceRateTest extends TestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $release);
+        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
 
         //var_dump($result);
 
@@ -194,8 +200,6 @@ class FirstByteAndBounceRateTest extends TestCase
      */
     public function testBounceRateAndFirstByteCorrectDiagramNames()
     {
-        $release = new Release();
-
         $input = [
             'global' => [
                 'presentation' => [
@@ -277,7 +281,7 @@ class FirstByteAndBounceRateTest extends TestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $release);
+        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
 
         $this->assertEquals(
             'Bounce Rate',
