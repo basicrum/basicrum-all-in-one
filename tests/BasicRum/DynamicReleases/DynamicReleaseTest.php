@@ -5,6 +5,7 @@ namespace App\Tests\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
+use App\Entity\Releases;
 use App\Tests\BasicRum\FixturesTestCase;
 
 class DynamicReleaseTest extends FixturesTestCase
@@ -19,15 +20,52 @@ class DynamicReleaseTest extends FixturesTestCase
         static::bootKernel();
     }
 
-    private function _getDoctrine(): Registry
+    private function _getDoctrine(): \Doctrine\Bundle\DoctrineBundle\Registry
     {
         return static::$kernel->getContainer()->get('doctrine');
     }
 
     /**
+     * Check if releases table was populated with test data.
+     */
+    public function testIfDBContainsReleases()
+    {
+        $em = $this->_getDoctrine()->getManager();
+        $releases = $em->getRepository(Releases::class)->findAll();
+
+        $referenceArray = [
+            [
+                'id' => 1,
+                'date' => '2019-07-14 00:00:00',
+                'description' => 'Test release #1',
+            ],
+            [
+                'id' => 2,
+                'date' => '2019-07-22 00:00:00',
+                'description' => 'Test release #2',
+            ],
+        ];
+
+        $testArray = [
+            [
+                'id' => $releases[0]->getId(),
+                'date' => $releases[0]->getDate()->format('Y-m-d H:i:s'),
+                'description' => $releases[0]->getDescription(),
+            ],
+            [
+                'id' => $releases[1]->getId(),
+                'date' => $releases[1]->getDate()->format('Y-m-d H:i:s'),
+                'description' => $releases[1]->getDescription(),
+            ],
+        ];
+
+        $this->assertEquals($referenceArray, $testArray);
+    }
+
+    /**
      * @group diagram_builder
      */
-    public function testFourDevicesDistribution()
+    public function testDiagramContainReleasesInformation()
     {
         $release = self::$kernel->getContainer()->get(Release::class);
 
@@ -109,8 +147,6 @@ class DynamicReleaseTest extends FixturesTestCase
 
         $result = $diagramBuilder->build($diagramOrchestrator, $input, $release);
 
-        $mobileResult = array_combine($result['diagrams'][0]['x'], $result['diagrams'][0]['y']);
-        $desktopResult = array_combine($result['diagrams'][1]['x'], $result['diagrams'][1]['y']);
         $testArray = [
             'layout' => [
                 'shapes' => [
