@@ -16,16 +16,13 @@ class Release
     }
 
     /**
-     * @param string $date1 Start date
-     * @param string $date2 End date
+     * @param string $startDate Start date
+     * @param string $endDate   End date
      *
      * @return array [description]
      */
-    public function getAllReleasesBetweenDates(string $date1, string $date2): array
+    public function getAllReleasesBetweenDates(string $startDate, string $endDate): array
     {
-        $dateArray['startDate'] = new  DateTime($date1);
-        $dateArray['endDate'] = new  DateTime($date2);
-
-        return $this->releases->findAllBetweenDates($dateArray);
+        return $this->releases->findAllBetweenDates(new DateTime($startDate), new DateTime($endDate));
     }
 }

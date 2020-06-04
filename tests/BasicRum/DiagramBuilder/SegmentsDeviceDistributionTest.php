@@ -13,7 +13,7 @@ class SegmentsDeviceDistributionTest extends FixturesTestCase
 
     public function setUp()
     {
-        self::bootKernel();
+        parent::setUp();
         $this->release = self::$kernel->getContainer()->get(Release::class);
     }
 

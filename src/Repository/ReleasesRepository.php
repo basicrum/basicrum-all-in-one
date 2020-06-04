@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Releases;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,7 +20,7 @@ class ReleasesRepository extends ServiceEntityRepository
         parent::__construct($registry, Releases::class);
     }
 
-    public function findAllBetweenDates(array $dates)
+    public function findAllBetweenDates(DateTime $startDate, DateTime $endDate)
     {
         $entityManager = $this->getEntityManager();
 
@@ -28,8 +29,8 @@ class ReleasesRepository extends ServiceEntityRepository
             FROM App\Entity\Releases p
             WHERE p.date BETWEEN :date1 AND :date2
             ORDER BY p.date DESC'
-        )->setParameter('date1', $dates['startDate']->format('Y-m-d'))
-        ->setParameter('date2', $dates['endDate']->format('Y-m-d'))
+        )->setParameter('date1', $startDate->format('Y-m-d'))
+        ->setParameter('date2', $endDate->format('Y-m-d'))
         ;
 
         return $query->getResult();

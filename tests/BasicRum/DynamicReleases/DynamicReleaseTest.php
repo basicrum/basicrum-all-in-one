@@ -10,16 +10,6 @@ use App\Tests\BasicRum\FixturesTestCase;
 
 class DynamicReleaseTest extends FixturesTestCase
 {
-    private $entityManager;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        static::bootKernel();
-    }
-
     private function _getDoctrine(): \Doctrine\Bundle\DoctrineBundle\Registry
     {
         return static::$kernel->getContainer()->get('doctrine');
