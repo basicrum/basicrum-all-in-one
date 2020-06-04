@@ -23,6 +23,8 @@ If you would like to preload some data, you can do it by executing :
 ```
 make demo
 ```
+### Xdebug
+If you would like to use Xdebug to profile/debug application on your local machine, it can be easily enabled by adding `XDEBUG_ON=Y` in your `.env` file or by adding it to your shell (`export XDEBUG_ON=Y`). `make restart` is required to apply the changes - it will rebuild application container and add Xdebug extension. 
 
 ## Accessing Basic RUM and its local database:
 
