@@ -5,9 +5,9 @@ namespace App\Tests\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Tests\BasicRum\FixturesTestCase;
 
-class SegmentsDeviceDistributionTest extends KernelTestCase
+class SegmentsDeviceDistributionTest extends FixturesTestCase
 {
     private $release;
 

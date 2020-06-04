@@ -5,9 +5,9 @@ namespace App\Tests\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Tests\BasicRum\FixturesTestCase;
 
-class FirstByteAndBounceRateTest extends KernelTestCase
+class FirstByteAndBounceRateTest extends FixturesTestCase
 {
     private $release;
 
@@ -22,7 +22,6 @@ class FirstByteAndBounceRateTest extends KernelTestCase
      */
     public function testBounceRateValuesInBuckets()
     {
-        // $release = new Release();
         $input = [
             'global' => [
                 'presentation' => [
