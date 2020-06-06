@@ -6,7 +6,7 @@ namespace App\BasicRum;
 
 class DiagramBuilder
 {
-    public function build(DiagramOrchestrator $diagramOrchestrator, array $params): array
+    public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
         $layout = new Diagram\View\Layout();
         $diagramData = [];
@@ -83,6 +83,11 @@ class DiagramBuilder
                 foreach ($results as $key => $result) {
                     $extraDiagramParams[$key] = [];
 
+                    $date1 = array_key_first($result);
+                    $date2 = array_key_last($result);
+
+                    $releasesArray = $releaseRepository->getAllReleasesBetweenDates($date1, $date2);
+
                     foreach ($result as $time => $data) {
                         $x = isset($data[0]['x']) ? $data[0]['x'] : 0;
                         $dataForDiagram[$key][$time] = $x;
@@ -99,7 +104,8 @@ class DiagramBuilder
                     $params,
                     $extraLayoutParams,
                     $extraDiagramParams,
-                    $hasError
+                    $hasError,
+                    $releasesArray
             );
         }
 
