@@ -7,8 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Releases.
  *
+ * @ORM\Entity(repositoryClass="App\Repository\ReleasesRepository")
  * @ORM\Table(name="releases", indexes={@ORM\Index(name="date", columns={"date"})})
- * @ORM\Entity
  */
 class Releases
 {
@@ -43,6 +43,13 @@ class Releases
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function setDate(\DateTimeInterface $date): self

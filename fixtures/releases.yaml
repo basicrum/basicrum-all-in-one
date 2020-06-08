@@ -1,0 +1,9 @@
+App\Entity\Releases:
+      Release1:
+          id: 1
+          date: <(new \DateTime('2019-07-14 00:00:00'))>
+          description: "Test release #1"
+      Release2:
+          id: 2
+          date: <(new \DateTime('2019-07-22 00:00:00'))>
+          description: "Test release #2"

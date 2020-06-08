@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\DiagramSchema;
+use App\BasicRum\Release;
 use App\Entity\Widgets;
 use App\Repository\WidgetsRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,13 +25,13 @@ class WidgetController extends AbstractController
      *
      * @throws \Exception
      */
-    public function generateDiagram(DiagramOrchestrator $diagramOrchestrator, DiagramBuilder $diagramBuilder)
+    public function generateDiagram(DiagramOrchestrator $diagramOrchestrator, DiagramBuilder $diagramBuilder, Release $release)
     {
         ini_set('memory_limit', '-1');
 
         $diagramOrchestrator->load($_POST);
 
-        $data = $diagramBuilder->build($diagramOrchestrator, $_POST);
+        $data = $diagramBuilder->build($diagramOrchestrator, $_POST, $release);
 
         return $this->json($data);
     }
