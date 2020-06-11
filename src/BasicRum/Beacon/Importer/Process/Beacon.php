@@ -18,6 +18,7 @@ class Beacon
     {
         $this->navigationTimingsNormalizer = new Beacon\NavigationTimingsNormalizer();
         $this->resourceTimingsNormalizer = new Beacon\ResourceTimingsNormalizer();
+        $this->rtTimingsNormalizer = new Beacon\RtTimingsNormalizer();
     }
 
     /**
@@ -64,14 +65,15 @@ class Beacon
             // We do not mark as page view beacons send when visitor leaves page
             if (isset($this->pageViewUniqueKeys[$pageViewKey])) {
                 $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
-                continue;
+//                continue;
             }
 
             $this->pageViewUniqueKeys[$pageViewKey] = ['start' => $date];
 
             $data[$key] = array_merge(
                 $this->navigationTimingsNormalizer->normalize($beacons[$key]),
-                $this->resourceTimingsNormalizer->normalize($beacons[$key])
+                $this->resourceTimingsNormalizer->normalize($beacons[$key]),
+                $this->rtTimingsNormalizer->normalize($beacons[$key]),
             );
 
             $data[$key]['beacon_string'] = $beacon[1];

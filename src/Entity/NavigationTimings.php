@@ -127,6 +127,55 @@ class NavigationTimings
     private $stayOnPageTime = '0';
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="t_done", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $t_done;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_page", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $t_page;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_resp", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $t_resp;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_load", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $t_load;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rt_tstart", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $rt_tstart;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rt_end", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $rt_end;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rt_quit", type="smallint", length=1, nullable=false, options={"unsigned"=true})
+     */
+    private $rt_quit;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false, options={"default"="CURRENT_TIMESTAMP"})
@@ -359,6 +408,90 @@ class NavigationTimings
     public function setRtsi(string $rt_si): self
     {
         $this->rt_si = $rt_si;
+
+        return $this;
+    }
+
+    public function getTdone(): ?string
+    {
+        return $this->t_done;
+    }
+
+    public function setTdone(string $t_done): self
+    {
+        $this->t_done = $t_done;
+
+        return $this;
+    }
+
+    public function getTpage(): ?string
+    {
+        return $this->t_page;
+    }
+
+    public function setTpage(string $t_page): self
+    {
+        $this->t_page = $t_page;
+
+        return $this;
+    }
+
+    public function getTresp(): ?string
+    {
+        return $this->t_resp;
+    }
+
+    public function setTresp(string $t_resp): self
+    {
+        $this->t_resp = $t_resp;
+
+        return $this;
+    }
+
+    public function getTload(): ?string
+    {
+        return $this->t_load;
+    }
+
+    public function setTload(string $t_load): self
+    {
+        $this->t_load = $t_load;
+
+        return $this;
+    }
+
+    public function getRtTstart(): ?string
+    {
+        return $this->rt_tstart;
+    }
+
+    public function setRtTstart(string $rt_tstart): self
+    {
+        $this->rt_tstart = $rt_tstart;
+
+        return $this;
+    }
+
+    public function getRtEnd(): ?string
+    {
+        return $this->rt_end;
+    }
+
+    public function setRtEnd(string $rt_end): self
+    {
+        $this->rt_end = $rt_end;
+
+        return $this;
+    }
+
+    public function getRtQuit(): ?string
+    {
+        return $this->rt_quit;
+    }
+
+    public function setRtQuit(string $rt_quit): self
+    {
+        $this->rt_quit = $rt_quit;
 
         return $this;
     }
