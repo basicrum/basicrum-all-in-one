@@ -13,7 +13,7 @@ class QueryParam extends AbstractFilter
 
     public function getSecondaryKeyFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 
     public function getSecondarySearchFieldName(): string
@@ -28,6 +28,6 @@ class QueryParam extends AbstractFilter
 
     public function getPrimarySearchFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 }

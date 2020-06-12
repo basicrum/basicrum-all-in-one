@@ -25,8 +25,8 @@ class Chunk
         while (true) {
             if (false === $next) {
                 $chunks[] = [
-                    'begin' => $current['pageViewId'],
-                    'end' => end($views)['pageViewId'],
+                    'begin' => $current['rumDataId'],
+                    'end' => end($views)['rumDataId'],
                 ];
 
                 break;
@@ -34,8 +34,8 @@ class Chunk
 
             if ($this->completed->isVisitCompleted($current['createdAt'], $next['createdAt'], $duration)) {
                 $chunks[] = [
-                    'begin' => $current['pageViewId'],
-                    'end' => $lastScanned['pageViewId'],
+                    'begin' => $current['rumDataId'],
+                    'end' => $lastScanned['rumDataId'],
                 ];
 
                 $current = $next;

@@ -33,7 +33,7 @@ class BounceRateInMetric implements MainDataInterface
         $limitWhereStr = implode(' AND ', $limitWhere);
 
         $visitsOverviewLimit = str_replace(
-            'rum_data_flat.page_view_id',
+            'rum_data_flat.rum_data_id',
             'visits_overview.first_page_view_id',
             $limitWhereStr
             );
@@ -48,7 +48,7 @@ class BounceRateInMetric implements MainDataInterface
 FROM rum_data_flat
 WHERE 
   {$limitWhereStr} AND
-  page_view_id IN
+  rum_data_id IN
   (
 	SELECT visits_overview.first_page_view_id 
     FROM visits_overview
@@ -56,7 +56,7 @@ WHERE
 		AND visits_overview.page_views_count = 1
 		AND visits_overview.first_page_view_id IN
 		  (
-			SELECT page_view_id
+			SELECT rum_data_id
 			from rum_data_flat
 			WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
 		  )
@@ -71,7 +71,7 @@ ORDER BY 1";
         $limitWhereStr = implode(' AND ', $limitWhere);
 
         $visitsOverviewLimit = str_replace(
-            'rum_data_flat.page_view_id',
+            'rum_data_flat.rum_data_id',
             'visits_overview.first_page_view_id',
             $limitWhereStr
         );
@@ -86,14 +86,14 @@ ORDER BY 1";
 FROM rum_data_flat
 WHERE 
   {$limitWhereStr} AND
-  page_view_id IN
+  rum_data_id IN
   (
 	SELECT visits_overview.first_page_view_id 
     FROM visits_overview
     WHERE {$visitsOverviewLimit}
 		AND visits_overview.first_page_view_id IN
 		  (
-			SELECT page_view_id
+			SELECT rum_data_id
 			from rum_data_flat
 			WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
 		  )

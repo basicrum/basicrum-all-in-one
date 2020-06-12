@@ -35,9 +35,9 @@ class LastBlockingResourceCalculator
         $lastBlockingResources = [];
 
         foreach ($navTimingsRes as $nav) {
-            $pageViewId = $nav['pageViewId'];
+            $rumDataId = $nav['rumDataId'];
 
-            $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->registry);
+            $resourceTimingsData = $resourceTiming->fetchResources($rumDataId, $this->registry);
 
             $finalName = '';
             $tmpEndTime = 0;
@@ -55,7 +55,7 @@ class LastBlockingResourceCalculator
                 }
 
                 $lastBlockingResources[] = [
-                    'page_view_id' => $pageViewId,
+                    'rum_data_id' => $rumDataId,
                     'url' => $finalName,
                     'time' => $tmpEndTime,
                     'first_paint' => $nav['firstPaint'],
@@ -103,12 +103,12 @@ class LastBlockingResourceCalculator
         $repository = $this->registry
             ->getRepository(LastBlockingResources::class);
 
-        $pageViewId = (int) $repository->createQueryBuilder('lbr')
-            ->select('MAX(lbr.pageViewId)')
+        $rumDataId = (int) $repository->createQueryBuilder('lbr')
+            ->select('MAX(lbr.rumDataId)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        return 0 === $pageViewId ? 0 : $pageViewId;
+        return 0 === $rumDataId ? 0 : $rumDataId;
     }
 
     private function _saveBlockingResources(array $resources)
@@ -120,7 +120,7 @@ class LastBlockingResourceCalculator
 
             $entity = new LastBlockingResources();
 
-            $entity->setPageViewId($resource['page_view_id']);
+            $entity->setPageViewId($resource['rum_data_id']);
             $entity->setTime($resource['time']);
             $entity->setUrl($resource['url']);
             $entity->setFirstPaint($resource['first_paint']);
@@ -146,10 +146,10 @@ class LastBlockingResourceCalculator
             ->getRepository(RumDataFlat::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
+            ->where("nt.rumDataId >= '".$startId."' AND nt.rumDataId <= '".$endId."'")
             ->andWhere('nt.userAgentId NOT IN (:userAgentId)')
             ->setParameter('userAgentId', $this->_botUserAgentsIds())
-            ->select(['nt.pageViewId', 'nt.firstPaint'])
+            ->select(['nt.rumDataId', 'nt.firstPaint'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);

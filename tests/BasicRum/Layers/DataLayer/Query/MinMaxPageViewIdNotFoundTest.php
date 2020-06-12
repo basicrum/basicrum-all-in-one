@@ -42,7 +42,7 @@ class MinMaxPageViewIdNotFoundTest extends FixturesTestCase
             'mobile'
         );
 
-        $flavor = new DataRows('rum_data_flat', ['page_view_id']);
+        $flavor = new DataRows('rum_data_flat', ['rum_data_id']);
 
         $res = $this->getDataLayer()->load(
             $period,

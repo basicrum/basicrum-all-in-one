@@ -2,14 +2,11 @@
 
 namespace App\Tests\BasicRum\Visit\Calculator\Aggregator;
 
-use App\Tests\BasicRum\FixturesTestCase;
-
 use App\BasicRum\Visit\Calculator\Aggregator\Chunk;
-
+use App\Tests\BasicRum\FixturesTestCase;
 
 class ChunkTest extends FixturesTestCase
 {
-
     protected function setUp()
     {
         static::bootKernel();
@@ -19,12 +16,12 @@ class ChunkTest extends FixturesTestCase
     {
         $pageViews = [
             [
-                'createdAt'  => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'createdAt' => new \DateTime('2018-10-25 13:32:33'),
+                'rumDataId' => 2,
             ],
             [
-                'createdAt'  => new \DateTime('2018-10-28 13:32:33'),
-                'pageViewId' => 3,
+                'createdAt' => new \DateTime('2018-10-28 13:32:33'),
+                'rumDataId' => 3,
             ],
         ];
 
@@ -36,12 +33,12 @@ class ChunkTest extends FixturesTestCase
             [
                 [
                     'begin' => 2,
-                    'end'   => 2
+                    'end' => 2,
                 ],
                 [
                     'begin' => 3,
-                    'end'   => 3
-                ]
+                    'end' => 3,
+                ],
             ],
             $res
         );
@@ -51,16 +48,16 @@ class ChunkTest extends FixturesTestCase
     {
         $pageViews = [
             [
-                'createdAt'  => new \DateTime('2018-10-25 13:30:33'),
-                'pageViewId' => 1,
+                'createdAt' => new \DateTime('2018-10-25 13:30:33'),
+                'rumDataId' => 1,
             ],
             [
-                'createdAt'  => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'createdAt' => new \DateTime('2018-10-25 13:32:33'),
+                'rumDataId' => 2,
             ],
             [
-                'createdAt'  => new \DateTime('2018-10-28 13:32:33'),
-                'pageViewId' => 3,
+                'createdAt' => new \DateTime('2018-10-28 13:32:33'),
+                'rumDataId' => 3,
             ],
         ];
 
@@ -72,12 +69,12 @@ class ChunkTest extends FixturesTestCase
             [
                 [
                     'begin' => 1,
-                    'end'   => 2
+                    'end' => 2,
                 ],
                 [
                     'begin' => 3,
-                    'end'   => 3
-                ]
+                    'end' => 3,
+                ],
             ],
             $res
         );
@@ -87,20 +84,20 @@ class ChunkTest extends FixturesTestCase
     {
         $pageViews = [
             [
-                'createdAt'  => new \DateTime('2018-10-25 13:30:33'),
-                'pageViewId' => 1,
+                'createdAt' => new \DateTime('2018-10-25 13:30:33'),
+                'rumDataId' => 1,
             ],
             [
-                'createdAt'  => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'createdAt' => new \DateTime('2018-10-25 13:32:33'),
+                'rumDataId' => 2,
             ],
             [
-                'createdAt'  => new \DateTime('2018-10-28 13:32:33'),
-                'pageViewId' => 3,
+                'createdAt' => new \DateTime('2018-10-28 13:32:33'),
+                'rumDataId' => 3,
             ],
             [
-                'createdAt'  => new \DateTime('2018-10-28 13:38:22'),
-                'pageViewId' => 4,
+                'createdAt' => new \DateTime('2018-10-28 13:38:22'),
+                'rumDataId' => 4,
             ],
         ];
 
@@ -112,12 +109,12 @@ class ChunkTest extends FixturesTestCase
             [
                 [
                     'begin' => 1,
-                    'end'   => 2
+                    'end' => 2,
                 ],
                 [
                     'begin' => 3,
-                    'end'   => 4
-                ]
+                    'end' => 4,
+                ],
             ],
             $res
         );
@@ -127,9 +124,9 @@ class ChunkTest extends FixturesTestCase
     {
         $pageViews = [
             [
-                'createdAt'  => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
-            ]
+                'createdAt' => new \DateTime('2018-10-25 13:32:33'),
+                'rumDataId' => 2,
+            ],
         ];
 
         $chunk = new Chunk();
@@ -140,11 +137,10 @@ class ChunkTest extends FixturesTestCase
             [
                 [
                     'begin' => 2,
-                    'end'   => 2
-                ]
+                    'end' => 2,
+                ],
             ],
             $res
         );
     }
-
 }

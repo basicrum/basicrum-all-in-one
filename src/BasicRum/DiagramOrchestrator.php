@@ -208,7 +208,7 @@ class DiagramOrchestrator
             if (isset($dataFlavor['count'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\Count(
                     'rum_data_flat',
-                    'page_view_id'
+                    'rum_data_id'
                 );
             }
         }

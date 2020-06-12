@@ -46,10 +46,10 @@ class Aggregator
      */
     public function addPageView(array $pageView): self
     {
-        $this->groupedPageViews[$pageView['rt_si']][$pageView['pageViewId']] = $pageView;
+        $this->groupedPageViews[$pageView['rt_si']][$pageView['rumDataId']] = $pageView;
 
-        if ($pageView['pageViewId'] > $this->lastPageViewInScan) {
-            $this->lastPageViewInScan = $pageView['pageViewId'];
+        if ($pageView['rumDataId'] > $this->lastPageViewInScan) {
+            $this->lastPageViewInScan = $pageView['rumDataId'];
             $this->lastRtsiInScan = $pageView['rt_si'];
         }
 

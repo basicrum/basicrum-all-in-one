@@ -28,12 +28,12 @@ class JourneyController extends AbstractController
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
-            ->select('nt.rt_si', 'nt.pageViewId')
+            ->select('nt.rt_si', 'nt.rumDataId')
             ->where("nt.createdAt BETWEEN '".$start."' AND '".$end."'")
             //->setParameter('url', 'GOO')
-            ->orderBy('nt.pageViewId', 'DESC')
+            ->orderBy('nt.rumDataId', 'DESC')
             ->setMaxResults(100)
-            ->groupBy('nt.pageViewId, nt.rt_si')
+            ->groupBy('nt.rumDataId, nt.rt_si')
             ->getQuery();
 
         $navigationTimings = $query->getResult();

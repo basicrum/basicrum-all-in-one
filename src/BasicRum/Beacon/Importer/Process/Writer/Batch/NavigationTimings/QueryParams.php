@@ -27,7 +27,7 @@ class QueryParams
                 $pageViewId = $key + $lastPageViewIdStartOffset;
 
                 $insertData[] = [
-                    'page_view_id' => $pageViewId,
+                    'rum_data_id' => $pageViewId,
                     'query_params' => $row['query_params'],
                 ];
             }

@@ -30,13 +30,13 @@ class AggregatorTest extends TestCase
             [
                 'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'rumDataId' => 2,
                 'urlId' => 2,
             ],
             [
                 'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-28 13:32:33'),
-                'pageViewId' => 3,
+                'rumDataId' => 3,
                 'urlId' => 1,
             ],
         ];
@@ -91,13 +91,13 @@ class AggregatorTest extends TestCase
             [
                 'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'rumDataId' => 2,
                 'urlId' => 2,
             ],
             [
                 'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-28 13:32:33'),
-                'pageViewId' => 3,
+                'rumDataId' => 3,
                 'urlId' => 1,
             ],
         ];
@@ -110,7 +110,7 @@ class AggregatorTest extends TestCase
             [
                 'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-25 13:27:00'),
-                'pageViewId' => 1,
+                'rumDataId' => 1,
                 'urlId' => 1,
             ]
         );
@@ -174,25 +174,25 @@ class AggregatorTest extends TestCase
             [
                 'rt_si' => 'test-2-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'rumDataId' => 2,
                 'urlId' => 2,
             ],
             [
                 'rt_si' => 'test-2-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:37:33'),
-                'pageViewId' => 3,
+                'rumDataId' => 3,
                 'urlId' => 1,
             ],
             [
                 'rt_si' => 'test-2-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 18:37:33'),
-                'pageViewId' => 4,
+                'rumDataId' => 4,
                 'urlId' => 1,
             ],
             [
                 'rt_si' => 'last-in-duration-range',
                 'createdAt' => new \DateTime('2018-10-25 20:40:33'),
-                'pageViewId' => 5,
+                'rumDataId' => 5,
                 'urlId' => 1,
             ],
         ];
@@ -261,25 +261,25 @@ class AggregatorTest extends TestCase
             [
                 'rt_si' => 'test-1-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'rumDataId' => 2,
                 'urlId' => 2,
             ],
             [
                 'rt_si' => 'test-1-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:37:33'),
-                'pageViewId' => 3,
+                'rumDataId' => 3,
                 'urlId' => 1,
             ],
             [
                 'rt_si' => 'test-1-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 18:37:33'),
-                'pageViewId' => 4,
+                'rumDataId' => 4,
                 'urlId' => 1,
             ],
             [
                 'rt_si' => 'last-in-duration-range',
                 'createdAt' => new \DateTime('2018-10-25 18:40:33'),
-                'pageViewId' => 5,
+                'rumDataId' => 5,
                 'urlId' => 1,
             ],
         ];
@@ -359,7 +359,7 @@ class AggregatorTest extends TestCase
                     return [
                         'rt_si' => 'first-closed-session',
                         'createdAt' => new \DateTime('2018-10-24 13:32:33'),
-                        'pageViewId' => 1,
+                        'rumDataId' => 1,
                         'urlId' => 1,
                     ];
                 }
@@ -373,13 +373,13 @@ class AggregatorTest extends TestCase
             [
                 'rt_si' => 'first-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
-                'pageViewId' => 2,
+                'rumDataId' => 2,
                 'urlId' => 1,
             ],
             [
                 'rt_si' => 'last-in-duration-range',
                 'createdAt' => new \DateTime('2018-10-25 18:40:33'),
-                'pageViewId' => 3,
+                'rumDataId' => 3,
                 'urlId' => 1,
             ],
         ];

@@ -40,7 +40,7 @@ class Planner
         /**
          * Check for selects that may break select query.
          *
-         * E.g we can't have "SELECT page_view_id, COUNT(page_view_id) ..."
+         * E.g we can't have "SELECT rum_data_id, COUNT(page_view_id) ..."
          * We can have only   "SELECT COUNT(page_view_id)"
          */
         $addDefaultSelect = true;
@@ -54,7 +54,7 @@ class Planner
         if ($addDefaultSelect) {
             $itself = new Select\Itself(
                 'rum_data_flat',
-                'page_view_id'
+                'rum_data_id'
             );
 
             $plan->addSelect($itself);
@@ -80,24 +80,24 @@ class Planner
 
         $plan->addLimiterFilter(
             'rum_data_flat',
-            'page_view_id',
+            'rum_data_id',
             'rum_data_flat',
             $between,
             new Select\Min(
                 'rum_data_flat',
-                'page_view_id'
+                'rum_data_id'
             ),
             '>='
         );
 
         $plan->addLimiterFilter(
             'rum_data_flat',
-            'page_view_id',
+            'rum_data_id',
             'rum_data_flat',
             $between,
             $max = new Select\Max(
                 'rum_data_flat',
-                'page_view_id'
+                'rum_data_id'
             ),
             '<='
         );

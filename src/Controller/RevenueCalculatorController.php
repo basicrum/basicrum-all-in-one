@@ -180,8 +180,8 @@ class RevenueCalculatorController extends AbstractController
 
         $res = $repository
             ->createQueryBuilder('nt')
-            ->where('nt.pageViewId >= :firstPageViewId')
-            ->andWhere('nt.pageViewId <= :lastPageViewId')
+            ->where('nt.rumDataId >= :firstPageViewId')
+            ->andWhere('nt.rumDataId <= :lastPageViewId')
             ->andWhere('nt.rt_si = :rt_si')
             ->andWhere('nt.urlId IN (:conversion_url_ids)')
             ->setParameter('firstPageViewId', $firstPageViewId)

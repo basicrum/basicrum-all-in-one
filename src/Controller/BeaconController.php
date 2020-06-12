@@ -22,10 +22,10 @@ class BeaconController extends AbstractController
     {
         $pageViewId = (int) $_POST['page_view_id'];
 
-        /** @var NavigationTimings $navigationTiming */
+        /** @var RumDataFlat $navigationTiming */
         $navigationTiming = $this->getDoctrine()
             ->getRepository(RumDataFlat::class)
-            ->findBy(['pageViewId' => $pageViewId]);
+            ->findBy(['rumDataId' => $pageViewId]);
 
         /** @var NavigationTimingsUserAgents $userAgent */
         $userAgent = $this->getDoctrine()

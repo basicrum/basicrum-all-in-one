@@ -101,7 +101,7 @@ class WaterfallsController extends AbstractController
 
         foreach ($reversedDays as $day => $views) {
             foreach ($views['data_rows'] as $view) {
-                $pageViews[] = $repository->find($view['page_view_id']);
+                $pageViews[] = $repository->find($view['rum_data_id']);
                 ++$counter;
                 if (400 === $counter) {
                     break;

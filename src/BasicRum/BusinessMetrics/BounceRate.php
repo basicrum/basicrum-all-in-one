@@ -32,6 +32,6 @@ class BounceRate implements \App\BasicRum\Report\ComplexSelectableInterface
 
     public function getPrimaryKeyFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 }

@@ -30,11 +30,11 @@ class Fetch
             ->getRepository(RumDataFlat::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
+            ->where("nt.rumDataId >= '".$startId."' AND nt.rumDataId <= '".$endId."'")
             ->andWhere('nt.deviceTypeId != :deviceTypeId')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->select(['nt.rt_si', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
-            ->orderBy('nt.pageViewId', 'DESC')
+            ->select(['nt.rt_si', 'nt.createdAt', 'nt.rumDataId', 'nt.urlId'])
+            ->orderBy('nt.rumDataId', 'DESC')
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -49,12 +49,12 @@ class Fetch
             ->getRepository(RumDataFlat::class);
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
+            ->where("nt.pageViewId >= '".$startId."' AND nt.rumDataId <= '".$endId."'")
             ->andWhere('nt.deviceTypeId != :deviceTypeId')
             ->andWhere('nt.rt_si = :rt_si')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
             ->setParameter('rt_si', $rt_si)
-            ->select(['nt.rt_si', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
+            ->select(['nt.rt_si', 'nt.createdAt', 'nt.rumDataId', 'nt.urlId'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -99,15 +99,15 @@ class Fetch
         $repository = $this->registry
             ->getRepository(RumDataFlat::class);
 
-        $pageViewId = $pageView['pageViewId'];
+        $pageViewId = $pageView['rumDataId'];
         $rt_si = $pageView['rt_si'];
 
         $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId < '".$pageViewId."'")
+            ->where("nt.rumDataId < '".$pageViewId."'")
             ->andWhere('nt.rt_si = :rt_si')
             ->setParameter('rt_si', $rt_si)
-            ->select(['nt.createdAt', 'nt.pageViewId', 'nt.rt_si'])
-            ->orderBy('nt.pageViewId', 'DESC')
+            ->select(['nt.createdAt', 'nt.rumDataId', 'nt.rt_si'])
+            ->orderBy('nt.rumDataId', 'DESC')
             ->setMaxResults(1)
             ->getQuery();
 

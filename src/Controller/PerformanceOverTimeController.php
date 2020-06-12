@@ -120,7 +120,7 @@ class PerformanceOverTimeController extends AbstractController
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
             ->from(RumDataFlat::class, 'e')
-            ->orderBy('e.pageViewId', 'DESC')
+            ->orderBy('e.rumDataId', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
@@ -138,7 +138,7 @@ class PerformanceOverTimeController extends AbstractController
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
             ->from(RumDataFlat::class, 'e')
-            ->orderBy('e.pageViewId', 'ASC')
+            ->orderBy('e.rumDataId', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();

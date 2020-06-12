@@ -25,7 +25,7 @@ class Beacons
             $pageViewId = $key + $lastPageViewIdStartOffset;
 
             $data[] = [
-                'page_view_id' => $pageViewId,
+                'rum_data_id' => $pageViewId,
                 'beacon' => $entry['beacon_string'],
             ];
         }

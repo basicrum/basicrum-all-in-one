@@ -7,12 +7,12 @@ use App\Entity\Beacons;
 
 class ResourceTiming
 {
-    public function fetchResources(int $pageViewId, \Doctrine\Bundle\DoctrineBundle\Registry $registry): array
+    public function fetchResources(int $rumDataId, \Doctrine\Bundle\DoctrineBundle\Registry $registry): array
     {
         /** @var Beacons $beacon */
         $beacon = $registry
             ->getRepository(Beacons::class)
-            ->findOneBy(['pageViewId' => $pageViewId]);
+            ->findOneBy(['rumDataId' => $rumDataId]);
 
         $beaconData = json_decode($beacon->getBeacon(), true);
 

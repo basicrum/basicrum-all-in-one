@@ -102,7 +102,7 @@ class NavigationTimings
 
         $queryBuilder = $repository->createQueryBuilder('nt');
 
-        $queryBuilder->select('max(nt.pageViewId)');
+        $queryBuilder->select('max(nt.rumDataId)');
 
         $max = $queryBuilder->getQuery()->getSingleScalarResult();
 

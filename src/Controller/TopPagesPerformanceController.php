@@ -237,7 +237,7 @@ class TopPagesPerformanceController extends AbstractController
         $queryBuilder = $repository->createQueryBuilder('nt');
 
         $queryBuilder
-            ->select(['count(nt.pageViewId) as visitsCount'])
+            ->select(['count(nt.rumDataId) as visitsCount'])
             ->where("nt.createdAt BETWEEN '".$start->format('Y-m-d')." 00:00:00' AND '".$end->format('Y-m-d')." 00:00:00'")
             ->getQuery();
 
