@@ -6,8 +6,8 @@ namespace App\BasicRum\Stats;
 
 use App\BasicRum\Beacon\RumData\ResourceTiming;
 use App\Entity\LastBlockingResources;
-use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUserAgents;
+use App\Entity\RumDataFlat;
 
 class LastBlockingResourceCalculator
 {
@@ -143,7 +143,7 @@ class LastBlockingResourceCalculator
     private function _getNavTimingsInRange(int $startId, int $endId)
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         $query = $repository->createQueryBuilder('nt')
             ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")

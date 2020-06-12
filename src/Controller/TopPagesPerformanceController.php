@@ -8,8 +8,8 @@ use App\BasicRum\Buckets;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Statistics\Median;
-use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUrls;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -198,7 +198,7 @@ class TopPagesPerformanceController extends AbstractController
 
         $markerDate = new \DateTime($date);
 
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataFlat::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');
@@ -231,7 +231,7 @@ class TopPagesPerformanceController extends AbstractController
      */
     private function countViewsInPeriod(\DateTime $start, \DateTime $end)
     {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataFlat::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');

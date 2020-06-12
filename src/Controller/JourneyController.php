@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +24,7 @@ class JourneyController extends AbstractController
 //        $end   = '2018-09-19 23:59:59';
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
@@ -56,7 +56,7 @@ class JourneyController extends AbstractController
 
         /** @var NavigationTimings $navigationTiming */
         $navigationTimings = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class)
+            ->getRepository(RumDataFlat::class)
             ->findBy(['rt_si' => $rt_si]);
 
         $filteredNavigations = [];

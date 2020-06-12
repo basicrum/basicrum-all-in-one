@@ -7,8 +7,8 @@ namespace App\Controller;
 use App\BasicRum\Beacon\RumData\ResourceTiming;
 use App\BasicRum\ResourceSize;
 use App\BasicRum\WaterfallSvgRenderer;
-use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUserAgents;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,7 +24,7 @@ class BeaconController extends AbstractController
 
         /** @var NavigationTimings $navigationTiming */
         $navigationTiming = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class)
+            ->getRepository(RumDataFlat::class)
             ->findBy(['pageViewId' => $pageViewId]);
 
         /** @var NavigationTimingsUserAgents $userAgent */

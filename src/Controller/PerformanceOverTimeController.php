@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\BasicRum\Date\DayInterval;
 use App\BasicRum\Date\TimePeriod;
-use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUrls;
+use App\Entity\RumDataFlat;
 use App\Entity\VisitsOverview;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -119,7 +119,7 @@ class PerformanceOverTimeController extends AbstractController
             ->where('e.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
-            ->from(NavigationTimings::class, 'e')
+            ->from(RumDataFlat::class, 'e')
             ->orderBy('e.pageViewId', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
@@ -137,7 +137,7 @@ class PerformanceOverTimeController extends AbstractController
             ->where('e.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
-            ->from(NavigationTimings::class, 'e')
+            ->from(RumDataFlat::class, 'e')
             ->orderBy('e.pageViewId', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
@@ -177,7 +177,7 @@ class PerformanceOverTimeController extends AbstractController
      */
     private function _getPopularPages(int $count, array $interval)
     {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataFlat::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');

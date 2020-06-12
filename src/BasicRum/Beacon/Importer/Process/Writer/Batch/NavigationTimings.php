@@ -81,7 +81,7 @@ class NavigationTimings
      */
     private function _saveNavigationTimings(array $batch)
     {
-        $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings');
+        $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'rum_data_flat');
 
         $fieldsArr = array_keys($batch[0]);
 
@@ -98,7 +98,7 @@ class NavigationTimings
     public function getLastId()
     {
         $repository = $this->registry
-            ->getRepository(\App\Entity\NavigationTimings::class);
+            ->getRepository(\App\Entity\RumDataFlat::class);
 
         $queryBuilder = $repository->createQueryBuilder('nt');
 

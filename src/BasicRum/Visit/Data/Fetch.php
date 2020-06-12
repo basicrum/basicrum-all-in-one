@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Visit\Data;
 
-use App\Entity\NavigationTimings;
+use App\Entity\RumDataFlat;
 use App\Entity\VisitsOverview;
 
 class Fetch
@@ -27,7 +27,7 @@ class Fetch
     public function fetchNavTimingsInRange(int $startId, int $endId): array
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         $query = $repository->createQueryBuilder('nt')
             ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
@@ -46,7 +46,7 @@ class Fetch
     public function fetchNavTimingsInRangeForSession(int $startId, int $endId, string $rt_si): array
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         $query = $repository->createQueryBuilder('nt')
             ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
@@ -97,7 +97,7 @@ class Fetch
     public function fetchPreviousSessionPageView(array $pageView): array
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         $pageViewId = $pageView['pageViewId'];
         $rt_si = $pageView['rt_si'];

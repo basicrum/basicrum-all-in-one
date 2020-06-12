@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\BasicRum\Buckets;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
-use App\Entity\NavigationTimings;
 use App\Entity\NavigationTimingsUrls;
+use App\Entity\RumDataFlat;
 use App\Entity\VisitsOverview;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -176,7 +176,7 @@ class RevenueCalculatorController extends AbstractController
         $lastPageViewId = $visit->getLastPageViewId();
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         $res = $repository
             ->createQueryBuilder('nt')

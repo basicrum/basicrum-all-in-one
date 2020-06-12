@@ -7,8 +7,8 @@ namespace App\Controller;
 use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Layers\Presentation;
-use App\Entity\NavigationTimings;
 use App\Entity\PageTypeConfig;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -97,7 +97,7 @@ class WaterfallsController extends AbstractController
         $counter = 0;
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         foreach ($reversedDays as $day => $views) {
             foreach ($views['data_rows'] as $view) {
