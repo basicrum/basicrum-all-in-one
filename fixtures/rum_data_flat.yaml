@@ -1,5 +1,5 @@
-App\Entity\NavigationTimings:
-      pageview1:
+App\Entity\RumDataFlat:
+      rumdataid1:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 150
@@ -27,7 +27,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-24 13:31:03'))>
             loadEventEnd: 139
-      pageview2:
+      rumdataid2:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 150
@@ -55,7 +55,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-25 13:32:33'))>
             loadEventEnd: 139
-      pageview3:
+      rumdataid3:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
@@ -83,7 +83,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
             loadEventEnd: 1393
-      pageview4:
+      rumdataid4:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
@@ -111,7 +111,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
-      pageview5:
+      rumdataid5:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 150
@@ -139,7 +139,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 139
-      pageview6:
+      rumdataid6:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
@@ -167,7 +167,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
-      pageview7:
+      rumdataid7:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
@@ -195,7 +195,7 @@ App\Entity\NavigationTimings:
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-11-01 14:33:44'))>
             loadEventEnd: 1344
-      pageview8:
+      rumdataid8:
             dnsDuration: 0
             connectDuration: 0
             firstByte: 2150
