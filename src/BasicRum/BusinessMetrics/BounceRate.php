@@ -27,7 +27,7 @@ class BounceRate implements \App\BasicRum\Report\ComplexSelectableInterface
 
     public function getPrimarySelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimaryKeyFieldName(): string

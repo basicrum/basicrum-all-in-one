@@ -8,7 +8,7 @@ class TimeToFirstByte extends AbstractFilter
 {
     public function getPrimaryTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimarySearchFieldName(): string

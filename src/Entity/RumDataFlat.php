@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimings.
  *
- * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="user_agent_id", columns={"user_agent_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"}), @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="rt_si", columns={"rt_si"}), @ORM\Index(name="page_view_id", columns={"page_view_id", "user_agent_id"})})
+ * @ORM\Table(name="rum_data_flat", indexes={@ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="user_agent_id", columns={"user_agent_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"}), @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="rt_si", columns={"rt_si"}), @ORM\Index(name="page_view_id", columns={"page_view_id", "user_agent_id"})})
  * @ORM\Entity
  */
-class NavigationTimings
+class RumDataFlat
 {
     /**
      * @var int

@@ -34,7 +34,7 @@ class WaterfallsController extends AbstractController
 
         return $this->render('waterfalls/form.html.twig',
             [
-                'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
+                'rum_data_flat' => $presentation->getTechnicalMetricsSelectValues(),
                 'operating_systems' => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
                 'page_types' => $presentation->getPageTypes($this->getDoctrine()),
                 'period' => $period,

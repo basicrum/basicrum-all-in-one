@@ -26,7 +26,7 @@ class LastBlockingResource implements \App\BasicRum\Report\ComplexSelectableInte
 
     public function getPrimarySelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimaryKeyFieldName(): string

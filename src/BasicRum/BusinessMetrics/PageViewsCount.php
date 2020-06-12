@@ -13,6 +13,6 @@ class PageViewsCount implements \App\BasicRum\Report\CountableInterface
 
     public function getSelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 }

@@ -35,7 +35,7 @@ class Planner
      */
     public function createPlan()
     {
-        $plan = new Plan('navigation_timings', $this->mainDataSelect);
+        $plan = new Plan('rum_data_flat', $this->mainDataSelect);
 
         /**
          * Check for selects that may break select query.
@@ -53,7 +53,7 @@ class Planner
 
         if ($addDefaultSelect) {
             $itself = new Select\Itself(
-                'navigation_timings',
+                'rum_data_flat',
                 'page_view_id'
             );
 
@@ -72,31 +72,31 @@ class Planner
         }
 
         $between = new Condition\Between(
-            'navigation_timings',
+            'rum_data_flat',
             'created_at',
             $this->startPeriod,
             $this->endPeriod
         );
 
         $plan->addLimiterFilter(
-            'navigation_timings',
+            'rum_data_flat',
             'page_view_id',
-            'navigation_timings',
+            'rum_data_flat',
             $between,
             new Select\Min(
-                'navigation_timings',
+                'rum_data_flat',
                 'page_view_id'
             ),
             '>='
         );
 
         $plan->addLimiterFilter(
-            'navigation_timings',
+            'rum_data_flat',
             'page_view_id',
-            'navigation_timings',
+            'rum_data_flat',
             $between,
             $max = new Select\Max(
-                'navigation_timings',
+                'rum_data_flat',
                 'page_view_id'
             ),
             '<='

@@ -156,7 +156,7 @@ class DiagramOrchestrator
 
             if (isset($dataFlavor['percentile'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\Percentile(
-                    'navigation_timings',
+                    'rum_data_flat',
                     $metricFieldName,
                     (int) $dataFlavor['percentile']
                 );
@@ -164,7 +164,7 @@ class DiagramOrchestrator
 
             if (isset($dataFlavor['histogram'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\Histogram(
-                    'navigation_timings',
+                    'rum_data_flat',
                     $metricFieldName,
                     (int) $dataFlavor['histogram']['bucket']
                 );
@@ -172,7 +172,7 @@ class DiagramOrchestrator
 
             if (isset($dataFlavor['histogram_first_page_view'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\HistogramFirstPageView(
-                    'navigation_timings',
+                    'rum_data_flat',
                     $metricFieldName,
                     (int) $dataFlavor['histogram_first_page_view']['bucket']
                 );
@@ -186,7 +186,7 @@ class DiagramOrchestrator
 
             if (isset($dataFlavor['data_rows'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\DataRows(
-                    'navigation_timings',
+                    'rum_data_flat',
                     $dataFlavor['data_rows']['fields']
                 );
             }
@@ -199,7 +199,7 @@ class DiagramOrchestrator
 
             if (isset($dataFlavor['bounce_rate'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\BounceRateInMetric(
-                    'navigation_timings',
+                    'rum_data_flat',
                     $dataFlavor['bounce_rate']['in_metric'],
                     200
                 );
@@ -207,7 +207,7 @@ class DiagramOrchestrator
 
             if (isset($dataFlavor['count'])) {
                 return new Layers\DataLayer\Query\MainDataSelect\Count(
-                    'navigation_timings',
+                    'rum_data_flat',
                     'page_view_id'
                 );
             }
