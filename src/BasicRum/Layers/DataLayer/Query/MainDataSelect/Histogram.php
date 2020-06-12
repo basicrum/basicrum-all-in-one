@@ -39,7 +39,7 @@ class Histogram implements MainDataInterface
         return
 
             "SELECT floor({$this->fieldName}/{$this->bucketSize})*{$this->bucketSize} AS bin_floor, COUNT(*)
-FROM navigation_timings
+FROM rum_data_flat
 WHERE {$limitWhereStr} {$where} and {$this->fieldName} > 0
   
 GROUP BY 1

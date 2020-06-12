@@ -33,7 +33,7 @@ class HistogramFirstPageView implements MainDataInterface
         $limitWhereStr = implode(' AND ', $limitWhere);
 
         $visitsOverviewLimit = str_replace(
-            'navigation_timings.page_view_id',
+            'rum_data_flat.page_view_id',
             'visits_overview.first_page_view_id',
             $limitWhereStr
         );
@@ -45,7 +45,7 @@ class HistogramFirstPageView implements MainDataInterface
         return
 
             "SELECT floor(first_paint/$this->bucketSize)*$this->bucketSize AS bin_floor, COUNT(*)
-FROM navigation_timings
+FROM rum_data_flat
 WHERE 
   {$limitWhereStr} AND
   page_view_id IN
@@ -57,7 +57,7 @@ WHERE
 		AND visits_overview.first_page_view_id IN
 		  (
 			SELECT page_view_id
-			from navigation_timings
+			from rum_data_flat
 			WHERE {$limitWhereStr} {$where} AND {$this->tableName}.{$this->fieldName} > 0
 		  )
   )
