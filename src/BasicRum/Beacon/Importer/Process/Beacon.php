@@ -8,7 +8,7 @@ use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 
 class Beacon
 {
-    private $navigationTimingsNormalizer;
+    private $rumDataFlatNormalizer;
     private $resourceTimingsNormalizer;
 
     /** @var array */
@@ -16,9 +16,9 @@ class Beacon
 
     public function __construct()
     {
-        $this->navigationTimingsNormalizer = new Beacon\NavigationTimingsNormalizer();
+        $this->rumDataFlatNormalizer = new Beacon\RumDataFlatNormalizer();
         $this->resourceTimingsNormalizer = new Beacon\ResourceTimingsNormalizer();
-        $this->rtTimingsNormalizer = new Beacon\RtTimingsNormalizer();
+        $this->rtNormalizer = new Beacon\RtNormalizer();
     }
 
     /**
@@ -70,12 +70,14 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = ['start' => $date];
 
+            // Here compile data for rum_data_flat
             $data[$key] = array_merge(
-                $this->navigationTimingsNormalizer->normalize($beacons[$key]),
+                $this->rumDataFlatNormalizer->normalize($beacons[$key]),
                 $this->resourceTimingsNormalizer->normalize($beacons[$key]),
-                $this->rtTimingsNormalizer->normalize($beacons[$key]),
+                $this->rtNormalizer->normalize($beacons[$key]),
             );
 
+            // Here for beacons table. Need To determine AutoXHR beacons and store them only into beacons table
             $data[$key]['beacon_string'] = $beacon[1];
         }
 
