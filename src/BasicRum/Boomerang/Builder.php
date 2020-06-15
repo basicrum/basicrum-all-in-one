@@ -16,7 +16,7 @@ class Builder
      *  - https://developer.akamai.com/tools/boomerang/docs/BOOMR.plugins.Mobile.html.
      */
     private $plugins = [
-        'rum_data_flat' => [
+        'navigation_timings' => [
             'label' => 'Navigation Timings',
             'description' => '',
             'docs_link' => 'https://developer.akamai.com/tools/boomerang/docs/BOOMR.plugins.NavigationTiming.html',
