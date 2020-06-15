@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Beacon;
 
-class RtTimingsNormalizer
+class RtNormalizer
 {
     public function normalize(array $timing)
     {
