@@ -20,12 +20,15 @@ class BeaconController extends AbstractController
      */
     public function draw()
     {
-        $pageViewId = (int) $_POST['page_view_id'];
+        /**
+         * TODO: refactor page_view_id in front-end.
+         */
+        $rumDataId = (int) $_POST['page_view_id'];
 
         /** @var RumDataFlat $navigationTiming */
         $navigationTiming = $this->getDoctrine()
             ->getRepository(RumDataFlat::class)
-            ->findBy(['rumDataId' => $pageViewId]);
+            ->findBy(['rumDataId' => $rumDataId]);
 
         /** @var NavigationTimingsUserAgents $userAgent */
         $userAgent = $this->getDoctrine()
@@ -36,7 +39,7 @@ class BeaconController extends AbstractController
 
         $resourceTiming = new ResourceTiming();
 
-        $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->getDoctrine());
+        $resourceTimingsData = $resourceTiming->fetchResources($rumDataId, $this->getDoctrine());
 
         if (!empty($resourceTimingsData)) {
             $resourceSizesCalculator = new ResourceSize();
