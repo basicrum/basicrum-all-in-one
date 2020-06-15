@@ -40,8 +40,8 @@ class Planner
         /**
          * Check for selects that may break select query.
          *
-         * E.g we can't have "SELECT rum_data_id, COUNT(page_view_id) ..."
-         * We can have only   "SELECT COUNT(page_view_id)"
+         * E.g we can't have "SELECT rum_data_id, COUNT(rum_data_id) ..."
+         * We can have only   "SELECT COUNT(rum_data_id)"
          */
         $addDefaultSelect = true;
 
