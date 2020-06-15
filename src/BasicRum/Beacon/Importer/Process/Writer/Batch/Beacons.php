@@ -22,10 +22,10 @@ class Beacons
         $data = [];
 
         foreach ($batch as $key => $entry) {
-            $pageViewId = $key + $lastPageViewIdStartOffset;
+            $rumDataId = $key + $lastPageViewIdStartOffset;
 
             $data[] = [
-                'rum_data_id' => $pageViewId,
+                'rum_data_id' => $rumDataId,
                 'beacon' => $entry['beacon_string'],
             ];
         }

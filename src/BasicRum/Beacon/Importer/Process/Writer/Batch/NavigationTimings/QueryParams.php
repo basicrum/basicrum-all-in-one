@@ -24,10 +24,10 @@ class QueryParams
 
         foreach ($batch as $key => $row) {
             if (!empty($row['query_params'])) {
-                $pageViewId = $key + $lastPageViewIdStartOffset;
+                $rumDataId = $key + $lastPageViewIdStartOffset;
 
                 $insertData[] = [
-                    'rum_data_id' => $pageViewId,
+                    'rum_data_id' => $rumDataId,
                     'query_params' => $row['query_params'],
                 ];
             }

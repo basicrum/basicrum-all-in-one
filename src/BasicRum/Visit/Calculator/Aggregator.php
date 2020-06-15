@@ -125,12 +125,12 @@ class Aggregator
 
         $viewIds = array_keys($views);
 
-        foreach ($viewIds as $pageViewId) {
-            if ($pageViewId > $endViewId) {
+        foreach ($viewIds as $rumDataId) {
+            if ($rumDataId > $endViewId) {
                 break;
             }
 
-            if ($pageViewId >= $beginViewId && $pageViewId <= $endViewId) {
+            if ($rumDataId >= $beginViewId && $rumDataId <= $endViewId) {
                 ++$count;
             }
         }
