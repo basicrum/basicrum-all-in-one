@@ -117,7 +117,7 @@ class RumDataFlat
      *
      * @ORM\Column(name="rt_si", type="string", length=128, nullable=false, options={"fixed"=true})
      */
-    private $rt_si;
+    private $rtSi;
 
     /**
      * @var int
@@ -131,49 +131,49 @@ class RumDataFlat
      *
      * @ORM\Column(name="t_done", type="bigint", length=14, nullable=false, options={"unsigned"=true})
      */
-    private $t_done;
+    private $tDone;
 
     /**
      * @var int
      *
      * @ORM\Column(name="t_page", type="bigint", length=14, nullable=false, options={"unsigned"=true})
      */
-    private $t_page;
+    private $tPage;
 
     /**
      * @var int
      *
      * @ORM\Column(name="t_resp", type="bigint", length=14, nullable=false, options={"unsigned"=true})
      */
-    private $t_resp;
+    private $tResp;
 
     /**
      * @var int
      *
      * @ORM\Column(name="t_load", type="bigint", length=14, nullable=false, options={"unsigned"=true})
      */
-    private $t_load;
+    private $tLoad;
 
     /**
      * @var int
      *
      * @ORM\Column(name="rt_tstart", type="bigint", length=14, nullable=false, options={"unsigned"=true})
      */
-    private $rt_tstart;
+    private $rtTstart;
 
     /**
      * @var int
      *
      * @ORM\Column(name="rt_end", type="bigint", length=14, nullable=false, options={"unsigned"=true})
      */
-    private $rt_end;
+    private $rtEnd;
 
     /**
      * @var int
      *
      * @ORM\Column(name="rt_quit", type="smallint", length=1, nullable=false, options={"unsigned"=true})
      */
-    private $rt_quit;
+    private $rtQuit;
 
     /**
      * @var \DateTime
@@ -197,47 +197,47 @@ class RumDataFlat
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_img_size;
+    private $totalImgSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_js_compressed_size;
+    private $totalJsCompressedSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_js_uncomressed_size;
+    private $totalJsUncomressedSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_css_compressed_size;
+    private $totalCssCompressedSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_css_uncomressed_size;
+    private $totalCssUncomressedSize;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $number_js_files;
+    private $numberJsFiles;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $number_css_files;
+    private $numberCssFiles;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $number_img_files;
+    private $numberImgFiles;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $download_time;
+    private $downloadTime;
 
     public function getRumDataId(): ?int
     {
@@ -402,96 +402,96 @@ class RumDataFlat
 
     public function getRtsi(): ?string
     {
-        return $this->rt_si;
+        return $this->rtSi;
     }
 
-    public function setRtsi(string $rt_si): self
+    public function setRtsi(string $rtSi): self
     {
-        $this->rt_si = $rt_si;
+        $this->rtSi = $rtSi;
 
         return $this;
     }
 
-    public function getTdone(): ?string
+    public function getTdone(): ?int
     {
-        return $this->t_done;
+        return $this->tDone;
     }
 
-    public function setTdone(string $t_done): self
+    public function setTdone(int $tDone): self
     {
-        $this->t_done = $t_done;
+        $this->tDone = $tDone;
 
         return $this;
     }
 
-    public function getTpage(): ?string
+    public function getTpage(): ?int
     {
-        return $this->t_page;
+        return $this->tPage;
     }
 
-    public function setTpage(string $t_page): self
+    public function setTpage(int $tPage): self
     {
-        $this->t_page = $t_page;
+        $this->tPage = $tPage;
 
         return $this;
     }
 
-    public function getTresp(): ?string
+    public function getTresp(): ?int
     {
-        return $this->t_resp;
+        return $this->tResp;
     }
 
-    public function setTresp(string $t_resp): self
+    public function setTresp(int $tResp): self
     {
-        $this->t_resp = $t_resp;
+        $this->tResp = $tResp;
 
         return $this;
     }
 
-    public function getTload(): ?string
+    public function getTload(): ?int
     {
-        return $this->t_load;
+        return $this->tLoad;
     }
 
-    public function setTload(string $t_load): self
+    public function setTload(int $tLoad): self
     {
-        $this->t_load = $t_load;
+        $this->tLoad = $tLoad;
 
         return $this;
     }
 
-    public function getRtTstart(): ?string
+    public function getRtTstart(): ?int
     {
-        return $this->rt_tstart;
+        return $this->rtTstart;
     }
 
-    public function setRtTstart(string $rt_tstart): self
+    public function setRtTstart(int $rtTstart): self
     {
-        $this->rt_tstart = $rt_tstart;
+        $this->rtTstart = $rtTstart;
 
         return $this;
     }
 
-    public function getRtEnd(): ?string
+    public function getRtEnd(): ?int
     {
-        return $this->rt_end;
+        return $this->rtEnd;
     }
 
-    public function setRtEnd(string $rt_end): self
+    public function setRtEnd(int $rtEnd): self
     {
-        $this->rt_end = $rt_end;
+        $this->rtEnd = $rtEnd;
 
         return $this;
     }
 
-    public function getRtQuit(): ?string
+    public function getRtQuit(): ?int
     {
-        return $this->rt_quit;
+        return $this->rtQuit;
     }
 
-    public function setRtQuit(string $rt_quit): self
+    public function setRtQuit(int $rtQuit): self
     {
-        $this->rt_quit = $rt_quit;
+        $this->rtQuit = $rtQuit;
 
         return $this;
     }
@@ -546,108 +546,108 @@ class RumDataFlat
 
     public function getTotalImgSize(): ?int
     {
-        return $this->total_img_size;
+        return $this->totalImgSize;
     }
 
-    public function setTotalImgSize(int $total_img_size): self
+    public function setTotalImgSize(int $totalImgSize): self
     {
-        $this->total_img_size = $total_img_size;
+        $this->totalImgSize = $totalImgSize;
 
         return $this;
     }
 
     public function getTotalJsCompressedSize(): ?int
     {
-        return $this->total_js_compressed_size;
+        return $this->totalJsCompressedSize;
     }
 
-    public function setTotalJsCompressedSize(int $total_js_compressed_size): self
+    public function setTotalJsCompressedSize(int $totalJsCompressedSize): self
     {
-        $this->total_js_compressed_size = $total_js_compressed_size;
+        $this->totalJsCompressedSize = $totalJsCompressedSize;
 
         return $this;
     }
 
     public function getTotalJsUncomressedSize(): ?int
     {
-        return $this->total_js_uncomressed_size;
+        return $this->totalJsUncomressedSize;
     }
 
-    public function setTotalJsUncomressedSize(int $total_js_uncomressed_size): self
+    public function setTotalJsUncomressedSize(int $totalJsUncomressedSize): self
     {
-        $this->total_js_uncomressed_size = $total_js_uncomressed_size;
+        $this->totalJsUncomressedSize = $totalJsUncomressedSize;
 
         return $this;
     }
 
     public function getTotalCssCompressedSize(): ?int
     {
-        return $this->total_css_compressed_size;
+        return $this->totalCssCompressedSize;
     }
 
-    public function setTotalCssCompressedSize(int $total_css_compressed_size): self
+    public function setTotalCssCompressedSize(int $totalCssCompressedSize): self
     {
-        $this->total_css_compressed_size = $total_css_compressed_size;
+        $this->totalCssCompressedSize = $totalCssCompressedSize;
 
         return $this;
     }
 
     public function getTotalCssUncomressedSize(): ?int
     {
-        return $this->total_css_uncomressed_size;
+        return $this->totalCssUncomressedSize;
     }
 
-    public function setTotalCssUncomressedSize(int $total_css_uncomressed_size): self
+    public function setTotalCssUncomressedSize(int $totalCssUncomressedSize): self
     {
-        $this->total_css_uncomressed_size = $total_css_uncomressed_size;
+        $this->totalCssUncomressedSize = $totalCssUncomressedSize;
 
         return $this;
     }
 
     public function getNumberJsFiles(): ?int
     {
-        return $this->number_js_files;
+        return $this->numberJsFiles;
     }
 
-    public function setNumberJsFiles(int $number_js_files): self
+    public function setNumberJsFiles(int $numberJsFiles): self
     {
-        $this->number_js_files = $number_js_files;
+        $this->numberJsFiles = $numberJsFiles;
 
         return $this;
     }
 
     public function getNumberCssFiles(): ?int
     {
-        return $this->number_css_files;
+        return $this->numberCssFiles;
     }
 
-    public function setNumberCssFiles(int $number_css_files): self
+    public function setNumberCssFiles(int $numberCssFiles): self
     {
-        $this->number_css_files = $number_css_files;
+        $this->numberCssFiles = $numberCssFiles;
 
         return $this;
     }
 
     public function getNumberImgFiles(): ?int
     {
-        return $this->number_img_files;
+        return $this->numberImgFiles;
     }
 
-    public function setNumberImgFiles(int $number_img_files): self
+    public function setNumberImgFiles(int $numberImgFiles): self
     {
-        $this->number_img_files = $number_img_files;
+        $this->numberImgFiles = $numberImgFiles;
 
         return $this;
     }
 
     public function getDownloadTime(): ?int
     {
-        return $this->download_time;
+        return $this->downloadTime;
     }
 
-    public function setDownloadTime(int $download_time): self
+    public function setDownloadTime(int $downloadTime): self
     {
-        $this->download_time = $download_time;
+        $this->downloadTime = $downloadTime;
 
         return $this;
     }
