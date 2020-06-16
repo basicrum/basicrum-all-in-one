@@ -34,7 +34,7 @@ class QueryParams
         }
 
         if ($insertData) {
-            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_query_params');
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'rum_data_flat_query_params');
 
             $fieldsArr = array_keys($insertData[0]);
 

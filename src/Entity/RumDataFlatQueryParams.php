@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NavigationTimingsQueryParams.
+ * RumDataFlatQueryParams.
  *
- * @ORM\Table(name="navigation_timings_query_params")
+ * @ORM\Table(name="rum_data_flat_query_params")
  * @ORM\Entity
  */
-class NavigationTimingsQueryParams
+class RumDataFlatQueryParams
 {
     /**
      * @var int

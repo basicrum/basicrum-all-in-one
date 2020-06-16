@@ -8,7 +8,7 @@ class QueryParam extends AbstractFilter
 {
     public function getSecondaryTableName(): string
     {
-        return 'navigation_timings_query_params';
+        return 'rum_data_flat_query_params';
     }
 
     public function getSecondaryKeyFieldName(): string
