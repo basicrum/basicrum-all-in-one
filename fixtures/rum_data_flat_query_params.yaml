@@ -1,4 +1,4 @@
-App\Entity\NavigationTimingsQueryParams:
+App\Entity\RumDataFlatQueryParams:
   queryParam1:
     rumDataId: 1
     queryParams: p=7
