@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\BasicRum\Buckets;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
-use App\Entity\NavigationTimingsUrls;
 use App\Entity\RumDataFlat;
+use App\Entity\RumDataUrls;
 use App\Entity\VisitsOverview;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -209,7 +209,7 @@ class RevenueCalculatorController extends AbstractController
         $conversionUrl = 'checkout/onepage';
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimingsUrls::class);
+            ->getRepository(RumDataUrls::class);
 
         $res = $repository
             ->createQueryBuilder('ntu')

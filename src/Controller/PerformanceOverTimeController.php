@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\BasicRum\Date\DayInterval;
 use App\BasicRum\Date\TimePeriod;
-use App\Entity\NavigationTimingsUrls;
 use App\Entity\RumDataFlat;
+use App\Entity\RumDataUrls;
 use App\Entity\VisitsOverview;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,12 +38,12 @@ class PerformanceOverTimeController extends AbstractController
         $urls = [];
 
         foreach ($res as $urlId => $visits) {
-            /** @var \App\Entity\NavigationTimingsUrls $navigationTimingUrl */
-            $navigationTimingUrl = $this->getDoctrine()
-                ->getRepository(NavigationTimingsUrls::class)
+            /** @var \App\Entity\RumDataUrls $rumDataUrl */
+            $rumDataUrl = $this->getDoctrine()
+                ->getRepository(RumDataUrls::class)
                 ->findOneBy(['id' => $urlId]);
 
-            $urls[$navigationTimingUrl->getId()] = $navigationTimingUrl->getUrl();
+            $urls[$rumDataUrl->getId()] = $rumDataUrl->getUrl();
         }
 
         $metrics = [
@@ -77,12 +77,12 @@ class PerformanceOverTimeController extends AbstractController
         $urls = [];
 
         foreach ($res as $urlId => $visits) {
-            /** @var \App\Entity\NavigationTimingsUrls $navigationTimingUrl */
-            $navigationTimingUrl = $this->getDoctrine()
-                ->getRepository(NavigationTimingsUrls::class)
+            /** @var \App\Entity\RumDataUrls $rumDataUrl */
+            $rumDataUrl = $this->getDoctrine()
+                ->getRepository(RumDataUrls::class)
                 ->findOneBy(['id' => $urlId]);
 
-            $urls[$navigationTimingUrl->getId()] = $navigationTimingUrl->getUrl();
+            $urls[$rumDataUrl->getId()] = $rumDataUrl->getUrl();
         }
 
         $metrics = [

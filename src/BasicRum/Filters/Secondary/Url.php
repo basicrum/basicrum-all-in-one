@@ -8,7 +8,7 @@ class Url extends AbstractFilter
 {
     public function getSecondaryTableName(): string
     {
-        return 'navigation_timings_urls';
+        return 'rum_data_urls';
     }
 
     public function getSecondaryKeyFieldName(): string
