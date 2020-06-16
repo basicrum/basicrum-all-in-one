@@ -111,8 +111,8 @@ class PerformanceOverTimeController extends AbstractController
         $minId = 0;
         $maxId = 0;
 
-        /** @var NavigationTimings $lastNavigationTiming */
-        $lastNavigationTiming = $this->getDoctrine()
+        /** @var RumDataFlat $lastRumDataFlat */
+        $lastRumDataFlat = $this->getDoctrine()
             ->getManager()
             ->createQueryBuilder()
             ->select('e')
@@ -125,12 +125,12 @@ class PerformanceOverTimeController extends AbstractController
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (null !== $lastNavigationTiming) {
-            $maxId = $lastNavigationTiming->getPageViewId();
+        if (null !== $lastRumDataFlat) {
+            $maxId = $lastRumDataFlat->getRumDataId();
         }
 
-        /** @var NavigationTimings $lastNavigationTiming */
-        $firstNavigationTiming = $this->getDoctrine()
+        /** @var RumDataFlat $lastRumDataFlat */
+        $firstRumDataFlat = $this->getDoctrine()
             ->getManager()
             ->createQueryBuilder()
             ->select('e')
@@ -143,8 +143,8 @@ class PerformanceOverTimeController extends AbstractController
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (null !== $firstNavigationTiming) {
-            $minId = $firstNavigationTiming->getPageViewId();
+        if (null !== $firstRumDataFlat) {
+            $minId = $firstRumDataFlat->getRumDataId();
         }
 
         $repository = $this->getDoctrine()->getRepository(VisitsOverview::class);

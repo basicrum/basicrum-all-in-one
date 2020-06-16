@@ -65,7 +65,7 @@ class JourneyController extends AbstractController
             /** @var NavigationTimings $navigationTiming */
             $resourceTimings = $this->getDoctrine()
                 ->getRepository(ResourceTimings::class)
-                ->findBy(['pageView' => $nav->getPageViewId()]);
+                ->findBy(['pageView' => $nav->getRumDataId()]);
 
             if (\count($resourceTimings) > 0) {
                 $filteredNavigations[] = $nav;
