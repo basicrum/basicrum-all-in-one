@@ -48,7 +48,7 @@ class UserAgentImportTest extends NoFixturesTestCase
         $process = new Process($this->_getDoctrine());
         $c = $process->runImport($reader, 1);
 
-        $manager = $this->_getDoctrine()->getRepository(\App\Entity\NavigationTimingsUserAgents::class);
+        $manager = $this->_getDoctrine()->getRepository(\App\Entity\RumDataUserAgents::class);
 
         $qb = $manager->createQueryBuilder('ua');
         $count = $qb

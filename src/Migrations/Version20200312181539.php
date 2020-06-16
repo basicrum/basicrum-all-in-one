@@ -46,7 +46,7 @@ final class Version20200312181539 extends AbstractMigration
         $this->addSql('CREATE TABLE rum_data_urls (id INT UNSIGNED AUTO_INCREMENT NOT NULL, url TEXT NOT NULL COLLATE utf8mb4_unicode_ci, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, INDEX created_at (created_at), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB COMMENT = \'\' ');
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE navigation_timings_user_agents (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_agent TEXT NOT NULL COLLATE utf8mb4_unicode_ci, device_type TEXT NOT NULL COLLATE utf8mb4_unicode_ci, device_type_id INT NOT NULL, device_model TEXT NOT NULL COLLATE utf8mb4_unicode_ci, device_manufacturer TEXT NOT NULL COLLATE utf8mb4_unicode_ci, browser_name TEXT NOT NULL COLLATE utf8mb4_unicode_ci, browser_version TEXT NOT NULL COLLATE utf8mb4_unicode_ci, os_name TEXT NOT NULL COLLATE utf8mb4_unicode_ci, os_version TEXT NOT NULL COLLATE utf8mb4_unicode_ci, os_id INT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, INDEX created_at (created_at), INDEX device_type_id (device_type_id), INDEX os_id (os_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB COMMENT = \'\' ');
+        $this->addSql('CREATE TABLE rum_data_user_agents (id INT UNSIGNED AUTO_INCREMENT NOT NULL, user_agent TEXT NOT NULL COLLATE utf8mb4_unicode_ci, device_type TEXT NOT NULL COLLATE utf8mb4_unicode_ci, device_type_id INT NOT NULL, device_model TEXT NOT NULL COLLATE utf8mb4_unicode_ci, device_manufacturer TEXT NOT NULL COLLATE utf8mb4_unicode_ci, browser_name TEXT NOT NULL COLLATE utf8mb4_unicode_ci, browser_version TEXT NOT NULL COLLATE utf8mb4_unicode_ci, os_name TEXT NOT NULL COLLATE utf8mb4_unicode_ci, os_version TEXT NOT NULL COLLATE utf8mb4_unicode_ci, os_id INT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, INDEX created_at (created_at), INDEX device_type_id (device_type_id), INDEX os_id (os_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB COMMENT = \'\' ');
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE operating_systems (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(64) NOT NULL COLLATE utf8mb4_unicode_ci, code VARCHAR(64) NOT NULL COLLATE utf8mb4_unicode_ci, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB COMMENT = \'\' ');
@@ -96,7 +96,7 @@ final class Version20200312181539 extends AbstractMigration
         $this->addSql('DROP TABLE rum_data_urls');
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE navigation_timings_user_agents');
+        $this->addSql('DROP TABLE rum_data_user_agents');
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('DROP TABLE operating_systems');

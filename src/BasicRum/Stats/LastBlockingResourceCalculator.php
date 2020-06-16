@@ -6,8 +6,8 @@ namespace App\BasicRum\Stats;
 
 use App\BasicRum\Beacon\RumData\ResourceTiming;
 use App\Entity\LastBlockingResources;
-use App\Entity\NavigationTimingsUserAgents;
 use App\Entity\RumDataFlat;
+use App\Entity\RumDataUserAgents;
 
 class LastBlockingResourceCalculator
 {
@@ -28,7 +28,7 @@ class LastBlockingResourceCalculator
     {
         $lastPageViewId = $this->_getPreviousLastScannedPageViewId();
 
-        $navTimingsRes = $this->_getNavTimingsInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
+        $navTimingsRes = $this->_getRumDataFlatInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
 
         $resourceTiming = new ResourceTiming();
 
@@ -140,16 +140,16 @@ class LastBlockingResourceCalculator
     /**
      * @return mixed
      */
-    private function _getNavTimingsInRange(int $startId, int $endId)
+    private function _getRumDataFlatInRange(int $startId, int $endId)
     {
         $repository = $this->registry
             ->getRepository(RumDataFlat::class);
 
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.rumDataId >= '".$startId."' AND nt.rumDataId <= '".$endId."'")
-            ->andWhere('nt.userAgentId NOT IN (:userAgentId)')
+        $query = $repository->createQueryBuilder('rdf')
+            ->where("rdf.rumDataId >= '".$startId."' AND rdf.rumDataId <= '".$endId."'")
+            ->andWhere('rdf.userAgentId NOT IN (:userAgentId)')
             ->setParameter('userAgentId', $this->_botUserAgentsIds())
-            ->select(['nt.rumDataId', 'nt.firstPaint'])
+            ->select(['rdf.rumDataId', 'rdf.firstPaint'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -161,7 +161,7 @@ class LastBlockingResourceCalculator
     private function _botUserAgentsIds()
     {
         $userAgentRepo = $this->registry
-            ->getRepository(NavigationTimingsUserAgents::class);
+            ->getRepository(RumDataUserAgents::class);
 
         $query = $userAgentRepo->createQueryBuilder('ua')
             ->where("ua.deviceType = 'bot'")

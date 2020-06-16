@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimingsUserAgents.
  *
- * @ORM\Table(name="navigation_timings_user_agents", indexes={@ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"})})
+ * @ORM\Table(name="rum_data_user_agents", indexes={@ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"})})
  * @ORM\Entity
  */
-class NavigationTimingsUserAgents
+class RumDataUserAgents
 {
     /**
      * @var int
