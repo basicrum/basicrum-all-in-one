@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\UserAgent;
+namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData\UserAgent;
 
 use App\Entity\OperatingSystems;
 

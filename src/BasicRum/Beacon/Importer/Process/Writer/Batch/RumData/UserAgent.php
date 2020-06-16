@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
+namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData;
 
 use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 use WhichBrowser\Parser;

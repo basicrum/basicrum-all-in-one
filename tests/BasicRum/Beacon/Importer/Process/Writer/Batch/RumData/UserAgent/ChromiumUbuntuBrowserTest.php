@@ -4,19 +4,19 @@ namespace  App\Tests\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTim
 
 use PHPUnit\Framework\TestCase;
 
-class NoBrowserNameiOsTest extends TestCase
+class ChromiumUbuntuBrowserTest extends TestCase
 {
 
     /**
      * @group import
      */
-    public function testNoBrowserNameiOs()
+    public function testChromiumUbuntuBrowser()
     {
-        $userAgentString = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Mobile/13B143';
+        $userAgentString = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/74.0.3729.169 Chrome/74.0.3729.169 Safari/537.36';
 
         $whichBrowserResult = new \WhichBrowser\Parser($userAgentString);
 
-        $hydrator = new \App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\UserAgent\Hydrator();
+        $hydrator = new \App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData\UserAgent\Hydrator();
 
         $result = $hydrator->hydrate($whichBrowserResult, $userAgentString);
 
@@ -32,12 +32,12 @@ class NoBrowserNameiOsTest extends TestCase
             ],
             [
                 $userAgentString,
-                'iPhone',
-                'Apple',
                 '',
                 '',
-                'iOS',
-                '9.1'
+                'Chromium',
+                '74.0.3729.169',
+                'Ubuntu',
+                ''
             ]
         );
     }

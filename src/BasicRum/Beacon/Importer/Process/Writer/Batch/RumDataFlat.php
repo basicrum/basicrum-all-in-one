@@ -6,26 +6,26 @@ namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch;
 
 use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
-class NavigationTimings
+class RumDataFlat
 {
     /** @var \Doctrine\Bundle\DoctrineBundle\Registry */
     private $registry;
 
-    /** @var NavigationTimings\Url */
-    private $_navigationTimingsUrlModel;
+    /** @var RumData\Url */
+    private $_rumDataUrlModel;
 
-    /** @var NavigationTimings\UserAgent */
-    private $_navigationTimingsUserAgentModel;
+    /** @var RumData\UserAgent */
+    private $_rumDataUserAgentModel;
 
-    /** @var NavigationTimings\QueryParams */
+    /** @var RumData\QueryParams */
     private $_queryParamsModel;
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $registry)
     {
         $this->registry = $registry;
-        $this->_navigationTimingsUrlModel = new NavigationTimings\Url($registry);
-        $this->_navigationTimingsUserAgentModel = new NavigationTimings\UserAgent($registry);
-        $this->_queryParamsModel = new NavigationTimings\QueryParams($registry);
+        $this->_rumDataUrlModel = new RumData\Url($registry);
+        $this->_rumDataUserAgentModel = new RumData\UserAgent($registry);
+        $this->_queryParamsModel = new RumData\QueryParams($registry);
     }
 
     public function batchInsert(array $batch)
@@ -34,7 +34,7 @@ class NavigationTimings
         $batch = $this->_prepareUrlIds($batch);
         $batch = $this->_prepareUserAgentIds($batch);
 
-        $this->_saveNavigationTimings($batch);
+        $this->_saveRumDataFlat($batch);
     }
 
     /**
@@ -42,7 +42,7 @@ class NavigationTimings
      */
     private function _prepareUrlIds(array $batch)
     {
-        $urls = $this->_navigationTimingsUrlModel->insertUrls($batch);
+        $urls = $this->_rumDataUrlModel->insertUrls($batch);
 
         foreach ($batch as $key => $row) {
             unset($batch[$key]['url']);
@@ -63,7 +63,7 @@ class NavigationTimings
      */
     private function _prepareUserAgentIds(array $batch)
     {
-        $userAgents = $this->_navigationTimingsUserAgentModel->insertUserAgents($batch);
+        $userAgents = $this->_rumDataUserAgentModel->insertUserAgents($batch);
 
         foreach ($batch as $key => $row) {
             unset($batch[$key]['user_agent']);
@@ -79,7 +79,7 @@ class NavigationTimings
     /**
      * @return bool
      */
-    private function _saveNavigationTimings(array $batch)
+    private function _saveRumDataFlat(array $batch)
     {
         $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'rum_data_flat');
 
@@ -100,9 +100,9 @@ class NavigationTimings
         $repository = $this->registry
             ->getRepository(\App\Entity\RumDataFlat::class);
 
-        $queryBuilder = $repository->createQueryBuilder('nt');
+        $queryBuilder = $repository->createQueryBuilder('rdf');
 
-        $queryBuilder->select('max(nt.rumDataId)');
+        $queryBuilder->select('max(rdf.rumDataId)');
 
         $max = $queryBuilder->getQuery()->getSingleScalarResult();
 
