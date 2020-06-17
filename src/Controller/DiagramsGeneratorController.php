@@ -8,6 +8,7 @@ use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\DiagramBuilder;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Layers\Presentation;
+use App\BasicRum\Release;
 use App\Entity\PageTypeConfig;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,7 +43,7 @@ class DiagramsGeneratorController extends AbstractController
      *
      * @throws \Exception
      */
-    public function generate(DiagramOrchestrator $diagramOrchestrator)
+    public function generate(DiagramOrchestrator $diagramOrchestrator, Release $release)
     {
         // Quick hack for out of memory problems
         ini_set('memory_limit', '-1');
@@ -90,7 +91,7 @@ class DiagramsGeneratorController extends AbstractController
         $diagramBuilder = new DiagramBuilder();
         $diagramOrchestrator->load($requirements);
 
-        $data = $diagramBuilder->build($diagramOrchestrator, $requirements);
+        $data = $diagramBuilder->build($diagramOrchestrator, $requirements, $release);
 
         return $this->json($data);
     }
