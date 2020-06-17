@@ -19,7 +19,7 @@
             </thead>
             <tbody>
             {% for page_view in page_views %}
-                <tr data-session-id="{{ page_view.getGuid() }}" class="session-row" id="row_{{ page_view.getPageViewId() }}">
+                <tr data-session-id="{{ page_view.getGuid() }}" class="session-row" id="row_{{ page_view.getRumDataId() }}">
                     <td class="col-7">{{ page_view.getGuid() }}</td>
                     <td class="col-2">{{ page_view.getPtFcp() }} ms</td>
                     {#<td class="col-3">{{ page_view.getSpeculativeFp() }} ms</td>#}

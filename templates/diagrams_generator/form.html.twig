@@ -17,7 +17,7 @@
                             <label for="technical_metrics">Perf. Metric:</label>
                             <select name="segments[1][data_requirements][technical_metrics]" class="form-control form-control-sm" id="technical_metrics">
                                 {#<option value="" selected="selected">---</option>#}
-                                {% for metric in navigation_timings %}
+                                {% for metric in rum_data_flat %}
                                 <option value="{{ metric.key }}|1">{{ metric.label }}</option>
                                 {% endfor %}
                             </select>

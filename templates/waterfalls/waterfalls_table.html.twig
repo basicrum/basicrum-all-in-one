@@ -14,8 +14,8 @@
             </thead>
             <tbody>
             {% for page_view in page_views %}
-                <tr data-beacon-id="{{ page_view.getPageViewId() }}" class="beacon-row" id="row_{{ page_view.getPageViewId() }}">
-                    <td class="col-3">{{ page_view.getPageViewId() }}</td>
+                <tr data-beacon-id="{{ page_view.getRumDataId() }}" class="beacon-row" id="row_{{ page_view.getRumDataId() }}">
+                    <td class="col-3">{{ page_view.getRumDataId() }}</td>
                     {#<td class="col-3">{{ page_view.getCreatedAt()|date("m/d/Y H:i:s") }}</td>#}
                     <td class="col-3">{{ page_view.getFirstByte() }} ms</td>
                     <td class="col-4">{{ page_view.getFirstContentfulPaint() }} ms</td>
@@ -26,10 +26,10 @@
         </table>
 
         <script type="text/javascript">
-            var loadBeacon = function(pageViewId) {
+            var loadBeacon = function(rumDataId) {
 
                 var data = {
-                    page_view_id : pageViewId
+                    rum_data_id : rumDataId
                 };
 
                 //load from /diagrams/beacon/draw
@@ -48,7 +48,7 @@
             var beaconRows = $('tr.beacon-row');
 
             $('#load_page_view').on('click', function() {
-                loadBeacon($('#page_view_id').val());
+                loadBeacon($('#rum_data_id').val());
             });
 
             beaconRows.on('click', function() {

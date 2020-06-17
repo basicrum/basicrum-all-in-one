@@ -9,8 +9,8 @@
     </thead>
     <tbody>
     {% for page_view in page_views %}
-        <tr data-beacon-id="{{ page_view.getPageViewId() }}" class="beacon-row" id="row_{{ page_view.getPageViewId() }}">
-            <td class="col-3">View ID: {{ page_view.getPageViewId() }}</td>
+        <tr data-beacon-id="{{ page_view.getRumDataId() }}" class="beacon-row" id="row_{{ page_view.getRumDataId() }}">
+            <td class="col-3">View ID: {{ page_view.getRumDataId() }}</td>
             <td class="col-3">{{ page_view.getCreatedAt()|date("m/d/Y H:i:s", "Europe/Berlin") }}</td>
             <td class="col-3">{{ page_view.getNtResSt() - page_view.getNtNavSt() }} ms</td>
             <td class="col-3">{{ page_view.getPid() }}</td>
@@ -20,10 +20,10 @@
 </table>
 
 <script type="text/javascript">
-    var loadBeacon = function(pageViewId) {
+    var loadBeacon = function(rumDataId) {
 
         var data = {
-            page_view_id : pageViewId
+            rum_data_id : rumDataId
         };
 
         //load from /diagrams/beacon/draw
