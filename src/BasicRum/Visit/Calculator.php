@@ -35,15 +35,15 @@ class Calculator
     {
         $lastPageViewId = $this->fetch->fetchPreviousLastScannedPageViewId();
 
-        $navTimingsRes = $this->fetch->fetchNavTimingsInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
+        $navTimingsRes = $this->fetch->fetchRumDataFlatInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
 
         $notCompletedVisits = $this->fetch->fetchNotCompletedVisits();
 
         foreach ($notCompletedVisits as $notCompletedVisit) {
-            $notCompletedViews = $this->fetch->fetchNavTimingsInRangeForSession(
+            $notCompletedViews = $this->fetch->fetchRumDataFlatInRangeForSession(
                 $notCompletedVisit['firstPageViewId'],
                 $notCompletedVisit['lastPageViewId'],
-                $notCompletedVisit['rt_si']
+                $notCompletedVisit['rtSi']
             );
 
             foreach ($notCompletedViews as $view) {

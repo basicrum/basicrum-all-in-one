@@ -33,7 +33,7 @@ class Fetch
             ->where("rdf.rumDataId >= '".$startId."' AND rdf.rumDataId <= '".$endId."'")
             ->andWhere('rdf.deviceTypeId != :deviceTypeId')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->select(['rdf.rt_si', 'rdf.createdAt', 'rdf.rumDataId', 'rdf.urlId'])
+            ->select(['rdf.rtSi', 'rdf.createdAt', 'rdf.rumDataId', 'rdf.urlId'])
             ->orderBy('rdf.rumDataId', 'DESC')
             ->getQuery();
 
@@ -43,7 +43,7 @@ class Fetch
     /**
      * @return mixed
      */
-    public function fetchRumDataFlatInRangeForSession(int $startId, int $endId, string $rt_si): array
+    public function fetchRumDataFlatInRangeForSession(int $startId, int $endId, string $rtSi): array
     {
         $repository = $this->registry
             ->getRepository(RumDataFlat::class);
@@ -51,10 +51,10 @@ class Fetch
         $query = $repository->createQueryBuilder('rdf')
             ->where("rdf.pageViewId >= '".$startId."' AND rdf.rumDataId <= '".$endId."'")
             ->andWhere('rdf.deviceTypeId != :deviceTypeId')
-            ->andWhere('rdf.rt_si = :rt_si')
+            ->andWhere('rdf.rtSi = :rtSi')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->setParameter('rt_si', $rt_si)
-            ->select(['rdf.rt_si', 'rdf.createdAt', 'rdf.rumDataId', 'rdf.urlId'])
+            ->setParameter('rtSi', $rtSi)
+            ->select(['rdf.rtSi', 'rdf.createdAt', 'rdf.rumDataId', 'rdf.urlId'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -100,13 +100,13 @@ class Fetch
             ->getRepository(RumDataFlat::class);
 
         $rumDataId = $pageView['rumDataId'];
-        $rt_si = $pageView['rt_si'];
+        $rtSi = $pageView['rtSi'];
 
         $query = $repository->createQueryBuilder('rdf')
             ->where("rdf.rumDataId < '".$rumDataId."'")
-            ->andWhere('rdf.rt_si = :rt_si')
-            ->setParameter('rt_si', $rt_si)
-            ->select(['rdf.createdAt', 'rdf.rumDataId', 'rdf.rt_si'])
+            ->andWhere('rdf.rtSi = :rtSi')
+            ->setParameter('rtSi', $rtSi)
+            ->select(['rdf.createdAt', 'rdf.rumDataId', 'rdf.rtSi'])
             ->orderBy('rdf.rumDataId', 'DESC')
             ->setMaxResults(1)
             ->getQuery();

@@ -56,8 +56,8 @@ class VisitGenerateTest extends FixturesTestCase
         $sessions = [];
 
         foreach ($visits as $visit) {
-            $rt_si = $visit['rt_si'];
-            $sessions[$rt_si] = isset($sessions[$rt_si]) ? $sessions[$rt_si] + 1 : 1;
+            $rtSi = $visit['rtSi'];
+            $sessions[$rtSi] = isset($sessions[$rtSi]) ? $sessions[$rtSi] + 1 : 1;
         }
 
         return $sessions;
@@ -71,10 +71,10 @@ class VisitGenerateTest extends FixturesTestCase
         $sessions = [];
 
         foreach ($visits as $visit) {
-            $rt_si = $visit['rt_si'];
+            $rtSi = $visit['rtSi'];
 
             if ($visit['completed']) {
-                $sessions[$rt_si] = isset($sessions[$rt_si]) ? $sessions[$rt_si] + 1 : 1;
+                $sessions[$rtSi] = isset($sessions[$rtSi]) ? $sessions[$rtSi] + 1 : 1;
             }
         }
 

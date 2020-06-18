@@ -36,13 +36,13 @@ class JourneyController extends AbstractController
             ->groupBy('nt.rumDataId, nt.rt_si')
             ->getQuery();
 
-        $navigationTimings = $query->getResult();
+        $rumDataFlat = $query->getResult();
 //
-//        print_r($navigationTimings);
+//        print_r($rumDataFlat);
 
         return $this->render('diagrams/journey_list.html.twig',
             [
-                'page_views' => $navigationTimings,
+                'page_views' => $rumDataFlat,
             ]
         );
     }
@@ -52,17 +52,17 @@ class JourneyController extends AbstractController
      */
     public function journeyDraw()
     {
-        $rt_si = $_POST['rt_si'];
+        $rtSi = $_POST['rt_si'];
 
-        /** @var NavigationTimings $navigationTiming */
-        $navigationTimings = $this->getDoctrine()
+        /** @var RumDataFlat $rumDataFlat */
+        $rumDataFlat = $this->getDoctrine()
             ->getRepository(RumDataFlat::class)
-            ->findBy(['rt_si' => $rt_si]);
+            ->findBy(['rtSi' => $rtSi]);
 
         $filteredNavigations = [];
 
-        foreach ($navigationTimings as $nav) {
-            /** @var NavigationTimings $navigationTiming */
+        foreach ($rumDataFlat as $nav) {
+            /** @var RumDataFlat $rumDataFlat */
             $resourceTimings = $this->getDoctrine()
                 ->getRepository(ResourceTimings::class)
                 ->findBy(['pageView' => $nav->getRumDataId()]);

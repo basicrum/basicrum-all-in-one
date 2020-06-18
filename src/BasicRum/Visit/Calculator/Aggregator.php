@@ -46,11 +46,11 @@ class Aggregator
      */
     public function addPageView(array $pageView): self
     {
-        $this->groupedPageViews[$pageView['rt_si']][$pageView['rumDataId']] = $pageView;
+        $this->groupedPageViews[$pageView['rtSi']][$pageView['rumDataId']] = $pageView;
 
         if ($pageView['rumDataId'] > $this->lastPageViewInScan) {
             $this->lastPageViewInScan = $pageView['rumDataId'];
-            $this->lastRtsiInScan = $pageView['rt_si'];
+            $this->lastRtsiInScan = $pageView['rtSi'];
         }
 
         return $this;
@@ -60,7 +60,7 @@ class Aggregator
     {
         $visits = [];
 
-        foreach ($this->groupedPageViews as $rt_si => $views) {
+        foreach ($this->groupedPageViews as $rtSi => $views) {
             ksort($views, SORT_NUMERIC);
 
             $chunks = $this->chunk->chunkenize($views, $this->sessionDuration);
@@ -98,7 +98,7 @@ class Aggregator
 
                 $visits[] = [
                     'visitId' => $visitId,
-                    'rt_si' => $rt_si,
+                    'rtSi' => $rtSi,
                     'pageViewsCount' => $this->_countPageViews($views, $beginId, $endId),
                     'firstPageViewId' => $beginId,
                     'lastPageViewId' => $endId,

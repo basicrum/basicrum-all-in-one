@@ -26,7 +26,7 @@ class VisitsOverview
      *
      * @ORM\Column(name="rt_si", type="string", length=128, nullable=true, options={"fixed"=true})
      */
-    private $rt_si;
+    private $rtSi;
 
     /**
      * @var int
@@ -91,12 +91,12 @@ class VisitsOverview
 
     public function getRtsi(): ?string
     {
-        return $this->rt_si;
+        return $this->rtSi;
     }
 
-    public function setRtsi(?string $rt_si): self
+    public function setRtsi(?string $rtSi): self
     {
-        $this->rt_si = $rt_si;
+        $this->rtSi = $rtSi;
 
         return $this;
     }
