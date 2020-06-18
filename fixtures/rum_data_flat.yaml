@@ -10,20 +10,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 3
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyvc3l"
-            rt_si: "first-closed-session"
+            rtSi: "first-closed-session"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-24 13:31:03'))>
             loadEventEnd: 139
@@ -38,20 +38,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 3
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 1
             osId: 1
             processId: "56jyvc3l"
-            rt_si: "test-2-closed-sessions"
+            rtSi: "test-2-closed-sessions"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-25 13:32:33'))>
             loadEventEnd: 139
@@ -66,20 +66,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 1
             urlId: 1
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyvdda"
-            rt_si: "test-2-closed-sessions"
+            rtSi: "test-2-closed-sessions"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
             loadEventEnd: 1393
@@ -94,20 +94,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyrvda"
-            rt_si: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244400"
+            rtSi: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244400"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
@@ -122,20 +122,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 3
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jfc3l"
-            rt_si: "first-closed-session"
+            rtSi: "first-closed-session"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 139
@@ -150,20 +150,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyr1da"
-            rt_si: "test-unrealistic-visit-duration"
+            rtSi: "test-unrealistic-visit-duration"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
@@ -178,20 +178,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "56jyrdda"
-            rt_si: "test-unrealistic-visit-duration"
+            rtSi: "test-unrealistic-visit-duration"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-11-01 14:33:44'))>
             loadEventEnd: 1344
@@ -206,20 +206,20 @@ App\Entity\RumDataFlat:
             redirectsCount: 1
             urlId: 2
             userAgentId: 1
-            total_img_size: 1000
-            total_js_compressed_size: 150000
-            total_js_uncomressed_size: 152000
-            total_css_compressed_size: 140000
-            total_css_uncomressed_size: 145000
-            number_js_files: 5
-            number_css_files: 3
-            number_img_files: 3
+            totalImgSize: 1000
+            totalJsCompressedSize: 150000
+            totalJsUncomressedSize: 152000
+            totalCssCompressedSize: 140000
+            totalCssUncomressedSize: 145000
+            numberJsFiles: 5
+            numberCssFiles: 3
+            numberImgFiles: 3
             ttfb: 375
             download_time: 475
             deviceTypeId: 2
             osId: 2
             processId: "5fjyrvda"
-            rt_si: "test-unrealistic-visit-duration"
+            rtSi: "test-unrealistic-visit-duration"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-11-06 14:33:44'))>
             loadEventEnd: 1344
