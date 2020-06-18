@@ -7,19 +7,27 @@ The backoffice of Basic RUM. A system written on Symfony 5 that aims to help per
 
 ## I want to contribute!
 
-Checkout the [contributors notes](./CONTRIBUTING.md)
+Checkout the [C](./CONTRIBUTING.md)
 
 ## Installation:
-The instruction below are applicable only for development but still incomplete for production. This installation will be automatically initialized with demo database.
-Init script will ask you to create an admin user during the process of
- installation.
+The instruction below are applicable only for development but аrе incomplete for production. This installation will automatically initialized Basic RUM with demo data.
+
+### Prerequisites Linux/MacOs 
+ - docker
+ - docker-compose
+
+### Prerequisites Windows
+ Please follow this guide: [Run Basic RUM on Windows](./doc/installation/WINDOWS.md)
+
+
+The init script will ask you to create an admin user during the installation process.
 ```
 git clone git@github.com:basicrum/backoffice.git
 cd backoffice
 make init
 ```
 
-If you would like to preload some data, you can do it by executing :
+In order to load demo data run:
 ```
 make demo
 ```
@@ -33,11 +41,11 @@ If you would like to use Xdebug to profile/debug application on your local machi
 
 Mac OS with docker machine: Run `docker-machine ip` and load http://(put docker ip here):8086
 
-Once logged in you can create new users. For that click humburger menu in top left corner and click to Manage Users. And there click create user button in order to create your first user.
+Once logged in you can create new users. For that click hamburger menu in top left corner and click to Manage Users. And there click create user button in order to create your first user.
 
 ## Key features:
  - Performance over time by Mobile, Tablet and Desktop devices.
- - Diagram Generator by metrics like **time to first paing**, **time to first byte**, **document ready** and etc.
+ - Diagram Generator by metrics like **time to first paint**, **time to first byte**, **document ready** and etc.
  - Waterfall visualization of loaded page resources
  - Device distribution diagram.
  - Boomerang JS agent builder.
