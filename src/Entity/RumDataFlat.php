@@ -171,7 +171,7 @@ class RumDataFlat
     /**
      * @var int
      *
-     * @ORM\Column(name="rt_quit", type="smallint", length=1, nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="rt_quit", type="boolean", options={"default"=0})
      */
     private $rtQuit;
 
