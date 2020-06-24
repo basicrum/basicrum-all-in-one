@@ -9,7 +9,7 @@ class RtNormalizer
     public function normalize(array $timing)
     {
         /**
-         * TODO: Do we need t_other? Text field or separated fields?
+         * TODO: Won't implement t_other for now.
          */
         $entries = [
             't_done' => 0,
@@ -27,9 +27,10 @@ class RtNormalizer
                 // Need this because rt_quit has no default value when defined
                 if ('rt_quit' == $key) {
                     $entries[$key] = 1;
-                } else {
-                    $entries[$key] = (int) $timing[$key];
+                    continue;
                 }
+
+                $entries[$key] = (int) $timing[$key];
             }
         }
 
