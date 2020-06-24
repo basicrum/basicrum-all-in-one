@@ -2,9 +2,9 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Secondary\QueryParam;
 use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
+use App\BasicRum\Periods\Period;
 
 class QueryParamLikeTest extends DataLayerFixtureTestCase
 {
@@ -23,7 +23,7 @@ class QueryParamLikeTest extends DataLayerFixtureTestCase
             'nenineni'
         );
 
-        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+        $flavor = new DataRows('rum_data_flat', ['rum_data_id']);
 
         $res = $this->getDataLayer()->load(
             $period,
@@ -33,13 +33,11 @@ class QueryParamLikeTest extends DataLayerFixtureTestCase
 
         $this->assertEquals(
             [
-                '2018-10-28 00:00:00' =>
+                '2018-10-28 00:00:00' => [
                     [
-                        [
-                            'page_view_id' => 3,
-
-                        ]
-                    ]
+                        'rum_data_id' => 3,
+                    ],
+                ],
             ],
             $res
         );
@@ -58,7 +56,7 @@ class QueryParamLikeTest extends DataLayerFixtureTestCase
             'nowaytofindme'
         );
 
-        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+        $flavor = new DataRows('rum_data_flat', ['rum_data_id']);
 
         $dataLayer = $this->getDataLayer()->load(
             $period,
@@ -70,10 +68,9 @@ class QueryParamLikeTest extends DataLayerFixtureTestCase
 
         $this->assertEquals(
             [
-                '2018-10-28 00:00:00' => []
+                '2018-10-28 00:00:00' => [],
             ],
             $res
         );
     }
-
 }
