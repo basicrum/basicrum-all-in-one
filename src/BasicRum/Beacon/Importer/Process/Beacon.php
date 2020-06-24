@@ -39,14 +39,8 @@ class Beacon
 
             $beacons[$key] = json_decode($beacon[1], true);
 
-            if (isset($beacons[$key]['restiming']) && $beacons[$key]['restiming']) {
-                if (\is_string($beacons[$key]['restiming'])) {
-                    $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
-
-                    // replace encoded restiming with decoded
-                    $beacons[$key]['restiming'] = $resourceTimingsData;
-                }
-            }
+            // decompress restimings
+            $beacons[$key] = $this->decompressResources($beacons[$key]);
 
             // Legacy when we didn't have created_at in beacon data
             if (!isset($beacons[$key]['created_at'])) {
@@ -63,9 +57,10 @@ class Beacon
             }
 
             // We do not mark as page view beacons send when visitor leaves page
+            // commented it out because according to latest decision we have to insert rt_quit beacon into DB as page view
             if (isset($this->pageViewUniqueKeys[$pageViewKey])) {
-                $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
-//                continue;
+//                    $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
+//                    continue;
             }
 
             $this->pageViewUniqueKeys[$pageViewKey] = ['start' => $date];
@@ -82,6 +77,30 @@ class Beacon
         }
 
         return $data;
+    }
+
+    // Draft in case we do not need to store AutoXHR beacons in rum_data_flat but still need to store in beacons table
+    public function checkIfBeaconIsXHR(array $beacon): bool
+    {
+        if (isset($beacon['http_initiator']) && 'xhr' == $beacon['http_initiator']) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function decompressResources(array $beacon): array
+    {
+        $decompressor = new ResourceTimingDecompressor_v_0_3_4();
+
+        if (isset($beacon['restiming']) && $beacon['restiming'] && \is_string($beacon['restiming'])) {
+            $resourceTimingsData = $decompressor->decompressResources(json_decode($beacon['restiming'], true));
+
+            // replace encoded restiming with decoded
+            $beacon['restiming'] = $resourceTimingsData;
+        }
+
+        return $beacon;
     }
 
     /**
