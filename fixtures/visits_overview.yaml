@@ -1,6 +1,6 @@
 App\Entity\VisitsOverview:
   visit1:
-    guid: "first-closed-session"
+    rt_si: "first-closed-session"
     pageViewsCount: 1
     firstPageViewId: 1
     lastPageViewId: 1

@@ -105,7 +105,7 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = [
                 'start' => $date,
-                'guid' => $beacons[$key]['guid'],
+                'rt_si' => $beacons[$key]['rt_si'],
                 'pid' => $beacons[$key]['pid'],
                 'date' => $date,
             ];
@@ -139,7 +139,7 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = [
                 'start' => $date,
-                'guid' => $beacons[$key]['guid'],
+                'rt_si' => $beacons[$key]['rt_si'],
                 'pid' => $beacons[$key]['pid'],
                 'date' => $date,
             ];
@@ -153,8 +153,8 @@ class Beacon
      */
     private function _getPageViewKey(array &$data)
     {
-        if (empty($data['guid'])) {
-            $data['guid'] = 'missing_guid';
+        if (empty($data['rt_si'])) {
+            $data['rt_si'] = 'missing_rt_session';
         }
 
         if (empty($data['pid'])) {
@@ -165,6 +165,6 @@ class Beacon
             return false;
         }
 
-        return $data['guid'].$data['pid'].md5($data['u']);
+        return $data['rt_si'].$data['pid'].md5($data['u']);
     }
 }

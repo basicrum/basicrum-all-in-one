@@ -43,7 +43,7 @@ class Calculator
             $notCompletedViews = $this->fetch->fetchNavTimingsInRangeForSession(
                 $notCompletedVisit['firstPageViewId'],
                 $notCompletedVisit['lastPageViewId'],
-                $notCompletedVisit['guid']
+                $notCompletedVisit['rt_si']
             );
 
             foreach ($notCompletedViews as $view) {

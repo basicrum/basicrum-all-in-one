@@ -22,19 +22,19 @@ class AggregatorTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testAggregatorSameGuidTwoSeparateVisits()
+    public function testAggregatorSameRtsiTwoSeparateVisits()
     {
         $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
-                'guid' => 'test-2-closed-sessions',
+                'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
                 'pageViewId' => 2,
                 'urlId' => 2,
             ],
             [
-                'guid' => 'test-2-closed-sessions',
+                'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-28 13:32:33'),
                 'pageViewId' => 3,
                 'urlId' => 1,
@@ -51,7 +51,7 @@ class AggregatorTest extends TestCase
             [
                 [
                     'visitId' => false,
-                    'guid' => 'test-2-closed-sessions',
+                    'rt_si' => 'test-2-closed-sessions',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 2,
                     'lastPageViewId' => 2,
@@ -63,7 +63,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'test-2-closed-sessions',
+                    'rt_si' => 'test-2-closed-sessions',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 3,
                     'lastPageViewId' => 3,
@@ -83,19 +83,19 @@ class AggregatorTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testAggregatorSameGuidTwoSeparateVisitsAttachPreviouslyNotClosed()
+    public function testAggregatorSameRtsiTwoSeparateVisitsAttachPreviouslyNotClosed()
     {
         $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
-                'guid' => 'test-2-closed-sessions',
+                'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
                 'pageViewId' => 2,
                 'urlId' => 2,
             ],
             [
-                'guid' => 'test-2-closed-sessions',
+                'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-28 13:32:33'),
                 'pageViewId' => 3,
                 'urlId' => 1,
@@ -108,7 +108,7 @@ class AggregatorTest extends TestCase
 
         $aggregator->addPageView(
             [
-                'guid' => 'test-2-closed-sessions',
+                'rt_si' => 'test-2-closed-sessions',
                 'createdAt' => new \DateTime('2018-10-25 13:27:00'),
                 'pageViewId' => 1,
                 'urlId' => 1,
@@ -118,7 +118,7 @@ class AggregatorTest extends TestCase
         $notCompletedVisits = [
             1 => [
                 'visitId' => 1,
-                'guid' => 'test-2-closed-sessions',
+                'rt_si' => 'test-2-closed-sessions',
                 'pageViewsCount' => 1,
                 'firstPageViewId' => 1,
                 'lastPageViewId' => 1,
@@ -134,7 +134,7 @@ class AggregatorTest extends TestCase
             [
                 [
                     'visitId' => 1,
-                    'guid' => 'test-2-closed-sessions',
+                    'rt_si' => 'test-2-closed-sessions',
                     'pageViewsCount' => 2,
                     'firstPageViewId' => 1,
                     'lastPageViewId' => 2,
@@ -146,7 +146,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'test-2-closed-sessions',
+                    'rt_si' => 'test-2-closed-sessions',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 3,
                     'lastPageViewId' => 3,
@@ -166,31 +166,31 @@ class AggregatorTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testCloseMoreThanOneChunkWithSameGuidWhenFirstAndLastScanPageViewAreOutsideExpireRange()
+    public function testCloseMoreThanOneChunkWithSameRtsiWhenFirstAndLastScanPageViewAreOutsideExpireRange()
     {
         $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
-                'guid' => 'test-2-closed-session',
+                'rt_si' => 'test-2-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
                 'pageViewId' => 2,
                 'urlId' => 2,
             ],
             [
-                'guid' => 'test-2-closed-session',
+                'rt_si' => 'test-2-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:37:33'),
                 'pageViewId' => 3,
                 'urlId' => 1,
             ],
             [
-                'guid' => 'test-2-closed-session',
+                'rt_si' => 'test-2-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 18:37:33'),
                 'pageViewId' => 4,
                 'urlId' => 1,
             ],
             [
-                'guid' => 'last-in-duration-range',
+                'rt_si' => 'last-in-duration-range',
                 'createdAt' => new \DateTime('2018-10-25 20:40:33'),
                 'pageViewId' => 5,
                 'urlId' => 1,
@@ -209,7 +209,7 @@ class AggregatorTest extends TestCase
             [
                 [
                     'visitId' => false,
-                    'guid' => 'test-2-closed-session',
+                    'rt_si' => 'test-2-closed-session',
                     'pageViewsCount' => 2,
                     'firstPageViewId' => 2,
                     'lastPageViewId' => 3,
@@ -221,7 +221,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'test-2-closed-session',
+                    'rt_si' => 'test-2-closed-session',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 4,
                     'lastPageViewId' => 4,
@@ -233,7 +233,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'last-in-duration-range',
+                    'rt_si' => 'last-in-duration-range',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 5,
                     'lastPageViewId' => 5,
@@ -253,31 +253,31 @@ class AggregatorTest extends TestCase
      *
      * @throws \Exception
      */
-    public function testCloseOnlyOneChunkWithSameGuidWhenFirstAndLastScanPageViewAreInDurationRange()
+    public function testCloseOnlyOneChunkWithSameRtsiWhenFirstAndLastScanPageViewAreInDurationRange()
     {
         $aggregator = $this->_getAggregator();
 
         $pageViews = [
             [
-                'guid' => 'test-1-closed-session',
+                'rt_si' => 'test-1-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
                 'pageViewId' => 2,
                 'urlId' => 2,
             ],
             [
-                'guid' => 'test-1-closed-session',
+                'rt_si' => 'test-1-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:37:33'),
                 'pageViewId' => 3,
                 'urlId' => 1,
             ],
             [
-                'guid' => 'test-1-closed-session',
+                'rt_si' => 'test-1-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 18:37:33'),
                 'pageViewId' => 4,
                 'urlId' => 1,
             ],
             [
-                'guid' => 'last-in-duration-range',
+                'rt_si' => 'last-in-duration-range',
                 'createdAt' => new \DateTime('2018-10-25 18:40:33'),
                 'pageViewId' => 5,
                 'urlId' => 1,
@@ -296,7 +296,7 @@ class AggregatorTest extends TestCase
             [
                 [
                     'visitId' => false,
-                    'guid' => 'test-1-closed-session',
+                    'rt_si' => 'test-1-closed-session',
                     'pageViewsCount' => 2,
                     'firstPageViewId' => 2,
                     'lastPageViewId' => 3,
@@ -308,7 +308,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'test-1-closed-session',
+                    'rt_si' => 'test-1-closed-session',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 4,
                     'lastPageViewId' => 4,
@@ -320,7 +320,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'last-in-duration-range',
+                    'rt_si' => 'last-in-duration-range',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 5,
                     'lastPageViewId' => 5,
@@ -357,7 +357,7 @@ class AggregatorTest extends TestCase
                 ++$counter;
                 if (1 == $counter) {
                     return [
-                        'guid' => 'first-closed-session',
+                        'rt_si' => 'first-closed-session',
                         'createdAt' => new \DateTime('2018-10-24 13:32:33'),
                         'pageViewId' => 1,
                         'urlId' => 1,
@@ -371,13 +371,13 @@ class AggregatorTest extends TestCase
 
         $pageViews = [
             [
-                'guid' => 'first-closed-session',
+                'rt_si' => 'first-closed-session',
                 'createdAt' => new \DateTime('2018-10-25 13:32:33'),
                 'pageViewId' => 2,
                 'urlId' => 1,
             ],
             [
-                'guid' => 'last-in-duration-range',
+                'rt_si' => 'last-in-duration-range',
                 'createdAt' => new \DateTime('2018-10-25 18:40:33'),
                 'pageViewId' => 3,
                 'urlId' => 1,
@@ -394,7 +394,7 @@ class AggregatorTest extends TestCase
             [
                 [
                     'visitId' => false,
-                    'guid' => 'first-closed-session',
+                    'rt_si' => 'first-closed-session',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 2,
                     'lastPageViewId' => 2,
@@ -406,7 +406,7 @@ class AggregatorTest extends TestCase
                 ],
                 [
                     'visitId' => false,
-                    'guid' => 'last-in-duration-range',
+                    'rt_si' => 'last-in-duration-range',
                     'pageViewsCount' => 1,
                     'firstPageViewId' => 3,
                     'lastPageViewId' => 3,

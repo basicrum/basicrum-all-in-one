@@ -27,7 +27,7 @@ class Aggregator
     private $duration;
 
     /** @var string */
-    private $lastGuidInScan = '';
+    private $lastRtsiInScan = '';
 
     /** @var int */
     private $lastPageViewInScan = 0;
@@ -46,11 +46,11 @@ class Aggregator
      */
     public function addPageView(array $pageView): self
     {
-        $this->groupedPageViews[$pageView['guid']][$pageView['pageViewId']] = $pageView;
+        $this->groupedPageViews[$pageView['rt_si']][$pageView['pageViewId']] = $pageView;
 
         if ($pageView['pageViewId'] > $this->lastPageViewInScan) {
             $this->lastPageViewInScan = $pageView['pageViewId'];
-            $this->lastGuidInScan = $pageView['guid'];
+            $this->lastRtsiInScan = $pageView['rt_si'];
         }
 
         return $this;
@@ -60,7 +60,7 @@ class Aggregator
     {
         $visits = [];
 
-        foreach ($this->groupedPageViews as $guid => $views) {
+        foreach ($this->groupedPageViews as $rt_si => $views) {
             ksort($views, SORT_NUMERIC);
 
             $chunks = $this->chunk->chunkenize($views, $this->sessionDuration);
@@ -98,7 +98,7 @@ class Aggregator
 
                 $visits[] = [
                     'visitId' => $visitId,
-                    'guid' => $guid,
+                    'rt_si' => $rt_si,
                     'pageViewsCount' => $this->_countPageViews($views, $beginId, $endId),
                     'firstPageViewId' => $beginId,
                     'lastPageViewId' => $endId,
@@ -116,7 +116,7 @@ class Aggregator
 
     private function _getLastPageViewDateInScan(): \DateTime
     {
-        return $this->groupedPageViews[$this->lastGuidInScan][$this->lastPageViewInScan]['createdAt'];
+        return $this->groupedPageViews[$this->lastRtsiInScan][$this->lastPageViewInScan]['createdAt'];
     }
 
     private function _countPageViews(array $views, int $beginViewId, int $endViewId): int

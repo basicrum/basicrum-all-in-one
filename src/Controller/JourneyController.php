@@ -28,12 +28,12 @@ class JourneyController extends AbstractController
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
-            ->select('nt.guid', 'nt.pageViewId')
+            ->select('nt.rt_si', 'nt.pageViewId')
             ->where("nt.createdAt BETWEEN '".$start."' AND '".$end."'")
             //->setParameter('url', 'GOO')
             ->orderBy('nt.pageViewId', 'DESC')
             ->setMaxResults(100)
-            ->groupBy('nt.pageViewId, nt.guid')
+            ->groupBy('nt.pageViewId, nt.rt_si')
             ->getQuery();
 
         $navigationTimings = $query->getResult();
@@ -52,12 +52,12 @@ class JourneyController extends AbstractController
      */
     public function journeyDraw()
     {
-        $guid = $_POST['guid'];
+        $rt_si = $_POST['rt_si'];
 
         /** @var NavigationTimings $navigationTiming */
         $navigationTimings = $this->getDoctrine()
             ->getRepository(NavigationTimings::class)
-            ->findBy(['guid' => $guid]);
+            ->findBy(['rt_si' => $rt_si]);
 
         $filteredNavigations = [];
 

@@ -87,10 +87,10 @@ class NavigationTimingsNormalizer
             $entries['stay_on_page_time'] = 0;
         }
 
-        if (!empty($navigationTiming['guid'])) {
-            $entries['guid'] = $navigationTiming['guid'];
+        if (!empty($navigationTiming['rt_si'])) {
+            $entries['rt_si'] = $navigationTiming['rt_si'];
         } else {
-            $entries['guid'] = '';
+            $entries['rt_si'] = '';
         }
 
         //Exceptions

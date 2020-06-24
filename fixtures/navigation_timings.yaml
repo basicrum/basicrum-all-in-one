@@ -23,7 +23,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyvc3l"
-            guid: "first-closed-session"
+            rt_si: "first-closed-session"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-24 13:31:03'))>
             loadEventEnd: 139
@@ -51,7 +51,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 1
             osId: 1
             processId: "56jyvc3l"
-            guid: "test-2-closed-sessions"
+            rt_si: "test-2-closed-sessions"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-25 13:32:33'))>
             loadEventEnd: 139
@@ -79,7 +79,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyvdda"
-            guid: "test-2-closed-sessions"
+            rt_si: "test-2-closed-sessions"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
             loadEventEnd: 1393
@@ -107,7 +107,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyrvda"
-            guid: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244400"
+            rt_si: "ffe7ccec-c9d1-410c-a189-c166edee257f_1549190244400"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
@@ -135,7 +135,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jfc3l"
-            guid: "first-closed-session"
+            rt_si: "first-closed-session"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 139
@@ -163,7 +163,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyr1da"
-            guid: "test-unrealistic-visit-duration"
+            rt_si: "test-unrealistic-visit-duration"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
@@ -191,7 +191,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "56jyrdda"
-            guid: "test-unrealistic-visit-duration"
+            rt_si: "test-unrealistic-visit-duration"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-11-01 14:33:44'))>
             loadEventEnd: 1344
@@ -219,7 +219,7 @@ App\Entity\NavigationTimings:
             deviceTypeId: 2
             osId: 2
             processId: "5fjyrvda"
-            guid: "test-unrealistic-visit-duration"
+            rt_si: "test-unrealistic-visit-duration"
             stayOnPageTime: 24
             createdAt: <(new \DateTime('2018-11-06 14:33:44'))>
             loadEventEnd: 1344

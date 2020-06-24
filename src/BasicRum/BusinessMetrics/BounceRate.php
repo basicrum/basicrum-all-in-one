@@ -11,7 +11,7 @@ class BounceRate implements \App\BasicRum\Report\ComplexSelectableInterface
         return [
             'page_views_count',
             'first_page_view_id',
-            'guid',
+            'rt_si',
         ];
     }
 

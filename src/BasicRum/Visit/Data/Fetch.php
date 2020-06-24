@@ -33,7 +33,7 @@ class Fetch
             ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
             ->andWhere('nt.deviceTypeId != :deviceTypeId')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
+            ->select(['nt.rt_si', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
             ->orderBy('nt.pageViewId', 'DESC')
             ->getQuery();
 
@@ -43,7 +43,7 @@ class Fetch
     /**
      * @return mixed
      */
-    public function fetchNavTimingsInRangeForSession(int $startId, int $endId, string $guid): array
+    public function fetchNavTimingsInRangeForSession(int $startId, int $endId, string $rt_si): array
     {
         $repository = $this->registry
             ->getRepository(NavigationTimings::class);
@@ -51,10 +51,10 @@ class Fetch
         $query = $repository->createQueryBuilder('nt')
             ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
             ->andWhere('nt.deviceTypeId != :deviceTypeId')
-            ->andWhere('nt.guid = :guid')
+            ->andWhere('nt.rt_si = :rt_si')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->setParameter('guid', $guid)
-            ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
+            ->setParameter('rt_si', $rt_si)
+            ->select(['nt.rt_si', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -100,13 +100,13 @@ class Fetch
             ->getRepository(NavigationTimings::class);
 
         $pageViewId = $pageView['pageViewId'];
-        $guid = $pageView['guid'];
+        $rt_si = $pageView['rt_si'];
 
         $query = $repository->createQueryBuilder('nt')
             ->where("nt.pageViewId < '".$pageViewId."'")
-            ->andWhere('nt.guid = :guid')
-            ->setParameter('guid', $guid)
-            ->select(['nt.createdAt', 'nt.pageViewId', 'nt.guid'])
+            ->andWhere('nt.rt_si = :rt_si')
+            ->setParameter('rt_si', $rt_si)
+            ->select(['nt.createdAt', 'nt.pageViewId', 'nt.rt_si'])
             ->orderBy('nt.pageViewId', 'DESC')
             ->setMaxResults(1)
             ->getQuery();

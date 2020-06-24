@@ -146,12 +146,12 @@ class RevenueCalculatorController extends AbstractController
     {
         $cache = new FilesystemAdapter('basicrum.revenue.estimator.cache');
 
-        $guid = $sample['guid'];
+        $rt_si = $sample['rt_si'];
         $firstPageViewId = $sample['firstPageViewId'];
 
         $dbUrlArr = explode('/', $_ENV['DATABASE_URL']);
 
-        $cacheKey = end($dbUrlArr).$guid.$firstPageViewId;
+        $cacheKey = end($dbUrlArr).$rt_si.$firstPageViewId;
 
         if ($cache->hasItem($cacheKey)) {
             $converted = $cache->getItem($cacheKey)->get();
@@ -165,9 +165,9 @@ class RevenueCalculatorController extends AbstractController
         $res = $repository
             ->createQueryBuilder('vo')
             ->where('vo.firstPageViewId = :firstPageViewId')
-            ->andWhere('vo.guid = :guid')
+            ->andWhere('vo.rt_si = :rt_si')
             ->setParameter('firstPageViewId', $firstPageViewId)
-            ->setParameter('guid', $guid)
+            ->setParameter('rt_si', $rt_si)
             ->getQuery()
             ->getResult();
 
@@ -182,11 +182,11 @@ class RevenueCalculatorController extends AbstractController
             ->createQueryBuilder('nt')
             ->where('nt.pageViewId >= :firstPageViewId')
             ->andWhere('nt.pageViewId <= :lastPageViewId')
-            ->andWhere('nt.guid = :guid')
+            ->andWhere('nt.rt_si = :rt_si')
             ->andWhere('nt.urlId IN (:conversion_url_ids)')
             ->setParameter('firstPageViewId', $firstPageViewId)
             ->setParameter('lastPageViewId', $lastPageViewId)
-            ->setParameter('guid', $guid)
+            ->setParameter('rt_si', $rt_si)
             ->setParameter('conversion_url_ids', implode(',', $conversionIds))
             ->getQuery()
             ->getResult();

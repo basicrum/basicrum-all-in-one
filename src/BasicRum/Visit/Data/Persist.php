@@ -36,7 +36,7 @@ class Persist
                 $entity = new VisitsOverview();
             }
 
-            $entity->setGuid($visit['guid']);
+            $entity->setRtsi($visit['rt_si']);
             $entity->setpageViewsCount($visit['pageViewsCount']);
             $entity->setFirstPageViewId($visit['firstPageViewId']);
             $entity->setLastPageViewId($visit['lastPageViewId']);

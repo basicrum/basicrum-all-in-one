@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * VisitsOverview.
  *
- * @ORM\Table(name="visits_overview", indexes={@ORM\Index(name="completed", columns={"completed"}), @ORM\Index(name="first_page_view_id", columns={"first_page_view_id"}), @ORM\Index(name="last_page_view_id", columns={"last_page_view_id"}), @ORM\Index(name="guid", columns={"guid"})})
+ * @ORM\Table(name="visits_overview", indexes={@ORM\Index(name="completed", columns={"completed"}), @ORM\Index(name="first_page_view_id", columns={"first_page_view_id"}), @ORM\Index(name="last_page_view_id", columns={"last_page_view_id"}), @ORM\Index(name="rt_si", columns={"rt_si"})})
  * @ORM\Entity
  */
 class VisitsOverview
@@ -24,9 +24,9 @@ class VisitsOverview
     /**
      * @var string|null
      *
-     * @ORM\Column(name="guid", type="string", length=128, nullable=true, options={"fixed"=true})
+     * @ORM\Column(name="rt_si", type="string", length=128, nullable=true, options={"fixed"=true})
      */
-    private $guid;
+    private $rt_si;
 
     /**
      * @var int
@@ -89,14 +89,14 @@ class VisitsOverview
         return $this->visitId;
     }
 
-    public function getGuid(): ?string
+    public function getRtsi(): ?string
     {
-        return $this->guid;
+        return $this->rt_si;
     }
 
-    public function setGuid(?string $guid): self
+    public function setRtsi(?string $rt_si): self
     {
-        $this->guid = $guid;
+        $this->rt_si = $rt_si;
 
         return $this;
     }
