@@ -62,9 +62,8 @@ class File
                 'id' => basename($filePath),
                 'beacon_data' => file_get_contents($filePath),
             ];
-
-            $this->deleteRawBeaconFile($filePath);
         }
+        $this->deleteRawBeacons($beaconFiles);
 
         $name = time().'.json';
 
@@ -160,8 +159,10 @@ class File
         return $res;
     }
 
-    public function deleteRawBeaconFile(string $rawBeaconFileName): void
+    public function deleteRawBeacons(array $rawBeaconFilesArray): void
     {
-        unlink($rawBeaconFileName);
+        foreach ($rawBeaconFilesArray as $rawBeaconFileName) {
+            unlink($rawBeaconFileName);
+        }
     }
 }
