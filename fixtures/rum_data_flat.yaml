@@ -32,6 +32,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: null
             createdAt: <(new \DateTime('2018-10-24 13:31:03'))>
             loadEventEnd: 139
       rumdataid2:
@@ -67,6 +68,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: null
             createdAt: <(new \DateTime('2018-10-25 13:32:33'))>
             loadEventEnd: 139
       rumdataid3:
@@ -102,6 +104,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: xhr
             createdAt: <(new \DateTime('2018-10-28 14:31:03'))>
             loadEventEnd: 1393
       rumdataid4:
@@ -137,6 +140,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: xhr
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
       rumdataid5:
@@ -172,6 +176,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: null
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 139
       rumdataid6:
@@ -207,6 +212,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: null
             createdAt: <(new \DateTime('2018-10-28 14:33:44'))>
             loadEventEnd: 1344
       rumdataid7:
@@ -242,6 +248,7 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: null
             createdAt: <(new \DateTime('2018-11-01 14:33:44'))>
             loadEventEnd: 1344
       rumdataid8:
@@ -277,5 +284,6 @@ App\Entity\RumDataFlat:
             rtTstart: 1591888936073
             rtEnd: 1591888936229
             rtQuit: 0
+            http_initiator: null
             createdAt: <(new \DateTime('2018-11-06 14:33:44'))>
             loadEventEnd: 1344
