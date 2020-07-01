@@ -6,34 +6,89 @@ namespace App\BasicRum\Beacon\Importer\Process\Beacon;
 
 class RtNormalizer
 {
-    public function normalize(array $timing)
+    /**
+     * TODO: Won't implement t_other for now.
+     */
+    private $integerEntries = [
+        't_done' => 0,
+        't_page' => 0,
+        't_resp' => 0,
+        't_load' => 0,
+        'rt_tstart' => 0,
+        'rt_end' => 0,
+        //      't_other' => '',
+    ];
+
+    private $booleanEntries = [
+        'rt_quit' => 0,
+    ];
+
+    private $stringEntries = [
+        'http_initiator' => null,
+    ];
+
+    /**
+     * @var array
+     */
+    private $timing;
+
+    public function normalize(array $timing): array
     {
-        /**
-         * TODO: Won't implement t_other for now.
-         */
-        $entries = [
-            't_done' => 0,
-            't_page' => 0,
-            't_resp' => 0,
-            //            't_other' => '',
-            't_load' => 0,
-            'rt_tstart' => 0,
-            'rt_end' => 0,
-            'rt_quit' => 0,
-        ];
+        $this->timing = $timing;
 
-        foreach ($entries as $key => $value) {
-            if (isset($timing[$key])) {
-                // Need this because rt_quit has no default value when defined
-                if ('rt_quit' == $key) {
-                    $entries[$key] = 1;
-                    continue;
-                }
+        // reset *Entries arrays to default values
+        $this->resetEntries();
 
-                $entries[$key] = (int) $timing[$key];
-            }
+        $this->setIntegerEntries();
+        $this->setBooleanEntries();
+        $this->setStringEntries();
+
+        return array_merge(
+            $this->integerEntries,
+            $this->booleanEntries,
+            $this->stringEntries,
+        );
+    }
+
+    public function resetEntries(): void
+    {
+        foreach ($this->integerEntries as $key => $value) {
+            $this->integerEntries[$key] = 0;
         }
 
-        return $entries;
+        foreach ($this->booleanEntries as $key => $value) {
+            $this->booleanEntries[$key] = 0;
+        }
+
+        foreach ($this->stringEntries as $key => $value) {
+            $this->stringEntries[$key] = null;
+        }
+    }
+
+    public function setIntegerEntries(): void
+    {
+        foreach ($this->integerEntries as $key => $value) {
+            if (isset($this->timing[$key])) {
+                $this->integerEntries[$key] = (int) $this->timing[$key];
+            }
+        }
+    }
+
+    public function setBooleanEntries(): void
+    {
+        foreach ($this->booleanEntries as $key => $value) {
+            if (isset($this->timing[$key])) {
+                $this->booleanEntries[$key] = (bool) true;
+            }
+        }
+    }
+
+    public function setStringEntries(): void
+    {
+        foreach ($this->stringEntries as $key => $value) {
+            if (isset($this->timing[$key])) {
+                $this->stringEntries[$key] = (string) $this->timing[$key];
+            }
+        }
     }
 }
