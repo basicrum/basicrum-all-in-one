@@ -7,7 +7,7 @@ namespace App\BasicRum\Filters;
 class Collaborator implements \App\BasicRum\CollaboratorsInterface
 {
     /** @var array */
-    private $filtersClassMap = [
+    private array $filtersClassMap = [
         'browser_name' => Secondary\BrowserName::class,
         'device_manufacturer' => Secondary\DeviceManufacturer::class,
         'url' => Secondary\Url::class,
@@ -19,7 +19,7 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         'page_views_count' => Secondary\PageViewsCount::class,
     ];
 
-    private $filters = [];
+    private array $filters = [];
 
     public function getCommandParameterName(): string
     {

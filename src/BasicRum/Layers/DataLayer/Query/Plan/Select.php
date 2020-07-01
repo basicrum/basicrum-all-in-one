@@ -6,7 +6,7 @@ namespace App\BasicRum\Layers\DataLayer\Query\Plan;
 
 class Select
 {
-    /** @var \App\BasicRum\Layers\DataLayer\Query\SelectInterface $select */
+    /** @var \App\BasicRum\Layers\DataLayer\Query\SelectInterface */
     private $select;
 
     /**

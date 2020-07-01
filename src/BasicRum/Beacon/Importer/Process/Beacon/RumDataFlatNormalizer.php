@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Beacon;
 
+use App\BasicRum\CoreObjects\ImportCollaborator;
+
 class RumDataFlatNormalizer
 {
     private $fieldsCalculation = [
         'dns_duration' => ['nt_dns_end', 'nt_dns_st'],
         'connect_duration' => ['nt_con_end', 'nt_con_st'],
-        //        'ssl'                          => [],
-        'first_byte' => ['nt_res_st', 'nt_nav_st'],
         'redirect_duration' => ['nt_red_end', 'nt_red_st'],
         'last_byte_duration' => ['nt_res_end', 'nt_nav_st'],
         'first_paint' => ['nt_first_paint', 'nt_nav_st'],
-        'load_event_end' => ['nt_load_end', 'nt_nav_st'],
         'ttfb' => ['nt_res_st', 'nt_req_st'],
         'download_time' => ['nt_res_end', 'nt_req_st'],
-        //        'response_duration'            => [],
-        //        'document_processing_duration' => [],
-        //        'on_load_duration'             => []
     ];
 
-//    private $fieldsPrecalculate = [
-//        'pt_fp'  => 1,
-//        'pt_fcp' => 1
-//    ];
+    private ImportCollaborator $importCollaborator;
+
+    public function __construct()
+    {
+        $this->importCollaborator = new ImportCollaborator();
+    }
 
     /**
      * @return array
@@ -43,6 +41,22 @@ class RumDataFlatNormalizer
             } else {
                 $entries[$key] = 0;
             }
+        }
+
+        /*
+         * Comes from Architecture refactoring
+         * Ref: https://github.com/basicrum/backoffice/issues/129
+         */
+        foreach ($this->importCollaborator->getCollaboratorIds() as $id) {
+            $value = $this->importCollaborator
+                        ->getBeaconExtract($id)
+                        ->extractValue($rumDataFlat);
+
+            $field = $this->importCollaborator
+                        ->getWriterHint($id)
+                        ->getFieldName();
+
+            $entries[$field] = $value;
         }
 
         if (!empty($rumDataFlat['pt_fp'])) {
@@ -100,14 +114,6 @@ class RumDataFlatNormalizer
 
         if ($entries['load_event_end'] > 65535) {
             $entries['load_event_end'] = 65535;
-        }
-
-        if ($entries['first_byte'] < 0) {
-            $entries['first_byte'] = 0;
-        }
-
-        if ($entries['first_byte'] > 65535) {
-            $entries['first_byte'] = 65535;
         }
 
         if ($entries['last_byte_duration'] < 0) {
