@@ -239,6 +239,11 @@ class RumDataFlat
      */
     private $downloadTime;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $http_initiator;
+
     public function getRumDataId(): ?int
     {
         return $this->rumDataId;
@@ -648,6 +653,18 @@ class RumDataFlat
     public function setDownloadTime(int $downloadTime): self
     {
         $this->downloadTime = $downloadTime;
+
+        return $this;
+    }
+
+    public function getHttpInitiator(): ?string
+    {
+        return $this->http_initiator;
+    }
+
+    public function setHttpInitiator(?string $http_initiator): self
+    {
+        $this->http_initiator = $http_initiator;
 
         return $this;
     }
