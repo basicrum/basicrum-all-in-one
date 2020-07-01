@@ -63,6 +63,7 @@ class File
                 'beacon_data' => file_get_contents($filePath),
             ];
         }
+
         $this->deleteRawBeacons($beaconFiles);
 
         $name = time().'.json';
