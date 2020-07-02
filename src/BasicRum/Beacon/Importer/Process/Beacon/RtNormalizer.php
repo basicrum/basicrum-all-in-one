@@ -27,68 +27,51 @@ class RtNormalizer
         'http_initiator' => null,
     ];
 
-    /**
-     * @var array
-     */
-    private $timing;
-
     public function normalize(array $timing): array
     {
-        $this->timing = $timing;
-
-        // reset *Entries arrays to default values
-        $this->resetEntries();
-
-        $this->setIntegerEntries();
-        $this->setBooleanEntries();
-        $this->setStringEntries();
-
         return array_merge(
-            $this->integerEntries,
-            $this->booleanEntries,
-            $this->stringEntries,
+            $this->generateIntegerEntries($timing),
+            $this->generateBooleanEntries($timing),
+            $this->generateStringEntries($timing)
         );
     }
 
-    public function resetEntries(): void
+    private function generateIntegerEntries(array $timing): array
     {
-        foreach ($this->integerEntries as $key => $value) {
-            $this->integerEntries[$key] = 0;
-        }
+        $integerEntries = $this->integerEntries;
 
-        foreach ($this->booleanEntries as $key => $value) {
-            $this->booleanEntries[$key] = 0;
-        }
-
-        foreach ($this->stringEntries as $key => $value) {
-            $this->stringEntries[$key] = null;
-        }
-    }
-
-    public function setIntegerEntries(): void
-    {
-        foreach ($this->integerEntries as $key => $value) {
-            if (isset($this->timing[$key])) {
-                $this->integerEntries[$key] = (int) $this->timing[$key];
+        foreach ($integerEntries as $key => $value) {
+            if (isset($timing[$key])) {
+                $integerEntries[$key] = (int) $timing[$key];
             }
         }
+
+        return $integerEntries;
     }
 
-    public function setBooleanEntries(): void
+    public function generateBooleanEntries(array $timing): array
     {
-        foreach ($this->booleanEntries as $key => $value) {
-            if (isset($this->timing[$key])) {
-                $this->booleanEntries[$key] = (bool) true;
+        $booleanEntries = $this->booleanEntries;
+
+        foreach ($booleanEntries as $key => $value) {
+            if (isset($timing[$key])) {
+                $booleanEntries[$key] = (bool) true;
             }
         }
+
+        return $booleanEntries;
     }
 
-    public function setStringEntries(): void
+    public function generateStringEntries(array $timing): array
     {
-        foreach ($this->stringEntries as $key => $value) {
-            if (isset($this->timing[$key])) {
-                $this->stringEntries[$key] = (string) $this->timing[$key];
+        $stringEntries = $this->stringEntries;
+
+        foreach ($stringEntries as $key => $value) {
+            if (isset($timing[$key])) {
+                $stringEntries[$key] = (string) $timing[$key];
             }
         }
+
+        return $stringEntries;
     }
 }
