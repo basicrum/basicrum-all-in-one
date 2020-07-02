@@ -9,6 +9,8 @@ class ImportCollaborator
     private array $metricsCollaborators = [
         TechnicalMetrics\TimeToFirstByte\Collaborator::class,
         TechnicalMetrics\LoadEventEnd\Collaborator::class,
+        TechnicalMetrics\FirstPaint\Collaborator::class,
+        TechnicalMetrics\FirstContentfulPaint\Collaborator::class,
     ];
 
     private array $collaborators = [];

@@ -13,7 +13,6 @@ class RumDataFlatNormalizer
         'connect_duration' => ['nt_con_end', 'nt_con_st'],
         'redirect_duration' => ['nt_red_end', 'nt_red_st'],
         'last_byte_duration' => ['nt_res_end', 'nt_nav_st'],
-        'first_paint' => ['nt_first_paint', 'nt_nav_st'],
         'ttfb' => ['nt_res_st', 'nt_req_st'],
         'download_time' => ['nt_res_end', 'nt_req_st'],
     ];
@@ -57,16 +56,6 @@ class RumDataFlatNormalizer
                         ->getFieldName();
 
             $entries[$field] = $value;
-        }
-
-        if (!empty($rumDataFlat['pt_fp'])) {
-            $entries['first_paint'] = (int) $rumDataFlat['pt_fp'];
-        }
-
-        if (!empty($rumDataFlat['pt_fcp'])) {
-            $entries['first_contentful_paint'] = (int) $rumDataFlat['pt_fcp'];
-        } else {
-            $entries['first_contentful_paint'] = 0;
         }
 
         if (!empty($rumDataFlat['nt_red_cnt'])) {
@@ -122,14 +111,6 @@ class RumDataFlatNormalizer
 
         if ($entries['last_byte_duration'] > 65535) {
             $entries['last_byte_duration'] = 65535;
-        }
-
-        if ($entries['first_paint'] > 65535) {
-            $entries['first_paint'] = 65535;
-        }
-
-        if ($entries['first_paint'] < 0) {
-            $entries['first_paint'] = 0;
         }
 
         if ($entries['connect_duration'] > 65535) {
