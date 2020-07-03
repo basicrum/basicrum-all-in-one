@@ -8,13 +8,13 @@ use App\BasicRum\CoreObjects\ReaderHintInterface;
 
 class ReaderHint implements ReaderHintInterface
 {
-    public function getTabledName(): string
-    {
-        return 'rum_data_flat';
-    }
-
     public function getFieldName(): string
     {
         return 'first_byte';
+    }
+
+    public function getTabledName(): string
+    {
+        return 'rum_data_flat';
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\CoreObjects\TechnicalMetrics\LoadEventEnd;
+namespace App\BasicRum\CoreObjects\TechnicalMetrics\ConnectDuration;
 
 use App\BasicRum\CoreObjects\ReaderHintInterface;
 
@@ -10,7 +10,7 @@ class ReaderHint implements ReaderHintInterface
 {
     public function getFieldName(): string
     {
-        return 'load_event_end';
+        return 'connect_duration';
     }
 
     public function getTabledName(): string

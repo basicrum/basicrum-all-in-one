@@ -6,13 +6,8 @@ namespace App\BasicRum\CoreObjects;
 
 class ImportCollaborator
 {
-    private array $metricsCollaborators = [
-        TechnicalMetrics\TimeToFirstByte\Collaborator::class,
-        TechnicalMetrics\LoadEventEnd\Collaborator::class,
-        TechnicalMetrics\FirstPaint\Collaborator::class,
-        TechnicalMetrics\FirstContentfulPaint\Collaborator::class,
-        TechnicalMetrics\RedirectsCount\Collaborator::class,
-    ];
+
+    private array $metricsCollaborators;
 
     private array $collaborators = [];
 
@@ -27,6 +22,10 @@ class ImportCollaborator
 
     public function __construct()
     {
+        $classMap = new MetricsClassMap();
+
+        $this->metricsCollaborators = $classMap->getCollaboratorsClassNames();
+
         $this->spawnCollaborators();
         $this->spawnWriterHints();
         $this->spawnReaderHints();

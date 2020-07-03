@@ -10,7 +10,6 @@ class RumDataFlatNormalizer
 {
     private $fieldsCalculation = [
         'dns_duration' => ['nt_dns_end', 'nt_dns_st'],
-        'connect_duration' => ['nt_con_end', 'nt_con_st'],
         'redirect_duration' => ['nt_red_end', 'nt_red_st'],
         'last_byte_duration' => ['nt_res_end', 'nt_nav_st'],
         'ttfb' => ['nt_res_st', 'nt_req_st'],
@@ -105,14 +104,6 @@ class RumDataFlatNormalizer
 
         if ($entries['last_byte_duration'] > 65535) {
             $entries['last_byte_duration'] = 65535;
-        }
-
-        if ($entries['connect_duration'] > 65535) {
-            $entries['connect_duration'] = 65535;
-        }
-
-        if ($entries['connect_duration'] < 0) {
-            $entries['connect_duration'] = 0;
         }
 
         if ($entries['dns_duration'] < 0) {

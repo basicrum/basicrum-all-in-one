@@ -1,8 +1,8 @@
-<?php
+<?= "<?php\n" ?>
 
 declare(strict_types=1);
 
-namespace App\BasicRum\CoreObjects\TechnicalMetrics\LoadEventEnd;
+namespace <?= $namespace; ?>;
 
 use App\BasicRum\CoreObjects\ReaderHintInterface;
 
@@ -10,11 +10,11 @@ class ReaderHint implements ReaderHintInterface
 {
     public function getFieldName(): string
     {
-        return 'load_event_end';
+        return '<?= $field_name; ?>';
     }
 
     public function getTabledName(): string
     {
-        return 'rum_data_flat';
+        return '<?= $table_name; ?>';
     }
 }
