@@ -58,12 +58,6 @@ class RumDataFlatNormalizer
             $entries[$field] = $value;
         }
 
-        if (!empty($rumDataFlat['nt_red_cnt'])) {
-            $entries['redirects_count'] = (int) $rumDataFlat['nt_red_cnt'];
-        } else {
-            $entries['redirects_count'] = 0;
-        }
-
         if (!empty($rumDataFlat['u'])) {
             $urlParts = explode('?', $rumDataFlat['u']);
 

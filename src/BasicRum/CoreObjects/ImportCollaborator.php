@@ -11,6 +11,7 @@ class ImportCollaborator
         TechnicalMetrics\LoadEventEnd\Collaborator::class,
         TechnicalMetrics\FirstPaint\Collaborator::class,
         TechnicalMetrics\FirstContentfulPaint\Collaborator::class,
+        TechnicalMetrics\RedirectsCount\Collaborator::class,
     ];
 
     private array $collaborators = [];
