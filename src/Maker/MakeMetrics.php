@@ -12,6 +12,7 @@ use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 
 final class MakeMetrics extends AbstractMaker
@@ -114,44 +115,6 @@ final class MakeMetrics extends AbstractMaker
 
     private function getMetricsConfig() : array
     {
-        // @todo: wrap this in a YAML config
-        return [
-            [
-                'internal_identifier' => 'tm_connect_duration',
-                'metric_name'         => 'ConnectDuration',
-                'field_name'          => 'connect_duration',
-                'table_name'          => 'rum_data_flat'
-            ],
-            [
-                'internal_identifier' => 'tm_first_contentful_paint',
-                'metric_name'         => 'FirstContentfulPaint',
-                'field_name'          => 'first_contentful_paint',
-                'table_name'          => 'rum_data_flat'
-            ],
-            [
-                'internal_identifier' => 'tm_first_paint',
-                'metric_name'         => 'FirstPaint',
-                'field_name'          => 'first_paint',
-                'table_name'          => 'rum_data_flat'
-            ],
-            [
-                'internal_identifier' => 'tm_load_event_end',
-                'metric_name'         => 'LoadEventEnd',
-                'field_name'          => 'load_event_end',
-                'table_name'          => 'rum_data_flat'
-            ],
-            [
-                'internal_identifier' => 'tm_redirects_count',
-                'metric_name'         => 'RedirectsCount',
-                'field_name'          => 'redirects_count',
-                'table_name'          => 'rum_data_flat'
-            ],
-            [
-                'internal_identifier' => 'tm_time_to_first_byte',
-                'metric_name'         => 'TimeToFirstByte',
-                'field_name'          => 'first_byte',
-                'table_name'          => 'rum_data_flat'
-            ],
-        ];
+        return Yaml::parseFile(__DIR__ . '/metrics-config.yaml');
     }
 }
