@@ -1,12 +1,12 @@
-<?= "<?php\n"; ?>
+<?php
 
 declare(strict_types=1);
 
-namespace <?= $namespace; ?>;
+namespace App\BasicRum\CoreObjects\TechnicalMetrics\SessionId;
 
 class Collaborator
 {
-    const ID = '<?= $internal_identifier; ?>';
+    const ID = 'bm_session_id';
 
     public function getId(): string
     {

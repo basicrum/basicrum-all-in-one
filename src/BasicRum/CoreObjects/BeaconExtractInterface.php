@@ -6,5 +6,5 @@ namespace App\BasicRum\CoreObjects;
 
 interface BeaconExtractInterface
 {
-    public function extractValue(array $beacon): int;
+    public function extractValue(array $beacon);
 }

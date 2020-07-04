@@ -6,7 +6,6 @@ namespace App\BasicRum\CoreObjects;
 
 class ImportCollaborator
 {
-
     private array $metricsCollaborators;
 
     private array $collaborators = [];

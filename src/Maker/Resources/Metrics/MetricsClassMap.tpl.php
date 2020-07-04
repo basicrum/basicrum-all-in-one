@@ -1,4 +1,4 @@
-<?= "<?php\n" ?>
+<?= "<?php\n"; ?>
 
 declare(strict_types=1);
 
@@ -11,7 +11,7 @@ class MetricsClassMap
     {
         return [
 <?php foreach ($metric_names as $name): ?>
-                TechnicalMetrics\<?= $name ?>\Collaborator::class,
+            TechnicalMetrics\<?= $name; ?>\Collaborator::class,
 <?php endforeach; ?>
         ];
     }

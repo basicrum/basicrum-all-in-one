@@ -1,8 +1,8 @@
-<?= "<?php\n"; ?>
+<?php
 
 declare(strict_types=1);
 
-namespace <?= $namespace; ?>;
+namespace App\BasicRum\CoreObjects\TechnicalMetrics\DnsDuration;
 
 use App\BasicRum\CoreObjects\ReaderHintInterface;
 
@@ -10,11 +10,11 @@ class ReaderHint implements ReaderHintInterface
 {
     public function getFieldName(): string
     {
-        return '<?= $field_name; ?>';
+        return 'dns_duration';
     }
 
     public function getTabledName(): string
     {
-        return '<?= $table_name; ?>';
+        return 'rum_data_flat';
     }
 }

@@ -1,12 +1,12 @@
-<?= "<?php\n"; ?>
+<?php
 
 declare(strict_types=1);
 
-namespace <?= $namespace; ?>;
+namespace App\BasicRum\CoreObjects\TechnicalMetrics\RedirectDuration;
 
 class Collaborator
 {
-    const ID = '<?= $internal_identifier; ?>';
+    const ID = 'tm_redirect_duration';
 
     public function getId(): string
     {

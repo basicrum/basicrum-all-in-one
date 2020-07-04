@@ -1,8 +1,8 @@
-<?= "<?php\n"; ?>
+<?php
 
 declare(strict_types=1);
 
-namespace <?= $namespace; ?>;
+namespace App\BasicRum\CoreObjects\TechnicalMetrics\SessionId;
 
 use App\BasicRum\CoreObjects\WriterHintInterface;
 
@@ -10,11 +10,11 @@ class WriterHint implements WriterHintInterface
 {
     public function getFieldName(): string
     {
-        return '<?= $field_name; ?>';
+        return 'rt_si';
     }
 
     public function getTabledName(): string
     {
-        return '<?= $table_name; ?>';
+        return 'rum_data_flat';
     }
 }

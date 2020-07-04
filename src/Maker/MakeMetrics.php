@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Maker;
 
-use \Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Doctrine\Common\Annotations\Annotation;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Bundle\MakerBundle\DependencyBuilder;
 use Symfony\Bundle\MakerBundle\Generator;
 use Symfony\Bundle\MakerBundle\InputConfiguration;
+use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Yaml\Yaml;
-
 
 final class MakeMetrics extends AbstractMaker
 {
@@ -34,7 +33,6 @@ final class MakeMetrics extends AbstractMaker
         $metricNames = ['metric_names' => []];
 
         foreach ($this->getMetricsConfig() as $config) {
-
             $metricNames['metric_names'][] = $config['metric_name'];
 
             $this->createClass($config, 'BeaconExtract', $io, $generator);
@@ -42,11 +40,11 @@ final class MakeMetrics extends AbstractMaker
             $this->createClass($config, 'ReaderHint', $io, $generator);
             $this->createClass($config, 'WriterHint', $io, $generator);
 
-            $io->note('Created metric: ' . $config['metric_name']);
+            $io->note('Created metric: '.$config['metric_name']);
         }
 
         // Re-generate metrics class map
-        $classMapFile = __DIR__ . '/../BasicRum/CoreObjects/MetricsClassMap.php';
+        $classMapFile = __DIR__.'/../BasicRum/CoreObjects/MetricsClassMap.php';
 
         if (file_exists($classMapFile)) {
             unlink($classMapFile);
@@ -59,7 +57,7 @@ final class MakeMetrics extends AbstractMaker
 
         $classPath = $generator->generateClass(
             $lassNameDetails->getFullName(),
-            __DIR__ .'/Resources/Metrics/MetricsClassMap.tpl.php',
+            __DIR__.'/Resources/Metrics/MetricsClassMap.tpl.php',
             $metricNames
         );
 
@@ -73,7 +71,7 @@ final class MakeMetrics extends AbstractMaker
         $folderName = $config['metric_name'];
 
         // Re-generate metrics
-        $classFile = __DIR__ . '/../BasicRum/CoreObjects/TechnicalMetrics/' . $folderName . '/' . $className . '.php';
+        $classFile = __DIR__.'/../BasicRum/CoreObjects/TechnicalMetrics/'.$folderName.'/'.$className.'.php';
 
         var_dump($classFile);
 
@@ -81,22 +79,23 @@ final class MakeMetrics extends AbstractMaker
             var_dump($className);
 
             if ('BeaconExtract' === $className) {
-                $io->note('Skipping: ' . $classFile);
+                $io->note('Skipping: '.$classFile);
+
                 return;
             }
 
-            $io->note('Regenerating: ' . $classFile);
+            $io->note('Regenerating: '.$classFile);
             unlink($classFile);
         }
 
         $lassNameDetails = $generator->createClassNameDetails(
             $className,
-            'BasicRum\\CoreObjects\\TechnicalMetrics\\' . $folderName . '\\'
+            'BasicRum\\CoreObjects\\TechnicalMetrics\\'.$folderName.'\\'
         );
 
         $classPath = $generator->generateClass(
             $lassNameDetails->getFullName(),
-            __DIR__ .'/Resources/Metrics/Sub/' . $className . '.tpl.php',
+            __DIR__.'/Resources/Metrics/Sub/'.$className.'.tpl.php',
             $config
         );
 
@@ -113,8 +112,8 @@ final class MakeMetrics extends AbstractMaker
         );
     }
 
-    private function getMetricsConfig() : array
+    private function getMetricsConfig(): array
     {
-        return Yaml::parseFile(__DIR__ . '/metrics-config.yaml');
+        return Yaml::parseFile(__DIR__.'/metrics-config.yaml');
     }
 }

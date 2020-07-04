@@ -9,8 +9,6 @@ use App\BasicRum\CoreObjects\ImportCollaborator;
 class RumDataFlatNormalizer
 {
     private $fieldsCalculation = [
-        'dns_duration' => ['nt_dns_end', 'nt_dns_st'],
-        'redirect_duration' => ['nt_red_end', 'nt_red_st'],
         'last_byte_duration' => ['nt_res_end', 'nt_nav_st'],
         'ttfb' => ['nt_res_st', 'nt_req_st'],
         'download_time' => ['nt_res_end', 'nt_req_st'],
@@ -83,12 +81,6 @@ class RumDataFlatNormalizer
             $entries['stay_on_page_time'] = 0;
         }
 
-        if (!empty($rumDataFlat['rt_si'])) {
-            $entries['rt_si'] = $rumDataFlat['rt_si'];
-        } else {
-            $entries['rt_si'] = '';
-        }
-
         //Exceptions
         if ($entries['load_event_end'] < 0) {
             $entries['load_event_end'] = 0;
@@ -104,22 +96,6 @@ class RumDataFlatNormalizer
 
         if ($entries['last_byte_duration'] > 65535) {
             $entries['last_byte_duration'] = 65535;
-        }
-
-        if ($entries['dns_duration'] < 0) {
-            $entries['dns_duration'] = 0;
-        }
-
-        if ($entries['dns_duration'] > 65535) {
-            $entries['dns_duration'] = 65535;
-        }
-
-        if ($entries['redirect_duration'] < 0) {
-            $entries['redirect_duration'] = 0;
-        }
-
-        if ($entries['redirect_duration'] > 65535) {
-            $entries['redirect_duration'] = 65535;
         }
 
         if ($entries['first_contentful_paint'] > 65535) {
