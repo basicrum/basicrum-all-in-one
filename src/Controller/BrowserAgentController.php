@@ -58,25 +58,16 @@ class BrowserAgentController extends AbstractController
 
         try {
             $result = $builder->build($_POST, $this->getDoctrine());
-            $response = new Response(
-                json_encode([
-                    'error' => '',
-                    'build_id' => $result,
-                ]
-                )
-            );
+
+            return $this->json([
+                'error' => '',
+                'build_id' => $result,
+            ]);
         } catch (\Exception $e) {
-            $response = new Response(
-                json_encode([
-                    'error' => $e->getMessage(),
-                ]
-                )
-            );
+            return $this->json([
+                'error' => $e->getMessage(),
+            ]);
         }
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 
     /**
@@ -110,19 +101,11 @@ class BrowserAgentController extends AbstractController
 
         $build = $builder->getBuild($buildId, $this->getDoctrine());
 
-        $response = new Response(
-            json_encode(
-                [
-                    'info' => $infoBlockHtml,
-                    'build_id' => $buildId,
-                    'build_date' => $build->getCreatedAt()->format('F d, Y'),
-                ]
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->json([
+            'info' => $infoBlockHtml,
+            'build_id' => $buildId,
+            'build_date' => $build->getCreatedAt()->format('F d, Y'),
+        ]);
     }
 
     /**

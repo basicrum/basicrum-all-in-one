@@ -6,9 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -56,7 +54,7 @@ class UsersController extends AbstractController
             'role' => $user->getRoles(),
         ];
 
-        return new JsonResponse($array);
+        return $this->json($array);
     }
 
     /**
@@ -89,7 +87,7 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        $array = [
+        return $this->json([
             'status' => 'success',
             'message' => 'User Updated Successfully',
             'user' => [
@@ -99,9 +97,7 @@ class UsersController extends AbstractController
                 'email' => $user->getEmail(),
                 'roles' => $user->getRoles(),
             ],
-        ];
-
-        return new Response(json_encode($array));
+        ]);
     }
 
     /**
@@ -116,7 +112,7 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        $array = [
+        return $this->json([
             'status' => 'success',
             'message' => 'User Deleted Successfully',
             'user' => [
@@ -126,8 +122,6 @@ class UsersController extends AbstractController
                 'email' => $user->getEmail(),
                 'roles' => $user->getRoles(),
             ],
-        ];
-
-        return new Response(json_encode($array));
+        ]);
     }
 }
