@@ -56,9 +56,6 @@ class UsersController extends AbstractController
             'role' => $user->getRoles(),
         ];
 
-        echo json_encode($array);
-        exit();
-
         return new JsonResponse($array);
     }
 
