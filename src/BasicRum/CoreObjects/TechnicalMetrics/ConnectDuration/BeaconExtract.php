@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\BasicRum\CoreObjects\TechnicalMetrics\ConnectDuration;
 
-use App\BasicRum\CoreObjects\BeaconExtractInterface;
+use App\BasicRum\CoreObjects\Interfaces\BeaconExtractIntInterface;
 
-class BeaconExtract implements BeaconExtractInterface
+class BeaconExtract implements BeaconExtractIntInterface
 {
     public function extractValue(array $beacon): int
     {
         // Value from Navigation Timings plugin
-        $value = (int) ($beacon['nt_con_end'] - $beacon['nt_con_st']);
+        $value = (int) ($beacon['nt_dns_end'] - $beacon['nt_dns_st']);
 
         if ($value < 0) {
             $value = 0;

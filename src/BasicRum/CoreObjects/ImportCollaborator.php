@@ -10,13 +10,12 @@ class ImportCollaborator
 
     private array $collaborators = [];
 
-    /* @var WriterHintInterface[] */
+    /* @var Interfaces\WriterHintInterface[] */
     private array $writerHints = [];
 
-    /* @var ReaderHintInterface[] */
+    /* @var Interfaces\ReaderHintInterface[] */
     private array $readerHints = [];
 
-    /* @var BeaconExtractInterface[] */
     private array $beaconExtract = [];
 
     public function __construct()
@@ -36,17 +35,17 @@ class ImportCollaborator
         return array_keys($this->collaborators);
     }
 
-    public function getWriterHint(string $id): WriterHintInterface
+    public function getWriterHint(string $id): Interfaces\WriterHintInterface
     {
         return $this->writerHints[$id];
     }
 
-    public function getReaderHint(string $id): ReaderHintInterface
+    public function getReaderHint(string $id): Interfaces\ReaderHintInterface
     {
         return $this->readerHints[$id];
     }
 
-    public function getBeaconExtract(string $id): BeaconExtractInterface
+    public function getBeaconExtract(string $id)
     {
         return $this->beaconExtract[$id];
     }

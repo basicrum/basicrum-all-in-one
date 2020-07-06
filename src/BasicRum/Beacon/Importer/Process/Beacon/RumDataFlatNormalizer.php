@@ -81,25 +81,12 @@ class RumDataFlatNormalizer
             $entries['stay_on_page_time'] = 0;
         }
 
-        //Exceptions
-        if ($entries['load_event_end'] < 0) {
-            $entries['load_event_end'] = 0;
-        }
-
-        if ($entries['load_event_end'] > 65535) {
-            $entries['load_event_end'] = 65535;
-        }
-
         if ($entries['last_byte_duration'] < 0) {
             $entries['last_byte_duration'] = 0;
         }
 
         if ($entries['last_byte_duration'] > 65535) {
             $entries['last_byte_duration'] = 65535;
-        }
-
-        if ($entries['first_contentful_paint'] > 65535) {
-            $entries['first_contentful_paint'] = 65535;
         }
 
         return $entries;

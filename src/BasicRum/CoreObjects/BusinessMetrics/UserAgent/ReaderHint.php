@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\CoreObjects\TechnicalMetrics\ConnectDuration;
+namespace App\BasicRum\CoreObjects\BusinessMetrics\UserAgent;
 
 use App\BasicRum\CoreObjects\Interfaces\ReaderHintInterface;
 
@@ -10,7 +10,7 @@ class ReaderHint implements ReaderHintInterface
 {
     public function getFieldName(): string
     {
-        return 'connect_duration';
+        return 'user_agent';
     }
 
     public function getTabledName(): string

@@ -30,11 +30,9 @@ final class MakeMetrics extends AbstractMaker
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
-        $metricNames = ['metric_names' => []];
+        $metricsConfig = $this->getMetricsConfig();
 
-        foreach ($this->getMetricsConfig() as $config) {
-            $metricNames['metric_names'][] = $config['metric_name'];
-
+        foreach ($metricsConfig as $config) {
             $this->createClass($config, 'BeaconExtract', $io, $generator);
             $this->createClass($config, 'Collaborator', $io, $generator);
             $this->createClass($config, 'ReaderHint', $io, $generator);
@@ -58,7 +56,7 @@ final class MakeMetrics extends AbstractMaker
         $classPath = $generator->generateClass(
             $lassNameDetails->getFullName(),
             __DIR__.'/Resources/Metrics/MetricsClassMap.tpl.php',
-            $metricNames
+            ['metrics_config' => $metricsConfig]
         );
 
         $generator->writeChanges();
@@ -68,12 +66,11 @@ final class MakeMetrics extends AbstractMaker
 
     private function createClass(array $config, $className, ConsoleStyle $io, Generator $generator)
     {
+        $belongsToFolder = $config['belongs_to'];
         $folderName = $config['metric_name'];
 
         // Re-generate metrics
-        $classFile = __DIR__.'/../BasicRum/CoreObjects/TechnicalMetrics/'.$folderName.'/'.$className.'.php';
-
-        var_dump($classFile);
+        $classFile = __DIR__.'/../BasicRum/CoreObjects/'.$belongsToFolder.'/'.$folderName.'/'.$className.'.php';
 
         if (file_exists($classFile)) {
             var_dump($className);
@@ -90,7 +87,7 @@ final class MakeMetrics extends AbstractMaker
 
         $lassNameDetails = $generator->createClassNameDetails(
             $className,
-            'BasicRum\\CoreObjects\\TechnicalMetrics\\'.$folderName.'\\'
+            'BasicRum\\CoreObjects\\'.$belongsToFolder.'\\'.$folderName.'\\'
         );
 
         $classPath = $generator->generateClass(

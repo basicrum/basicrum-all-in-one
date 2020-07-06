@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\CoreObjects\TechnicalMetrics\SessionId;
+namespace App\BasicRum\CoreObjects\BusinessMetrics\SessionId;
 
-use App\BasicRum\CoreObjects\ReaderHintInterface;
+use App\BasicRum\CoreObjects\Interfaces\WriterHintInterface;
 
-class ReaderHint implements ReaderHintInterface
+class WriterHint implements WriterHintInterface
 {
     public function getFieldName(): string
     {

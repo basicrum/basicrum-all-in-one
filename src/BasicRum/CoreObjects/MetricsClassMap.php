@@ -17,7 +17,8 @@ class MetricsClassMap
             TechnicalMetrics\TimeToFirstByte\Collaborator::class,
             TechnicalMetrics\DnsDuration\Collaborator::class,
             TechnicalMetrics\RedirectDuration\Collaborator::class,
-            TechnicalMetrics\SessionId\Collaborator::class,
+            BusinessMetrics\SessionId\Collaborator::class,
+            BusinessMetrics\UserAgent\Collaborator::class,
         ];
     }
 }

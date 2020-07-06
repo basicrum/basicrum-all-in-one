@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\BasicRum\CoreObjects\TechnicalMetrics\FirstPaint;
 
-use App\BasicRum\CoreObjects\BeaconExtractInterface;
+use App\BasicRum\CoreObjects\Interfaces\BeaconExtractIntInterface;
 
-class BeaconExtract implements BeaconExtractInterface
+class BeaconExtract implements BeaconExtractIntInterface
 {
     public function extractValue(array $beacon): int
     {
-        // Value from Navigation Timings plugin
-        $value = $beacon['nt_first_paint'] - $beacon['nt_nav_st'];
+        $value = 0;
 
         // Value from PaintTiming plugin
         if (!empty($beacon['pt_fp'])) {

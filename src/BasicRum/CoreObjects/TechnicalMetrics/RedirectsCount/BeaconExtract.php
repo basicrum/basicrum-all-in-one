@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\BasicRum\CoreObjects\TechnicalMetrics\RedirectsCount;
 
-use App\BasicRum\CoreObjects\BeaconExtractInterface;
+use App\BasicRum\CoreObjects\Interfaces\BeaconExtractIntInterface;
 
-class BeaconExtract implements BeaconExtractInterface
+class BeaconExtract implements BeaconExtractIntInterface
 {
     public function extractValue(array $beacon): int
     {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\CoreObjects\TechnicalMetrics\SessionId;
+namespace App\BasicRum\CoreObjects\BusinessMetrics\SessionId;
 
 class Collaborator
 {

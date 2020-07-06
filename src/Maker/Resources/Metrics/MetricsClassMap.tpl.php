@@ -6,14 +6,12 @@ namespace <?= $namespace; ?>;
 
 class MetricsClassMap
 {
-
     public function getCollaboratorsClassNames()
     {
         return [
-<?php foreach ($metric_names as $name): ?>
-            TechnicalMetrics\<?= $name; ?>\Collaborator::class,
+<?php foreach ($metrics_config as $entry): ?>
+            <?= $entry['belongs_to']; ?>\<?= $entry['metric_name']; ?>\Collaborator::class,
 <?php endforeach; ?>
         ];
     }
-
 }

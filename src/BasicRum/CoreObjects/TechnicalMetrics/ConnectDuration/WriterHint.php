@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\CoreObjects\TechnicalMetrics\ConnectDuration;
 
-use App\BasicRum\CoreObjects\WriterHintInterface;
+use App\BasicRum\CoreObjects\Interfaces\WriterHintInterface;
 
 class WriterHint implements WriterHintInterface
 {

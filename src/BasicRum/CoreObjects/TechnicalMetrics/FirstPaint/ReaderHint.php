@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\CoreObjects\TechnicalMetrics\FirstPaint;
 
-use App\BasicRum\CoreObjects\ReaderHintInterface;
+use App\BasicRum\CoreObjects\Interfaces\ReaderHintInterface;
 
 class ReaderHint implements ReaderHintInterface
 {
