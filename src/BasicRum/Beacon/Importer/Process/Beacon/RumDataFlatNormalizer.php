@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Beacon\Importer\Process\Beacon;
 
-class NavigationTimingsNormalizer
+class RumDataFlatNormalizer
 {
     private $fieldsCalculation = [
         'dns_duration' => ['nt_dns_end', 'nt_dns_st'],
@@ -30,7 +30,7 @@ class NavigationTimingsNormalizer
     /**
      * @return array
      */
-    public function normalize(array &$navigationTiming)
+    public function normalize(array &$rumDataFlat)
     {
         //Rename keys and add specific key convention
         //Fix URL ... remove version
@@ -38,31 +38,31 @@ class NavigationTimingsNormalizer
         $entries = [];
 
         foreach ($this->fieldsCalculation as $key => $calculationPair) {
-            if (!empty($navigationTiming[$calculationPair[0]]) && !empty($navigationTiming[$calculationPair[1]])) {
-                $entries[$key] = $navigationTiming[$calculationPair[0]] - $navigationTiming[$calculationPair[1]];
+            if (!empty($rumDataFlat[$calculationPair[0]]) && !empty($rumDataFlat[$calculationPair[1]])) {
+                $entries[$key] = $rumDataFlat[$calculationPair[0]] - $rumDataFlat[$calculationPair[1]];
             } else {
                 $entries[$key] = 0;
             }
         }
 
-        if (!empty($navigationTiming['pt_fp'])) {
-            $entries['first_paint'] = (int) $navigationTiming['pt_fp'];
+        if (!empty($rumDataFlat['pt_fp'])) {
+            $entries['first_paint'] = (int) $rumDataFlat['pt_fp'];
         }
 
-        if (!empty($navigationTiming['pt_fcp'])) {
-            $entries['first_contentful_paint'] = (int) $navigationTiming['pt_fcp'];
+        if (!empty($rumDataFlat['pt_fcp'])) {
+            $entries['first_contentful_paint'] = (int) $rumDataFlat['pt_fcp'];
         } else {
             $entries['first_contentful_paint'] = 0;
         }
 
-        if (!empty($navigationTiming['nt_red_cnt'])) {
-            $entries['redirects_count'] = (int) $navigationTiming['nt_red_cnt'];
+        if (!empty($rumDataFlat['nt_red_cnt'])) {
+            $entries['redirects_count'] = (int) $rumDataFlat['nt_red_cnt'];
         } else {
             $entries['redirects_count'] = 0;
         }
 
-        if (!empty($navigationTiming['u'])) {
-            $urlParts = explode('?', $navigationTiming['u']);
+        if (!empty($rumDataFlat['u'])) {
+            $urlParts = explode('?', $rumDataFlat['u']);
 
             $entries['url'] = $urlParts[0];
 
@@ -71,26 +71,26 @@ class NavigationTimingsNormalizer
             }
         }
 
-        if (!empty($navigationTiming['user_agent'])) {
-            $entries['user_agent'] = $navigationTiming['user_agent'];
+        if (!empty($rumDataFlat['user_agent'])) {
+            $entries['user_agent'] = $rumDataFlat['user_agent'];
         }
 
-        if (!empty($navigationTiming['pid'])) {
-            $entries['process_id'] = $navigationTiming['pid'];
+        if (!empty($rumDataFlat['pid'])) {
+            $entries['process_id'] = $rumDataFlat['pid'];
         }
 
-        if (!empty($navigationTiming['created_at'])) {
-            $entries['created_at'] = $navigationTiming['created_at'];
+        if (!empty($rumDataFlat['created_at'])) {
+            $entries['created_at'] = $rumDataFlat['created_at'];
         }
 
-        if (empty($navigationTiming['stay_on_page_time'])) {
+        if (empty($rumDataFlat['stay_on_page_time'])) {
             $entries['stay_on_page_time'] = 0;
         }
 
-        if (!empty($navigationTiming['guid'])) {
-            $entries['guid'] = $navigationTiming['guid'];
+        if (!empty($rumDataFlat['rt_si'])) {
+            $entries['rt_si'] = $rumDataFlat['rt_si'];
         } else {
-            $entries['guid'] = '';
+            $entries['rt_si'] = '';
         }
 
         //Exceptions

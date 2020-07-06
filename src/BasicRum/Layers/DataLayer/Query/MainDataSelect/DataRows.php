@@ -33,7 +33,7 @@ class DataRows implements MainDataInterface
 
         return
             "SELECT {$this->generateSelectClauseFields()}
-FROM navigation_timings
+FROM rum_data_flat
 WHERE {$limitWhereStr} {$where}";
     }
 

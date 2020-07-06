@@ -4,19 +4,19 @@ namespace  App\Tests\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTim
 
 use PHPUnit\Framework\TestCase;
 
-class YandexBrowserTest extends TestCase
+class ChromeDevTest extends TestCase
 {
 
     /**
      * @group import
      */
-    public function testYandexBrowser()
+    public function testChromeDev()
     {
-        $userAgentString = 'Mozilla/5.0 (Linux; Android 8.0.0; ATU-L31) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 YaBrowser/19.3.4.339.00 Mobile Safari/537.36';
+        $userAgentString = 'Mozilla/5.0 (Linux; Android 9; SM-G950F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.90 Mobile Safari/537.36';
 
         $whichBrowserResult = new \WhichBrowser\Parser($userAgentString);
 
-        $hydrator = new \App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\UserAgent\Hydrator();
+        $hydrator = new \App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData\UserAgent\Hydrator();
 
         $result = $hydrator->hydrate($whichBrowserResult, $userAgentString);
 
@@ -32,12 +32,12 @@ class YandexBrowserTest extends TestCase
             ],
             [
                 $userAgentString,
-                'Enjoy 8e',
-                'Huawei',
-                'Yandex Browser',
-                '19.3',
+                'Galaxy S8',
+                'Samsung',
+                'Chrome',
+                '73',
                 'Android',
-                '8.0.0'
+                '9'
             ]
         );
     }

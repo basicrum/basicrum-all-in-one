@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\NavigationTimings;
 use App\Entity\ResourceTimings;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,25 +24,25 @@ class JourneyController extends AbstractController
 //        $end   = '2018-09-19 23:59:59';
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
         // createQueryBuilder() automatically selects FROM AppBundle:Product
         // and aliases it to "p"
         $query = $repository->createQueryBuilder('nt')
-            ->select('nt.guid', 'nt.pageViewId')
+            ->select('nt.rt_si', 'nt.rumDataId')
             ->where("nt.createdAt BETWEEN '".$start."' AND '".$end."'")
             //->setParameter('url', 'GOO')
-            ->orderBy('nt.pageViewId', 'DESC')
+            ->orderBy('nt.rumDataId', 'DESC')
             ->setMaxResults(100)
-            ->groupBy('nt.pageViewId, nt.guid')
+            ->groupBy('nt.rumDataId, nt.rt_si')
             ->getQuery();
 
-        $navigationTimings = $query->getResult();
+        $rumDataFlat = $query->getResult();
 //
-//        print_r($navigationTimings);
+//        print_r($rumDataFlat);
 
         return $this->render('diagrams/journey_list.html.twig',
             [
-                'page_views' => $navigationTimings,
+                'page_views' => $rumDataFlat,
             ]
         );
     }
@@ -52,20 +52,20 @@ class JourneyController extends AbstractController
      */
     public function journeyDraw()
     {
-        $guid = $_POST['guid'];
+        $rtSi = $_POST['rt_si'];
 
-        /** @var NavigationTimings $navigationTiming */
-        $navigationTimings = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class)
-            ->findBy(['guid' => $guid]);
+        /** @var RumDataFlat $rumDataFlat */
+        $rumDataFlat = $this->getDoctrine()
+            ->getRepository(RumDataFlat::class)
+            ->findBy(['rtSi' => $rtSi]);
 
         $filteredNavigations = [];
 
-        foreach ($navigationTimings as $nav) {
-            /** @var NavigationTimings $navigationTiming */
+        foreach ($rumDataFlat as $nav) {
+            /** @var RumDataFlat $rumDataFlat */
             $resourceTimings = $this->getDoctrine()
                 ->getRepository(ResourceTimings::class)
-                ->findBy(['pageView' => $nav->getPageViewId()]);
+                ->findBy(['pageView' => $nav->getRumDataId()]);
 
             if (\count($resourceTimings) > 0) {
                 $filteredNavigations[] = $nav;

@@ -8,7 +8,7 @@ use App\BasicRum\ResourceTimingDecompressor_v_0_3_4;
 
 class Beacon
 {
-    private $navigationTimingsNormalizer;
+    private $rumDataFlatNormalizer;
     private $resourceTimingsNormalizer;
 
     /** @var array */
@@ -16,8 +16,9 @@ class Beacon
 
     public function __construct()
     {
-        $this->navigationTimingsNormalizer = new Beacon\NavigationTimingsNormalizer();
+        $this->rumDataFlatNormalizer = new Beacon\RumDataFlatNormalizer();
         $this->resourceTimingsNormalizer = new Beacon\ResourceTimingsNormalizer();
+        $this->rtNormalizer = new Beacon\RtNormalizer();
     }
 
     /**
@@ -38,14 +39,8 @@ class Beacon
 
             $beacons[$key] = json_decode($beacon[1], true);
 
-            if (isset($beacons[$key]['restiming']) && $beacons[$key]['restiming']) {
-                if (\is_string($beacons[$key]['restiming'])) {
-                    $resourceTimingsData = $decompressor->decompressResources(json_decode($beacons[$key]['restiming'], true));
-
-                    // replace encoded restiming with decoded
-                    $beacons[$key]['restiming'] = $resourceTimingsData;
-                }
-            }
+            // decompress restimings
+            $beacons[$key] = $this->decompressResources($beacons[$key]);
 
             // Legacy when we didn't have created_at in beacon data
             if (!isset($beacons[$key]['created_at'])) {
@@ -62,22 +57,50 @@ class Beacon
             }
 
             // We do not mark as page view beacons send when visitor leaves page
+            // commented it out because according to latest decision we have to insert rt_quit beacon into DB as page view
             if (isset($this->pageViewUniqueKeys[$pageViewKey])) {
-                $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
-                continue;
+//                    $this->pageViewUniqueKeys[$pageViewKey] = array_merge($this->pageViewUniqueKeys[$pageViewKey], ['end' => $date]);
+//                    continue;
             }
 
             $this->pageViewUniqueKeys[$pageViewKey] = ['start' => $date];
 
+            // Here compile data for rum_data_flat
             $data[$key] = array_merge(
-                $this->navigationTimingsNormalizer->normalize($beacons[$key]),
-                $this->resourceTimingsNormalizer->normalize($beacons[$key])
+                $this->rumDataFlatNormalizer->normalize($beacons[$key]),
+                $this->resourceTimingsNormalizer->normalize($beacons[$key]),
+                $this->rtNormalizer->normalize($beacons[$key]),
             );
 
+            // Here for beacons table. Need To determine AutoXHR beacons and store them only into beacons table
             $data[$key]['beacon_string'] = $beacon[1];
         }
 
         return $data;
+    }
+
+    // Draft in case we do not need to store AutoXHR beacons in rum_data_flat but still need to store in beacons table
+    public function checkIfBeaconIsXHR(array $beacon): bool
+    {
+        if (isset($beacon['http_initiator']) && 'xhr' == $beacon['http_initiator']) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function decompressResources(array $beacon): array
+    {
+        $decompressor = new ResourceTimingDecompressor_v_0_3_4();
+
+        if (isset($beacon['restiming']) && $beacon['restiming'] && \is_string($beacon['restiming'])) {
+            $resourceTimingsData = $decompressor->decompressResources(json_decode($beacon['restiming'], true));
+
+            // replace encoded restiming with decoded
+            $beacon['restiming'] = $resourceTimingsData;
+        }
+
+        return $beacon;
     }
 
     /**
@@ -105,7 +128,7 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = [
                 'start' => $date,
-                'guid' => $beacons[$key]['guid'],
+                'rt_si' => $beacons[$key]['rt_si'],
                 'pid' => $beacons[$key]['pid'],
                 'date' => $date,
             ];
@@ -139,7 +162,7 @@ class Beacon
 
             $this->pageViewUniqueKeys[$pageViewKey] = [
                 'start' => $date,
-                'guid' => $beacons[$key]['guid'],
+                'rt_si' => $beacons[$key]['rt_si'],
                 'pid' => $beacons[$key]['pid'],
                 'date' => $date,
             ];
@@ -153,8 +176,8 @@ class Beacon
      */
     private function _getPageViewKey(array &$data)
     {
-        if (empty($data['guid'])) {
-            $data['guid'] = 'missing_guid';
+        if (empty($data['rt_si'])) {
+            $data['rt_si'] = 'missing_rt_session';
         }
 
         if (empty($data['pid'])) {
@@ -165,6 +188,6 @@ class Beacon
             return false;
         }
 
-        return $data['guid'].$data['pid'].md5($data['u']);
+        return $data['rt_si'].$data['pid'].md5($data['u']);
     }
 }

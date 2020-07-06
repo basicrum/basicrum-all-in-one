@@ -2,15 +2,15 @@
 
 namespace App\Tests\BasicRum\Layers\DataLayer\Query;
 
-use App\BasicRum\Periods\Period;
 use App\BasicRum\Filters\Primary\TimeToFirstByte;
-
 use App\BasicRum\Layers\DataLayer\Query\MainDataSelect\DataRows;
+use App\BasicRum\Periods\Period;
 
 class FirstByteFilterTest extends DataLayerFixtureTestCase
 {
     /**
      * @group data_query
+     *
      * @throws \Psr\Cache\InvalidArgumentException
      */
     public function testBytePaintEqualsTo()
@@ -23,7 +23,7 @@ class FirstByteFilterTest extends DataLayerFixtureTestCase
             '150'
         );
 
-        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+        $flavor = new DataRows('rum_data_flat', ['rum_data_id']);
 
         $res = $this->getDataLayer()->load(
             $period,
@@ -33,14 +33,13 @@ class FirstByteFilterTest extends DataLayerFixtureTestCase
 
         $this->assertEquals(
             [
-                '2018-10-24 00:00:00' =>
-                    [
-                        'data_rows' =>[
-                            [
-                                'page_view_id' => 1
-                            ]
-                        ]
-                    ]
+                '2018-10-24 00:00:00' => [
+                    'data_rows' => [
+                        [
+                            'rum_data_id' => 1,
+                        ],
+                    ],
+                ],
             ],
             $res
         );
@@ -59,7 +58,7 @@ class FirstByteFilterTest extends DataLayerFixtureTestCase
             '91999991'
         );
 
-        $flavor = new DataRows('navigation_timings', ['page_view_id']);
+        $flavor = new DataRows('rum_data_flat', ['rum_data_id']);
 
         $res = $this->getDataLayer()->load(
             $period,
@@ -69,15 +68,12 @@ class FirstByteFilterTest extends DataLayerFixtureTestCase
 
         $this->assertEquals(
             [
-                '2018-10-24 00:00:00' =>
-                    [
-                        'data_rows' =>[
-
-                        ]
-                    ]
+                '2018-10-24 00:00:00' => [
+                    'data_rows' => [
+                    ],
+                ],
             ],
             $res
         );
     }
-
 }

@@ -7,8 +7,8 @@ namespace App\Controller;
 use App\BasicRum\Beacon\RumData\ResourceTiming;
 use App\BasicRum\ResourceSize;
 use App\BasicRum\WaterfallSvgRenderer;
-use App\Entity\NavigationTimings;
-use App\Entity\NavigationTimingsUserAgents;
+use App\Entity\RumDataFlat;
+use App\Entity\RumDataUserAgents;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,23 +20,26 @@ class BeaconController extends AbstractController
      */
     public function draw()
     {
-        $pageViewId = (int) $_POST['page_view_id'];
+        /**
+         * TODO: refactor page_view_id in front-end.
+         */
+        $rumDataId = (int) $_POST['page_view_id'];
 
-        /** @var NavigationTimings $navigationTiming */
-        $navigationTiming = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class)
-            ->findBy(['pageViewId' => $pageViewId]);
+        /** @var RumDataFlat $rumDataFlat */
+        $rumDataFlat = $this->getDoctrine()
+            ->getRepository(RumDataFlat::class)
+            ->findBy(['rumDataId' => $rumDataId]);
 
-        /** @var NavigationTimingsUserAgents $userAgent */
+        /** @var RumDataUserAgents $userAgent */
         $userAgent = $this->getDoctrine()
-            ->getRepository(NavigationTimingsUserAgents::class)
-            ->findBy(['id' => $navigationTiming[0]->getUserAgentId()]);
+            ->getRepository(RumDataUserAgents::class)
+            ->findBy(['id' => $rumDataFlat[0]->getUserAgentId()]);
 
         $sizeDistribution = [];
 
         $resourceTiming = new ResourceTiming();
 
-        $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->getDoctrine());
+        $resourceTimingsData = $resourceTiming->fetchResources($rumDataId, $this->getDoctrine());
 
         if (!empty($resourceTimingsData)) {
             $resourceSizesCalculator = new ResourceSize();
@@ -45,8 +48,8 @@ class BeaconController extends AbstractController
 
         $timings = [
             'nt_nav_st' => 0,
-            'nt_first_paint' => $navigationTiming[0]->getFirstContentfulPaint(),
-            'nt_res_st' => $navigationTiming[0]->getFirstByte(),
+            'nt_first_paint' => $rumDataFlat[0]->getFirstContentfulPaint(),
+            'nt_res_st' => $rumDataFlat[0]->getFirstByte(),
             'restiming' => $resourceTimingsData,
         ];
 

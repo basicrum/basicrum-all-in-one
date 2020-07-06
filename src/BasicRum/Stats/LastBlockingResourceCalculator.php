@@ -6,8 +6,8 @@ namespace App\BasicRum\Stats;
 
 use App\BasicRum\Beacon\RumData\ResourceTiming;
 use App\Entity\LastBlockingResources;
-use App\Entity\NavigationTimings;
-use App\Entity\NavigationTimingsUserAgents;
+use App\Entity\RumDataFlat;
+use App\Entity\RumDataUserAgents;
 
 class LastBlockingResourceCalculator
 {
@@ -28,16 +28,16 @@ class LastBlockingResourceCalculator
     {
         $lastPageViewId = $this->_getPreviousLastScannedPageViewId();
 
-        $navTimingsRes = $this->_getNavTimingsInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
+        $navTimingsRes = $this->_getRumDataFlatInRange($lastPageViewId + 1, $lastPageViewId + $this->scannedChunkSize);
 
         $resourceTiming = new ResourceTiming();
 
         $lastBlockingResources = [];
 
         foreach ($navTimingsRes as $nav) {
-            $pageViewId = $nav['pageViewId'];
+            $rumDataId = $nav['rumDataId'];
 
-            $resourceTimingsData = $resourceTiming->fetchResources($pageViewId, $this->registry);
+            $resourceTimingsData = $resourceTiming->fetchResources($rumDataId, $this->registry);
 
             $finalName = '';
             $tmpEndTime = 0;
@@ -55,7 +55,7 @@ class LastBlockingResourceCalculator
                 }
 
                 $lastBlockingResources[] = [
-                    'page_view_id' => $pageViewId,
+                    'rum_data_id' => $rumDataId,
                     'url' => $finalName,
                     'time' => $tmpEndTime,
                     'first_paint' => $nav['firstPaint'],
@@ -103,12 +103,12 @@ class LastBlockingResourceCalculator
         $repository = $this->registry
             ->getRepository(LastBlockingResources::class);
 
-        $pageViewId = (int) $repository->createQueryBuilder('lbr')
-            ->select('MAX(lbr.pageViewId)')
+        $rumDataId = (int) $repository->createQueryBuilder('lbr')
+            ->select('MAX(lbr.rumDataId)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        return 0 === $pageViewId ? 0 : $pageViewId;
+        return 0 === $rumDataId ? 0 : $rumDataId;
     }
 
     private function _saveBlockingResources(array $resources)
@@ -120,7 +120,7 @@ class LastBlockingResourceCalculator
 
             $entity = new LastBlockingResources();
 
-            $entity->setPageViewId($resource['page_view_id']);
+            $entity->setPageViewId($resource['rum_data_id']);
             $entity->setTime($resource['time']);
             $entity->setUrl($resource['url']);
             $entity->setFirstPaint($resource['first_paint']);
@@ -140,16 +140,16 @@ class LastBlockingResourceCalculator
     /**
      * @return mixed
      */
-    private function _getNavTimingsInRange(int $startId, int $endId)
+    private function _getRumDataFlatInRange(int $startId, int $endId)
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
-            ->andWhere('nt.userAgentId NOT IN (:userAgentId)')
+        $query = $repository->createQueryBuilder('rdf')
+            ->where("rdf.rumDataId >= '".$startId."' AND rdf.rumDataId <= '".$endId."'")
+            ->andWhere('rdf.userAgentId NOT IN (:userAgentId)')
             ->setParameter('userAgentId', $this->_botUserAgentsIds())
-            ->select(['nt.pageViewId', 'nt.firstPaint'])
+            ->select(['rdf.rumDataId', 'rdf.firstPaint'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -161,7 +161,7 @@ class LastBlockingResourceCalculator
     private function _botUserAgentsIds()
     {
         $userAgentRepo = $this->registry
-            ->getRepository(NavigationTimingsUserAgents::class);
+            ->getRepository(RumDataUserAgents::class);
 
         $query = $userAgentRepo->createQueryBuilder('ua')
             ->where("ua.deviceType = 'bot'")

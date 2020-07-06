@@ -8,8 +8,8 @@ use App\BasicRum\Buckets;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Statistics\Median;
-use App\Entity\NavigationTimings;
-use App\Entity\NavigationTimingsUrls;
+use App\Entity\RumDataFlat;
+use App\Entity\RumDataUrls;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -61,9 +61,9 @@ class TopPagesPerformanceController extends AbstractController
         $allVisitsCount = $this->countViewsInPeriod($markerDate, $futureDate)['visitsCount'];
 
         foreach ($data as $urlId => $count) {
-            /** @var \App\Entity\NavigationTimingsUrls $navigationTimingUrl */
-            $navigationTimingUrl = $this->getDoctrine()
-                ->getRepository(NavigationTimingsUrls::class)
+            /** @var \App\Entity\RumDataUrls $rumDataUrl */
+            $rumDataUrl = $this->getDoctrine()
+                ->getRepository(RumDataUrls::class)
                 ->findOneBy(['id' => $urlId]);
 
             $metrics = [
@@ -71,8 +71,8 @@ class TopPagesPerformanceController extends AbstractController
                 'time_to_first_paint',
             ];
 
-            $recentSamples = $this->periodForUrl($navigationTimingUrl->getUrl(), $markerDate, $futureDate, $metrics, $diagramOrchestrator);
-            $oldSamples = $this->periodForUrl($navigationTimingUrl->getUrl(), $pastDate, $markerDate, $metrics, $diagramOrchestrator);
+            $recentSamples = $this->periodForUrl($rumDataUrl->getUrl(), $markerDate, $futureDate, $metrics, $diagramOrchestrator);
+            $oldSamples = $this->periodForUrl($rumDataUrl->getUrl(), $pastDate, $markerDate, $metrics, $diagramOrchestrator);
 
             //@todo: Move this to some decorator logic or use TWIG if possible
             $firstByteDiff = $oldSamples['time_to_first_byte'] - $recentSamples['time_to_first_byte'];
@@ -87,7 +87,7 @@ class TopPagesPerformanceController extends AbstractController
             $firstByteDiff = ('-0.00' == $firstByteDiff) ? '0.00' : ($firstByteDiff > 0 ? '+ '.$firstByteDiff : $firstByteDiff);
             $firstPaintDiff = ('-0.00' == $firstPaintDiff) ? '0.00' : ($firstPaintDiff > 0 ? '+ '.$firstPaintDiff : $firstPaintDiff);
 
-            $urlParsed = parse_url($navigationTimingUrl->getUrl());
+            $urlParsed = parse_url($rumDataUrl->getUrl());
 
             $pageViewsPerformance[] = [
                 'number' => $pageNumber++,
@@ -198,7 +198,7 @@ class TopPagesPerformanceController extends AbstractController
 
         $markerDate = new \DateTime($date);
 
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataFlat::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');
@@ -231,13 +231,13 @@ class TopPagesPerformanceController extends AbstractController
      */
     private function countViewsInPeriod(\DateTime $start, \DateTime $end)
     {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataFlat::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');
 
         $queryBuilder
-            ->select(['count(nt.pageViewId) as visitsCount'])
+            ->select(['count(nt.rumDataId) as visitsCount'])
             ->where("nt.createdAt BETWEEN '".$start->format('Y-m-d')." 00:00:00' AND '".$end->format('Y-m-d')." 00:00:00'")
             ->getQuery();
 
@@ -250,7 +250,7 @@ class TopPagesPerformanceController extends AbstractController
      */
     public function getUrlIds(array $urls)
     {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimingsUrls::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataUrls::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nturl')

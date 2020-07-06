@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\BasicRum\Date\DayInterval;
 use App\BasicRum\Date\TimePeriod;
-use App\Entity\NavigationTimings;
-use App\Entity\NavigationTimingsUrls;
+use App\Entity\RumDataFlat;
+use App\Entity\RumDataUrls;
 use App\Entity\VisitsOverview;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,12 +38,12 @@ class PerformanceOverTimeController extends AbstractController
         $urls = [];
 
         foreach ($res as $urlId => $visits) {
-            /** @var \App\Entity\NavigationTimingsUrls $navigationTimingUrl */
-            $navigationTimingUrl = $this->getDoctrine()
-                ->getRepository(NavigationTimingsUrls::class)
+            /** @var \App\Entity\RumDataUrls $rumDataUrl */
+            $rumDataUrl = $this->getDoctrine()
+                ->getRepository(RumDataUrls::class)
                 ->findOneBy(['id' => $urlId]);
 
-            $urls[$navigationTimingUrl->getId()] = $navigationTimingUrl->getUrl();
+            $urls[$rumDataUrl->getId()] = $rumDataUrl->getUrl();
         }
 
         $metrics = [
@@ -77,12 +77,12 @@ class PerformanceOverTimeController extends AbstractController
         $urls = [];
 
         foreach ($res as $urlId => $visits) {
-            /** @var \App\Entity\NavigationTimingsUrls $navigationTimingUrl */
-            $navigationTimingUrl = $this->getDoctrine()
-                ->getRepository(NavigationTimingsUrls::class)
+            /** @var \App\Entity\RumDataUrls $rumDataUrl */
+            $rumDataUrl = $this->getDoctrine()
+                ->getRepository(RumDataUrls::class)
                 ->findOneBy(['id' => $urlId]);
 
-            $urls[$navigationTimingUrl->getId()] = $navigationTimingUrl->getUrl();
+            $urls[$rumDataUrl->getId()] = $rumDataUrl->getUrl();
         }
 
         $metrics = [
@@ -111,40 +111,40 @@ class PerformanceOverTimeController extends AbstractController
         $minId = 0;
         $maxId = 0;
 
-        /** @var NavigationTimings $lastNavigationTiming */
-        $lastNavigationTiming = $this->getDoctrine()
+        /** @var RumDataFlat $lastRumDataFlat */
+        $lastRumDataFlat = $this->getDoctrine()
             ->getManager()
             ->createQueryBuilder()
             ->select('e')
             ->where('e.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
-            ->from(NavigationTimings::class, 'e')
-            ->orderBy('e.pageViewId', 'DESC')
+            ->from(RumDataFlat::class, 'e')
+            ->orderBy('e.rumDataId', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (null !== $lastNavigationTiming) {
-            $maxId = $lastNavigationTiming->getPageViewId();
+        if (null !== $lastRumDataFlat) {
+            $maxId = $lastRumDataFlat->getRumDataId();
         }
 
-        /** @var NavigationTimings $lastNavigationTiming */
-        $firstNavigationTiming = $this->getDoctrine()
+        /** @var RumDataFlat $lastRumDataFlat */
+        $firstRumDataFlat = $this->getDoctrine()
             ->getManager()
             ->createQueryBuilder()
             ->select('e')
             ->where('e.createdAt BETWEEN :begin AND :end')
             ->setParameter('begin', $begin)
             ->setParameter('end', $end)
-            ->from(NavigationTimings::class, 'e')
-            ->orderBy('e.pageViewId', 'ASC')
+            ->from(RumDataFlat::class, 'e')
+            ->orderBy('e.rumDataId', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
 
-        if (null !== $firstNavigationTiming) {
-            $minId = $firstNavigationTiming->getPageViewId();
+        if (null !== $firstRumDataFlat) {
+            $minId = $firstRumDataFlat->getRumDataId();
         }
 
         $repository = $this->getDoctrine()->getRepository(VisitsOverview::class);
@@ -177,7 +177,7 @@ class PerformanceOverTimeController extends AbstractController
      */
     private function _getPopularPages(int $count, array $interval)
     {
-        $repository = $this->getDoctrine()->getRepository(NavigationTimings::class);
+        $repository = $this->getDoctrine()->getRepository(RumDataFlat::class);
 
         /** @var \Doctrine\ORM\QueryBuilder $queryBuilder */
         $queryBuilder = $repository->createQueryBuilder('nt');

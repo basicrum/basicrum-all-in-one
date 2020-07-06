@@ -23,11 +23,11 @@ class PageViewsCount extends AbstractFilter
 
     public function getPrimaryTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimarySearchFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 }

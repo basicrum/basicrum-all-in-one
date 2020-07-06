@@ -1,0 +1,10 @@
+App\Entity\RumDataFlatQueryParams:
+  queryParam1:
+    rumDataId: 1
+    queryParams: p=7
+  queryParam2:
+    rumDataId: 2
+    queryParams: from=Classic&gclid=demodemodemodemo
+  queryParam3:
+    rumDataId: 3
+    queryParams: from=Classic&gclid=nenineni

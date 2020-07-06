@@ -8,11 +8,11 @@ class PageViewsCount implements \App\BasicRum\Report\CountableInterface
 {
     public function getSelectDataFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 
     public function getSelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 }

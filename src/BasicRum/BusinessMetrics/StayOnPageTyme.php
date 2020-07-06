@@ -13,6 +13,6 @@ class StayOnPageTyme implements \App\BasicRum\Report\SelectableInterface
 
     public function getSelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 }

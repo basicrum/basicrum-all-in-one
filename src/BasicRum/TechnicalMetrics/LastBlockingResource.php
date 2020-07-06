@@ -9,7 +9,7 @@ class LastBlockingResource implements \App\BasicRum\Report\ComplexSelectableInte
     public function getSecondarySelectDataFieldNames(): array
     {
         return [
-            'page_view_id',
+            'rum_data_id',
             'time',
         ];
     }
@@ -21,17 +21,17 @@ class LastBlockingResource implements \App\BasicRum\Report\ComplexSelectableInte
 
     public function getSecondaryKeyFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 
     public function getPrimarySelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimaryKeyFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 
     /**

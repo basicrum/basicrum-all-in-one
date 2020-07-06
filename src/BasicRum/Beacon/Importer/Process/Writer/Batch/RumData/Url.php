@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
+namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData;
 
 use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
@@ -59,7 +59,7 @@ class Url
         }
 
         if (!empty($insertData)) {
-            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_urls');
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'rum_data_urls');
 
             $fieldsArr = array_keys($insertData[0]);
 
@@ -74,7 +74,7 @@ class Url
     private function _reloadPairs()
     {
         $repository = $this->registry
-            ->getRepository(\App\Entity\NavigationTimingsUrls::class);
+            ->getRepository(\App\Entity\RumDataUrls::class);
 
         $queryBuilder = $repository->createQueryBuilder('nturl');
 

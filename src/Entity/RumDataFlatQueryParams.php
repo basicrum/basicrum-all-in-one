@@ -5,21 +5,21 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NavigationTimingsQueryParams.
+ * RumDataFlatQueryParams.
  *
- * @ORM\Table(name="navigation_timings_query_params")
+ * @ORM\Table(name="rum_data_flat_query_params")
  * @ORM\Entity
  */
-class NavigationTimingsQueryParams
+class RumDataFlatQueryParams
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="page_view_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="rum_data_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="NONE")
      */
-    private $pageViewId;
+    private $rumDataId;
 
     /**
      * @var string
@@ -28,14 +28,14 @@ class NavigationTimingsQueryParams
      */
     private $queryParams;
 
-    public function getPageViewId(): ?int
+    public function getRumDataId(): ?int
     {
-        return $this->pageViewId;
+        return $this->rumDataId;
     }
 
-    public function setPageViewId(int $pageViewId): self
+    public function setRumDataId(int $rumDataId): self
     {
-        $this->pageViewId = $pageViewId;
+        $this->rumDataId = $rumDataId;
 
         return $this;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\NavigationTimings;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -27,8 +27,8 @@ class IndexController extends AbstractController
                 ->getManager()
                 ->createQueryBuilder()
                 ->select('e')
-                ->from(NavigationTimings::class, 'e')
-                ->orderBy('e.pageViewId', 'DESC')
+                ->from(RumDataFlat::class, 'e')
+                ->orderBy('e.rumDataId', 'DESC')
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getOneOrNullResult();
@@ -48,8 +48,8 @@ class IndexController extends AbstractController
                 ->getManager()
                 ->createQueryBuilder()
                 ->select('e')
-                ->from(NavigationTimings::class, 'e')
-                ->orderBy('e.pageViewId', 'ASC')
+                ->from(RumDataFlat::class, 'e')
+                ->orderBy('e.rumDataId', 'ASC')
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getOneOrNullResult();

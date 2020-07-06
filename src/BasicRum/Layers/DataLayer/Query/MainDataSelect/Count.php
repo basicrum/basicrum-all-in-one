@@ -33,7 +33,7 @@ class Count implements MainDataInterface
 
         return
             "SELECT COUNT(`{$this->tableName}`.`{$this->fieldName}`) as `cnt`
-FROM navigation_timings
+FROM rum_data_flat
 WHERE {$limitWhereStr} {$where}";
     }
 

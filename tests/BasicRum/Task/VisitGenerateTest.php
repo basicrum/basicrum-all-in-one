@@ -2,13 +2,11 @@
 
 namespace App\Tests\BasicRum\Task;
 
+use App\BasicRum\Visit\Calculator;
 use App\Tests\BasicRum\FixturesTestCase;
 
-use App\BasicRum\Visit\Calculator;
-
-class VisitGenerateTestCase extends FixturesTestCase
+class VisitGenerateTest extends FixturesTestCase
 {
-
     protected function setUp()
     {
         static::bootKernel();
@@ -17,7 +15,7 @@ class VisitGenerateTestCase extends FixturesTestCase
     /**
      * @return \Doctrine\Bundle\DoctrineBundle\Registry $doctrine
      */
-    private function _getDoctrine() : \Doctrine\Bundle\DoctrineBundle\Registry
+    private function _getDoctrine(): \Doctrine\Bundle\DoctrineBundle\Registry
     {
         return static::$kernel->getContainer()->get('doctrine');
     }
@@ -51,7 +49,6 @@ class VisitGenerateTestCase extends FixturesTestCase
     }
 
     /**
-     * @param array $visits
      * @return array
      */
     private function _countSessions(array $visits)
@@ -59,15 +56,14 @@ class VisitGenerateTestCase extends FixturesTestCase
         $sessions = [];
 
         foreach ($visits as $visit) {
-            $guid = $visit['guid'];
-            $sessions[$guid] = isset($sessions[$guid]) ? $sessions[$guid] + 1 : 1;
+            $rtSi = $visit['rtSi'];
+            $sessions[$rtSi] = isset($sessions[$rtSi]) ? $sessions[$rtSi] + 1 : 1;
         }
 
         return $sessions;
     }
 
     /**
-     * @param array $visits
      * @return array
      */
     private function _countClosedSessions(array $visits)
@@ -75,14 +71,13 @@ class VisitGenerateTestCase extends FixturesTestCase
         $sessions = [];
 
         foreach ($visits as $visit) {
-            $guid = $visit['guid'];
+            $rtSi = $visit['rtSi'];
 
             if ($visit['completed']) {
-                $sessions[$guid] = isset($sessions[$guid]) ? $sessions[$guid] + 1 : 1;
+                $sessions[$rtSi] = isset($sessions[$rtSi]) ? $sessions[$rtSi] + 1 : 1;
             }
         }
 
         return $sessions;
     }
-
 }

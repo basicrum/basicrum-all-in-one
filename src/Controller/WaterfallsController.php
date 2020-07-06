@@ -7,8 +7,8 @@ namespace App\Controller;
 use App\BasicRum\Date\TimePeriod;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Layers\Presentation;
-use App\Entity\NavigationTimings;
 use App\Entity\PageTypeConfig;
+use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -34,7 +34,7 @@ class WaterfallsController extends AbstractController
 
         return $this->render('waterfalls/form.html.twig',
             [
-                'navigation_timings' => $presentation->getTechnicalMetricsSelectValues(),
+                'rum_data_flat' => $presentation->getTechnicalMetricsSelectValues(),
                 'operating_systems' => $presentation->getOperatingSystemSelectValues($this->getDoctrine()),
                 'page_types' => $presentation->getPageTypes($this->getDoctrine()),
                 'period' => $period,
@@ -97,11 +97,11 @@ class WaterfallsController extends AbstractController
         $counter = 0;
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         foreach ($reversedDays as $day => $views) {
             foreach ($views['data_rows'] as $view) {
-                $pageViews[] = $repository->find($view['page_view_id']);
+                $pageViews[] = $repository->find($view['rum_data_id']);
                 ++$counter;
                 if (400 === $counter) {
                     break;

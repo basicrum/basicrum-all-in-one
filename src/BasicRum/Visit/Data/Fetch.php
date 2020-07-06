@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Visit\Data;
 
-use App\Entity\NavigationTimings;
+use App\Entity\RumDataFlat;
 use App\Entity\VisitsOverview;
 
 class Fetch
@@ -24,17 +24,17 @@ class Fetch
     /**
      * @return mixed
      */
-    public function fetchNavTimingsInRange(int $startId, int $endId): array
+    public function fetchRumDataFlatInRange(int $startId, int $endId): array
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
-            ->andWhere('nt.deviceTypeId != :deviceTypeId')
+        $query = $repository->createQueryBuilder('rdf')
+            ->where("rdf.rumDataId >= '".$startId."' AND rdf.rumDataId <= '".$endId."'")
+            ->andWhere('rdf.deviceTypeId != :deviceTypeId')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
-            ->orderBy('nt.pageViewId', 'DESC')
+            ->select(['rdf.rtSi', 'rdf.createdAt', 'rdf.rumDataId', 'rdf.urlId'])
+            ->orderBy('rdf.rumDataId', 'DESC')
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -43,18 +43,18 @@ class Fetch
     /**
      * @return mixed
      */
-    public function fetchNavTimingsInRangeForSession(int $startId, int $endId, string $guid): array
+    public function fetchRumDataFlatInRangeForSession(int $startId, int $endId, string $rtSi): array
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId >= '".$startId."' AND nt.pageViewId <= '".$endId."'")
-            ->andWhere('nt.deviceTypeId != :deviceTypeId')
-            ->andWhere('nt.guid = :guid')
+        $query = $repository->createQueryBuilder('rdf')
+            ->where("rdf.pageViewId >= '".$startId."' AND rdf.rumDataId <= '".$endId."'")
+            ->andWhere('rdf.deviceTypeId != :deviceTypeId')
+            ->andWhere('rdf.rtSi = :rtSi')
             ->setParameter('deviceTypeId', $this->filter->getBotDeviceTypeId())
-            ->setParameter('guid', $guid)
-            ->select(['nt.guid', 'nt.createdAt', 'nt.pageViewId', 'nt.urlId'])
+            ->setParameter('rtSi', $rtSi)
+            ->select(['rdf.rtSi', 'rdf.createdAt', 'rdf.rumDataId', 'rdf.urlId'])
             ->getQuery();
 
         return $query->getResult(\Doctrine\ORM\AbstractQuery::HYDRATE_ARRAY);
@@ -86,28 +86,28 @@ class Fetch
         $repository = $this->registry
             ->getRepository(VisitsOverview::class);
 
-        $pageViewId = (int) $repository->createQueryBuilder('vo')
+        $rumDataId = (int) $repository->createQueryBuilder('vo')
             ->select('MAX(vo.lastPageViewId)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        return $pageViewId;
+        return $rumDataId;
     }
 
     public function fetchPreviousSessionPageView(array $pageView): array
     {
         $repository = $this->registry
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
-        $pageViewId = $pageView['pageViewId'];
-        $guid = $pageView['guid'];
+        $rumDataId = $pageView['rumDataId'];
+        $rtSi = $pageView['rtSi'];
 
-        $query = $repository->createQueryBuilder('nt')
-            ->where("nt.pageViewId < '".$pageViewId."'")
-            ->andWhere('nt.guid = :guid')
-            ->setParameter('guid', $guid)
-            ->select(['nt.createdAt', 'nt.pageViewId', 'nt.guid'])
-            ->orderBy('nt.pageViewId', 'DESC')
+        $query = $repository->createQueryBuilder('rdf')
+            ->where("rdf.rumDataId < '".$rumDataId."'")
+            ->andWhere('rdf.rtSi = :rtSi')
+            ->setParameter('rtSi', $rtSi)
+            ->select(['rdf.createdAt', 'rdf.rumDataId', 'rdf.rtSi'])
+            ->orderBy('rdf.rumDataId', 'DESC')
             ->setMaxResults(1)
             ->getQuery();
 

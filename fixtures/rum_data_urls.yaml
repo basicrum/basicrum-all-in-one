@@ -1,4 +1,4 @@
-App\Entity\NavigationTimingsUrls:
+App\Entity\RumDataUrls:
   url1:
     url: https://www.basicrum.com/contact
     createdAt: <(new \DateTime('2018-10-24 13:31:03'))>

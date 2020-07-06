@@ -9,8 +9,8 @@ class Batch
     /** @var int */
     private $_batchSize;
 
-    /** @var Batch\NavigationTimings */
-    private $_navigationTimings;
+    /** @var Batch\RumDataFlat */
+    private $_rumDataFlat;
 
     /** @var Batch\Beacons */
     private $_beacons;
@@ -21,7 +21,7 @@ class Batch
     ) {
         $this->_batchSize = $batchSize;
 
-        $this->_navigationTimings = new Batch\NavigationTimings($registry);
+        $this->_rumDataFlat = new Batch\RumDataFlat($registry);
 
         $this->_beacons = new Batch\Beacons($registry);
     }
@@ -53,9 +53,9 @@ class Batch
     private function save(array $views)
     {
         // We need this for offset when we insert in related tables
-        $lastPageViewId = $this->_navigationTimings->getLastId();
+        $lastPageViewId = $this->_rumDataFlat->getLastId();
 
-        $this->_navigationTimings->batchInsert($views);
+        $this->_rumDataFlat->batchInsert($views);
         $this->_beacons->batchInsert($views, $lastPageViewId);
     }
 }

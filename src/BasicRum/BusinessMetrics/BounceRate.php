@@ -11,7 +11,7 @@ class BounceRate implements \App\BasicRum\Report\ComplexSelectableInterface
         return [
             'page_views_count',
             'first_page_view_id',
-            'guid',
+            'rt_si',
         ];
     }
 
@@ -27,11 +27,11 @@ class BounceRate implements \App\BasicRum\Report\ComplexSelectableInterface
 
     public function getPrimarySelectTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimaryKeyFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 }

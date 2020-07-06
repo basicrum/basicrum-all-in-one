@@ -5,8 +5,8 @@ namespace App\Controller;
 use App\BasicRum\Buckets;
 use App\BasicRum\CollaboratorsAggregator;
 use App\BasicRum\DiagramOrchestrator;
-use App\Entity\NavigationTimings;
-use App\Entity\NavigationTimingsUrls;
+use App\Entity\RumDataFlat;
+use App\Entity\RumDataUrls;
 use App\Entity\VisitsOverview;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -146,12 +146,12 @@ class RevenueCalculatorController extends AbstractController
     {
         $cache = new FilesystemAdapter('basicrum.revenue.estimator.cache');
 
-        $guid = $sample['guid'];
+        $rtSi = $sample['rtSi'];
         $firstPageViewId = $sample['firstPageViewId'];
 
         $dbUrlArr = explode('/', $_ENV['DATABASE_URL']);
 
-        $cacheKey = end($dbUrlArr).$guid.$firstPageViewId;
+        $cacheKey = end($dbUrlArr).$rtSi.$firstPageViewId;
 
         if ($cache->hasItem($cacheKey)) {
             $converted = $cache->getItem($cacheKey)->get();
@@ -165,9 +165,9 @@ class RevenueCalculatorController extends AbstractController
         $res = $repository
             ->createQueryBuilder('vo')
             ->where('vo.firstPageViewId = :firstPageViewId')
-            ->andWhere('vo.guid = :guid')
+            ->andWhere('vo.rtSi = :rtSi')
             ->setParameter('firstPageViewId', $firstPageViewId)
-            ->setParameter('guid', $guid)
+            ->setParameter('rtSi', $rtSi)
             ->getQuery()
             ->getResult();
 
@@ -176,17 +176,17 @@ class RevenueCalculatorController extends AbstractController
         $lastPageViewId = $visit->getLastPageViewId();
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimings::class);
+            ->getRepository(RumDataFlat::class);
 
         $res = $repository
             ->createQueryBuilder('nt')
-            ->where('nt.pageViewId >= :firstPageViewId')
-            ->andWhere('nt.pageViewId <= :lastPageViewId')
-            ->andWhere('nt.guid = :guid')
+            ->where('nt.rumDataId >= :firstPageViewId')
+            ->andWhere('nt.rumDataId <= :lastPageViewId')
+            ->andWhere('nt.rtSi = :rtSi')
             ->andWhere('nt.urlId IN (:conversion_url_ids)')
             ->setParameter('firstPageViewId', $firstPageViewId)
             ->setParameter('lastPageViewId', $lastPageViewId)
-            ->setParameter('guid', $guid)
+            ->setParameter('rtSi', $rtSi)
             ->setParameter('conversion_url_ids', implode(',', $conversionIds))
             ->getQuery()
             ->getResult();
@@ -209,7 +209,7 @@ class RevenueCalculatorController extends AbstractController
         $conversionUrl = 'checkout/onepage';
 
         $repository = $this->getDoctrine()
-            ->getRepository(NavigationTimingsUrls::class);
+            ->getRepository(RumDataUrls::class);
 
         $res = $repository
             ->createQueryBuilder('ntu')

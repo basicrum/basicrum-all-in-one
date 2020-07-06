@@ -8,12 +8,12 @@ class QueryParam extends AbstractFilter
 {
     public function getSecondaryTableName(): string
     {
-        return 'navigation_timings_query_params';
+        return 'rum_data_flat_query_params';
     }
 
     public function getSecondaryKeyFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 
     public function getSecondarySearchFieldName(): string
@@ -23,11 +23,11 @@ class QueryParam extends AbstractFilter
 
     public function getPrimaryTableName(): string
     {
-        return 'navigation_timings';
+        return 'rum_data_flat';
     }
 
     public function getPrimarySearchFieldName(): string
     {
-        return 'page_view_id';
+        return 'rum_data_id';
     }
 }

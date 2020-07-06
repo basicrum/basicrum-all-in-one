@@ -35,13 +35,13 @@ class Planner
      */
     public function createPlan()
     {
-        $plan = new Plan('navigation_timings', $this->mainDataSelect);
+        $plan = new Plan('rum_data_flat', $this->mainDataSelect);
 
         /**
          * Check for selects that may break select query.
          *
-         * E.g we can't have "SELECT page_view_id, COUNT(page_view_id) ..."
-         * We can have only   "SELECT COUNT(page_view_id)"
+         * E.g we can't have "SELECT rum_data_id, COUNT(rum_data_id) ..."
+         * We can have only   "SELECT COUNT(rum_data_id)"
          */
         $addDefaultSelect = true;
 
@@ -53,8 +53,8 @@ class Planner
 
         if ($addDefaultSelect) {
             $itself = new Select\Itself(
-                'navigation_timings',
-                'page_view_id'
+                'rum_data_flat',
+                'rum_data_id'
             );
 
             $plan->addSelect($itself);
@@ -72,32 +72,32 @@ class Planner
         }
 
         $between = new Condition\Between(
-            'navigation_timings',
+            'rum_data_flat',
             'created_at',
             $this->startPeriod,
             $this->endPeriod
         );
 
         $plan->addLimiterFilter(
-            'navigation_timings',
-            'page_view_id',
-            'navigation_timings',
+            'rum_data_flat',
+            'rum_data_id',
+            'rum_data_flat',
             $between,
             new Select\Min(
-                'navigation_timings',
-                'page_view_id'
+                'rum_data_flat',
+                'rum_data_id'
             ),
             '>='
         );
 
         $plan->addLimiterFilter(
-            'navigation_timings',
-            'page_view_id',
-            'navigation_timings',
+            'rum_data_flat',
+            'rum_data_id',
+            'rum_data_flat',
             $between,
             $max = new Select\Max(
-                'navigation_timings',
-                'page_view_id'
+                'rum_data_flat',
+                'rum_data_id'
             ),
             '<='
         );

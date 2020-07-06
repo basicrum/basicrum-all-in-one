@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
+namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData;
 
 use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 use WhichBrowser\Parser;
@@ -89,7 +89,7 @@ class UserAgent
         }
 
         if (!empty($insertData)) {
-            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_user_agents');
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'rum_data_user_agents');
 
             $fieldsArr = array_keys($insertData[0]);
 
@@ -104,7 +104,7 @@ class UserAgent
     private function _reloadPairs()
     {
         $repository = $this->registry
-            ->getRepository(\App\Entity\NavigationTimingsUserAgents::class);
+            ->getRepository(\App\Entity\RumDataUserAgents::class);
 
         $queryBuilder = $repository->createQueryBuilder('ntua');
 

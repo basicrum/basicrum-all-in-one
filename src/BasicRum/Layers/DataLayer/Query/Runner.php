@@ -119,7 +119,7 @@ class Runner
             $complexSelectData[] = $this->complexSelect->process($complexSelect, $filters);
             if (!empty($complexSelectData)) {
                 foreach ($complexSelectData as $data) {
-                    $complexSelectFilters[] = $this->planActions['main_table_name'].'.page_view_id'.' '.' IN('.implode(',', array_keys($data)).')';
+                    $complexSelectFilters[] = $this->planActions['main_table_name'].'.rum_data_id'.' '.' IN('.implode(',', array_keys($data)).')';
                 }
             }
         }

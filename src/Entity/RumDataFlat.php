@@ -7,19 +7,19 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * NavigationTimings.
  *
- * @ORM\Table(name="navigation_timings", indexes={@ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="user_agent_id", columns={"user_agent_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"}), @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="guid", columns={"guid"}), @ORM\Index(name="page_view_id", columns={"page_view_id", "user_agent_id"})})
+ * @ORM\Table(name="rum_data_flat", indexes={@ORM\Index(name="os_id", columns={"os_id"}), @ORM\Index(name="url_id", columns={"url_id"}), @ORM\Index(name="url_id_2", columns={"url_id", "created_at"}), @ORM\Index(name="user_agent_id", columns={"user_agent_id"}), @ORM\Index(name="device_type_id", columns={"device_type_id"}), @ORM\Index(name="created_at", columns={"created_at"}), @ORM\Index(name="rt_si", columns={"rt_si"}), @ORM\Index(name="rum_data_id", columns={"rum_data_id", "user_agent_id"})})
  * @ORM\Entity
  */
-class NavigationTimings
+class RumDataFlat
 {
     /**
      * @var int
      *
-     * @ORM\Column(name="page_view_id", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="rum_data_id", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $pageViewId;
+    private $rumDataId;
 
     /**
      * @var int
@@ -115,9 +115,9 @@ class NavigationTimings
     /**
      * @var string
      *
-     * @ORM\Column(name="guid", type="string", length=128, nullable=false, options={"fixed"=true})
+     * @ORM\Column(name="rt_si", type="string", length=128, nullable=false, options={"fixed"=true})
      */
-    private $guid;
+    private $rtSi;
 
     /**
      * @var int
@@ -125,6 +125,55 @@ class NavigationTimings
      * @ORM\Column(name="stay_on_page_time", type="smallint", nullable=false, options={"unsigned"=true})
      */
     private $stayOnPageTime = '0';
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_done", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $tDone;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_page", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $tPage;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_resp", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $tResp;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="t_load", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $tLoad;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rt_tstart", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $rtTstart;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rt_end", type="bigint", length=14, nullable=false, options={"unsigned"=true})
+     */
+    private $rtEnd;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="rt_quit", type="boolean", options={"default"=0})
+     */
+    private $rtQuit;
 
     /**
      * @var \DateTime
@@ -148,51 +197,56 @@ class NavigationTimings
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_img_size;
+    private $totalImgSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_js_compressed_size;
+    private $totalJsCompressedSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_js_uncomressed_size;
+    private $totalJsUncomressedSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_css_compressed_size;
+    private $totalCssCompressedSize;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $total_css_uncomressed_size;
+    private $totalCssUncomressedSize;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $number_js_files;
+    private $numberJsFiles;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $number_css_files;
+    private $numberCssFiles;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $number_img_files;
+    private $numberImgFiles;
 
     /**
      * @ORM\Column(type="smallint")
      */
-    private $download_time;
+    private $downloadTime;
 
-    public function getPageViewId(): ?int
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $http_initiator;
+
+    public function getRumDataId(): ?int
     {
-        return $this->pageViewId;
+        return $this->rumDataId;
     }
 
     public function getDnsDuration(): ?int
@@ -351,14 +405,98 @@ class NavigationTimings
         return $this;
     }
 
-    public function getGuid(): ?string
+    public function getRtsi(): ?string
     {
-        return $this->guid;
+        return $this->rtSi;
     }
 
-    public function setGuid(string $guid): self
+    public function setRtsi(string $rtSi): self
     {
-        $this->guid = $guid;
+        $this->rtSi = $rtSi;
+
+        return $this;
+    }
+
+    public function getTdone(): ?int
+    {
+        return $this->tDone;
+    }
+
+    public function setTdone(int $tDone): self
+    {
+        $this->tDone = $tDone;
+
+        return $this;
+    }
+
+    public function getTpage(): ?int
+    {
+        return $this->tPage;
+    }
+
+    public function setTpage(int $tPage): self
+    {
+        $this->tPage = $tPage;
+
+        return $this;
+    }
+
+    public function getTresp(): ?int
+    {
+        return $this->tResp;
+    }
+
+    public function setTresp(int $tResp): self
+    {
+        $this->tResp = $tResp;
+
+        return $this;
+    }
+
+    public function getTload(): ?int
+    {
+        return $this->tLoad;
+    }
+
+    public function setTload(int $tLoad): self
+    {
+        $this->tLoad = $tLoad;
+
+        return $this;
+    }
+
+    public function getRtTstart(): ?int
+    {
+        return $this->rtTstart;
+    }
+
+    public function setRtTstart(int $rtTstart): self
+    {
+        $this->rtTstart = $rtTstart;
+
+        return $this;
+    }
+
+    public function getRtEnd(): ?int
+    {
+        return $this->rtEnd;
+    }
+
+    public function setRtEnd(int $rtEnd): self
+    {
+        $this->rtEnd = $rtEnd;
+
+        return $this;
+    }
+
+    public function getRtQuit(): ?int
+    {
+        return $this->rtQuit;
+    }
+
+    public function setRtQuit(int $rtQuit): self
+    {
+        $this->rtQuit = $rtQuit;
 
         return $this;
     }
@@ -413,108 +551,120 @@ class NavigationTimings
 
     public function getTotalImgSize(): ?int
     {
-        return $this->total_img_size;
+        return $this->totalImgSize;
     }
 
-    public function setTotalImgSize(int $total_img_size): self
+    public function setTotalImgSize(int $totalImgSize): self
     {
-        $this->total_img_size = $total_img_size;
+        $this->totalImgSize = $totalImgSize;
 
         return $this;
     }
 
     public function getTotalJsCompressedSize(): ?int
     {
-        return $this->total_js_compressed_size;
+        return $this->totalJsCompressedSize;
     }
 
-    public function setTotalJsCompressedSize(int $total_js_compressed_size): self
+    public function setTotalJsCompressedSize(int $totalJsCompressedSize): self
     {
-        $this->total_js_compressed_size = $total_js_compressed_size;
+        $this->totalJsCompressedSize = $totalJsCompressedSize;
 
         return $this;
     }
 
     public function getTotalJsUncomressedSize(): ?int
     {
-        return $this->total_js_uncomressed_size;
+        return $this->totalJsUncomressedSize;
     }
 
-    public function setTotalJsUncomressedSize(int $total_js_uncomressed_size): self
+    public function setTotalJsUncomressedSize(int $totalJsUncomressedSize): self
     {
-        $this->total_js_uncomressed_size = $total_js_uncomressed_size;
+        $this->totalJsUncomressedSize = $totalJsUncomressedSize;
 
         return $this;
     }
 
     public function getTotalCssCompressedSize(): ?int
     {
-        return $this->total_css_compressed_size;
+        return $this->totalCssCompressedSize;
     }
 
-    public function setTotalCssCompressedSize(int $total_css_compressed_size): self
+    public function setTotalCssCompressedSize(int $totalCssCompressedSize): self
     {
-        $this->total_css_compressed_size = $total_css_compressed_size;
+        $this->totalCssCompressedSize = $totalCssCompressedSize;
 
         return $this;
     }
 
     public function getTotalCssUncomressedSize(): ?int
     {
-        return $this->total_css_uncomressed_size;
+        return $this->totalCssUncomressedSize;
     }
 
-    public function setTotalCssUncomressedSize(int $total_css_uncomressed_size): self
+    public function setTotalCssUncomressedSize(int $totalCssUncomressedSize): self
     {
-        $this->total_css_uncomressed_size = $total_css_uncomressed_size;
+        $this->totalCssUncomressedSize = $totalCssUncomressedSize;
 
         return $this;
     }
 
     public function getNumberJsFiles(): ?int
     {
-        return $this->number_js_files;
+        return $this->numberJsFiles;
     }
 
-    public function setNumberJsFiles(int $number_js_files): self
+    public function setNumberJsFiles(int $numberJsFiles): self
     {
-        $this->number_js_files = $number_js_files;
+        $this->numberJsFiles = $numberJsFiles;
 
         return $this;
     }
 
     public function getNumberCssFiles(): ?int
     {
-        return $this->number_css_files;
+        return $this->numberCssFiles;
     }
 
-    public function setNumberCssFiles(int $number_css_files): self
+    public function setNumberCssFiles(int $numberCssFiles): self
     {
-        $this->number_css_files = $number_css_files;
+        $this->numberCssFiles = $numberCssFiles;
 
         return $this;
     }
 
     public function getNumberImgFiles(): ?int
     {
-        return $this->number_img_files;
+        return $this->numberImgFiles;
     }
 
-    public function setNumberImgFiles(int $number_img_files): self
+    public function setNumberImgFiles(int $numberImgFiles): self
     {
-        $this->number_img_files = $number_img_files;
+        $this->numberImgFiles = $numberImgFiles;
 
         return $this;
     }
 
     public function getDownloadTime(): ?int
     {
-        return $this->download_time;
+        return $this->downloadTime;
     }
 
-    public function setDownloadTime(int $download_time): self
+    public function setDownloadTime(int $downloadTime): self
     {
-        $this->download_time = $download_time;
+        $this->downloadTime = $downloadTime;
+
+        return $this;
+    }
+
+    public function getHttpInitiator(): ?string
+    {
+        return $this->http_initiator;
+    }
+
+    public function setHttpInitiator(?string $http_initiator): self
+    {
+        $this->http_initiator = $http_initiator;
 
         return $this;
     }

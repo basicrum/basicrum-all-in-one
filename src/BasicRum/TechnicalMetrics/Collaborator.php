@@ -17,6 +17,8 @@ class Collaborator implements \App\BasicRum\CollaboratorsInterface
         'total_img_size' => TotalImgSize::class,
         'total_js_compressed_size' => TotalJsCompressedSize::class,
         'number_js_files' => NumberJsFiles::class,
+        't_resp' => TResp::class,
+        't_page' => TPage::class,
     ];
 
     private $technicalMetrics = [];

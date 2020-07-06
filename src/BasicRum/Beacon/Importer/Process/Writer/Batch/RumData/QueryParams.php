@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings;
+namespace App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData;
 
 use App\BasicRum\Beacon\Importer\Process\Writer\Db\BulkInsertQuery;
 
@@ -24,17 +24,17 @@ class QueryParams
 
         foreach ($batch as $key => $row) {
             if (!empty($row['query_params'])) {
-                $pageViewId = $key + $lastPageViewIdStartOffset;
+                $rumDataId = $key + $lastPageViewIdStartOffset;
 
                 $insertData[] = [
-                    'page_view_id' => $pageViewId,
+                    'rum_data_id' => $rumDataId,
                     'query_params' => $row['query_params'],
                 ];
             }
         }
 
         if ($insertData) {
-            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'navigation_timings_query_params');
+            $bulkInsert = new BulkInsertQuery($this->registry->getConnection(), 'rum_data_flat_query_params');
 
             $fieldsArr = array_keys($insertData[0]);
 

@@ -4,19 +4,19 @@ namespace  App\Tests\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTim
 
 use PHPUnit\Framework\TestCase;
 
-class HydratorTest extends TestCase
+class YandexBrowserTest extends TestCase
 {
 
     /**
      * @group import
      */
-    public function testHydration()
+    public function testYandexBrowser()
     {
-        $userAgentString = 'Mozilla/5.0 (Linux; Android 7.0; RNE-L21 Build/HUAWEIRNE-L21; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/72.0.3626.105 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/211.0.0.43.112;]';
+        $userAgentString = 'Mozilla/5.0 (Linux; Android 8.0.0; ATU-L31) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 YaBrowser/19.3.4.339.00 Mobile Safari/537.36';
 
         $whichBrowserResult = new \WhichBrowser\Parser($userAgentString);
 
-        $hydrator = new \App\BasicRum\Beacon\Importer\Process\Writer\Batch\NavigationTimings\UserAgent\Hydrator();
+        $hydrator = new \App\BasicRum\Beacon\Importer\Process\Writer\Batch\RumData\UserAgent\Hydrator();
 
         $result = $hydrator->hydrate($whichBrowserResult, $userAgentString);
 
@@ -32,12 +32,12 @@ class HydratorTest extends TestCase
             ],
             [
                 $userAgentString,
-                'Honor 9i',
+                'Enjoy 8e',
                 'Huawei',
-                'Facebook',
-                '',
+                'Yandex Browser',
+                '19.3',
                 'Android',
-                '7.0'
+                '8.0.0'
             ]
         );
     }
