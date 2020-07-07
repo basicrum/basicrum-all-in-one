@@ -47,14 +47,12 @@ class UsersController extends AbstractController
      */
     public function getUserInfo(User $user)
     {
-        $array = [
+        return $this->json([
             'fname' => $user->getFname(),
             'lname' => $user->getLname(),
             'email' => $user->getEmail(),
             'role' => $user->getRoles(),
-        ];
-
-        return $this->json($array);
+        ]);
     }
 
     /**
