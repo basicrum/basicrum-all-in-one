@@ -50,18 +50,18 @@ class RegisterController extends AbstractController
         $errors = $validator->validate($user);
 
         if (\count($errors) > 0) {
-            $array['status'] = 'error';
+            $result['status'] = 'error';
             $i = 0;
             foreach ($errors as $key => $value) {
-                $array['fields'][$i]['field'] = $value->getPropertyPath();
-                $array['fields'][$i]['message'] = $value->getMessage();
+                $result['fields'][$i]['field'] = $value->getPropertyPath();
+                $result['fields'][$i]['message'] = $value->getMessage();
                 ++$i;
             }
         } else {
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $array = [
+            $result = [
                 'status' => 'success',
                 'message' => 'New User Created Successfully',
                 'user' => [
@@ -74,6 +74,6 @@ class RegisterController extends AbstractController
             ];
         }
 
-        return $this->json($array);
+        return $this->json($result);
     }
 }
