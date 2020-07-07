@@ -59,15 +59,17 @@ class BrowserAgentController extends AbstractController
         try {
             $result = $builder->build($_POST, $this->getDoctrine());
 
-            return $this->json([
+            $response = [
                 'error' => '',
                 'build_id' => $result,
-            ]);
+            ];
         } catch (\Exception $e) {
-            return $this->json([
+            $response = [
                 'error' => $e->getMessage(),
-            ]);
+            ];
         }
+
+        $this->json($response);
     }
 
     /**
