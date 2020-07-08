@@ -15,16 +15,23 @@
                     name="name[{{ item.id }}]"
                     class="form-control"
                     readonly="readonly"
-                    value="{{ aliases[item.name] }}"
+                    value="{{ aliases[item.name]['alias'] }}"
                     >
 
             </td>
             <td>
                 <input
-                    type="text"
+{#                    type="text"#}
                     name="value[{{ item.id }}]"
                     value="{{ item.value }}"
                     class="form-control"
+                    {% for rule, value in aliases[item.name]['validation_rules'] %}
+                        {% if value %}
+                            {{ rule }}="{{ value }}"
+                        {% else %}
+                            {{ rule }}
+                        {% endif %}
+                    {% endfor %}
                     >
             </td>
         </tr>
@@ -38,17 +45,21 @@
 </button>
 </form>
 
-
 <script>
-    $('body').on('click', '#saveBtn', function(event){
-        event.preventDefault();
-        var formData = $('#settings-form').serialize();
-        $.post('{{ path('admin_site_settings_save') }}', formData)
-            .done(function(){
-                alert("Settings saved successfully");
-            })
-            .fail(function(){
-                alert("Something went wrong");
-            });
+    $().ready(function() {
+        $("#settings-form").validate({
+            errorLabelContainer: $("#form1 div.error"),
+            submitHandler: function(form) {
+                var formData = $('#settings-form').serialize();
+                $.post('{{ path('admin_site_settings_save') }}', formData)
+                    .done(function(response){
+                        console.log(response);
+                        alert(response.message);
+                    })
+                    .fail(function(){
+                        alert("Something went wrong");
+                    });
+            }
+        });
     });
 </script>
