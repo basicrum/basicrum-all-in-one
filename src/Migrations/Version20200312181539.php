@@ -65,6 +65,8 @@ final class Version20200312181539 extends AbstractMigration
         $this->abortIf('mysql' !== $this->connection->getDatabasePlatform()->getName(), 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE visits_overview (visit_id INT UNSIGNED AUTO_INCREMENT NOT NULL, rt_si CHAR(128) DEFAULT \'NULL\' COLLATE utf8mb4_unicode_ci, page_views_count INT UNSIGNED NOT NULL, first_page_view_id INT UNSIGNED NOT NULL, last_page_view_id INT UNSIGNED DEFAULT NULL, visit_duration INT UNSIGNED DEFAULT NULL, after_last_visit_duration INT UNSIGNED NOT NULL, first_url_id INT UNSIGNED NOT NULL, last_url_id INT UNSIGNED NOT NULL, completed TINYINT(1) NOT NULL, INDEX last_page_view_id (last_page_view_id), INDEX first_page_view_id (first_page_view_id), INDEX completed (completed), INDEX rt_si (rt_si), PRIMARY KEY(visit_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB COMMENT = \'\' ');
+
+        $this->addSql('INSERT INTO site_settings (`name`) VALUES ("site_email_address_from"), ("site_email_name_from"), ("site_email_reset_password_subject")');
     }
 
     public function down(Schema $schema): void
