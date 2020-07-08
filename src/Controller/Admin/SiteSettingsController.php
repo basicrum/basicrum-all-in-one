@@ -46,6 +46,5 @@ class SiteSettingsController extends AbstractController
             $entry->setValue($request->request->get('value')[$key]);
             $entityManager->flush();
         }
-        exit();
     }
 }

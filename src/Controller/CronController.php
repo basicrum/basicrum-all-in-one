@@ -10,7 +10,6 @@ use App\BasicRum\Stats\LastBlockingResourceCalculator;
 use App\BasicRum\Visit\Calculator;
 use App\BasicRum\Visit\Data\Persist;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CronController extends AbstractController
@@ -74,15 +73,9 @@ class CronController extends AbstractController
             'count' => $count,
         ];
 
-        $response = new Response(
-            json_encode(
-                $data
-            )
+        return $this->json(
+            $data
         );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
     }
 
     private function _generateBundleFromRawBeacons(): int
