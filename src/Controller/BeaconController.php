@@ -10,7 +10,6 @@ use App\BasicRum\WaterfallSvgRenderer;
 use App\Entity\RumDataFlat;
 use App\Entity\RumDataUserAgents;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BeaconController extends AbstractController
@@ -55,22 +54,14 @@ class BeaconController extends AbstractController
 
         $renderer = new WaterfallSvgRenderer();
 
-        $response = new Response(
-            json_encode(
-                [
-                    'waterfall' => $renderer->render($timings),
-                    'resource_distribution' => [
-                        'labels' => array_keys($sizeDistribution),
-                        'values' => array_values($sizeDistribution),
-                    ],
-                    'user_agent' => $userAgent[0]->getUserAgent(),
-                    'browser_name' => $userAgent[0]->getBrowserName(),
-                ]
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->json([
+            'waterfall' => $renderer->render($timings),
+            'resource_distribution' => [
+                'labels' => array_keys($sizeDistribution),
+                'values' => array_values($sizeDistribution),
+            ],
+            'user_agent' => $userAgent[0]->getUserAgent(),
+            'browser_name' => $userAgent[0]->getBrowserName(),
+        ]);
     }
 }

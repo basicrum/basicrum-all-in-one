@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Entity\ResourceTimings;
 use App\Entity\RumDataFlat;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class JourneyController extends AbstractController
@@ -72,18 +71,10 @@ class JourneyController extends AbstractController
             }
         }
 
-        $response = new Response(
-            json_encode(
-                [
-                    'page_views' => $this->get('twig')->render(
-                            'diagrams/journey/page_views_table.html.twig', ['page_views' => $filteredNavigations]
-                        ),
-                ]
-            )
-        );
-
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $this->json([
+            'page_views' => $this->get('twig')->render(
+                'diagrams/journey/page_views_table.html.twig', ['page_views' => $filteredNavigations]
+            ),
+        ]);
     }
 }

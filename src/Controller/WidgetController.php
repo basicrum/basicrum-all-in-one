@@ -43,14 +43,10 @@ class WidgetController extends AbstractController
     {
         $schema = new DiagramSchema($type);
 
-        $response = new Response(
-            json_encode(
-                $schema->generateSchema(),
-                JSON_PRETTY_PRINT
-            )
+        return $this->json(
+            $schema->generateSchema(),
+            JSON_PRETTY_PRINT
         );
-
-        return $response;
     }
 
     /**

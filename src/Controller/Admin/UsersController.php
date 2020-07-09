@@ -6,9 +6,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -49,17 +47,12 @@ class UsersController extends AbstractController
      */
     public function getUserInfo(User $user)
     {
-        $array = [
+        return $this->json([
             'fname' => $user->getFname(),
             'lname' => $user->getLname(),
             'email' => $user->getEmail(),
             'role' => $user->getRoles(),
-        ];
-
-        echo json_encode($array);
-        exit();
-
-        return new JsonResponse($array);
+        ]);
     }
 
     /**
@@ -92,7 +85,7 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        $array = [
+        return $this->json([
             'status' => 'success',
             'message' => 'User Updated Successfully',
             'user' => [
@@ -102,9 +95,7 @@ class UsersController extends AbstractController
                 'email' => $user->getEmail(),
                 'roles' => $user->getRoles(),
             ],
-        ];
-
-        return new Response(json_encode($array));
+        ]);
     }
 
     /**
@@ -119,7 +110,7 @@ class UsersController extends AbstractController
 
         $entityManager->flush();
 
-        $array = [
+        return $this->json([
             'status' => 'success',
             'message' => 'User Deleted Successfully',
             'user' => [
@@ -129,8 +120,6 @@ class UsersController extends AbstractController
                 'email' => $user->getEmail(),
                 'roles' => $user->getRoles(),
             ],
-        ];
-
-        return new Response(json_encode($array));
+        ]);
     }
 }

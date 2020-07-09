@@ -64,6 +64,8 @@ class File
             ];
         }
 
+        $this->deleteRawBeacons($beaconFiles);
+
         $name = time().'.json';
 
         $this->persistBundle($name, json_encode($entries));
@@ -156,5 +158,12 @@ class File
         }
 
         return $res;
+    }
+
+    public function deleteRawBeacons(array $rawBeaconFilesArray): void
+    {
+        foreach ($rawBeaconFilesArray as $rawBeaconFileName) {
+            unlink($rawBeaconFileName);
+        }
     }
 }

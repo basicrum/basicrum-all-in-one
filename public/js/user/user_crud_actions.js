@@ -67,7 +67,7 @@ var crudActions = (function($){
         validationInit();
         var res = requestAJAX.get(`/admin/user/info/${userId}`)
             .done(function(response){
-                var info = JSON.parse(response);
+                var info = response;
                 $('#fname').val(info.fname);
                 $('#lname').val(info.lname);
                 $('#email').val(info.email);
