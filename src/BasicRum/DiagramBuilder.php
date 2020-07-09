@@ -4,10 +4,19 @@ declare(strict_types=1);
 
 namespace App\BasicRum;
 
+use App\BasicRum\Diagram\Builder\RenderType\RenderTypeFactory;
+
 class DiagramBuilder
 {
     public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
+        $renderType = $params['global']['presentation']['render_type'];
+
+        $render = new RenderTypeFactory($renderType);
+        $diagramData = $render->buid($diagramOrchestrator, $params, $releaseRepository);
+
+        return $diagramData;
+
         $layout = new Diagram\View\Layout();
         $diagramData = [];
 
