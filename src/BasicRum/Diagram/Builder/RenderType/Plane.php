@@ -7,6 +7,7 @@ use App\BasicRum\Diagram\View\RenderType\Plane as ViewRenderTypePlane;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
 use App\BasicRum\RenderTypeInterface;
+use App\BasicRum\Report\Data\BounceRate;
 use App\BasicRum\Report\Data\Histogram;
 
 class Plane implements RenderTypeInterface
@@ -18,6 +19,7 @@ class Plane implements RenderTypeInterface
     private $dataForDiagram;
     private $extraDiagramParams;
     private $extraLayoutParams;
+    private $results;
 
     public function __construct(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository)
     {
@@ -28,13 +30,14 @@ class Plane implements RenderTypeInterface
         $this->dataForDiagram = [];
         $this->extraDiagramParams = [];
         $this->extraLayoutParams = $this->getExtraLayoutParams($params);
+        $this->results = $diagramOrchestrator->process();
     }
 
     public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
         $diagramData = [];
 
-        $results = $diagramOrchestrator->process();
+        //$results = $diagramOrchestrator->process();
         $hasError = false;
 
 //        $dataForDiagram = [];
@@ -47,18 +50,17 @@ class Plane implements RenderTypeInterface
             foreach ($results as $key => $result) {
                 $extraDiagramParams[$key] = [];
 
-                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
-                    $metrics = array_keys($params['segments'][$key]['data_requirements']['technical_metrics']);
-                    //if ($metrics[0] === 'first_paint') {
-                    $histogram = new Histogram();
-
-                    $buckets = $histogram->generate($result);
-
-                    foreach ($buckets as $time => $bucket) {
-                        $dataForDiagram[$key][$time] = $bucket;
-                    }
-                    //}
-                }
+//                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
+//
+//                    $histogram = new Histogram();
+//
+//                    $buckets = $histogram->generate($result);
+//
+//                    foreach ($buckets as $time => $bucket) {
+//                        $dataForDiagram[$key][$time] = $bucket;
+//                    }
+//                    //}
+//                }
 
                 if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
                     $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
@@ -123,6 +125,81 @@ class Plane implements RenderTypeInterface
         );
 
         return $diagramData;
+    }
+
+    /**
+     * @todo break it into methods
+     */
+    public function processBusinessMetrics()
+    {
+        foreach ($this->results as $key => $result) {
+            $extraDiagramParams[$key] = [];
+
+            if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
+                $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
+                if ('bounce_rate' === $metrics[0]) {
+                    $bounceRateCalculator = new BounceRate();
+
+                    $buckets = $bounceRateCalculator->generate($result);
+
+                    foreach ($buckets as $time => $bucket) {
+                        $dataForDiagram[$key][$time] = $bucket;
+                    }
+
+                    $extraDiagramParams[$key] = ['yaxis' => 'y2'];
+
+                    $extraLayoutParams['yaxis2'] = [
+                        'overlaying' => 'y',
+                        'side' => 'right',
+                        'showgrid' => false,
+                        'tickvals' => [25, 50, 60, 70, 80, 100],
+                        'ticktext' => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
+                        'range' => [50, 85],
+                        'fixedrange' => true,
+                    ];
+
+                    foreach ($dataForDiagram[$key] as $brkey => $v) {
+                        // Add annotation only on every second
+                        if (0 != $brkey % 1000) {
+                            continue;
+                        }
+
+                        $extraLayoutParams['annotations'][] = [
+                            'xref' => 'x',
+                            'yref' => 'y2',
+                            'x' => $brkey,
+                            'y' => $v,
+                            'xanchor' => 'center',
+                            'yanchor' => 'bottom',
+                            'text' => $v.'%',
+                            'showarrow' => false,
+                            'font' => [
+                                'family' => 'Arial',
+                                'size' => 12,
+                                'color' => 'black',
+                            ],
+                        ];
+                    }
+                }
+            }
+        }
+    }
+
+    public function processTechnicalMetrics()
+    {
+        foreach ($this->results as $key => $result) {
+            $extraDiagramParams[$key] = [];
+
+            if (!empty($this->params['segments'][$key]['data_requirements']['technical_metrics'])) {
+                $histogram = new Histogram();
+
+                $buckets = $histogram->generate($result);
+
+                foreach ($buckets as $time => $bucket) {
+                    $this->dataForDiagram[$key][$time] = $bucket;
+                }
+            }
+        }
     }
 
     /**
