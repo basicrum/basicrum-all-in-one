@@ -13,7 +13,6 @@ class Distribution implements RenderTypeInterface
     public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
         $layout = new Layout();
-        $diagramData = [];
 
         $results = $diagramOrchestrator->process();
         $hasError = false;
@@ -59,14 +58,12 @@ class Distribution implements RenderTypeInterface
 
         $view = new ViewRenderTypeDistribution($layout);
 
-        $diagramData = $view->build(
+        return $view->build(
             $dataForDiagram,
             $params,
             $extraLayoutParams,
             $extraDiagramParams,
             $hasError
         );
-
-        return $diagramData;
     }
 }

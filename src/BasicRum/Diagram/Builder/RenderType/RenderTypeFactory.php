@@ -2,10 +2,6 @@
 
 namespace App\BasicRum\Diagram\Builder\RenderType;
 
-//use App\BasicRum\Diagram\Builder\RenderType\Plane;
-//use App\BasicRum\Diagram\Builder\RenderType\Distribution;
-//use App\BasicRum\Diagram\Builder\RenderType\TimeSeries;
-
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
 
@@ -24,10 +20,9 @@ class RenderTypeFactory
         $this->renderType = $type;
     }
 
-    public function buid(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
+    public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
-        //var_dump($this->renderTypeClassMap[$this->renderType]);
-        $render = new $this->renderTypeClassMap[$this->renderType]();
+        $render = new $this->renderTypeClassMap[$this->renderType]($diagramOrchestrator, $params, $releaseRepository);
 
         return $render->build($diagramOrchestrator, $params, $releaseRepository);
     }

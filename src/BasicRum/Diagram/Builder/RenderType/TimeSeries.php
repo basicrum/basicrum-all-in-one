@@ -13,7 +13,6 @@ class TimeSeries implements RenderTypeInterface
     public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
         $layout = new Layout();
-        $diagramData = [];
 
         $results = $diagramOrchestrator->process();
         $hasError = false;
@@ -47,7 +46,7 @@ class TimeSeries implements RenderTypeInterface
 
         $view = new ViewRenderTypeTimeSeries($layout);
 
-        $diagramData = $view->build(
+        return $view->build(
             $dataForDiagram,
             $params,
             $extraLayoutParams,
@@ -55,7 +54,5 @@ class TimeSeries implements RenderTypeInterface
             $hasError,
             $releasesArray
         );
-
-        return $diagramData;
     }
 }
