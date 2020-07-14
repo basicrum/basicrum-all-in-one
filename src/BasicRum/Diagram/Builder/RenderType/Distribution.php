@@ -10,60 +10,95 @@ use App\BasicRum\RenderTypeInterface;
 
 class Distribution implements RenderTypeInterface
 {
-    public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
+    private $hasError;
+    private $params;
+    private $results;
+    private $totalsCount;
+    private $segmentSamples;
+    private $dataForDiagram;
+    private $extraLayoutParams;
+    private $extraDiagramParams;
+
+    public function __construct(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository)
     {
-        $layout = new Layout();
+        $this->results = $diagramOrchestrator->process();
+        $this->totalsCount = [];
+        $this->segmentSamples = [];
+        $this->dataForDiagram = [];
+        $this->extraDiagramParams = [];
+        $this->extraLayoutParams = $this->setExtraLayoutParams();
+        $this->params = $params;
+        $this->hasError = false;
+    }
 
-        $results = $diagramOrchestrator->process();
-        $hasError = false;
-
-        $totalsCount = [];
-        $segmentSamples = [];
-        $dataForDiagram = [];
-        $extraLayoutParams = [];
-        $extraDiagramParams = [];
-
-        if (!empty($params['global']['presentation']['layout'])) {
-            $extraLayoutParams = $params['global']['presentation']['layout'];
-        }
-
-        foreach ($results as $key => $result) {
+    public function build(): array
+    {
+        foreach ($this->results as $key => $result) {
             $data = [];
-            $extraDiagramParams[$key] = [];
+            $this->extraDiagramParams[$key] = [];
 
             try {
                 foreach ($result as $time => $sample) {
                     $data[$time] = $sample['count'];
 
                     // Summing total visits per day. Used later for calculating percentage
-                    $totalsCount[$time] = isset($totalsCount[$time]) ? ($totalsCount[$time] + $data[$time]) : $data[$time];
+                    $this->totalsCount[$time] = $this->calculateTotalVisitsPerDay($time, $data);
                 }
             } catch (\Throwable $e) {
-                $hasError = true;
+                $this->hasError = true;
             }
 
-            $segmentSamples[$key] = $data;
+            $this->segmentSamples[$key] = $data;
         }
 
-        foreach ($segmentSamples as $key => $data) {
+        $this->generateDataForDiagram();
+
+        $view = new ViewRenderTypeDistribution(new Layout());
+
+        return $view->build(
+            $this->dataForDiagram,
+            $this->params,
+            $this->extraLayoutParams,
+            $this->extraDiagramParams,
+            $this->hasError
+        );
+    }
+
+    /**
+     * @param array $extraDiagramParams
+     */
+    public function setExtraLayoutParams(): array
+    {
+        if (!empty($this->params['global']['presentation']['layout'])) {
+            return $this->params['global']['presentation']['layout'];
+        }
+
+        return [];
+    }
+
+    private function calculateTotalVisitsPerDay($time, array $data)
+    {
+        if (isset($this->totalsCount[$time])) {
+            return $this->totalsCount[$time] + $data[$time];
+        }
+
+        return $data[$time];
+    }
+
+    /**
+     * @param $time
+     */
+    private function generateDataForDiagram(): void
+    {
+        foreach ($this->segmentSamples as $key => $data) {
             foreach ($data as $time => $c) {
-                if (0 == $totalsCount[$time]) {
-                    $dataForDiagram[$key][$time] = '0.00';
+                if (0 == $this->totalsCount[$time]) {
+                    $time[$key][$time] = '0.00';
                     continue;
                 }
 
-                $dataForDiagram[$key][$time] = number_format(($c / $totalsCount[$time]) * 100, 2);
+                $this->dataForDiagram[$key][$time] = number_format(($c / $this->totalsCount[$time]) * 100, 2);
             }
         }
-
-        $view = new ViewRenderTypeDistribution($layout);
-
-        return $view->build(
-            $dataForDiagram,
-            $params,
-            $extraLayoutParams,
-            $extraDiagramParams,
-            $hasError
-        );
     }
 }
