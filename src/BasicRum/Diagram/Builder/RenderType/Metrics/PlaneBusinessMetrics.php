@@ -19,18 +19,19 @@ class PlaneBusinessMetrics
         $this->dataForDiagram = [];
         $this->extraDiagramParams = [];
         $this->extraLayoutParams = [];
+
+        if (!empty($params['global']['presentation']['layout'])) {
+            $this->extraLayoutParams = $params['global']['presentation']['layout'];
+        }
     }
 
-    public function proceed()
+    public function proceed($key)
     {
-        foreach ($this->results as $key => $result) {
-            $this->extraDiagramParams[$key] = [];
-
-            if ($this->isBounceRate($this->params['segments'][$key])) {
-                $this->generateDataForDiagram($result, $key);
-                $this->generateExtraDiagramParams($key);
-                $this->generateExtraLayoutParams($key);
-            }
+        $this->extraDiagramParams[$key] = [];
+        if ($this->isBounceRate($this->params['segments'][$key])) {
+            $this->generateDataForDiagram($this->results[$key], $key);
+            $this->generateExtraDiagramParams($key);
+            $this->generateExtraLayoutParams($key);
         }
     }
 
@@ -48,7 +49,7 @@ class PlaneBusinessMetrics
         return false;
     }
 
-    private function generateDataForDiagram(array $result, string $key)
+    private function generateDataForDiagram(array $result, int $key)
     {
         $bounceRateCalculator = new BounceRate();
 
@@ -62,12 +63,12 @@ class PlaneBusinessMetrics
         $this->extraDiagramParams[$key] = ['yaxis' => 'y2'];
     }
 
-    private function generateExtraDiagramParams(string $key)
+    private function generateExtraDiagramParams(int $key)
     {
         $this->extraDiagramParams[$key] = ['yaxis' => 'y2'];
     }
 
-    private function generateExtraLayoutParams(string $key)
+    private function generateExtraLayoutParams(int $key)
     {
         $this->extraLayoutParams['yaxis2'] = [
             'overlaying' => 'y',

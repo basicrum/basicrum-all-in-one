@@ -2,13 +2,13 @@
 
 namespace App\BasicRum\Diagram\Builder\RenderType;
 
+use App\BasicRum\Diagram\Builder\RenderType\Metrics\PlaneBusinessMetrics;
+use App\BasicRum\Diagram\Builder\RenderType\Metrics\PlaneTechnicalMetrics;
 use App\BasicRum\Diagram\View\Layout;
 use App\BasicRum\Diagram\View\RenderType\Plane as ViewRenderTypePlane;
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
 use App\BasicRum\RenderTypeInterface;
-use App\BasicRum\Report\Data\BounceRate;
-use App\BasicRum\Report\Data\Histogram;
 
 class Plane implements RenderTypeInterface
 {
@@ -23,6 +23,7 @@ class Plane implements RenderTypeInterface
 
     public function __construct(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository)
     {
+//        print_r($params);
         $this->diagramOrchestrator = $diagramOrchestrator;
         $this->params = $params;
         $this->releaseRepository = $releaseRepository;
@@ -35,171 +36,69 @@ class Plane implements RenderTypeInterface
 
     public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
     {
-        $diagramData = [];
-
-        //$results = $diagramOrchestrator->process();
         $hasError = false;
 
-//        $dataForDiagram = [];
-//        $extraLayoutParams = [];
-//        $extraDiagramParams = [];
-
-//        $extraLayoutParams = $this->getExtraLayoutParams($params);
-
         try {
-            foreach ($results as $key => $result) {
-                $extraDiagramParams[$key] = [];
-
-//                if (!empty($params['segments'][$key]['data_requirements']['technical_metrics'])) {
-//
-//                    $histogram = new Histogram();
-//
-//                    $buckets = $histogram->generate($result);
-//
-//                    foreach ($buckets as $time => $bucket) {
-//                        $dataForDiagram[$key][$time] = $bucket;
-//                    }
-//                    //}
-//                }
-
-                if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
-                    $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
-                    if ('bounce_rate' === $metrics[0]) {
-                        $bounceRateCalculator = new \App\BasicRum\Report\Data\BounceRate();
-
-                        $buckets = $bounceRateCalculator->generate($result);
-
-                        foreach ($buckets as $time => $bucket) {
-                            $dataForDiagram[$key][$time] = $bucket;
-                        }
-
-                        $extraDiagramParams[$key] = ['yaxis' => 'y2'];
-
-                        $extraLayoutParams['yaxis2'] = [
-                            'overlaying' => 'y',
-                            'side' => 'right',
-                            'showgrid' => false,
-                            'tickvals' => [25, 50, 60, 70, 80, 100],
-                            'ticktext' => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
-                            'range' => [50, 85],
-                            'fixedrange' => true,
-                        ];
-
-                        foreach ($dataForDiagram[$key] as $brkey => $v) {
-                            // Add annotation only on every second
-                            if (0 != $brkey % 1000) {
-                                continue;
-                            }
-
-                            $extraLayoutParams['annotations'][] = [
-                                'xref' => 'x',
-                                'yref' => 'y2',
-                                'x' => $brkey,
-                                'y' => $v,
-                                'xanchor' => 'center',
-                                'yanchor' => 'bottom',
-                                'text' => $v.'%',
-                                'showarrow' => false,
-                                'font' => [
-                                    'family' => 'Arial',
-                                    'size' => 12,
-                                    'color' => 'black',
-                                ],
-                            ];
-                        }
-                    }
-                }
+            $businessMetrics = new PlaneBusinessMetrics($this->results, $params);
+            $technicalMetrics = new PlaneTechnicalMetrics($this->results, $params);
+            foreach ($this->results as $key => $result) {
+                $businessMetrics->proceed($key);
+                $technicalMetrics->proceed($key);
             }
+
+            $this->setProperty($this->dataForDiagram, $businessMetrics->getDataForDiagram());
+            $this->setProperty($this->extraDiagramParams, $businessMetrics->getExtraDiagramParams());
+            $this->setProperty($this->extraLayoutParams, $businessMetrics->getExtraLayoutParams());
+
+            $this->setProperty($this->dataForDiagram, $technicalMetrics->getDataForDiagram());
+            $this->setProperty($this->extraDiagramParams, $technicalMetrics->getExtraDiagramParams());
+            $this->setProperty($this->extraLayoutParams, $technicalMetrics->getExtraLayoutParams());
         } catch (\Throwable $e) {
+            echo $e->getMessage().PHP_EOL;
+            echo $e->getFile().': '.$e->getLine().PHP_EOL;
             $hasError = true;
         }
 
-        $view = new ViewRenderTypePlane($layout);
+        $view = new ViewRenderTypePlane($this->layout);
 
-        $diagramData = $view->build(
-            $dataForDiagram,
-            $params,
-            $extraLayoutParams,
-            $extraDiagramParams,
+        // It has to be sorted. Because order here has huge impact
+        // probably object would be more suitable here
+        ksort($this->dataForDiagram);
+
+        return $view->build(
+            $this->dataForDiagram,
+            $this->params,
+            $this->extraLayoutParams,
+            $this->extraDiagramParams,
             $hasError
         );
-
-        return $diagramData;
     }
 
-    /**
-     * @todo break it into methods
-     */
-    public function processBusinessMetrics()
+    public function setExtraDiagramParams(array $extraDiagramParams): void
     {
-        foreach ($this->results as $key => $result) {
-            $extraDiagramParams[$key] = [];
+        $this->extraDiagramParams = array_merge($this->extraDiagramParams, $extraDiagramParams);
+    }
 
-            if (!empty($params['segments'][$key]['data_requirements']['business_metrics'])) {
-                $metrics = array_keys($params['segments'][$key]['data_requirements']['business_metrics']);
-                if ('bounce_rate' === $metrics[0]) {
-                    $bounceRateCalculator = new BounceRate();
-
-                    $buckets = $bounceRateCalculator->generate($result);
-
-                    foreach ($buckets as $time => $bucket) {
-                        $dataForDiagram[$key][$time] = $bucket;
-                    }
-
-                    $extraDiagramParams[$key] = ['yaxis' => 'y2'];
-
-                    $extraLayoutParams['yaxis2'] = [
-                        'overlaying' => 'y',
-                        'side' => 'right',
-                        'showgrid' => false,
-                        'tickvals' => [25, 50, 60, 70, 80, 100],
-                        'ticktext' => ['25 %', '50 %', '60 %', '70 %', '80 %', '100 %'],
-                        'range' => [50, 85],
-                        'fixedrange' => true,
-                    ];
-
-                    foreach ($dataForDiagram[$key] as $brkey => $v) {
-                        // Add annotation only on every second
-                        if (0 != $brkey % 1000) {
-                            continue;
-                        }
-
-                        $extraLayoutParams['annotations'][] = [
-                            'xref' => 'x',
-                            'yref' => 'y2',
-                            'x' => $brkey,
-                            'y' => $v,
-                            'xanchor' => 'center',
-                            'yanchor' => 'bottom',
-                            'text' => $v.'%',
-                            'showarrow' => false,
-                            'font' => [
-                                'family' => 'Arial',
-                                'size' => 12,
-                                'color' => 'black',
-                            ],
-                        ];
-                    }
-                }
+    private function setProperty(&$property, ?array $data)
+    {
+        if (!empty($data) && \is_array($data)) {
+            foreach ($data as $index => $value) {
+                $property[$index] = $value;
             }
         }
     }
 
-    public function processTechnicalMetrics()
+    public function setDataForDiagram(array $dataForDiagram): void
     {
-        foreach ($this->results as $key => $result) {
-            $extraDiagramParams[$key] = [];
-
-            if (!empty($this->params['segments'][$key]['data_requirements']['technical_metrics'])) {
-                $histogram = new Histogram();
-
-                $buckets = $histogram->generate($result);
-
-                foreach ($buckets as $time => $bucket) {
-                    $this->dataForDiagram[$key][$time] = $bucket;
-                }
-            }
+//        $this->dataForDiagram = array_merge($this->dataForDiagram, $dataForDiagram);
+        foreach ($dataForDiagram as $key => $value) {
+            $this->dataForDiagram[$key] = $value;
         }
+    }
+
+    public function setExtraLayoutParams(?array $extraLayoutParams): void
+    {
+        $this->extraLayoutParams = array_merge($this->extraLayoutParams, $extraLayoutParams);
     }
 
     /**
