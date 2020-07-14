@@ -23,7 +23,6 @@ class Plane implements RenderTypeInterface
 
     public function __construct(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository)
     {
-//        print_r($params);
         $this->diagramOrchestrator = $diagramOrchestrator;
         $this->params = $params;
         $this->releaseRepository = $releaseRepository;
@@ -74,11 +73,6 @@ class Plane implements RenderTypeInterface
         );
     }
 
-    public function setExtraDiagramParams(array $extraDiagramParams): void
-    {
-        $this->extraDiagramParams = array_merge($this->extraDiagramParams, $extraDiagramParams);
-    }
-
     private function setProperty(&$property, ?array $data)
     {
         if (!empty($data) && \is_array($data)) {
@@ -86,19 +80,6 @@ class Plane implements RenderTypeInterface
                 $property[$index] = $value;
             }
         }
-    }
-
-    public function setDataForDiagram(array $dataForDiagram): void
-    {
-//        $this->dataForDiagram = array_merge($this->dataForDiagram, $dataForDiagram);
-        foreach ($dataForDiagram as $key => $value) {
-            $this->dataForDiagram[$key] = $value;
-        }
-    }
-
-    public function setExtraLayoutParams(?array $extraLayoutParams): void
-    {
-        $this->extraLayoutParams = array_merge($this->extraLayoutParams, $extraLayoutParams);
     }
 
     /**
