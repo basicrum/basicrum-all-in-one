@@ -24,6 +24,6 @@ class RenderTypeFactory
     {
         $render = new $this->renderTypeClassMap[$this->renderType]($diagramOrchestrator, $params, $releaseRepository);
 
-        return $render->build($diagramOrchestrator, $params, $releaseRepository);
+        return $render->build();
     }
 }

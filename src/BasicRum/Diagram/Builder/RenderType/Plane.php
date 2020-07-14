@@ -15,7 +15,6 @@ class Plane implements RenderTypeInterface
     private $diagramOrchestrator;
     private $params;
     private $releaseRepository;
-    private $layout;
     private $dataForDiagram;
     private $extraDiagramParams;
     private $extraLayoutParams;
@@ -26,20 +25,19 @@ class Plane implements RenderTypeInterface
         $this->diagramOrchestrator = $diagramOrchestrator;
         $this->params = $params;
         $this->releaseRepository = $releaseRepository;
-        $this->layout = new Layout();
         $this->dataForDiagram = [];
         $this->extraDiagramParams = [];
         $this->extraLayoutParams = $this->getExtraLayoutParams($params);
         $this->results = $diagramOrchestrator->process();
     }
 
-    public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
+    public function build(): array
     {
         $hasError = false;
 
         try {
-            $businessMetrics = new PlaneBusinessMetrics($this->results, $params);
-            $technicalMetrics = new PlaneTechnicalMetrics($this->results, $params);
+            $businessMetrics = new PlaneBusinessMetrics($this->results, $this->params);
+            $technicalMetrics = new PlaneTechnicalMetrics($this->results, $this->params);
             foreach ($this->results as $key => $result) {
                 $businessMetrics->proceed($key);
                 $technicalMetrics->proceed($key);
@@ -53,16 +51,14 @@ class Plane implements RenderTypeInterface
             $this->setProperty($this->extraDiagramParams, $technicalMetrics->getExtraDiagramParams());
             $this->setProperty($this->extraLayoutParams, $technicalMetrics->getExtraLayoutParams());
         } catch (\Throwable $e) {
-            echo $e->getMessage().PHP_EOL;
-            echo $e->getFile().': '.$e->getLine().PHP_EOL;
             $hasError = true;
         }
 
-        $view = new ViewRenderTypePlane($this->layout);
+        $view = new ViewRenderTypePlane(new Layout());
 
         // It has to be sorted. Because order here has huge impact
         // probably object would be more suitable here
-        ksort($this->dataForDiagram);
+        $this->sortDataForDiagram();
 
         return $view->build(
             $this->dataForDiagram,
@@ -71,6 +67,11 @@ class Plane implements RenderTypeInterface
             $this->extraDiagramParams,
             $hasError
         );
+    }
+
+    public function sortDataForDiagram()
+    {
+        ksort($this->dataForDiagram);
     }
 
     private function setProperty(&$property, ?array $data)
