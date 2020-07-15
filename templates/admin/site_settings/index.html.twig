@@ -21,7 +21,6 @@
             </td>
             <td>
                 <input
-{#                    type="text"#}
                     name="value[{{ item.id }}]"
                     value="{{ item.value }}"
                     class="form-control"
@@ -53,7 +52,6 @@
                 var formData = $('#settings-form').serialize();
                 $.post('{{ path('admin_site_settings_save') }}', formData)
                     .done(function(response){
-                        console.log(response);
                         alert(response.message);
                     })
                     .fail(function(){
