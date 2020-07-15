@@ -75,3 +75,6 @@ docker_push: # Push new docker image to docker hub
 
 docker_login: # Login to docker hub
 	docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+
+cs_fixer: # Runs php-cs-fixer
+	vendor/bin/php-cs-fixer fix --config=./.php_cs
