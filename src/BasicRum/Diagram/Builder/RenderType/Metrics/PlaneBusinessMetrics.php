@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\BasicRum\Diagram\Builder\RenderType\Metrics;
 
 use App\BasicRum\Report\Data\BounceRate;
@@ -25,7 +27,7 @@ class PlaneBusinessMetrics
         }
     }
 
-    public function proceed($key)
+    public function proceed(int $key): void
     {
         $this->extraDiagramParams[$key] = [];
         if ($this->isBounceRate($this->params['segments'][$key])) {
@@ -38,7 +40,7 @@ class PlaneBusinessMetrics
     /**
      * @param $param $params['segments'][$key]
      */
-    private function isBounceRate($param)
+    private function isBounceRate(array $param): bool
     {
         if (!empty($param['data_requirements']['business_metrics'])) {
             $metrics = array_keys($param['data_requirements']['business_metrics']);
@@ -49,7 +51,7 @@ class PlaneBusinessMetrics
         return false;
     }
 
-    private function generateDataForDiagram(array $result, int $key)
+    private function generateDataForDiagram(array $result, int $key): void
     {
         $bounceRateCalculator = new BounceRate();
 
@@ -63,12 +65,12 @@ class PlaneBusinessMetrics
         $this->extraDiagramParams[$key] = ['yaxis' => 'y2'];
     }
 
-    private function generateExtraDiagramParams(int $key)
+    private function generateExtraDiagramParams(int $key): void
     {
         $this->extraDiagramParams[$key] = ['yaxis' => 'y2'];
     }
 
-    private function generateExtraLayoutParams(int $key)
+    private function generateExtraLayoutParams(int $key): void
     {
         $this->extraLayoutParams['yaxis2'] = [
             'overlaying' => 'y',

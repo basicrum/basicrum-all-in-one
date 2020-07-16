@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\BasicRum\Diagram\Builder\RenderType;
 
 use App\BasicRum\Diagram\Builder\RenderType\Metrics\PlaneBusinessMetrics;
@@ -69,12 +71,12 @@ class Plane implements RenderTypeInterface
         );
     }
 
-    public function sortDataForDiagram()
+    private function sortDataForDiagram(): void
     {
         ksort($this->dataForDiagram);
     }
 
-    private function setProperty(&$property, ?array $data)
+    private function setProperty(&$property, ?array $data): void
     {
         if (!empty($data) && \is_array($data)) {
             foreach ($data as $index => $value) {

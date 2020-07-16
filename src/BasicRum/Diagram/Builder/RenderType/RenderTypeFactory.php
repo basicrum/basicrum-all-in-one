@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\BasicRum\Diagram\Builder\RenderType;
 
 use App\BasicRum\DiagramOrchestrator;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\BasicRum\Diagram\Builder\RenderType;
 
 use App\BasicRum\Diagram\View\Layout;
@@ -65,7 +67,7 @@ class TimeSeries implements RenderTypeInterface
     /**
      * @param array $extraDiagramParams
      */
-    public function setExtraLayoutParams(): array
+    private function setExtraLayoutParams(): array
     {
         if (!empty($this->params['global']['presentation']['layout'])) {
             return $this->params['global']['presentation']['layout'];

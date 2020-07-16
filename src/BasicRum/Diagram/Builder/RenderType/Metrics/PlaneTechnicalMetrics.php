@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\BasicRum\Diagram\Builder\RenderType\Metrics;
 
 use App\BasicRum\Report\Data\Histogram;
 
-class PlaneTechnicalMetrics
+class PlaneTechnicalMetrics implements PlaneMetricsInterface
 {
     private $results;
     private $params;
@@ -24,7 +26,7 @@ class PlaneTechnicalMetrics
         }
     }
 
-    public function proceed($key): void
+    public function proceed(int $key): void
     {
         $this->extraDiagramParams[$key] = [];
 
@@ -40,7 +42,7 @@ class PlaneTechnicalMetrics
         return $histogram->generate($result);
     }
 
-    private function generateDataForDiagram(array $result, string $key): void
+    private function generateDataForDiagram(array $result, int $key): void
     {
         foreach ($this->generateBuckets($result) as $time => $bucket) {
             $this->dataForDiagram[$key][$time] = $bucket;
