@@ -9,10 +9,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SiteSettingsController extends AbstractController
 {
-    private $sAliases = [
-        'site_email_address_from' => 'Email Address From',
-        'site_email_name_from' => 'Name From',
-        'site_email_reset_password_subject' => 'Reset Email Subject',
+    private $settingsAliases = [
+        'site_email_address_from' => [
+            'validation_rules' => [
+                'type' => 'email',
+                'minlength' => 3,
+                'required' => '',
+            ],
+            'alias' => 'Email Address From',
+        ],
+        'site_email_name_from' => [
+            'validation_rules' => [
+                'type' => 'text',
+                'minlength' => '3',
+                'required' => '',
+            ],
+            'alias' => 'Name From',
+        ],
+        'site_email_reset_password_subject' => [
+            'validation_rules' => [
+                'type' => 'text',
+                'minlength' => 3,
+                'required' => '',
+            ],
+            'alias' => 'Reset Password Email Subject',
+        ],
     ];
 
     /**
@@ -25,9 +46,8 @@ class SiteSettingsController extends AbstractController
             ->findAll();
 
         return $this->render('admin/site_settings/index.html.twig', [
-            'controller_name' => 'SiteSettingsController',
             'settings' => $settings,
-            'aliases' => $this->sAliases,
+            'aliases' => $this->settingsAliases,
         ]);
     }
 
@@ -36,15 +56,25 @@ class SiteSettingsController extends AbstractController
      */
     public function save(Request $request)
     {
+        $response = [
+            'status' => 'success',
+            'message' => 'Saved Successfully',
+        ];
+
         $entityManager = $this->getDoctrine()->getManager();
         foreach ($request->request->get('name') as $key => $v) {
             $entry = $entityManager->getRepository(SiteSettings::class)->find($key);
             if (!$entry) {
-                throw $this->createNotFoundException('No entry found for id '.$id);
+                $response = [
+                    'status' => 'error',
+                    'message' => $v.' No such entry found',
+                ];
             }
 
             $entry->setValue($request->request->get('value')[$key]);
             $entityManager->flush();
         }
+
+        return $this->json($response);
     }
 }
