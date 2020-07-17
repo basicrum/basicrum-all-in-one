@@ -12,5 +12,5 @@ interface PlaneMetricsInterface
 
     public function getExtraDiagramParams(): array;
 
-    public function getExtraLayoutParams(): ?array;
+    public function getExtraLayoutParams(): array;
 }

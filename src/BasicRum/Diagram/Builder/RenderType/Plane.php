@@ -85,12 +85,7 @@ class Plane implements RenderTypeInterface
         }
     }
 
-    /**
-     * @param array $params
-     *
-     * @return array
-     */
-    private function getExtraLayoutParams(?array $params): ?array
+    private function getExtraLayoutParams(array $params): array
     {
         $extraLayoutParams = [];
 

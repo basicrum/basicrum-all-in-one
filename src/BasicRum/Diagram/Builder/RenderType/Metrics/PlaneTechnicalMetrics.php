@@ -20,6 +20,7 @@ class PlaneTechnicalMetrics implements PlaneMetricsInterface
         $this->params = $params;
         $this->dataForDiagram = [];
         $this->extraDiagramParams = [];
+        $this->extraLayoutParams = [];
 
         if (!empty($params['global']['presentation']['layout'])) {
             $this->extraLayoutParams = $params['global']['presentation']['layout'];
@@ -62,7 +63,7 @@ class PlaneTechnicalMetrics implements PlaneMetricsInterface
     /**
      * @return mixed
      */
-    public function getExtraLayoutParams(): ?array
+    public function getExtraLayoutParams(): array
     {
         return $this->extraLayoutParams;
     }
