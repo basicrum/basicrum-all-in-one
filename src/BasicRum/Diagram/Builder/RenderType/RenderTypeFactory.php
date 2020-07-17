@@ -6,8 +6,6 @@ namespace App\BasicRum\Diagram\Builder\RenderType;
 
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
-use Exception;
-use Throwable;
 
 class RenderTypeFactory
 {
@@ -25,7 +23,7 @@ class RenderTypeFactory
 
         try {
             $this->checkIfRenderTypeExits();
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             throw $e;
         }
     }
@@ -33,7 +31,7 @@ class RenderTypeFactory
     public function checkIfRenderTypeExits(): void
     {
         if (!\array_key_exists($this->renderType, $this->renderTypeClassMap)) {
-            throw new Exception('No suitable render type factory found for: '.$this->renderType);
+            throw new \Exception('No suitable render type factory found for: '.$this->renderType);
         }
     }
 
