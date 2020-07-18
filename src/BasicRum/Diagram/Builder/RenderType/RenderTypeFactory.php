@@ -6,39 +6,26 @@ namespace App\BasicRum\Diagram\Builder\RenderType;
 
 use App\BasicRum\DiagramOrchestrator;
 use App\BasicRum\Release;
+use App\BasicRum\RenderTypeInterface;
 
-class RenderTypeFactory
+final class RenderTypeFactory
 {
-    private $renderType;
-
-    private $renderTypeClassMap = [
-        'plane' => Plane::class,
-        'time_series' => TimeSeries::class,
-        'distribution' => Distribution::class,
-    ];
-
-    public function __construct(string $type)
+    public static function build(string $renderType, DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): RenderTypeInterface
     {
-        $this->renderType = $type;
+        $renderTypeClassMap = [
+            'plane' => Plane::class,
+            'time_series' => TimeSeries::class,
+            'distribution' => Distribution::class,
+        ];
 
         try {
-            $this->checkIfRenderTypeExits();
+            if (!\array_key_exists($renderType, $renderTypeClassMap)) {
+                throw new \Exception('Unknown render type passed: '.$renderType);
+            }
         } catch (\Throwable $e) {
             throw $e;
         }
-    }
 
-    public function checkIfRenderTypeExits(): void
-    {
-        if (!\array_key_exists($this->renderType, $this->renderTypeClassMap)) {
-            throw new \Exception('No suitable render type factory found for: '.$this->renderType);
-        }
-    }
-
-    public function build(DiagramOrchestrator $diagramOrchestrator, array $params, Release $releaseRepository): array
-    {
-        $render = new $this->renderTypeClassMap[$this->renderType]($diagramOrchestrator, $params, $releaseRepository);
-
-        return $render->build();
+        return new $renderTypeClassMap[$renderType]($diagramOrchestrator, $params, $releaseRepository);
     }
 }

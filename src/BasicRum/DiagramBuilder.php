@@ -12,8 +12,8 @@ class DiagramBuilder
     {
         $renderType = $params['global']['presentation']['render_type'];
 
-        $render = new RenderTypeFactory($renderType);
+        $render = RenderTypeFactory::build($renderType, $diagramOrchestrator, $params, $releaseRepository);
 
-        return $render->build($diagramOrchestrator, $params, $releaseRepository);
+        return $render->build();
     }
 }
