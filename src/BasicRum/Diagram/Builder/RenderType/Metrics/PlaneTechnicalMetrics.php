@@ -27,7 +27,7 @@ class PlaneTechnicalMetrics implements PlaneMetricsInterface
         }
     }
 
-    public function proceed(int $key): void
+    public function generate(int $key): void
     {
         $this->extraDiagramParams[$key] = [];
 

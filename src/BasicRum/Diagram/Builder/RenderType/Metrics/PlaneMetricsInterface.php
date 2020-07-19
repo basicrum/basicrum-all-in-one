@@ -6,7 +6,7 @@ namespace App\BasicRum\Diagram\Builder\RenderType\Metrics;
 
 interface PlaneMetricsInterface
 {
-    public function proceed(int $key): void;
+    public function generate(int $key): void;
 
     public function getDataForDiagram(): array;
 

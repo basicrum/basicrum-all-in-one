@@ -27,7 +27,7 @@ class PlaneBusinessMetrics
         }
     }
 
-    public function proceed(int $key): void
+    public function generate(int $key): void
     {
         $this->extraDiagramParams[$key] = [];
         if ($this->isBounceRate($this->params['segments'][$key])) {

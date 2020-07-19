@@ -41,8 +41,8 @@ class Plane implements RenderTypeInterface
             $businessMetrics = new PlaneBusinessMetrics($this->results, $this->params);
             $technicalMetrics = new PlaneTechnicalMetrics($this->results, $this->params);
             foreach ($this->results as $key => $result) {
-                $businessMetrics->proceed($key);
-                $technicalMetrics->proceed($key);
+                $businessMetrics->generate($key);
+                $technicalMetrics->generate($key);
             }
 
             $this->setProperty($this->dataForDiagram, $businessMetrics->getDataForDiagram());
