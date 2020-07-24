@@ -208,6 +208,7 @@
             </footer>
         </div>
     </div>
+
     <!--End Container-->
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!--<script src="http://code.jquery.com/jquery.js"></script>-->
@@ -231,6 +232,22 @@
     <script>
         BASIC_RUM_APP.init();
     </script>
+
+    <!-- The Session Expiration Countdown Modal -->
+    <div class="modal fade" id="sessionWarningModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-right">
+                    <div>Your session is about to expire in <span id="session_timer" class="text-danger"></span></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="modal-session-continue">Extend Session</button>
+                    <a href="{{ path('app_logout') }}"><button type="button" class="btn btn-danger" id="modal-logout-button">Logout</button></a>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     </body>
 </html>

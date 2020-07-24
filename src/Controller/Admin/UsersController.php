@@ -122,4 +122,26 @@ class UsersController extends AbstractController
             ],
         ]);
     }
+
+    /**
+     * @Route("/admin/user/check-session", name="admin_check_session")
+     */
+    public function checkSession()
+    {
+        try {
+            if (PHP_SESSION_ACTIVE != session_status() || !$this->getUser()->getId()) {
+                throw new \Exception('Session is not active');
+            }
+
+            return $this->json([
+                'status' => 'success',
+                'message' => 'Session is Alive',
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'Session Error',
+            ]);
+        }
+    }
 }
