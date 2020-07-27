@@ -109,6 +109,7 @@
             }
 
             // don't allow a handler to be attached more than once to the same event
+            ev = impl.events[e_name];
             for (i = 0; i < impl.events[e_name].length; i++) {
                 handler = ev[i];
                 if (handler && handler.fn === fn && handler.cb_data === cb_data && handler.scope === cb_scope) {
