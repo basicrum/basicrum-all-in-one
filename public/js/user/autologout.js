@@ -43,7 +43,7 @@ sessionCountdownTimer = (function(){
      */
     var setEvent = function(){
         if (ajaxEvent === false) {
-            BASIC_RUM_APP.subscribe("load_content", function(){
+            BASIC_RUM_APP.subscribe("dynamic_content_loaded", function(){
                 stop();
                 reset();
                 start();
