@@ -37,3 +37,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> some testing stuff ###
+/test-workflow.sh
+###< some testing stuff ###

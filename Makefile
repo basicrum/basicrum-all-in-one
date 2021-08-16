@@ -7,6 +7,7 @@ TAG := $(shell git tag --points-at HEAD | head -1)
 
 dc_path=docker/docker-compose.yml
 app_container=symfony_app
+crons_container=crons
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -31,6 +32,9 @@ destroy: ## Destroy local environment
 
 jumpapp: ## Jump to the app container
 	docker-compose -f ${dc_path} exec ${app_container} bash
+
+jumpcrons: ## Jump to the crons container
+	docker-compose -f ${dc_path} exec ${crons_container} bash
 
 test: ## Start tests on local environment
 	docker-compose -f ${dc_path} exec ${app_container} ./bin/phpunit

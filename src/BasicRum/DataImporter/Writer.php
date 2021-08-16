@@ -13,10 +13,10 @@ class Writer
     {
         // Test Connection to ClickHouse
         $config = [
-            'host' => '172.17.0.1',
-            'port' => '8123',
-            'username' => 'default',
-            'password' => ''
+            'host' => getenv('CLICKHOUSE_HOST'),
+            'port' => getenv('CLICKHOUSE_PORT'),
+            'username' => getenv('CLICKHOUSE_USER'),
+            'password' => getenv('CLICKHOUSE_PASS')
         ];
 
         $this->client = new Client($config);

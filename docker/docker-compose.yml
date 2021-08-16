@@ -7,8 +7,6 @@ services:
     build:
       context: symfony_app
       dockerfile: Dockerfile
-      args:
-        XDEBUG_ON: "${XDEBUG_ON:-N}" # just add XDEBUG_ON=Y to your .env and `make restart`
     container_name: basicrum_bo_php
     env_file:
       - app.env
@@ -27,8 +25,11 @@ services:
       context: crons
       dockerfile: Dockerfile
     container_name: basicrum_bo_crons
-    env_file:
-      - app.env
+    environment:
+      - CLICKHOUSE_HOST=172.17.0.1
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASS=
     volumes:
       - ./..:/var/www/html:delegated
     networks:
