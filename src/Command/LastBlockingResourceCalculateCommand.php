@@ -14,13 +14,8 @@ class LastBlockingResourceCalculateCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:last-blocking-resource:calculate';
 
-    /** @var \Doctrine\Persistence\ManagerRegistry */
-    private $registry;
-
-    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    public function __construct()
     {
-        $this->registry = $registry;
-
         parent::__construct();
     }
 

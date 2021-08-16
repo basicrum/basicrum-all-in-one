@@ -3,7 +3,7 @@
 namespace App\Tests\BasicRum\DiagramBuilder;
 
 use App\BasicRum\DiagramBuilder;
-use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\DataFetcher;
 use App\BasicRum\Release;
 use App\Tests\BasicRum\FixturesTestCase;
 
@@ -123,12 +123,12 @@ class SegmentsDeviceDistributionTest extends FixturesTestCase
             ],
         ];
 
-        $diagramOrchestrator = $this->getMockBuilder(DiagramOrchestrator::class)
+        $dataFetcher = $this->getMockBuilder(DataFetcher::class)
             ->setMethods(['process'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $diagramOrchestrator
+        $dataFetcher
             ->expects($this->atLeastOnce())
             ->method('process')
             ->willReturn(
@@ -162,7 +162,7 @@ class SegmentsDeviceDistributionTest extends FixturesTestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
+        $result = $diagramBuilder->build($dataFetcher, $input, $this->release);
 
         $mobileResult = array_combine($result['diagrams'][0]['x'], $result['diagrams'][0]['y']);
         $desktopResult = array_combine($result['diagrams'][1]['x'], $result['diagrams'][1]['y']);

@@ -10,7 +10,7 @@ class MetricsClassMap
     {
         return [
 <?php foreach ($metrics_config as $entry): ?>
-            <?= $entry['belongs_to']; ?>\<?= $entry['metric_name']; ?>\Collaborator::class,
+            <?= $entry['root_type']; ?>\<?= $entry['sub_type']; ?>\<?= $entry['metric_name']; ?>\Collaborator::class,
 <?php endforeach; ?>
         ];
     }

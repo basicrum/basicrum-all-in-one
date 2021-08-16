@@ -3,7 +3,7 @@
 namespace App\Tests\BasicRum\DiagramBuilder;
 
 use App\BasicRum\DiagramBuilder;
-use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\DataFetcher;
 use App\BasicRum\Release;
 use App\Tests\BasicRum\FixturesTestCase;
 
@@ -66,12 +66,12 @@ class FirstByteAndBounceRateTest extends FixturesTestCase
             ],
         ];
 
-        $diagramOrchestrator = $this->getMockBuilder(DiagramOrchestrator::class)
+        $dataFetcher = $this->getMockBuilder(DataFetcher::class)
             ->setMethods(['process'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $diagramOrchestrator
+        $dataFetcher
             ->expects($this->atLeastOnce())
             ->method('process')
             ->willReturn(
@@ -103,7 +103,7 @@ class FirstByteAndBounceRateTest extends FixturesTestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
+        $result = $diagramBuilder->build($dataFetcher, $input, $this->release);
 
         $nonZeroResult = array_filter($result['diagrams'][1]['y']);
 
@@ -148,12 +148,12 @@ class FirstByteAndBounceRateTest extends FixturesTestCase
             ],
         ];
 
-        $diagramOrchestrator = $this->getMockBuilder(DiagramOrchestrator::class)
+        $dataFetcher = $this->getMockBuilder(DataFetcher::class)
             ->setMethods(['process'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $diagramOrchestrator
+        $dataFetcher
             ->expects($this->atLeastOnce())
             ->method('process')
             ->willReturn(
@@ -174,7 +174,7 @@ class FirstByteAndBounceRateTest extends FixturesTestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
+        $result = $diagramBuilder->build($dataFetcher, $input, $this->release);
 
         //var_dump($result);
 
@@ -243,12 +243,12 @@ class FirstByteAndBounceRateTest extends FixturesTestCase
             ],
         ];
 
-        $diagramOrchestrator = $this->getMockBuilder(DiagramOrchestrator::class)
+        $dataFetcher = $this->getMockBuilder(DataFetcher::class)
             ->setMethods(['process'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $diagramOrchestrator
+        $dataFetcher
             ->expects($this->atLeastOnce())
             ->method('process')
             ->willReturn(
@@ -280,7 +280,7 @@ class FirstByteAndBounceRateTest extends FixturesTestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $this->release);
+        $result = $diagramBuilder->build($dataFetcher, $input, $this->release);
 
         $this->assertEquals(
             'Bounce Rate',

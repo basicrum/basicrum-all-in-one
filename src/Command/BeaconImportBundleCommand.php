@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\BasicRum\Beacon\Catcher\Storage\File;
-use App\BasicRum\Beacon\Importer\Process;
+use App\BasicRum\Beacon\Catcher\Storage\Bundle;
+use App\BasicRum\Beacon\Catcher\Storage\Archive;
+use App\BasicRum\DataImporter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,13 +16,8 @@ class BeaconImportBundleCommand extends Command
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'basicrum:beacon:import-bundle';
 
-    /** @var \Doctrine\Persistence\ManagerRegistry */
-    private $registry;
-
-    public function __construct(\Doctrine\Persistence\ManagerRegistry $registry)
+    public function __construct()
     {
-        $this->registry = $registry;
-
         parent::__construct();
     }
 
@@ -30,19 +26,25 @@ class BeaconImportBundleCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $storage = new File();
+        $bundleStorage = new Bundle();
 
-        $bundleFiles = $storage->getBundleFilePaths();
+        $bundleInHosts = $bundleStorage->listAvailableBundlesInHosts();
 
-        foreach ($bundleFiles as $file) {
-            $reader = new Process\Reader\CatcherService($file);
-            $process = new Process($this->registry);
 
-            $output->writeln('Importing bundle: '.$file);
 
-            $count = $process->runImport($reader);
+        $importer = new DataImporter();
 
-            $output->writeln('Beacons imported: '.$count);
+        foreach ($bundleInHosts as $host => $bundlesPaths) {
+            foreach ($bundlesPaths as $file) {
+
+                $dataToImport = json_decode(file_get_contents($file), true);
+    
+                $output->writeln('Importing bundle: '.$file);
+    
+                $count = $importer->import($host, $dataToImport);
+    
+                $output->writeln('Beacons imported: '.$count);
+            }
         }
 
         return 0;

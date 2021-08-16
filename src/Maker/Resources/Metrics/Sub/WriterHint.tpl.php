@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace <?= $namespace; ?>;
 
-use App\BasicRum\CoreObjects\Interfaces\WriterHintInterface;
+use App\BasicRum\Metrics\Interfaces\WriterHintInterface;
 
 class WriterHint implements WriterHintInterface
 {

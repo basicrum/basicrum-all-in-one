@@ -1,6 +1,0 @@
-twig:
-    paths: ['%kernel.project_dir%/templates']
-    debug: '%kernel.debug%'
-    strict_variables: '%kernel.debug%'
-    form_themes: ['bootstrap_4_layout.html.twig']
-    exception_controller: null

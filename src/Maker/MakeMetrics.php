@@ -24,13 +24,16 @@ final class MakeMetrics extends AbstractMaker
     public function configureCommand(Command $command, InputConfiguration $inputConf)
     {
         $command
-            ->setDescription('Created metrics from predefined config.')
+            ->setDescription('Creates metrics from predefined config.')
         ;
     }
 
     public function generate(InputInterface $input, ConsoleStyle $io, Generator $generator)
     {
         $metricsConfig = $this->getMetricsConfig();
+
+        print_r($metricsConfig);
+        exit;
 
         foreach ($metricsConfig as $config) {
             $this->createClass($config, 'BeaconExtract', $io, $generator);
@@ -42,7 +45,7 @@ final class MakeMetrics extends AbstractMaker
         }
 
         // Re-generate metrics class map
-        $classMapFile = __DIR__.'/../BasicRum/CoreObjects/MetricsClassMap.php';
+        $classMapFile = __DIR__.'/../BasicRum/Metrics/MetricsClassMap.php';
 
         if (file_exists($classMapFile)) {
             unlink($classMapFile);
@@ -50,7 +53,7 @@ final class MakeMetrics extends AbstractMaker
 
         $lassNameDetails = $generator->createClassNameDetails(
             'MetricsClassMap',
-            'BasicRum\\CoreObjects\\'
+            'BasicRum\\Metrics\\'
         );
 
         $classPath = $generator->generateClass(
@@ -66,15 +69,14 @@ final class MakeMetrics extends AbstractMaker
 
     private function createClass(array $config, $className, ConsoleStyle $io, Generator $generator)
     {
-        $belongsToFolder = $config['belongs_to'];
+        $rootType = $config['root_type'];
+        $subType = $config['sub_type'];
         $folderName = $config['metric_name'];
 
         // Re-generate metrics
-        $classFile = __DIR__.'/../BasicRum/CoreObjects/'.$belongsToFolder.'/'.$folderName.'/'.$className.'.php';
+        $classFile = __DIR__.'/../BasicRum/Metrics/'.$rootType.'/'.$subType.'/'.$folderName.'/'.$className.'.php';
 
         if (file_exists($classFile)) {
-            var_dump($className);
-
             if ('BeaconExtract' === $className) {
                 $io->note('Skipping: '.$classFile);
 
@@ -87,7 +89,7 @@ final class MakeMetrics extends AbstractMaker
 
         $lassNameDetails = $generator->createClassNameDetails(
             $className,
-            'BasicRum\\CoreObjects\\'.$belongsToFolder.'\\'.$folderName.'\\'
+            'BasicRum\\Metrics\\'.$rootType.'\\'.$subType.'\\'.$folderName.'\\'
         );
 
         $classPath = $generator->generateClass(

@@ -3,7 +3,7 @@
 namespace  App\Tests\BasicRum\Beacon;
 
 use App\BasicRum\Beacon\Importer\Process;
-use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\DataFetcher;
 use App\Tests\BasicRum\NoFixturesTestCase;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use PHPUnit\Runner\Exception;
@@ -74,9 +74,9 @@ class SimpleImportTest extends NoFixturesTestCase
             ],
         ];
 
-        /** @var DiagramOrchestrator $diagramOrchestrator */
-        $diagramOrchestrator = self::bootKernel()->getContainer()->get(DiagramOrchestrator::class);
-        $res = $diagramOrchestrator->load($input)->process();
+        /** @var DataFetcher $dataFetcherr */
+        $dataFetcher = self::bootKernel()->getContainer()->get(DataFetcher::class);
+        $res = $dataFetcher->load($input)->process();
 
         $this->assertEquals(
             [

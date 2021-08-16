@@ -3,7 +3,7 @@
 namespace App\Tests\BasicRum\DiagramBuilder;
 
 use App\BasicRum\DiagramBuilder;
-use App\BasicRum\DiagramOrchestrator;
+use App\BasicRum\DataFetcher;
 use App\BasicRum\Release;
 use App\Entity\Releases;
 use App\Tests\BasicRum\FixturesTestCase;
@@ -108,12 +108,12 @@ class DynamicReleaseTest extends FixturesTestCase
             ],
         ];
 
-        $diagramOrchestrator = $this->getMockBuilder(DiagramOrchestrator::class)
+        $dataFetcher = $this->getMockBuilder(DataFetcher::class)
             ->setMethods(['process'])
             ->disableOriginalConstructor()
             ->getMock();
 
-        $diagramOrchestrator
+        $dataFetcher
             ->expects($this->atLeastOnce())
             ->method('process')
             ->willReturn(
@@ -135,7 +135,7 @@ class DynamicReleaseTest extends FixturesTestCase
 
         $diagramBuilder = new DiagramBuilder();
 
-        $result = $diagramBuilder->build($diagramOrchestrator, $input, $release);
+        $result = $diagramBuilder->build($dataFetcher, $input, $release);
 
         $testArray = [
             'layout' => [

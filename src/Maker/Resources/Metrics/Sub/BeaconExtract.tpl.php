@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace <?= $namespace; ?>;
 
 <?php if ('int' === $return_type) : ?>
-use App\BasicRum\CoreObjects\Interfaces\BeaconExtractIntInterface;
+use App\BasicRum\Metrics\Interfaces\BeaconExtractIntInterface;
 <?php endif; ?>
 <?php if ('string' === $return_type) : ?>
-use App\BasicRum\CoreObjects\Interfaces\BeaconExtractStringInterface;
+use App\BasicRum\Metrics\Interfaces\BeaconExtractStringInterface;
 <?php endif; ?>
 
 

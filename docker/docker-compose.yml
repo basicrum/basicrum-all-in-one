@@ -19,8 +19,6 @@ services:
     command: # local dev only, should not be used for production
       - "php-fpm"
       - "-R"
-    depends_on:
-      - db
     networks:
       - basicrum_bo_network
 
@@ -33,24 +31,8 @@ services:
       - app.env
     volumes:
       - ./..:/var/www/html:delegated
-    depends_on:
-      - db
     networks:
       - basicrum_bo_network
-
-  db:
-    image: mysql:8.0.15
-    container_name: basicrum_bo_mysql
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
-      MYSQL_DATABASE: basicrum_demo
-      MYSQL_USER: basic
-      MYSQL_PASSWORD: rum
-    networks:
-      - basicrum_bo_network
-    ports:
-      - 3308:3306
 
   nginx:
     image: nginx:1.17-alpine
@@ -64,21 +46,6 @@ services:
       - symfony_app
     networks:
       - basicrum_bo_network
-
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5.0.2
-    container_name: basicrum_bo_phpmyadmin
-    restart: always
-    environment:
-      PMA_HOST: db
-      PMA_USER: basic
-      PMA_PASSWORD: rum
-    ports:
-      - "8087:80"
-    networks:
-      - basicrum_bo_network
-    depends_on:
-      - db
 
 networks:
   basicrum_bo_network:

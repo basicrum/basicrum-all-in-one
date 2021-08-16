@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace <?= $namespace; ?>;
 
-use App\BasicRum\CoreObjects\Interfaces\ReaderHintInterface;
+use App\BasicRum\Metrics\Interfaces\ReaderHintInterface;
 
 class ReaderHint implements ReaderHintInterface
 {

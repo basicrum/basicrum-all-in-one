@@ -606,7 +606,7 @@ class ResourceTimingDecompressor_v_0_3_4
      * @param {number} idx Index into array
      * @param {number} startTime NavigationTiming The Resource's startTime
      *
-     * @returns {number} Timestamp, or 0 if unknown or missing
+     * @return {number} Timestamp, or 0 if unknown or missing
      */
     private function decodeCompressedResourceTimeStamp($timings, $idx, $startTime)
     {
@@ -692,7 +692,7 @@ class ResourceTimingDecompressor_v_0_3_4
      *
      * @param {string} compressed Compressed string
      * @param {ResourceTiming} resource ResourceTiming object
-     * @returns {ResourceTiming} ResourceTiming object with decompressed special data
+     * @return {ResourceTiming} ResourceTiming object with decompressed special data
      */
     private function decompressSpecialData($compressed, $resource)
     {
