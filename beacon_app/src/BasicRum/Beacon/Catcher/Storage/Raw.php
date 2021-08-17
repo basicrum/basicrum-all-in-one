@@ -20,7 +20,9 @@ class Raw
 
     public function storeBeacon(string $beacon): void
     {
-        file_put_contents($this->generateFileName($beacon), $beacon);
+        $filename = $this->generateFileName($beacon);
+        file_put_contents($this->generateFileName($filename), $beacon);
+        chmod($filename, 0777);
     }
 
     /**
@@ -42,7 +44,7 @@ class Raw
         $storagePath = $this->base->getRawBeaconsHostDir($hostNormalized);
 
         if (!is_dir($storagePath)) {
-            mkdir($storagePath);
+            mkdir($storagePath, 0777);
         }
 
         return $storagePath . '/' . $hostNormalized . '_' . md5($beacon) . '-' . time() . '-' . rand(1, 99999) . '.json';

@@ -44,6 +44,9 @@ class BeaconImportBundleCommand extends Command
                 $count = $importer->import($host, $dataToImport);
     
                 $output->writeln('Beacons imported: '.$count);
+
+                // Cleanup/deleting imported bundles
+                unlink($file);
             }
         }
 

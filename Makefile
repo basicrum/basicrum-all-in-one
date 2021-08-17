@@ -12,7 +12,7 @@ crons_container=crons
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-init: up init_script  ## Initialise environment on a first start
+init: up init_script init_storage ## Initialise environment on a first start
 
 up: ## Starts a local environment
 	docker-compose -f ${dc_path} build
@@ -50,7 +50,7 @@ bundle_raw_beacons: ## Bundle Raw Beacons
 	docker-compose -f ${dc_path} exec -T ${app_container} ./bin/console basicrum:beacon:bundle-raw
 
 import_beacons_bundle: ## Import Beacons
-	docker-compose -f ${dc_path} exec -T ${app_container} ./bin/console basicrum:beacon:import-bundle
+	docker-compose -f ${dc_path} exec -T ${crons_container} ./bin/console basicrum:beacon:import-bundle
 
 docker_publish: docker_build docker_login docker_push ## Publish new image to docker hub
 

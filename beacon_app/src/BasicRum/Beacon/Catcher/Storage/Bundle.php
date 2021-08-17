@@ -55,13 +55,14 @@ class Bundle
         $absoluteDirPath = $this->base->getBundlesHostDir($directory);
 
         if (!is_dir($absoluteDirPath)) {
-            mkdir($absoluteDirPath);
+            mkdir($absoluteDirPath, 0777);
         }
 
         $name = time().'.json';
         $path = $absoluteDirPath.'/'.$name;
 
         file_put_contents($path, $content);
+        chmod($path, 0777);
     }
 
     public function listAvailableBundlesInHosts()
