@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
-[ ! -d '/app/vendor' ] && composer update symfony/flex --no-plugins && composer install --optimize-autoloader --no-interaction
+[ ! -d '/app/vendor' ] && composer install --optimize-autoloader --no-interaction

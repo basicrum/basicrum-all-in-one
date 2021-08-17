@@ -13,7 +13,6 @@ services:
     volumes:
       - ./..:/var/www/html:delegated
       - ./symfony_app/www.conf:/usr/local/etc/php-fpm.d/www.conf # local dev only, should not be used for production
-      - ./symfony_app/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini # local dev only, should not be used for production
     command: # local dev only, should not be used for production
       - "php-fpm"
       - "-R"
@@ -32,8 +31,8 @@ services:
       - CLICKHOUSE_PASS=
     volumes:
       - ./..:/var/www/html:delegated
-    networks:
-      - basicrum_bo_network
+    depends_on:
+      - symfony_app
 
   nginx:
     image: nginx:1.17-alpine

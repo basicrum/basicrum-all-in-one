@@ -15,7 +15,8 @@ help:
 init: up init_script  ## Initialise environment on a first start
 
 up: ## Starts a local environment
-	docker-compose -f ${dc_path} up -d --build
+	docker-compose -f ${dc_path} build --no-cache
+	docker-compose -f ${dc_path} up -d
 
 down: ## Stops a local environment
 	docker-compose -f ${dc_path} down
