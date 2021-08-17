@@ -5,7 +5,7 @@ SHELL=bash
 REPO := basicrum/backoffice_php_fpm
 TAG := $(shell git tag --points-at HEAD | head -1)
 
-dc_path=docker/docker-compose.yml
+dc_path=./docker-compose.yml
 app_container=symfony_app
 crons_container=crons
 
@@ -15,7 +15,7 @@ help:
 init: up init_script  ## Initialise environment on a first start
 
 up: ## Starts a local environment
-	docker-compose -f ${dc_path} build --no-cache
+	docker-compose -f ${dc_path} build
 	docker-compose -f ${dc_path} up -d
 
 down: ## Stops a local environment

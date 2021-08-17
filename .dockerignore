@@ -1,11 +1,12 @@
 *
 
-!/bin/
-!/config/
-!/public/
-!/src/
-!/templates/
-!/translations/
-!/.env
-!/composer.*
-!/symfony.lock
+!/beacon_app/bin/
+!/beacon_app/config/
+!/beacon_app/public/
+!/beacon_app/src/
+!/beacon_app/templates/
+!/beacon_app/translations/
+!/beacon_app/.env
+!/beacon_app/composer.json
+!/beacon_app/composer.lock
+!/beacon_app/symfony.lock

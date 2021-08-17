@@ -5,14 +5,14 @@ version: "3.7"
 services:
   symfony_app:
     build:
-      context: symfony_app
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: docker/symfony_app/Dockerfile
     container_name: basicrum_bo_php
     env_file:
       - app.env
     volumes:
-      - ./..:/var/www/html:delegated
-      - ./symfony_app/www.conf:/usr/local/etc/php-fpm.d/www.conf # local dev only, should not be used for production
+      - ./beacon_app:/var/www/html:delegated
+      - ./docker/symfony_app/www.conf:/usr/local/etc/php-fpm.d/www.conf # local dev only, should not be used for production
     command: # local dev only, should not be used for production
       - "php-fpm"
       - "-R"
@@ -21,8 +21,8 @@ services:
 
   crons:
     build:
-      context: crons
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: docker/symfony_app/Dockerfile
     container_name: basicrum_bo_crons
     environment:
       - CLICKHOUSE_HOST=172.17.0.1
@@ -30,7 +30,7 @@ services:
       - CLICKHOUSE_USER=default
       - CLICKHOUSE_PASS=
     volumes:
-      - ./..:/var/www/html:delegated
+      - ./beacon_app:/var/www/html:delegated
     depends_on:
       - symfony_app
 
@@ -38,8 +38,8 @@ services:
     image: nginx:1.17-alpine
     container_name: basicrum_bo_nginx
     volumes:
-      - ./../public/:/var/www/html:delegated
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./beacon_app:/var/www/html:delegated
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     ports:
       - 8086:80
     depends_on:
