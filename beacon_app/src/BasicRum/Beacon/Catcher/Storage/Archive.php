@@ -7,36 +7,43 @@ namespace App\BasicRum\Beacon\Catcher\Storage;
 class Archive
 {
 
+    /** @var Base */
+    private $base;
+
     public function __construct()
     {
-        
+        $this->base = new Base();
     }
 
-    public function archiveBundles() : int
+    public function archiveBundles($host, $filePath) : string
     {
-        $count = 0;
+        $baseName = basename($filePath);
 
-        foreach ($this->getBundleFilePaths() as $filePath) {
-            $baseName = basename($filePath);
+        $archiveHostDir = $this->base->getArchiveHostDir($host);
 
-            if (class_exists('\ZipArchive')) {
-                $zip = new \ZipArchive();
+        $generatedName = "";
 
-                $zipFileName = $baseName.'.zip';
-
-                if (true === $zip->open($this->getArchiveDir().'/'.$zipFileName, \ZipArchive::CREATE)) {
-                    $zip->addFile($filePath, basename($filePath));
-                    $zip->close();
-                    unlink($filePath);
-                }
-            } else {
-                rename($this->getBundlesDir().'/'.$baseName, $this->getArchiveDir().'/'.$baseName);
-            }
-
-            ++$count;
+        if (!is_dir($archiveHostDir)) {
+            mkdir($archiveHostDir, 0777);
         }
 
-        return $count;
+        if (class_exists('\ZipArchive')) {
+            $zip = new \ZipArchive();
+
+            $zipFileName = $baseName.'.zip';
+
+            $generatedName = $archiveHostDir.'/'.$zipFileName;
+
+            if (true === $zip->open($archiveHostDir.'/'.$zipFileName, \ZipArchive::CREATE)) {
+                $zip->addFile($filePath, basename($filePath));
+                $zip->close();
+            }
+        } else {
+            $generatedName = $archiveHostDir.'/'.$baseName;
+            rename($filePath, $archiveHostDir.'/'.$baseName);
+        }
+
+        return $generatedName;
     }
 
 }

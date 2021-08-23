@@ -22,7 +22,7 @@ services:
   crons:
     build:
       context: .
-      dockerfile: docker/symfony_app/Dockerfile
+      dockerfile: docker/crons/Dockerfile
     container_name: basicrum_bo_crons
     environment:
       - CLICKHOUSE_HOST=172.17.0.1

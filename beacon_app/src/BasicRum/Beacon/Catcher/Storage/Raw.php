@@ -60,6 +60,8 @@ class Raw
             return self::UNKNOWN_HOST_PLACEHOLDER;
         }
 
+        $host = str_replace('-', '_', $host);
+
         return str_replace('.', '_', $host);
     }
 

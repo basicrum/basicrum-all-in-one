@@ -40,10 +40,12 @@ class Bundle
                 ];
             }
     
-            $this->persistBundle($dir, json_encode($entries));
+            if (count($entries) > 0) {
+                $this->persistBundle($dir, json_encode($entries));
 
-            foreach ($beaconFiles as $filePath) {
-                unlink($filePath);
+                foreach ($beaconFiles as $filePath) {
+                    unlink($filePath);
+                }
             }
         }
 

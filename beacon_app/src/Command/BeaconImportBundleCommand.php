@@ -26,11 +26,10 @@ class BeaconImportBundleCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $archiveUtil = new Archive();
+
         $bundleStorage = new Bundle();
-
         $bundleInHosts = $bundleStorage->listAvailableBundlesInHosts();
-
-
 
         $importer = new DataImporter();
 
@@ -45,7 +44,10 @@ class BeaconImportBundleCommand extends Command
     
                 $output->writeln('Beacons imported: '.$count);
 
+                $output->writeln('Created archive: '.$archiveUtil->archiveBundles($host, $file));
+
                 // Cleanup/deleting imported bundles
+                $output->writeln('Deleting file: '.$file);
                 unlink($file);
             }
         }

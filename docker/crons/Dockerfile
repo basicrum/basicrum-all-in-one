@@ -14,8 +14,8 @@ RUN apk add --no-cache dcron libcap && \
     setcap cap_setgid=ep /usr/sbin/crond
 
 # Configure crons
-COPY --chown=www-data:www-data crontab /home/www-data/crontabs/www-data
+COPY --chown=www-data:www-data ./docker/crons/crontab /home/www-data/crontabs/www-data
 
 USER www-data
-COPY docker-entrypoint.sh /
+COPY /docker/crons/docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
