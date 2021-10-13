@@ -28,7 +28,14 @@ class DataImporter
         $refined = [];
 
         foreach ($data as $key => $beacon) {
-            $refined[$key] = json_decode($beacon["beacon_data"], true);
+            $bData = json_decode($beacon["beacon_data"], true);
+
+            // @todo: for now we just skip quit beacons but later we should import quit beacons and do analyzes
+            if (isset($bData["rt_quit"])) {
+                continue;
+            }
+
+            $refined[$key] = $bData;
 
             //fix date;
             // @todo: get the right date when persisting beacons and remove this hack!

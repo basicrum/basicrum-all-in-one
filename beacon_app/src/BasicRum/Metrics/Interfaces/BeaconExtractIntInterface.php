@@ -6,5 +6,5 @@ namespace App\BasicRum\Metrics\Interfaces;
 
 interface BeaconExtractIntInterface
 {
-    public function extractValue(array $beacon): int|null;
+    public function extractValue(array $beacon): mixed;
 }

@@ -11,6 +11,9 @@ class MetricsClassMap
         return [
             Simple\Technical\ConnectDuration\Collaborator::class,
             Simple\Technical\FirstContentfulPaint\Collaborator::class,
+            Simple\Technical\CumulativeLayoutShift\Collaborator::class,
+            Simple\Technical\LargestContentfulPaint\Collaborator::class,
+            Simple\Technical\FirstInputDelay\Collaborator::class,
             Simple\Technical\FirstPaint\Collaborator::class,
             Simple\Technical\LoadEventEnd\Collaborator::class,
             Simple\Technical\RedirectsCount\Collaborator::class,
