@@ -11,7 +11,7 @@ class BeaconExtract implements BeaconExtractIntInterface
 {
     public function extractValue(array $beacon): int|null
     {
-        if (empty($beacon['nt_con_end']) || empty($beacon['nt_con_end'])) {
+        if (empty($beacon['nt_con_end']) || empty($beacon['nt_con_st'])) {
             return null;
         }
 
