@@ -54,6 +54,8 @@ class Writer
                 simple_tm_first_paint UInt16,
                 simple_tm_load_event_end Nullable(UInt16),
                 simple_tm_redirects_count UInt8,
+                simple_bm_session_length UInt8,
+                simple_bm_url String,
                 simple_tm_time_to_first_byte Nullable(UInt16),
                 simple_tm_dns_duration Nullable(UInt16),
                 simple_tm_redirect_duration Nullable(UInt16),

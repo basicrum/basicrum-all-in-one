@@ -22,6 +22,8 @@ class MetricsClassMap
             Simple\Technical\RedirectDuration\Collaborator::class,
             Simple\Technical\DownloadTime\Collaborator::class,
             Simple\Business\SessionId\Collaborator::class,
+            Simple\Business\SessionLength\Collaborator::class,
+            Simple\Business\Url\Collaborator::class,
             Simple\Business\UserAgent\Collaborator::class,
             Simple\Business\RequestType\Collaborator::class,
             Simple\Business\CreatedAt\Collaborator::class,
