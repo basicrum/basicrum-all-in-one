@@ -12,6 +12,20 @@ class Collaborator
 
     const GROUP = 'perf_metrics';
 
+    const DB_COLUMN_TYPE = "Nullable(UInt16)";
+
+    const DB_COLUMN_NAME = "largest_contentful_paint";
+
+    public function getDbColumnType(): string
+    {
+        return self::DB_COLUMN_TYPE;
+    }
+
+    public function getDbColumnName(): string
+    {
+        return self::DB_COLUMN_NAME;
+    }
+
     public function isDerived(): bool
     {
         return false;
@@ -52,8 +66,4 @@ class Collaborator
         return new ReaderHint();
     }
 
-    public function dataFlavorsLink(): DataFlavorsLink
-    {
-        return new DataFlavorsLink();
-    }
 }

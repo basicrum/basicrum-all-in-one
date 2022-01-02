@@ -57,7 +57,7 @@ class ImportCollaborator
 
         foreach ($this->collaborators as $collaborator) {
             if (!$collaborator->isDerived()) {
-                $dataExtractors[$collaborator->getId()] = [
+                $dataExtractors[$collaborator->getDbColumnName()] = [
                     $collaborator->beaconExtract(),
                     "extractValue"
                 ];
@@ -77,7 +77,7 @@ class ImportCollaborator
                     $dataExtractors[$collaborator->derivedFromMetricOnImport()] = [];
                 }
 
-                $dataExtractors[$collaborator->derivedFromMetricOnImport()][$collaborator->getId()] = [
+                $dataExtractors[$collaborator->derivedFromMetricOnImport()][$collaborator->getDbColumnName()] = [
                     $collaborator->derivedDataExtract(),
                     "extractValue"
                 ];

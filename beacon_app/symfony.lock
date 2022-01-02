@@ -65,6 +65,9 @@
     "doctrine/sql-formatter": {
         "version": "1.1.0"
     },
+    "donatj/mock-webserver": {
+        "version": "v2.4.0"
+    },
     "egulias/email-validator": {
         "version": "2.1.4"
     },
@@ -187,6 +190,9 @@
     "psr/log": {
         "version": "1.0.2"
     },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
+    },
     "sebastian/cli-parser": {
         "version": "1.0.1"
     },
@@ -285,9 +291,6 @@
             "version": "4.1",
             "ref": "f8863cbad2f2e58c4b65fa1eac892ab189971bea"
         }
-    },
-    "symfony/debug-pack": {
-        "version": "v1.0.5"
     },
     "symfony/dependency-injection": {
         "version": "v4.1.0"
@@ -439,9 +442,6 @@
     "symfony/process": {
         "version": "v4.1.0"
     },
-    "symfony/profiler-pack": {
-        "version": "v1.0.3"
-    },
     "symfony/property-access": {
         "version": "v4.1.0"
     },
@@ -481,9 +481,6 @@
     "symfony/serializer": {
         "version": "v4.1.0"
     },
-    "symfony/serializer-pack": {
-        "version": "v1.0.1"
-    },
     "symfony/service-contracts": {
         "version": "v1.1.5"
     },
@@ -501,9 +498,6 @@
             "version": "2.5",
             "ref": "3db029c03e452b4a23f7fc45cec7c922c2247eb8"
         }
-    },
-    "symfony/test-pack": {
-        "version": "v1.0.2"
     },
     "symfony/translation": {
         "version": "3.3",

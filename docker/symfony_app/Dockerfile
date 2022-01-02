@@ -7,6 +7,8 @@ RUN apk add --no-cache zip bash libzip \
     && apk add --no-cache --virtual .build-deps libzip-dev \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip  \
+    # sockets needed for running HTTP mock server for unit tests
+    && docker-php-ext-install sockets  \
     && apk del --purge .build-deps
 
 # install composer

@@ -12,6 +12,20 @@ class Collaborator
 
     const GROUP = 'browser';
 
+    const DB_COLUMN_TYPE = "LowCardinality(String)";
+
+    const DB_COLUMN_NAME = "device_manufacturer";
+
+    public function getDbColumnType(): string
+    {
+        return self::DB_COLUMN_TYPE;
+    }
+
+    public function getDbColumnName(): string
+    {
+        return self::DB_COLUMN_NAME;
+    }
+
     public function isDerived(): bool
     {
         return true;
@@ -39,7 +53,7 @@ class Collaborator
 
     public function derivedFromMetricOnImport(): string
     {
-        return "simple_bm_user_agent";
+        return "user_agent";
     }
 
     public function derivedDataExtract(): DerivedDataExtract
@@ -57,8 +71,4 @@ class Collaborator
         return new ReaderHint();
     }
 
-    public function dataFlavorsLink(): DataFlavorsLink
-    {
-        return new DataFlavorsLink();
-    }
 }

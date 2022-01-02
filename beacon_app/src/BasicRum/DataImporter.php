@@ -5,29 +5,31 @@ declare(strict_types=1);
 namespace App\BasicRum;
 
 use App\BasicRum\Metrics\ImportCollaborator;
-use App\BasicRum\DataImporter\Process;
+
+use App\BasicRum\DataImporter\BeaconsExtractor;
+use App\BasicRum\DataImporter\Writer;
 
 class DataImporter
 {
 
-    private Process $importProcess;
+    private Writer $writer;
 
     public function __construct()
     {
-        $importCollaborator = new ImportCollaborator();
-
-        $this->importProcess = new Process(
-            $importCollaborator->getBeaconExtractors(),
-            $importCollaborator->getDerivedExtractors()
-        );
+        $this->writer = new Writer();
     }
 
-    public function import(string $host, array $data)
+    public function import(string $host, array $data): int
     {
         // Experimental code
         $refined = [];
 
         foreach ($data as $key => $beacon) {
+            if (empty($beacon["beacon_data"]))
+            {
+                continue;
+            }
+
             $bData = json_decode($beacon["beacon_data"], true);
 
             // @todo: for now we just skip quit beacons but later we should import quit beacons and do analyzes
@@ -49,9 +51,16 @@ class DataImporter
             $refined[$key]["created_at"] = $date;
         }
 
-        $importedCnt = $this->importProcess->runImport($host, $refined);
+        $importCollaborator = new ImportCollaborator();
 
-        return $importedCnt;
+        $beaconExtractor = new BeaconsExtractor(
+            $importCollaborator->getBeaconExtractors(),
+            $importCollaborator->getDerivedExtractors()
+        );
+
+        $extracted = $beaconExtractor->extract($refined);
+
+        return $this->writer->runImport($host, $extracted, 200);
     }
 
 }

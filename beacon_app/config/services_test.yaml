@@ -7,8 +7,3 @@ services:
     # aliases are prefixed with test. For example:
     #
     # test.App\Service\MyService: '@App\Service\MyService'
-
-    App\BasicRum\Release:
-        arguments:
-            - '@App\Repository\ReleasesRepository'
-        public: true

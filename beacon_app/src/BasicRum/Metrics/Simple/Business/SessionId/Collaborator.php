@@ -12,6 +12,20 @@ class Collaborator
 
     const GROUP = 'visit';
 
+    const DB_COLUMN_TYPE = "FixedString(43)";
+
+    const DB_COLUMN_NAME = "session_id";
+
+    public function getDbColumnType(): string
+    {
+        return self::DB_COLUMN_TYPE;
+    }
+
+    public function getDbColumnName(): string
+    {
+        return self::DB_COLUMN_NAME;
+    }
+
     public function isDerived(): bool
     {
         return false;
@@ -52,8 +66,4 @@ class Collaborator
         return new ReaderHint();
     }
 
-    public function dataFlavorsLink(): DataFlavorsLink
-    {
-        return new DataFlavorsLink();
-    }
 }

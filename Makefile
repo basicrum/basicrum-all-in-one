@@ -43,6 +43,9 @@ test: ## Start tests on local environment
 init_script: ## Installs dependencies and applies migrations
 	docker-compose -f ${dc_path} exec -T ${app_container} ./init.sh
 
+migrate_schema: ## Migrates DB tables shema - adding new columns for example
+	docker-compose -f ${dc_path} exec -T ${crons_container} /var/www/html/bin/console basicrum:db:update-schema
+
 init_storage: ## Prepare beacons directories
 	docker-compose -f ${dc_path} exec -T ${app_container} ./bin/console basicrum:beacon:init-storage
 
@@ -52,16 +55,8 @@ bundle_raw_beacons: ## Bundle Raw Beacons
 import_beacons_bundle: ## Import Beacons
 	docker-compose -f ${dc_path} exec -T ${crons_container} ./bin/console basicrum:beacon:import-bundle
 
-docker_publish: docker_build docker_login docker_push ## Publish new image to docker hub
-
 docker_build: # Build new docker image
 	cat docker/symfony_app/Dockerfile > docker/symfony_app/Dockerfile.prod
 	cat docker/symfony_app/Dockerfile.prod.patch >> docker/symfony_app/Dockerfile.prod
 	docker build --no-cache -t ${REPO}:${TAG} -f docker/symfony_app/Dockerfile.prod .
 	rm docker/symfony_app/Dockerfile.prod
-
-docker_push: # Push new docker image to docker hub
-	docker push ${REPO}:${TAG}
-
-docker_login: # Login to docker hub
-	docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}

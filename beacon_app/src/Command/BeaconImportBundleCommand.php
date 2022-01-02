@@ -24,7 +24,7 @@ class BeaconImportBundleCommand extends Command
     /**
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $archiveUtil = new Archive();
 
@@ -37,18 +37,22 @@ class BeaconImportBundleCommand extends Command
             foreach ($bundlesPaths as $file) {
 
                 $dataToImport = json_decode(file_get_contents($file), true);
-    
-                $output->writeln('Importing bundle: '.$file);
-    
-                $count = $importer->import($host, $dataToImport);
-    
-                $output->writeln('Beacons imported: '.$count);
 
-                $output->writeln('Created archive: '.$archiveUtil->archiveBundles($host, $file));
+                if (is_array($dataToImport))
+                {
 
+                    $output->writeln('Importing bundle: '.$file);
+
+                    $count = $importer->import($host, $dataToImport);
+
+                    $output->writeln('Beacons imported: '.$count);
+
+                    // $output->writeln('Created archive: '.$archiveUtil->archiveBundles($host, $file));
+
+                }
                 // Cleanup/deleting imported bundles
-                $output->writeln('Deleting file: '.$file);
-                unlink($file);
+                // $output->writeln('Deleting file: '.$file);
+                // unlink($file);
             }
         }
 

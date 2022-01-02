@@ -25,6 +25,6 @@ class BeaconExtract implements BeaconExtractIntInterface
             $value = 65535;
         }
 
-        return $value;
+        return (int) $value;
     }
 }
