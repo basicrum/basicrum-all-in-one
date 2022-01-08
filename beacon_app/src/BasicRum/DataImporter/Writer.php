@@ -2,33 +2,23 @@
 
 namespace App\BasicRum\DataImporter;
 
-use ClickHouseDB\Client;
+use App\BasicRum\Db\ClickHouse\Connection;
 use App\BasicRum\Db\ClickHouse\Schema\Migrator;
 use App\BasicRum\Metrics\DbSchemaCollaborator;
 
 class Writer
 {
-    /** @var Client */
-    private Client $client;
+    /** @var Connection */
+    private Connection $connection;
 
     /** @var Migrator */
     private Migrator $migrator;
 
-    public function __construct()
+    public function __construct(Connection $connection)
     {
-        // Test Connection to ClickHouse
-        $config = [
-            'host' => getenv('CLICKHOUSE_HOST'),
-            'port' => getenv('CLICKHOUSE_PORT'),
-            'username' => getenv('CLICKHOUSE_USER'),
-            'password' => getenv('CLICKHOUSE_PASS')
-        ];
+        $this->connection = $connection;
 
-        $this->client = new Client($config);
-
-        $this->migrator = new Migrator($this->client, new DbSchemaCollaborator());
-
-        var_dump($this->client->ping());
+        $this->migrator = new Migrator($connection, new DbSchemaCollaborator());
     }
 
     public function runImport($host, $data, $batchSize): int
@@ -40,7 +30,7 @@ class Writer
         $chunks = array_chunk($data, $batchSize);
 
         foreach ($chunks as $chunk) {
-            $stat = $this->client->insert(
+            $this->connection->insert(
                 $table,
                 $chunk,
                 array_keys($chunk[0])
@@ -50,7 +40,7 @@ class Writer
         return count($data);
     }
 
-    private function getTableName($host)
+    private function getTableName($host) : string
     {
         return 'rum_' . $host .'_data_flat';
     }

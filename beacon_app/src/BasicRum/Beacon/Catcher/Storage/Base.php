@@ -8,7 +8,7 @@ class Base
 {
 
     /** @var string */
-    private $rootStorageDirectory = '';
+    private string $rootStorageDirectory = '';
 
     /** @var string */
     const ROOT_STORAGE_DIR = 'var/beacons_tmp';

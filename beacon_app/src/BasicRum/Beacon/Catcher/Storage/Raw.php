@@ -8,7 +8,7 @@ class Raw
 {
 
     /** @var Base */
-    private $base;
+    private Base $base;
 
     /** @var string */
     const UNKNOWN_HOST_PLACEHOLDER = 'unknown';

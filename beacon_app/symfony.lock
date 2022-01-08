@@ -65,9 +65,6 @@
     "doctrine/sql-formatter": {
         "version": "1.1.0"
     },
-    "donatj/mock-webserver": {
-        "version": "v2.4.0"
-    },
     "egulias/email-validator": {
         "version": "2.1.4"
     },
@@ -189,9 +186,6 @@
     },
     "psr/log": {
         "version": "1.0.2"
-    },
-    "ralouphie/getallheaders": {
-        "version": "3.0.3"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"

@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\BasicRum\Db\ClickHouse\Schema\Migrator;
 use App\BasicRum\Metrics\DbSchemaCollaborator;
-use ClickHouseDB\Client;
+use App\BasicRum\Db\ClickHouse\Connection;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -35,7 +35,10 @@ class UpdateDbSchema extends Command
             'password' => getenv('CLICKHOUSE_PASS')
         ];
 
-        $migrator = new Migrator(new Client($config), new DbSchemaCollaborator());
+        $migrator = new Migrator(
+            new Connection($config),
+            new DbSchemaCollaborator()
+        );
 
         $migrator->updateAllTablesSchema();
 

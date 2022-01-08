@@ -29,7 +29,6 @@
         "whichbrowser/parser": "^2.1.2"
     },
     "require-dev": {
-        "donatj/mock-webserver": "^2.4",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "^5.3",
         "symfony/css-selector": "^5.3",

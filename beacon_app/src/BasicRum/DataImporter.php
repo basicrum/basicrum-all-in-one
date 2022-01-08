@@ -12,11 +12,12 @@ use App\BasicRum\DataImporter\Writer;
 class DataImporter
 {
 
+    /** @var Writer */
     private Writer $writer;
 
-    public function __construct()
+    public function __construct(Writer $writer)
     {
-        $this->writer = new Writer();
+        $this->writer = $writer;
     }
 
     public function import(string $host, array $data): int

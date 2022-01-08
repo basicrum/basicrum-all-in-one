@@ -7,6 +7,8 @@ namespace App\Command;
 use App\BasicRum\Beacon\Catcher\Storage\Bundle;
 use App\BasicRum\Beacon\Catcher\Storage\Archive;
 use App\BasicRum\DataImporter;
+use App\BasicRum\Db\ClickHouse\Connection;
+use App\BasicRum\DataImporter\Writer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,7 +33,32 @@ class BeaconImportBundleCommand extends Command
         $bundleStorage = new Bundle();
         $bundleInHosts = $bundleStorage->listAvailableBundlesInHosts();
 
-        $importer = new DataImporter();
+        // Test Connection to ClickHouse
+        $config = [
+            'host' => getenv('CLICKHOUSE_HOST'),
+            'port' => getenv('CLICKHOUSE_PORT'),
+            'username' => getenv('CLICKHOUSE_USER'),
+            'password' => getenv('CLICKHOUSE_PASS')
+        ];
+
+        $config = [
+            'host' => '172.17.0.1',
+            'port' => '8123',
+            'username' => 'default',
+            'password' => ''
+        ];
+
+        print_r($config);
+
+        $connection = new Connection($config);
+
+        var_dump($connection->isConnected());
+
+        $importer = new DataImporter(
+            new Writer(
+                $connection
+            )
+        );
 
         foreach ($bundleInHosts as $host => $bundlesPaths) {
             foreach ($bundlesPaths as $file) {
@@ -53,7 +80,10 @@ class BeaconImportBundleCommand extends Command
                 // Cleanup/deleting imported bundles
                 // $output->writeln('Deleting file: '.$file);
                 // unlink($file);
+
+                break;
             }
+            break;
         }
 
         return 0;

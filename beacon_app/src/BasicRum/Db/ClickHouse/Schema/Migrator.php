@@ -4,44 +4,42 @@ declare(strict_types=1);
 
 namespace App\BasicRum\Db\ClickHouse\Schema;
 
-use ClickHouseDB\Client;
+use App\BasicRum\Db\ClickHouse\Connection;
 use \Exception;
 use App\BasicRum\Metrics\DbSchemaCollaborator;
 
 class Migrator
 {
 
-    /** @var Client */
-    private Client $client;
+    /** @var Connection */
+    private Connection $connection;
 
     /** @var DbSchemaCollaborator */
     private DbSchemaCollaborator $dbSchemaCollaborator;
 
-    public function __construct(Client $client, DbSchemaCollaborator $dbSchemaCollaborator)
+    public function __construct(Connection $connection, DbSchemaCollaborator $dbSchemaCollaborator)
     {
-        $this->client = $client;
+        $this->connection = $connection;
         $this->dbSchemaCollaborator = $dbSchemaCollaborator;
     }
 
     public function updateTableSchema(string $table, array $applicationColumns)
     {
-        $res = $this->client->select("DESCRIBE TABLE " . $table);
-
-        $tableColumns = $res->rows();
+        $tableColumns = $this->connection->selectRows("DESCRIBE TABLE " . $table);
 
         $addColumnsMigrator = new Migrator\AddColumns();
 
         $addColumnStatement = $addColumnsMigrator->getAddColumnsStatementsArr($table, $tableColumns, $applicationColumns);
 
         foreach ($addColumnStatement as $sql) {
-            $this->client->write($sql);
+            $this->connection->write($sql);
         }
     }
 
     public function updateAllTablesSchema()
     {
         try {
-            $tables = $this->client->showTables();
+            $tables = $this->connection->showTables();
 
             foreach ($tables as $table => $data) {
                 $this->updateTableSchema(
@@ -58,7 +56,7 @@ class Migrator
     {
         $createTAbleMigrator = new Migrator\CreateTable();
 
-        $this->client->write(
+        $this->connection->write(
             $createTAbleMigrator->getCreateTableStatement(
                 $table,
                 $this->dbSchemaCollaborator->getDbColumnsInfo()

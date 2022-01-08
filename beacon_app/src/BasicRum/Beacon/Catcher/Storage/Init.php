@@ -8,7 +8,7 @@ class Init
 {
 
     /** @var Base */
-    private $base;
+    private Base $base;
 
     public function __construct()
     {

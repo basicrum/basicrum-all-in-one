@@ -8,7 +8,7 @@ class Bundle
 {
 
     /** @var Base */
-    private $base;
+    private Base $base;
 
     public function __construct()
     {
@@ -30,7 +30,7 @@ class Bundle
             $beaconFiles = glob($this->base->getRawBeaconsHostDir($dir).'/*.json');
 
             $entries = [];
-    
+
             foreach ($beaconFiles as $filePath) {
                 $entriesCount++;
 
@@ -39,7 +39,7 @@ class Bundle
                     'beacon_data' => file_get_contents($filePath),
                 ];
             }
-    
+
             if (count($entries) > 0) {
                 $this->persistBundle($dir, json_encode($entries));
 
@@ -67,7 +67,7 @@ class Bundle
         chmod($path, 0777);
     }
 
-    public function listAvailableBundlesInHosts()
+    public function listAvailableBundlesInHosts() : array
     {
         $bundlesHostsDirs = array_diff(
             scandir(
@@ -79,7 +79,7 @@ class Bundle
         $bundlesInHosts = [];
 
         foreach ($bundlesHostsDirs as $dir) {
-            $bundlesInHosts[$dir] = glob($this->base->getBundlesHostDir($dir).'/*.json');  
+            $bundlesInHosts[$dir] = glob($this->base->getBundlesHostDir($dir).'/*.json');
         }
 
         return $bundlesInHosts;

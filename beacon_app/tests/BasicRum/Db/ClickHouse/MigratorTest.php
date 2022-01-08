@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\BasicRum\Db\ClickHouse;
 
+use App\BasicRum\Db\ClickHouse\Connection;
 use App\BasicRum\Db\ClickHouse\Schema\Migrator;
 
-use ClickHouseDB\Client;
-use ClickHouseDB\Statement;
 use PHPUnit\Framework\TestCase;
 use App\BasicRum\Metrics\DbSchemaCollaborator;
 
@@ -19,11 +18,11 @@ class MigratorTest extends TestCase
      */
     public function testAddColumnsToExistingTables()
     {
-        $clickHouseClientMock = $this->getMockBuilder(Client::class)
+        $clickHouseConnectionMock = $this->getMockBuilder(Connection::class)
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $clickHouseClientMock->method('showTables')
+        $clickHouseConnectionMock->method('showTables')
             ->willReturn([
                 "rum_data_flat" => [
                     "name" => "rum_data_flat"
@@ -32,16 +31,16 @@ class MigratorTest extends TestCase
                     "name" => "rum_data_flat_2"
                 ]
             ]);
-        
-        $clickHouseClientMock->expects($this->exactly(2))
-            ->method('select')
+
+        $clickHouseConnectionMock->expects($this->exactly(2))
+            ->method('selectRows')
             ->withConsecutive(
                 ['DESCRIBE TABLE rum_data_flat'],
                 ['DESCRIBE TABLE rum_data_flat_2']
             )
             ->will($this->returnCallback(array($this, 'returnSelectStatementCallback')));
 
-        $clickHouseClientMock->expects($this->exactly(5))
+        $clickHouseConnectionMock->expects($this->exactly(5))
             ->method('write')
             ->withConsecutive(
                 ['ALTER TABLE rum_data_flat ADD COLUMN col_2 Nullable(UInt8)'],
@@ -74,23 +73,19 @@ class MigratorTest extends TestCase
                 ]
             ]);
 
-        $migrator = new Migrator($clickHouseClientMock, $dbSchemaCollaboratorMock);
+        $migrator = new Migrator($clickHouseConnectionMock, $dbSchemaCollaboratorMock);
 
         $migrator->updateAllTablesSchema();
     }
 
-    public function returnSelectStatementCallback(): Statement
+    public function returnSelectStatementCallback(): array
     {
         $args = func_get_args();
 
         $selectQuery = $args[0];
-        
-        $statementMock = $this->getMockBuilder(Statement::class)
-            ->disableOriginalConstructor()
-            ->getMock();
 
         if ("DESCRIBE TABLE rum_data_flat" === $selectQuery) {
-            $columns = [
+            return [
                 [
                     "name" => "col_1",
                     "type" => "Nullable(UInt16)",
@@ -104,7 +99,7 @@ class MigratorTest extends TestCase
         }
 
         if ("DESCRIBE TABLE rum_data_flat_2" === $selectQuery) {
-            $columns = [
+            return [
                 [
                     "name" => "col_1",
                     "type" => "Nullable(UInt16)",
@@ -126,11 +121,7 @@ class MigratorTest extends TestCase
             ];
         }
 
-        $statementMock->expects($this->once())
-            ->method('rows')
-            ->willReturn($columns);
-
-        return $statementMock;
+        return [];
     }
 
 }
