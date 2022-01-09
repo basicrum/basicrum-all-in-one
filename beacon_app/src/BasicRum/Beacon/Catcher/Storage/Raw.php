@@ -29,7 +29,7 @@ class Raw
      * @param string $beacon
      * @return string
      */
-    private function generateFileName($beacon) : string
+    private function generateFileName(string $beacon) : string
     {
         $origin = !empty($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : self::UNKNOWN_HOST_PLACEHOLDER;
 
