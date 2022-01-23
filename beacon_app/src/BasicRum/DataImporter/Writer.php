@@ -21,7 +21,7 @@ class Writer
         $this->migrator = new Migrator($connection, new DbSchemaCollaborator());
     }
 
-    public function runImport($host, $data, $batchSize): int
+    public function runImport(string $host, array $data, int $batchSize): int
     {
         $table = $this->getTableName($host);
 

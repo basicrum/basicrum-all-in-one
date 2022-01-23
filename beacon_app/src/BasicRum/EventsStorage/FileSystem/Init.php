@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Catcher\Storage;
+namespace App\BasicRum\EventsStorage\FileSystem;
 
 class Init
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\BasicRum\Beacon\Catcher\Storage;
+namespace App\BasicRum\EventsStorage\FileSystem;
 
 class Base
 {
@@ -18,6 +18,9 @@ class Base
 
     /** @var string */
     const RELATIVE_IMPORTED_BUNDLES_STORAGE_DIR = 'imported_bundles';
+
+    /** @var string */
+    const RELATIVE_CORRUPTED_BUNDLES_STORAGE_DIR = 'corrupted_bundles';
 
     /** @var string */
     const RELATIVE_BUNDLES_STORAGE_DIR = 'bundles';

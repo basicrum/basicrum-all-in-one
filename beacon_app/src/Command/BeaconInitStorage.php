@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\BasicRum\Beacon\Catcher\Storage\Init;
+use App\BasicRum\EventsStorage\Storage;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -24,9 +24,9 @@ class BeaconInitStorage extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dirsInit = new Init();
+        $storage = new Storage();
 
-        $directories = $dirsInit->initDirectories();
+        $directories = $storage->initDirectories();
 
         foreach ($directories as $dir => $result) {
             if ($result) {
