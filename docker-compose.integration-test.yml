@@ -1,0 +1,57 @@
+version: "3.7"
+
+#ideas taken from https://knplabs.com/en/blog/how-to-dockerise-a-symfony-4-project
+
+services:
+  symfony_app:
+    build:
+      context: ./
+      dockerfile: docker/symfony_app/Dockerfile
+    container_name: basicrum_integration_test_php
+    env_file:
+      - app.env
+    volumes:
+      - ./beacon_app:/var/www/html:delegated
+      - ./docker/symfony_app/www.conf:/usr/local/etc/php-fpm.d/www.conf # local dev only, should not be used for production
+    command: # local dev only, should not be used for production
+      - "php-fpm"
+      - "-R"
+    networks:
+      - basicrum_integration_test_network
+    environment:
+      - CLICKHOUSE_HOST=172.17.0.1
+      - CLICKHOUSE_PORT=8444
+      - CLICKHOUSE_USER=default
+      - CLICKHOUSE_PASS=
+      - BASICRUM_STORAGE_ROOT_DIR=beacons_integration_test
+
+  nginx:
+    image: nginx:1.17-alpine
+    container_name: basicrum_integration_test_nginx
+    volumes:
+      - ./beacon_app:/var/www/html:delegated
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - 8090:80
+    depends_on:
+      - symfony_app
+    networks:
+      - basicrum_integration_test_network
+
+  ch_server:
+    image: yandex/clickhouse-server
+    ports:
+      - "8444:8123"
+    # networks:
+    #   - ch_ntw
+
+  ch_client:
+    image: yandex/clickhouse-client
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+
+networks:
+  basicrum_integration_test_network:
+    driver: bridge

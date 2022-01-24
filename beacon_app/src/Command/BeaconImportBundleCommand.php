@@ -31,10 +31,10 @@ class BeaconImportBundleCommand extends Command
         $storage = new Storage();
 
         $config = [
-            'host' => '172.17.0.1',
-            'port' => '8123',
-            'username' => 'default',
-            'password' => ''
+            'host'     => getenv("CLICKHOUSE_HOST"),
+            'port'     => getenv("CLICKHOUSE_PORT"),
+            'username' => getenv("CLICKHOUSE_USER"),
+            'password' => getenv("CLICKHOUSE_PASS")
         ];
 
         $connection = new Connection($config);

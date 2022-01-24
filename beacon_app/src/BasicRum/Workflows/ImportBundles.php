@@ -31,14 +31,15 @@ class ImportBundles
 
                 $beacons = $storage->getBundleBeacons($file);
 
-                if (!is_array($beacons))
-                {
-                    $monitor->addMarker("bundle_read_failed", $file, "no_description", 'no_value');
-
-                    $moveResult = $storage->moveCorruptedBundle($file);
-                    $monitor->addMarker("bundle_moved_to_corrupted_bundles", $file, "failure", (string) $moveResult);
-                    continue;
-                }
+                // @todo: It will be great if we
+//                if (!is_array($beacons))
+//                {
+//                    $monitor->addMarker("bundle_read_failed", $file, "no_description", 'no_value');
+//
+//                    $moveResult = $storage->moveCorruptedBundle($file);
+//                    $monitor->addMarker("bundle_moved_to_corrupted_bundles", $file, "failure", (string) $moveResult);
+//                    continue;
+//                }
 
                 $importer->import($host, $beacons);
                 $monitor->addMarker("bundle_read_success", $file, "beacons_in_bundle", (string) count($beacons));

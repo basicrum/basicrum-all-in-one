@@ -25,6 +25,32 @@ class Raw
         chmod($filename, 0777);
     }
 
+    public function deleteRawBeacons(array $beaconsPaths) : array
+    {
+        $res = [];
+
+        foreach ($beaconsPaths as $path) {
+            $res[$path] = unlink($path);
+        }
+
+        return $res;
+    }
+
+    public function listRawBeaconsHosts() : array
+    {
+        return array_diff(
+            scandir(
+                $this->base->getRootRawBeaconsDir()
+            ),
+            ['..', '.'] // exclude "." and ".."
+        );
+    }
+
+    public function listRawBeaconsInHost(string $hostDir) : array
+    {
+        return glob($this->base->getRawBeaconsHostDir($hostDir).'/*.json');
+    }
+
     /**
      * @param string $beacon
      * @return string

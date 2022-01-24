@@ -10,61 +10,31 @@ class Bundle
     /** @var Base */
     private Base $base;
 
+    /** @var string */
+    const BUNDLE_FILE_EXTENSION = 'beacnbundl';
+
     public function __construct()
     {
         $this->base = new Base();
     }
 
-    public function generateBundleFromRawBeacons(): int
+    public function persistBundle(string $host, array $rawBeaconsArr) : array
     {
-        $rawBeaconsHostsDirs = array_diff(
-            scandir(
-                $this->base->getRootRawBeaconsDir()
-            ),
-            ['..', '.'] // exclude "." and ".."
-        );
-
-        $entriesCount = 0;
-
-        foreach ($rawBeaconsHostsDirs as $dir) {
-            $beaconFiles = glob($this->base->getRawBeaconsHostDir($dir).'/*.json');
-
-            $entries = [];
-
-            foreach ($beaconFiles as $filePath) {
-                $entriesCount++;
-
-                $entries[] = [
-                    'id' => basename($filePath),
-                    'beacon_data' => file_get_contents($filePath),
-                ];
-            }
-
-            if (count($entries) > 0) {
-                $this->persistBundle($dir, json_encode($entries));
-
-                foreach ($beaconFiles as $filePath) {
-                    unlink($filePath);
-                }
-            }
-        }
-
-        return $entriesCount;
-    }
-
-    public function persistBundle(string $directory, string $content): void
-    {
-        $absoluteDirPath = $this->base->getBundlesHostDir($directory);
+        $absoluteDirPath = $this->base->getBundlesHostDir($host);
 
         if (!is_dir($absoluteDirPath)) {
             mkdir($absoluteDirPath, 0777);
         }
 
-        $name = time().'.json';
-        $path = $absoluteDirPath.'/'.$name;
+        $bundleName = time().'.'.self::BUNDLE_FILE_EXTENSION;
+        $finalPath = $absoluteDirPath.'/'.$bundleName;
 
-        file_put_contents($path, $content);
-        chmod($path, 0777);
+        file_put_contents($finalPath, implode("\n", $rawBeaconsArr));
+        chmod($finalPath, 0777);
+
+        return [
+            'size' => filesize($finalPath)
+        ];
     }
 
     public function listAvailableBundlesInHosts() : array
@@ -79,7 +49,7 @@ class Bundle
         $bundlesInHosts = [];
 
         foreach ($bundlesHostsDirs as $dir) {
-            $bundlesInHosts[$dir] = glob($this->base->getBundlesHostDir($dir).'/*.json');
+            $bundlesInHosts[$dir] = glob($this->base->getBundlesHostDir($dir).'/*.'.self::BUNDLE_FILE_EXTENSION);
         }
 
         return $bundlesInHosts;

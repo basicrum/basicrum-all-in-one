@@ -32,7 +32,7 @@ class DataImporter
 
         foreach ($data as $key => $beacon) {
 
-            $bData = json_decode($beacon, true);
+            $bData = $beacon;
 
             // @todo: Cover this case on in a specific unit test.
             // could be null or false

@@ -11,7 +11,7 @@ class Base
     private string $rootStorageDirectory = '';
 
     /** @var string */
-    const ROOT_STORAGE_DIR = 'var/beacons_tmp';
+    const DEFAULT_ROOT_STORAGE_DIR = 'var/beacons_tmp';
 
     /** @var string */
     const RELATIVE_RAW_STORAGE_DIR = 'raw';
@@ -30,7 +30,14 @@ class Base
 
     public function __construct()
     {
-        $this->rootStorageDirectory = $this->getProjectPath().'/'.self::ROOT_STORAGE_DIR;
+        $rootStorageDir = self::DEFAULT_ROOT_STORAGE_DIR;
+        $envStorageRootDir = getenv("BASICRUM_STORAGE_ROOT_DIR");
+
+        if (false !== $envStorageRootDir) {
+            $rootStorageDir = 'var/' . $envStorageRootDir;
+        }
+
+        $this->rootStorageDirectory = $this->getProjectPath().'/'.$rootStorageDir;
     }
 
     public function getRawBeaconsHostDir(string $host): string

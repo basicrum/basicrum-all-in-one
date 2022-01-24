@@ -24,7 +24,7 @@ header($originHeader);
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: X-Requested-With, Keep-Alive, content-type, access-control-allow-origin, access-control-allow-methods, access-control-allow-headers');
 
-use App\BasicRum\Beacon\Catcher\Storage\Raw;
+use App\BasicRum\EventsStorage\FileSystem\Raw;
 
 /*
  * We use this in order to return 200 to the user as soon as possible.

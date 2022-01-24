@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\BasicRum\Beacon\Catcher\Storage\Bundle;
+use App\BasicRum\EventsStorage\Storage;
+use App\BasicRum\Workflows\BundleRawBeacons;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,9 +30,9 @@ class BeaconBundleRawCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $bundleStorage = new Bundle();
+        $storage = new Storage();
 
-        $bundleStorage->generateBundleFromRawBeacons();
+        $monitor = BundleRawBeacons::run($storage);
 
         return 0;
     }
