@@ -1,0 +1,13 @@
+<clickhouse>
+    <users>
+      <basicrumreader>
+        <password remove="1"/>
+        <profile>default</profile>
+          <networks>
+            <ip>::/0</ip>
+          </networks>
+        <password>testpassword</password>
+        <quota>default</quota>
+      </basicrumreader>
+    </users>
+</clickhouse>

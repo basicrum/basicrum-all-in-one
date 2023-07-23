@@ -1,0 +1,61 @@
+version: "3.7"
+
+services:
+
+  basicrum_clickhouse_server:
+    image: clickhouse/clickhouse-server:23.6
+    volumes:
+      - ./shared/clickhouse:/var/lib/clickhouse
+    #   - ./provisioning/clickhouse/users.d/:/etc/clickhouse-server/users.d/
+    # volumes:
+    #   - ./provisioning/clickhouse/docker-entrypoint-initdb.d/webperf_rum_events.sql:/docker-entrypoint-initdb.d/webperf_rum_events.sql
+
+    ports:
+      - 8143:8123
+      - 9000:9000
+
+    environment:
+      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
+    ulimits:
+      nproc: 65535
+      nofile:
+       soft: 262144
+       hard: 262144
+
+  basicrum_dashboard:
+    image: basicrum/dashboard:latest
+    # We need this in order to make the grafana container happy when we have volumes.
+    # If we don't set the user then we get:
+    # --------------------------------------------------------------------------------------------------------
+    # basicrum_grafana_1            | GF_PATHS_DATA='/var/lib/grafana' is not writable.
+    # basicrum_grafana_1            | You may have issues with file permissions, more information here: http://docs.grafana.org/installation/docker/#migrate-to-v51-or-later
+    # basicrum_grafana_1            | mkdir: cannot create directory '/var/lib/grafana/plugins': Permission denied
+    # --------------------------------------------------------------------------------------------------------
+    # 
+    # $UID is passed by the host: 
+    #
+    # 1.| UID := $(shell id -u)
+    # 2.| env UID=${UID} docker-compose -f ${dc_path} up -d
+    # 
+    # user: "$UID"
+
+    ports:
+      - 3500:3000
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
+      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
+
+      # - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      # - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_USER}
+    # volumes:
+      # Persist user created stuff
+      #- ./shared/grafana:/var/lib/grafana
+      # Mount provisioning related stuff
+      #- ./provisioning/grafana/datasources:/etc/grafana/provisioning/datasources
+      # - ./provisioning/grafana/grafana.ini:/etc/grafana/grafana.ini
+      #- ./provisioning/grafana/dashboards:/etc/grafana/provisioning/dashboards

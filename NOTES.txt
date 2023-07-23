@@ -1,0 +1,31 @@
+PREREQUISITES
+
+1. docker + docker-compose
+
+IMAGES:
+
+1. Pull the Basic RUM Grafana image
+2. Pull the official ClickHouse image
+3. Pull the FRONT_BASICRUM_GO
+
+INSTALLER:
+
+Password:
+
+DB Give 2 options:
+ - Generate random password
+ -- EXample command: date +%s | sha256sum | base64 | head -c 19 ; echo
+ - User input
+
+Grafana password:
+
+???
+
+ENV variables in data sources: https://volkovlabs.com/using-environment-variables-for-configuration-provisioning-and-dashboards-in-grafana-279661733416
+
+VERIFICATION
+
+1. Send a test beacon
+1.2 provide a sample curl command 
+
+TODO: Change the table name from webperf_rum_events to basicrum_rum_events

@@ -1,0 +1,8 @@
+<clickhouse>
+  <users>
+    <default>
+      <password remove="1"/>
+      <password>87mQQi033W*68</password>
+    </default>
+  </users>
+</clickhouse>
