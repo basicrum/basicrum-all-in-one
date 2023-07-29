@@ -18,6 +18,9 @@ up: ## Starts the environment
 down: ## Stops the environment
 	env UID=${UID}  docker-compose -f ${dc_path} down
 
+logs: ## prints the logs
+	docker-compose -f ${dc_path} logs
+
 restart: down up # Restart the environment
 
 rebuild: ## Rebuilds the environment from scratch

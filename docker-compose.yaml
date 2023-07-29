@@ -1,30 +1,42 @@
 version: "3.7"
 
 services:
-
   basicrum_clickhouse_server:
     image: clickhouse/clickhouse-server:23.6
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     volumes:
       - ./shared/clickhouse:/var/lib/clickhouse
-    #   - ./provisioning/clickhouse/users.d/:/etc/clickhouse-server/users.d/
-    # volumes:
-    #   - ./provisioning/clickhouse/docker-entrypoint-initdb.d/webperf_rum_events.sql:/docker-entrypoint-initdb.d/webperf_rum_events.sql
-
+      - ./provisioning/clickhouse/users.d/:/etc/clickhouse-server/users.d/
     ports:
       - 8143:8123
       - 9000:9000
-
-    environment:
-      CLICKHOUSE_DB: ${CLICKHOUSE_DB}
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
-
+    env_file:
+      - basicrum_clickhouse_server.env
     ulimits:
       nproc: 65535
       nofile:
        soft: 262144
        hard: 262144
-
+  front_basicrum_go:
+    image: basicrum/front_basicrum_go:0.0.1
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8087/health || exit 1
+      interval: 30s
+      retries: 3
+      start_period: 3s
+      timeout: 10s
+    ports:
+      - 8087:8087
+    env_file:
+      - basicrum_clickhouse_server.env
+      - front_basicrum_go.env
+    depends_on:
+      basicrum_clickhouse_server:
+        condition: service_healthy
   basicrum_dashboard:
     image: basicrum/dashboard:latest
     # We need this in order to make the grafana container happy when we have volumes.
@@ -41,17 +53,14 @@ services:
     # 2.| env UID=${UID} docker-compose -f ${dc_path} up -d
     # 
     # user: "$UID"
-
     ports:
       - 3500:3000
-    environment:
-      GF_SECURITY_ADMIN_USER: ${GF_SECURITY_ADMIN_USER}
-      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD}
-      CLICKHOUSE_USER: ${CLICKHOUSE_USER}
-      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD}
-
-      # - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
-      # - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_USER}
+    env_file:
+      - basicrum_clickhouse_server.env
+      - basicrum_dashboard.env
+    depends_on:
+      basicrum_clickhouse_server:
+        condition: service_healthy
     # volumes:
       # Persist user created stuff
       #- ./shared/grafana:/var/lib/grafana
