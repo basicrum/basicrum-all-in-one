@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   basicrum_clickhouse_server:
-    image: clickhouse/clickhouse-server:23.6
+    image: clickhouse/clickhouse-server:23.6.2.18-alpine
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
       interval: 30s
@@ -38,7 +38,7 @@ services:
       basicrum_clickhouse_server:
         condition: service_healthy
   basicrum_dashboard:
-    image: basicrum/dashboard:latest
+    image: basicrum/dashboard:0.0.1
     # We need this in order to make the grafana container happy when we have volumes.
     # If we don't set the user then we get:
     # --------------------------------------------------------------------------------------------------------
