@@ -1,3 +1,2 @@
 shared
 .env
-provisioning/clickhouse/users.d/default-user.xml

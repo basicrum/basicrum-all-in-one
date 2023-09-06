@@ -10,7 +10,6 @@ services:
       retries: 3
     volumes:
       - ./shared/clickhouse:/var/lib/clickhouse
-      - ./provisioning/clickhouse/users.d/:/etc/clickhouse-server/users.d/
     ports:
       - 8143:8123
       - 9000:9000
