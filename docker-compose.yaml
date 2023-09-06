@@ -38,7 +38,7 @@ services:
       basicrum_clickhouse_server:
         condition: service_healthy
   basicrum_dashboard:
-    image: basicrum/dashboard:0.0.1
+    image: basicrum/dashboard:0.0.2
     # We need this in order to make the grafana container happy when we have volumes.
     # If we don't set the user then we get:
     # --------------------------------------------------------------------------------------------------------
