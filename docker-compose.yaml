@@ -21,7 +21,7 @@ services:
         soft: 262144
         hard: 262144
   front_basicrum_go:
-    image: basicrum/front_basicrum_go:0.0.1
+    image: basicrum/front_basicrum_go:0.0.2
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8087/health || exit 1
       interval: 30s
@@ -30,6 +30,7 @@ services:
       timeout: 10s
     ports:
       - 8087:8087
+      - 443:443
     env_file:
       - basicrum_clickhouse_server.env
       - front_basicrum_go.env
@@ -37,7 +38,7 @@ services:
       basicrum_clickhouse_server:
         condition: service_healthy
   basicrum_dashboard:
-    image: basicrum/dashboard:0.0.2
+    image: basicrum/dashboard:0.0.3
     # We need this in order to make the grafana container happy when we have volumes.
     # If we don't set the user then we get:
     # --------------------------------------------------------------------------------------------------------
