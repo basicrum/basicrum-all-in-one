@@ -6,7 +6,7 @@ UID := $(shell id -u)
 
 dc_path=./docker-compose.yaml
 clickhouse_container=basicrum_clickhouse_server
-grafana_container=basicrum_grafana
+grafana_container=basicrum_dashboard
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -34,7 +34,7 @@ destroy: ## Destroys thel environment
 jump_clickhouse: ## Jump to the ClickHouse container
 	docker-compose -f ${dc_path} exec ${clickhouse_container} bash
 
-jump_grafana: ## Jump to the Grafana container
+jump_dashboard: ## Jump to the Grafana container
 	docker-compose -f ${dc_path} exec ${grafana_container} bash
 
 prepare_grafana_plugins: ## Installs the Grafana plugins

@@ -57,6 +57,7 @@ services:
       - 3500:3000
     env_file:
       - basicrum_clickhouse_server.env
+      - front_basicrum_go.env
       - basicrum_dashboard.env
     depends_on:
       basicrum_clickhouse_server:
