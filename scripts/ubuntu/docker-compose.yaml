@@ -1,0 +1,70 @@
+version: "3.7"
+
+services:
+  basicrum_clickhouse_server:
+    image: clickhouse/clickhouse-server:23.6.2.18-alpine
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./shared/clickhouse:/var/lib/clickhouse
+    ports:
+      - 8143:8123
+      - 9000:9000
+    env_file:
+      - basicrum_clickhouse_server.env
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 262144
+        hard: 262144
+  front_basicrum_go:
+    image: basicrum/front_basicrum_go:FRONT_BASICRUM_GO_VERSION
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8087/health || exit 1
+      interval: 30s
+      retries: 3
+      start_period: 3s
+      timeout: 10s
+    ports:
+      - 8087:8087
+      - 443:443
+    env_file:
+      - basicrum_clickhouse_server.env
+      - front_basicrum_go.env
+    depends_on:
+      basicrum_clickhouse_server:
+        condition: service_healthy
+  basicrum_dashboard:
+    image: basicrum/dashboard:DASHBOARD_VERSION
+    # We need this in order to make the grafana container happy when we have volumes.
+    # If we don't set the user then we get:
+    # --------------------------------------------------------------------------------------------------------
+    # basicrum_grafana_1            | GF_PATHS_DATA='/var/lib/grafana' is not writable.
+    # basicrum_grafana_1            | You may have issues with file permissions, more information here: http://docs.grafana.org/installation/docker/#migrate-to-v51-or-later
+    # basicrum_grafana_1            | mkdir: cannot create directory '/var/lib/grafana/plugins': Permission denied
+    # --------------------------------------------------------------------------------------------------------
+    #
+    # $UID is passed by the host:
+    #
+    # 1.| UID := $(shell id -u)
+    # 2.| env UID=${UID} docker-compose -f ${dc_path} up -d
+    #
+    # user: "$UID"
+    ports:
+      - 3500:3000
+    env_file:
+      - basicrum_clickhouse_server.env
+      - basicrum_dashboard.env
+    depends_on:
+      basicrum_clickhouse_server:
+        condition: service_healthy
+    # volumes:
+    # Persist user created stuff
+    #- ./shared/grafana:/var/lib/grafana
+    # Mount provisioning related stuff
+    #- ./provisioning/grafana/datasources:/etc/grafana/provisioning/datasources
+    # - ./provisioning/grafana/grafana.ini:/etc/grafana/grafana.ini
+    #- ./provisioning/grafana/dashboards:/etc/grafana/provisioning/dashboards
