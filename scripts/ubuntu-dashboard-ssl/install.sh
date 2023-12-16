@@ -6,8 +6,8 @@
   set -o errexit   ## set -e : exit the script if any statement returns a non-true return value
 
   DIR=/etc/docker/compose/basicrum
-  FRONT_BASICRUM_GO_VERSION=0.0.2
-  DASHBOARD_VERSION=0.0.3
+  FRONT_BASICRUM_GO_VERSION=0.0.5
+  DASHBOARD_VERSION=0.0.4
 
   install_docker_compose() {
     apt update -y
