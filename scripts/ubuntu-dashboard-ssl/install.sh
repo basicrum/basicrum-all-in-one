@@ -44,8 +44,6 @@ services:
       retries: 3
       start_period: 3s
       timeout: 10s
-    ports:
-      - 8087:8087
     env_file:
       - basicrum_clickhouse_server.env
       - front_basicrum_go.env
@@ -62,8 +60,6 @@ services:
       - "traefik.http.routers.route-https.service=route-https"
       - "traefik.http.services.route-https.loadBalancer.server.port=3000"
     image: basicrum/dashboard:DASHBOARD_VERSION
-    ports:
-      - 3500:3000
     env_file:
       - basicrum_clickhouse_server.env
       - basicrum_dashboard.env
@@ -100,8 +96,6 @@ EOF
 
   DASHBOARD_ENV=$(cat <<- 'EOF'
 CLICKHOUSE_CONNECTION_URL=http://basicrum_clickhouse_server:8123
-CLICKHOUSE_USER=${CLICKHOUSE_USER}
-CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
 
 EOF
 )
@@ -111,9 +105,6 @@ BRUM_SERVER_HOST=localhost
 BRUM_SERVER_PORT=8087
 BRUM_DATABASE_HOST=basicrum_clickhouse_server
 BRUM_DATABASE_PORT=9000
-BRUM_DATABASE_NAME=${CLICKHOUSE_DB}
-BRUM_DATABASE_USERNAME=${CLICKHOUSE_USER}
-BRUM_DATABASE_PASSWORD=${CLICKHOUSE_PASSWORD}
 BRUM_DATABASE_TABLE_PREFIX=
 BRUM_PERSISTANCE_DATABASE_STRATEGY=all_in_one_db
 BRUM_PERSISTANCE_TABLE_STRATEGY=all_in_one_table
@@ -219,6 +210,9 @@ EOF
     FILE=${DIR}/front_basicrum_go.env
     rm -rf $FILE
     echo "$FRONT_BASICRUM_GO_ENV" > $FILE
+    echo -e "BRUM_DATABASE_NAME=${db_name}" >> $FILE
+    echo -e "BRUM_DATABASE_USERNAME=${db_user}" >> $FILE
+    echo -e "BRUM_DATABASE_PASSWORD=${db_pass}" >> $FILE
 
     FILE=${DIR}/docker-compose.yaml
     sed -i "s#\LETS_ENCRYPT_DOMAIN#${ssl_lets_encrypt_domain}#g" ${FILE}
@@ -246,10 +240,15 @@ EOF
 
   install() {
     install_docker_compose
-    create_docker_compose_systemd
+    # create_docker_compose_systemd
     install_basicrum
-    install_systemd_basicrum
+    # install_systemd_basicrum
+  }
+
+  start() {
+    docker compose up -d
   }
 
   install
+  start
 }
