@@ -56,7 +56,7 @@ services:
     labels:
       # SSL endpoint
       - "traefik.http.routers.route-https.entryPoints=port443"
-      - "traefik.http.routers.route-https.rule=host(`LETS_ENCRYPT_DOMAIN`)"
+      - "traefik.http.routers.route-https.rule=host(`LETS_ENCRYPT_DOMAIN`) && PathPrefix(`/grafana`)"
       - "traefik.http.routers.route-https.tls=true"
       - "traefik.http.routers.route-https.tls.certResolver=le-ssl"
       - "traefik.http.routers.route-https.service=route-https"
@@ -87,9 +87,7 @@ services:
       #- "--log.level=DEBUG"
       #- "--api=true"
       - "--providers.docker=true"
-
       - "--entryPoints.port443.address=:443"
-
       - "--certificatesResolvers.le-ssl.acme.tlsChallenge=true"
       - "--certificatesResolvers.le-ssl.acme.email=LETS_ENCRYPT_EMAIL"
       - "--certificatesResolvers.le-ssl.acme.storage=/letsencrypt/acme.json"
@@ -145,7 +143,7 @@ WantedBy=multi-user.target
 EOF
 )
 
-  DIR=/home/tsvetan/projects/basicrum/basicrum-all-in-one/scripts/ubuntu-dashboard-ssl
+  DIR="$PWD"
   FRONT_BASICRUM_GO_VERSION=0.0.5
   DASHBOARD_VERSION=0.0.5
 
@@ -208,16 +206,19 @@ EOF
 
     FILE=${DIR}/basicrum_dashboard.env
     rm -rf $FILE
-    echo $DASHBOARD_ENV > $FILE
+    echo "$DASHBOARD_ENV" > $FILE
     echo -e "GF_SECURITY_ADMIN_USER=${admin_user}" >> $FILE
     echo -e "GF_SECURITY_ADMIN_PASSWORD=${admin_pass}" >> $FILE
-    echo -e "GF_SERVER_ROOT_URL=https://${ssl_lets_encrypt_domain}" >> $FILE
+    echo -e "GF_SERVER_ROOT_URL=https://${ssl_lets_encrypt_domain}/grafana/" >> $FILE
     echo -e "GF_SERVER_DOMAIN=${ssl_lets_encrypt_domain}" >> $FILE
     echo -e "GF_USERS_ALLOW_SIGN_UP=false" >> $FILE
+    echo -e "GF_SERVER_SERVE_FROM_SUB_PATH=true" >> $FILE
+    echo -e "CLICKHOUSE_USER=${db_user}" >> $FILE
+    echo -e "CLICKHOUSE_PASSWORD=${db_pass}" >> $FILE
 
     FILE=${DIR}/front_basicrum_go.env
     rm -rf $FILE
-    echo $FRONT_BASICRUM_GO_ENV > $FILE
+    echo "$FRONT_BASICRUM_GO_ENV" > $FILE
 
     FILE=${DIR}/docker-compose.yaml
     sed -i "s#\LETS_ENCRYPT_DOMAIN#${ssl_lets_encrypt_domain}#g" ${FILE}
