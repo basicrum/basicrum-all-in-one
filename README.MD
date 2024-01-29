@@ -1,50 +1,30 @@
 # Basic RUM - All in One
-## (open source Real User Web Performance Monitoring System)
 
-## WIP
+This is a command line installation wizard of Basic RUM.
 
-At the moment we are working on bundling all the Basic RUM components together. 
+The **Basic RUM - All in One setup** aims to simplify the installation run all the required services on the same box. This approach of course has tradeoffs and is not meant for scaling and running **Basic RUM** on multiple servers.
 
-Components:
+However, the **All in One setup** is perfect for a small website/organization that doesn't have Ops team and has less than **50 000** page visits a day.
 
- - Dashboard - a re-branded Grafana frontend used to browse slice and dice the RUM data.
- - ClickHouse DB - a super fast database engine used for storing and querying the performance RUM data.
- - Front Basic Rum GO - a collector/an entry point that intercepts, filters and send the performance RUM data to ClickHouse DB.
+## How to use?
 
-
-
-## Start
-
-To start the docker compose as service in background run:
+For Debian based Linux download and run:
 ```
-make up
+debian-install-basicrum-all-in-one.sh
 ```
 
-Open browser:
-```
-http://localhost:3500
-```
+## What will be installed?
 
-You should see dashboard login page.
-Enter username and password from file `basicrum_dashboard.env` environment variables (`GF_SECURITY_ADMIN_USER` and `GF_SECURITY_ADMIN_PASSWORD`).
-
-## Logs
-
-to check the docker compose logs run:
-```
-make logs
-```
-
-## Send flare
-
-To send test data as browser:
-```
-make flare
-```
-
-## Stop
-
-To stop the docker compose run:
-```
-make down
-```
+The installation wizard installs Docker Compose and runs the required for Basic RUM Docker containers:
+ * Traefik
+   * Let's Encrypt
+   * SSL termination
+   * Routing of various paths
+ * ClickHouse
+   * Timeseries data storage
+ * Dashboard
+   * Customized Grafana for displaying the RUM data.
+ * FRONT_BASICRUM_GO
+   * Collecting beacon data
+   * Transforming beacon data
+   * Inserting
